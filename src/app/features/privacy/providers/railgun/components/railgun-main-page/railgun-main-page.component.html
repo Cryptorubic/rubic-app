@@ -27,12 +27,12 @@
       </div>
     </div>
 
-    <app-railgun-form
+    <app-railgun-login-page
       *ngIf="data.activePage.type === 'login'"
       [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
       [railgunId]="data?.railgunAccount?.id"
       (formSubmit)="onSubmit($event)"
-    ></app-railgun-form>
+    ></app-railgun-login-page>
 
     <app-railgun-account-info
       *ngIf="data.activePage.type === 'wallet' && data.railgunAccount?.railgunAddress"

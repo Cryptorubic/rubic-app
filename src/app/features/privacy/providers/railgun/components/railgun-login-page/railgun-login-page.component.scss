@@ -1,0 +1,18 @@
+.buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+
+  > * {
+    flex: 1;
+  }
+}
+
+p {
+  font-size: 15px;
+}
+
+.wrapper {
+  min-width: 360px;
+}

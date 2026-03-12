@@ -6,6 +6,7 @@ import { PageType } from '../../../shared-privacy-providers/components/page-navi
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { EphemeralWalletTokensService } from '../../services/common/token-facades/ephemeral-wallet-tokens.service';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -16,6 +17,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 })
 export class PrivacycashMainPageComponent implements OnInit {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
+
+  private readonly ephemeralWalletTokensService = inject(EphemeralWalletTokensService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
@@ -32,8 +35,13 @@ export class PrivacycashMainPageComponent implements OnInit {
       this.privacycashTokensService.updatePrivateBalances();
     });
     this.privacycashTokensService.updateBalances$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.privacycashTokensService.loadTokensListWithBalances();
+      this.privacycashTokensService.loadBalances();
     });
+    this.ephemeralWalletTokensService.updateBalances$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.ephemeralWalletTokensService.loadBalances();
+      });
   }
 
   public onStepChange(value: PageType): void {

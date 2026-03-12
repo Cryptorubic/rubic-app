@@ -1,1 +1,4 @@
-<p>privacycash-refund-page works!</p>
+<app-transfer-tokens-window
+  [creationConfig]="refundFormCreationConfig"
+  (handleTransfer)="refund($event)"
+></app-transfer-tokens-window>

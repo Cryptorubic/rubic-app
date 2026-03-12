@@ -45,11 +45,17 @@ import { DropdownOptionsShieldedTokenComponent } from './components/shielded-tok
 import { PasswordVerificationModalComponent } from './components/password-verification-modal/password-verification-modal.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { TuiInputModule } from '@taiga-ui/kit';
+import {
+  TuiAvatarModule,
+  TuiDataListWrapperModule,
+  TuiInputModule,
+  TuiSelectModule
+} from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
 import { SignMessageModalComponent } from './components/sign-message-modal/sign-message-modal.component';
+import { SwitchNetworkPageComponent } from './components/switch-network-page/switch-network-page.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +71,8 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
     PrivatePreviewSwapComponent,
-    SignMessageModalComponent
+    SignMessageModalComponent,
+    SwitchNetworkPageComponent
   ],
   imports: [
     CommonModule,
@@ -82,7 +89,10 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
     TuiInputModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiDataListWrapperModule,
+    TuiAvatarModule,
+    TuiSelectModule
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -94,7 +104,8 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
     ShieldedTokensListComponent,
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
-    SwapWindowComponent
+    SwapWindowComponent,
+    SwitchNetworkPageComponent
   ],
   providers: [
     [

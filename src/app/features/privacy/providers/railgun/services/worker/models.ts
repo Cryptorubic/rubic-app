@@ -3,7 +3,14 @@ export interface RailgunRequest<T extends unknown> {
   params: T;
 }
 
-export interface RailgunResponse<T extends unknown> {
+export interface RailgunSuccessResponse<T extends unknown> {
   method: string;
   response: T;
 }
+
+export interface RailgunErrorResponse {
+  method: string;
+  error: string;
+}
+
+export type RailgunResponse<T> = RailgunSuccessResponse<T> | RailgunErrorResponse;

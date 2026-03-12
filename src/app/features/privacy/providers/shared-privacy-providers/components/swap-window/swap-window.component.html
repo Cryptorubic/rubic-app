@@ -5,7 +5,7 @@
     displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <app-input-output-container [round]="'top'" [marginTop]="true">
+  <app-input-output-container [round]="inputContainerRounding" [marginTop]="true">
     <app-asset-selector
       left
       selectorType="from"
@@ -28,9 +28,12 @@
     </div>
   </app-input-output-container>
 
-  <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+  <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
 
-  <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
+  <app-input-output-container
+    *ngIf="hasOutputContainer"
+    [round]="state.displayReceiver ? 'none' : 'bottom'"
+  >
     <app-asset-selector
       left
       selectorType="to"
@@ -68,7 +71,7 @@
       size="m"
       (click)="swap()"
     >
-      Review Order
+      {{ creationConfig.buttonText ? creationConfig.buttonText : 'Review Order' }}
     </button>
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"

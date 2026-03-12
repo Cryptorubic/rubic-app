@@ -1,0 +1,34 @@
+<form [formGroup]="secretForm" (ngSubmit)="handleConfirm()">
+  <tui-notification class="notification" status="warning">
+    Store your seed phrase in order to recover this wallet. If you clear your browser cache or
+    forget your password, your local wallets will be deleted.
+  </tui-notification>
+
+  <div class="switcher">
+    <tui-toggle size="l" formControlName="agreement" [showIcons]="false"></tui-toggle>
+    <span>
+      I copied the seed phrase. If I forget it or the password, Rubic won't be able to help me.
+    </span>
+  </div>
+  <tui-error formControlName="agreement" [error]="['required'] | tuiFieldError | async"></tui-error>
+
+  <tui-input-password
+    formControlName="mnemonic"
+    (keydown)="$event.preventDefault()"
+    (paste)="$event.preventDefault()"
+    (drop)="$event.preventDefault()"
+  >
+    Seed phrase
+    <span class="tui-required"></span>
+  </tui-input-password>
+
+  <tui-input-password formControlName="password">
+    Password
+    <span class="tui-required"></span>
+  </tui-input-password>
+  <tui-error formControlName="password" [error]="['required'] | tuiFieldError | async"></tui-error>
+
+  <div class="buttons">
+    <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
+  </div>
+</form>

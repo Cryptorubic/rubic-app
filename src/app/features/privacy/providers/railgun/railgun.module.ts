@@ -4,11 +4,13 @@ import { RailgunFormComponent } from '@features/privacy/providers/railgun/compon
 import { SharedModule } from '@shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  TuiCheckboxLabeledModule,
   TuiFieldErrorPipeModule,
   TuiInputModule,
   TuiInputPasswordModule,
   TuiProgressModule,
-  TuiStepperModule
+  TuiStepperModule,
+  TuiToggleModule
 } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
@@ -26,6 +28,9 @@ import { RevealService } from '@features/privacy/providers/railgun/services/reve
 import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
 import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
+import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
+import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +41,10 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
     RailgunHideTokensPageComponent,
     RailgunSwapPageComponent,
     RailgunRevealPageComponent,
-    RailgunTransferPageComponent
+    RailgunTransferPageComponent,
+    RailgunLoginPageComponent,
+    RailgunWalletImportComponent,
+    RailgunWalletCreateComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +59,9 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
     TuiStepperModule,
     SharedPrivacyProvidersModule,
     TuiNotificationModule,
-    TuiProgressModule
+    TuiProgressModule,
+    TuiCheckboxLabeledModule,
+    TuiToggleModule
   ],
   providers: [
     RailgunFacadeService,
