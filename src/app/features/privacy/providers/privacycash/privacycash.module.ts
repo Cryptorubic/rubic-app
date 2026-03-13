@@ -14,13 +14,14 @@ import { PrivacycashSwapService } from './services/privacy-cash-swap.service';
 import { PrivacycashApiService } from './services/privacy-cash-api.service';
 import { PrivacycashPublicAssetsService } from './services/common/assets-services/privacycash-public-assets.service';
 import { PrivacycashPrivateAssetsService } from './services/common/assets-services/privacycash-private-assets.service';
-import { PrivacycashSignatureModalComponent } from './components/privacycash-signature-modal/privacycash-signature-modal.component';
+import { PrivacycashSignatureWindowComponent } from './components/privacycash-signature-window/privacycash-signature-window.component';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPrivateTokensFacadeService } from './services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashTokensService } from './services/common/token-facades/privacycash-tokens.service';
 import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
 import { EphemeralWalletTokensService } from './services/common/token-facades/ephemeral-wallet-tokens.service';
+import { PrivacycashSignatureService } from './services/privacy-cash-signature.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { EphemeralWalletTokensService } from './services/common/token-facades/ep
     PrivacycashSwapPageComponent,
     PrivacycashTransferPageComponent,
     PrivacycashRefundPageComponent,
-    PrivacycashSignatureModalComponent
+    PrivacycashSignatureWindowComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +44,7 @@ import { EphemeralWalletTokensService } from './services/common/token-facades/ep
     PrivacycashRefundService,
     PrivacycashSwapService,
     PrivacycashApiService,
+    PrivacycashSignatureService,
     PrivacycashPublicAssetsService,
     PrivacycashPrivateAssetsService,
     PrivacycashPublicTokensFacadeService,

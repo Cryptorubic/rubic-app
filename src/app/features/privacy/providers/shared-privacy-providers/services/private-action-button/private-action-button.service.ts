@@ -5,8 +5,7 @@ import { PrivateActionButtonState } from '@app/features/privacy/providers/shared
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
-import { filter, map, Observable } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 
 @Injectable()
 export class PrivateActionButtonService {
@@ -26,13 +25,18 @@ export class PrivateActionButtonService {
       )
     );
 
+  protected readonly _receiverAddress$ = new BehaviorSubject<string>('');
+
   constructor(
     protected readonly walletConnector: WalletConnectorService,
     protected readonly modalService: ModalService,
     @Inject(Injector) protected readonly injector: Injector,
     protected readonly privateTransferWindowService: PrivateTransferWindowService,
     protected readonly privateSwapWindowService: PrivateSwapWindowService,
-    protected readonly targetNetworkAddressService: TargetNetworkAddressService,
     protected readonly privatePageTypeService: PrivatePageTypeService
   ) {}
+
+  public setReceiverAddress(address: string): void {
+    this._receiverAddress$.next(address);
+  }
 }

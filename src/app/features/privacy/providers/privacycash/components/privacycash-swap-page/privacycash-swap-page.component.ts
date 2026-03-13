@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { PrivacycashQuoteAdapter } from '../../utils/privacycash-quote-adapter';
@@ -12,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import { firstValueFrom } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
+import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -28,6 +30,16 @@ export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly notificationsService = inject(NotificationsService);
+
+  public readonly swapFormCreationConfig: PrivateSwapFormConfig = {
+    withActionButton: true,
+    withDstSelector: true,
+    withDstAmount: true,
+    withReceiver: false,
+    withSrcAmount: true
+  };
+
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly quoteAdapter = new PrivacycashQuoteAdapter(
     this.privacycashSwapService,

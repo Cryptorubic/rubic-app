@@ -314,7 +314,7 @@ export class TokensBalanceService {
     return tokensWithBalances.flat().sort(sorterByTokenRank);
   }
 
-  private async fetchListBalances(
+  public async fetchListBalances(
     address: string,
     chainType: ChainType,
     chains: BlockchainName[]

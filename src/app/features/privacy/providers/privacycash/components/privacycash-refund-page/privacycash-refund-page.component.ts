@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PrivacycashRefundService } from '../../services/privacy-cash-revert.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { firstValueFrom } from 'rxjs';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -9,6 +9,7 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { EphemeralWalletTokensFacadeService } from '../../services/common/token-facades/ephemeral-wallet-tokens-facade.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-privacycash-refund-page',
@@ -21,6 +22,12 @@ import { EphemeralWalletTokensFacadeService } from '../../services/common/token-
   ]
 })
 export class PrivacycashRefundPageComponent {
+  private readonly privacycashRefundService = inject(PrivacycashRefundService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
+  public readonly receiverCtrl = new FormControl<string>('');
+
   public readonly refundFormCreationConfig: PrivateTransferFormConfig = {
     withActionButton: true,
     withReceiver: false,
@@ -28,16 +35,10 @@ export class PrivacycashRefundPageComponent {
     buttonText: 'Refund Tokens'
   };
 
-  private readonly privacycashRefundService = inject(PrivacycashRefundService);
-
-  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
-
   public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const receiverAddr = this.targetNetworkAddressService.address
-        ? this.targetNetworkAddressService.address
+      const receiverAddr = this.receiverCtrl.value
+        ? this.receiverCtrl.value
         : this.walletConnectorService.address;
       const preview$ = openPreview({
         steps: [

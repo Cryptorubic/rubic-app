@@ -152,6 +152,9 @@ export class RubicApiService {
         )
       );
     } catch (err: RubicAny) {
+      if ('error' in err.error) {
+        throw this.getApiError({ error: err.error.error, id: '' });
+      }
       if ('errors' in err.error) {
         throw this.getApiError({ error: err.error.errors[0], id: '' });
       }

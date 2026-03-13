@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.service';
@@ -6,7 +7,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facade.service';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -20,10 +21,9 @@ import { firstValueFrom } from 'rxjs';
   ]
 })
 export class ZamaRevealTokensPageComponent {
-  constructor(
-    private readonly zamaFacadeService: ZamaFacadeService,
-    private readonly targetAddressService: TargetNetworkAddressService
-  ) {}
+  public readonly receiverCtrl = new FormControl<string>('');
+
+  constructor(private readonly zamaFacadeService: ZamaFacadeService) {}
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
@@ -34,7 +34,7 @@ export class ZamaRevealTokensPageComponent {
             action: () =>
               this.zamaFacadeService.unwrap(
                 token as TokenAmount<EvmBlockchainName>,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]

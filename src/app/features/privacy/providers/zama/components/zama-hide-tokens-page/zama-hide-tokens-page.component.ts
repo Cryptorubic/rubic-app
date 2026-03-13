@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.service';
@@ -9,7 +10,6 @@ import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-
 import { firstValueFrom, map } from 'rxjs';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-zama-hide-tokens-page',
@@ -28,6 +28,8 @@ import { TargetNetworkAddressService } from '@app/features/trade/services/target
   ]
 })
 export class ZamaHideTokensPageComponent {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   public readonly shieldedTokens$ = this.zamaRevealFacade
     .getTokensList('allChains', '', 'from', this.formService.inputValue)
     .pipe(map(tokens => tokens.filter(token => token.amount.gt(0))));
@@ -35,8 +37,7 @@ export class ZamaHideTokensPageComponent {
   constructor(
     private readonly zamaRevealFacade: ZamaRevealFacadeService,
     private readonly formService: SwapsFormService,
-    private readonly zamaFacadeService: ZamaFacadeService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly zamaFacadeService: ZamaFacadeService
   ) {}
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
@@ -48,7 +49,7 @@ export class ZamaHideTokensPageComponent {
             action: () =>
               this.zamaFacadeService.wrap(
                 token as TokenAmount<EvmBlockchainName>,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]

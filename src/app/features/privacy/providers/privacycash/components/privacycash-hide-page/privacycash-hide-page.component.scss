@@ -1,6 +1,14 @@
 @use 'src/scss/core' as *;
 
-/* :host {
+:host {
   .hide-page-wrapper {
+    @include flex(column, start, start);
+    gap: 12px;
+    width: 100%;
+
+    app-hide-tokens-window,
+    app-shielded-tokens-list {
+      width: 100%;
+    }
   }
-} */
+}

@@ -23,13 +23,13 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
               this.walletConnector.networkChange$,
               this.privateTransferWindowService.transferAsset$,
               this.privateTransferWindowService.transferAmount$,
-              this.targetNetworkAddressService.address$,
+              this._receiverAddress$,
               this.clearswapErrorService.tradeError$
             ]).pipe(switchMap(params => this.getTransferState(...params)))
           : combineLatest([
               this.walletConnector.networkChange$,
               this.privateSwapWindowService.swapInfo$,
-              this.targetNetworkAddressService.address$,
+              this._receiverAddress$,
               this.clearswapErrorService.tradeError$
             ]).pipe(switchMap(params => this.getSwapState(...params)))
       )
@@ -96,7 +96,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
     ) {
       return {
         type: 'error',
-        text: 'Calculating'
+        text: 'Review Order'
       };
     }
 
