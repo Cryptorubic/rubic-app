@@ -18,7 +18,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
         combineLatest([
           this.walletConnector.networkChange$,
           this.privateSwapWindowService.swapInfo$,
-          this.targetNetworkAddressService.address$,
+          this._receiverAddress$,
           this.houdiniErrorService.tradeError$
         ]).pipe(switchMap(params => this.getSwapState(...params)))
       )
