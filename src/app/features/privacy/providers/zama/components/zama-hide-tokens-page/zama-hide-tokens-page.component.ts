@@ -44,7 +44,7 @@ export class ZamaHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield Tokens',
+            label: 'Shield',
             action: () =>
               this.zamaFacadeService.wrap(
                 token as TokenAmount<EvmBlockchainName>,

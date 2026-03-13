@@ -113,13 +113,18 @@ export class HinkalWorkerLogic {
       merkleTreeAccessToken: {
         tree: jsonMerkleTreeAccessToken.tree,
         index: jsonMerkleTreeAccessToken.index,
-        count: jsonMerkleTreeAccessToken.count
+        count: jsonMerkleTreeAccessToken.count,
+        ...(jsonMerkleTreeAccessToken.reverseTree && {
+          reverseTree: jsonMerkleTreeAccessToken.reverseTree
+        })
       },
       merkleTree: {
         tree: jsonMerkleTree.tree,
         index: jsonMerkleTree.index,
-        count: jsonMerkleTree.count
-      }
+        count: jsonMerkleTree.count,
+        ...(jsonMerkleTree.reverseTree && { reverseTree: jsonMerkleTree.reverseTree })
+      },
+      encryptedOutputs: this.hinkal.encryptedOutputs
     };
 
     hinkalSnapshot[chainId] = JSON.stringify(snapshot, (_, value) =>

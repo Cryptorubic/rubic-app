@@ -78,7 +78,12 @@ export class HideTokensWindowComponent {
         fromToken: hideAsset,
         toToken: hideAsset,
         fromAmount,
-        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
+        toAmount: options.dstTokenAmount
+          ? {
+              actualValue: new BigNumber(options.dstTokenAmount),
+              visibleValue: options.dstTokenAmount
+            }
+          : fromAmount,
         swapType: 'shield',
         swapOptions: options
       });

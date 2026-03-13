@@ -3,7 +3,7 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 export const ZAMA_PAGES: PageType[] = [
   {
     type: 'hide',
-    label: 'Shield Tokens'
+    label: 'Shield'
   },
   {
     type: 'transfer',
@@ -11,6 +11,6 @@ export const ZAMA_PAGES: PageType[] = [
   },
   {
     type: 'reveal',
-    label: 'Unshield Tokens'
+    label: 'Unshield'
   }
 ];
