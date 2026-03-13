@@ -4,7 +4,6 @@ import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface } from '@cryptorubic/core';
-import { Web3Pure } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
@@ -25,13 +24,13 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
               this.walletConnector.networkChange$,
               this.privateTransferWindowService.transferAsset$,
               this.privateTransferWindowService.transferAmount$,
-              this.targetNetworkAddressService.address$,
+              this._receiverAddress$.asObservable(),
               this.errorService.tradeError$
             ]).pipe(switchMap(params => this.getTransferState(...params)))
           : combineLatest([
               this.walletConnector.networkChange$,
               this.privateSwapWindowService.swapInfo$,
-              this.targetNetworkAddressService.address$,
+              this._receiverAddress$.asObservable(),
               this.errorService.tradeError$
             ]).pipe(switchMap(params => this.getSwapState(...params)))
       )
@@ -143,13 +142,13 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Enter receiver address'
       };
     }
-    const isAddressCorrect = await Web3Pure.getInstance(network).isAddressCorrect(receiver);
-    if (!isAddressCorrect) {
-      return {
-        type: 'error',
-        text: 'Incorrect receiver address'
-      };
-    }
+    // const isAddressCorrect = await Web3Pure.getInstance(network).isAddressCorrect(receiver);
+    // if (!isAddressCorrect) {
+    //   return {
+    //     type: 'error',
+    //     text: 'Incorrect receiver address'
+    //   };
+    // }
     if (tradeError) {
       return {
         type: 'error',
