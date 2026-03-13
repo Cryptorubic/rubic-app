@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
@@ -25,12 +26,14 @@ import { firstValueFrom } from 'rxjs';
 export class ClearswapSwapPageComponent {
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
-    this.targetAddressService
+    this.targetAddressService,
+    this.clearswapErrorService
   );
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly clearswapErrorService: ClearswapErrorService
   ) {}
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
