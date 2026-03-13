@@ -1,1 +1,3 @@
-<app-transfer-tokens-window (handleTransfer)="transfer($event)"></app-transfer-tokens-window>
+<app-transfer-tokens-window
+  (handleTransfer)="nextTransfer$.next($event)"
+></app-transfer-tokens-window>

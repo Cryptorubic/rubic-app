@@ -19,7 +19,6 @@ import {
   finalize,
   from,
   Observable,
-  startWith,
   switchMap,
   takeUntil,
   tap
@@ -149,7 +148,7 @@ export class SwapWindowComponent implements OnInit {
           return inputNotChanged;
         })
       ),
-      this.targetAddressService.address$.pipe(startWith(''))
+      this.targetAddressService.address$
     ])
       .pipe(
         debounceTime(500),

@@ -6,11 +6,13 @@ import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/
 import { TokenAmount } from '@cryptorubic/core';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { defer, map, Observable, retry, throwError, timer } from 'rxjs';
+import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 
 export class ClearswapQuoteAdapter implements PrivateQuoteAdapter {
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly clearswapErrorService: ClearswapErrorService
   ) {}
 
   public quoteCallback(
@@ -35,6 +37,7 @@ export class ClearswapQuoteAdapter implements PrivateQuoteAdapter {
       )
     ).pipe(
       retry({
+        count: 5,
         delay: (error, retryCount) => {
           console.error('quote error:', error, 'retry #', retryCount);
           if (error?.message?.includes('Cannot retrieve information about')) {
@@ -43,10 +46,17 @@ export class ClearswapQuoteAdapter implements PrivateQuoteAdapter {
           return throwError(() => error);
         }
       }),
-      map(quoteResponse => ({
-        toAmountWei: quoteResponse.tokenAmountWei,
-        tradeId: quoteResponse.tradeId
-      }))
+      map(quoteResponse => {
+        if ('tradeId' in quoteResponse) {
+          return {
+            toAmountWei: quoteResponse.tokenAmountWei,
+            tradeId: quoteResponse.tradeId
+          };
+        }
+
+        this.clearswapErrorService.setTradeError(quoteResponse.tradeError);
+        throw new Error(quoteResponse.tradeError.reason);
+      })
     );
   }
 
