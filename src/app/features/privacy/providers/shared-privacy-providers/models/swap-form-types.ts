@@ -14,3 +14,5 @@ export type PrivateTransferFormConfig = Omit<
   PrivateSwapFormConfig,
   'withDstAmount' | 'withDstSelector'
 >;
+
+export type PrivateShieldFormConfig = PrivateTransferFormConfig;

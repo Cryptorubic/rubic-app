@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalQuoteService } from '../../services/hinkal-quote.service';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
@@ -23,6 +24,8 @@ import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
   ]
 })
 export class HinkalSwapTokensPageComponent {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   constructor(
     private readonly hinkalQuoteService: HinkalQuoteService,
     private readonly hinkalFacadeService: HinkalFacadeService,

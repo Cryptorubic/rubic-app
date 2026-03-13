@@ -4,7 +4,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 import { Token } from '@app/shared/models/tokens/token';
-import { BLOCKCHAIN_NAME, BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
 import { TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { lastValueFrom, timer, switchMap, takeWhile } from 'rxjs';
@@ -25,11 +25,14 @@ export class ClearswapSwapService {
     fromToken: TokenAmount<BlockchainName>,
     toToken: Token,
     receiver: string
-  ): Promise<{
-    tradeId: string;
-    tokenAmount: string;
-    tokenAmountWei: BigNumber;
-  }> {
+  ): Promise<
+    | {
+        tradeId: string;
+        tokenAmount: string;
+        tokenAmountWei: BigNumber;
+      }
+    | { tradeError: ErrorInterface }
+  > {
     const quoteResponse = await this.rubicApiService.quoteAllRoutes({
       srcTokenBlockchain: fromToken.blockchain,
       srcTokenAddress: fromToken.address,
@@ -38,13 +41,21 @@ export class ClearswapSwapService {
       dstTokenAddress: toToken.address,
       preferredProvider: 'CLEARSWAP',
       receiver,
-      showDangerousRoutes: true
+      showDangerousRoutes: true,
+      showFailedRoutes: true
     });
     const route = quoteResponse.routes[0];
+    if (route) {
+      return {
+        tradeId: route.id,
+        tokenAmount: route.estimate.destinationTokenAmount,
+        tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
+      };
+    }
+
+    const failed = quoteResponse.failed[0];
     return {
-      tradeId: route.id,
-      tokenAmount: route.estimate.destinationTokenAmount,
-      tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
+      tradeError: failed.data
     };
   }
 

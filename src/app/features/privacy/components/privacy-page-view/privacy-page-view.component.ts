@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { PrivateAction } from '../../constants/private-mode-tx-types';
 import { BehaviorSubject, map } from 'rxjs';
@@ -59,6 +60,8 @@ export class PrivacyPageViewComponent {
   };
 
   public readonly quoteAdapter = new EmptyQuoteAdapter();
+
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly privateProviders$ = this.privacyMainPageService.privateProviders$;
 

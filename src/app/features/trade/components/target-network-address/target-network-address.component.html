@@ -1,11 +1,11 @@
 <div class="network-container">
   <tui-input
-    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
+    [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
     tuiTextfieldSize="l"
-    [formControl]="address"
-    [pseudoFocus]="address.invalid"
-    [pseudoInvalid]="address.invalid"
-    [tuiTextfieldCleaner]="!!address.value"
+    [formControl]="addressCtrl"
+    [pseudoFocus]="addressCtrl.invalid"
+    [pseudoInvalid]="addressCtrl.invalid"
+    [tuiTextfieldCleaner]="!!addressCtrl.value"
     [tuiTextfieldLabelOutside]="false"
     (focusedChange)="onFocusChange($event)"
   >

@@ -1,15 +1,19 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap/utils/clearswap-quote-adapter';
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
+import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -17,21 +21,41 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./clearswap-swap-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: FromAssetsService, useClass: ClearswapPrivateAssetsService },
     { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService }
   ]
 })
-export class ClearswapSwapPageComponent {
+export class ClearswapSwapPageComponent implements OnInit {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
-    this.targetAddressService
+    this.receiverCtrl,
+    this.clearswapErrorService,
+    this.notificationsService
   );
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly clearswapErrorService: ClearswapErrorService,
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly notificationsService: NotificationsService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
+
+  ngOnInit(): void {
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.privateActionButtonService.setReceiverAddress(address);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
@@ -49,7 +73,7 @@ export class ClearswapSwapPageComponent {
                 swapInfo.tradeId,
                 fromToken as TokenAmount<BlockchainName>,
                 swapInfo.toAsset,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]

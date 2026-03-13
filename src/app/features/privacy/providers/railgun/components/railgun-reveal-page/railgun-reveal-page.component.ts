@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-reveal-facade.service';
@@ -29,6 +30,8 @@ export class RailgunRevealPageComponent {
         blockchain: BlockchainName;
       }[]
     | null;
+
+  public readonly receiverCtrl = new FormControl<string>('');
 
   private readonly revealService = inject(RevealService);
 

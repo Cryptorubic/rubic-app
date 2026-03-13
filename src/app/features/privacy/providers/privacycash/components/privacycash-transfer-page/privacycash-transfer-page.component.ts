@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { firstValueFrom } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -21,11 +22,11 @@ import { PrivacycashPrivateTokensFacadeService } from '../../services/common/tok
 export class PrivacycashTransferPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
-  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const receiverAddr = this.targetNetworkAddressService.address;
+      const receiverAddr = this.receiverCtrl.value;
       const preview$ = openPreview({
         steps: [
           {

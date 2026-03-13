@@ -25,8 +25,14 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
       {} as Record<string, MinimalToken>
     );
 
-    return this.tokensBuilderService
-      .getTokensList(type, _query, direction, inputValue)
-      .pipe(map(tokens => tokens.filter(token => !!addrToTokenMap[getKey(token)])));
+    return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
+      map(tokens => {
+        console.log(
+          'SOLANA_TOKENS ==>',
+          tokens.filter(t => t.blockchain === 'SOLANA')
+        );
+        return tokens.filter(token => !!addrToTokenMap[getKey(token)]);
+      })
+    );
   }
 }

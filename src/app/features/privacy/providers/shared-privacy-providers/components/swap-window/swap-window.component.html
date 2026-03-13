@@ -54,6 +54,7 @@
 
   <app-target-network-address
     *ngIf="creationConfig.withReceiver && state.displayReceiver"
+    [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
 

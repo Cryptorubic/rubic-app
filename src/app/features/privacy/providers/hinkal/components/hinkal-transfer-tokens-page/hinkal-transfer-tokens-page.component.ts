@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -21,10 +22,9 @@ import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
   ]
 })
 export class HinkalTransferTokensPageComponent {
-  constructor(
-    private readonly hinkalFacadeService: HinkalFacadeService,
-    private readonly targetAddressService: TargetNetworkAddressService
-  ) {}
+  public readonly receiverCtrl = new FormControl<string>('');
+
+  constructor(private readonly hinkalFacadeService: HinkalFacadeService) {}
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
@@ -35,7 +35,7 @@ export class HinkalTransferTokensPageComponent {
             action: () =>
               this.hinkalFacadeService.transfer(
                 token as TokenAmount<EvmBlockchainName>,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ],

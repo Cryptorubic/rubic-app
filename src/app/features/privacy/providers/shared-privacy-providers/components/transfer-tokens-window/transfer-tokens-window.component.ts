@@ -21,6 +21,7 @@ import { PrivateTransferInfo } from '../../models/transfer-info';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapAmount } from '../../models/swap-info';
 import { PrivateTransferFormConfig } from '../../models/swap-form-types';
+import { FormControl } from '@angular/forms';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 
 @Component({
@@ -31,6 +32,8 @@ import { PrivateTransferWindowService } from '@app/features/privacy/providers/sh
   providers: [TuiDestroyService]
 })
 export class TransferTokensWindowComponent implements OnInit {
+  @Input() receiverCtrl: FormControl<string>;
+
   @Input() creationConfig: PrivateTransferFormConfig = {
     withActionButton: true,
     withReceiver: true,

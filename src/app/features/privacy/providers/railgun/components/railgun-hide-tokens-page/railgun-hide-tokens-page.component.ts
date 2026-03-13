@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
 import { BlockchainName } from '@cryptorubic/core';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
@@ -24,6 +25,8 @@ export class RailgunHideTokensPageComponent {
         blockchain: BlockchainName;
       }[]
     | null;
+
+  public readonly receiverCtrl = new FormControl<string>('');
 
   private readonly hideService = inject(HideService);
 
