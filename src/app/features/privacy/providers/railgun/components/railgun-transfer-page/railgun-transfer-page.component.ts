@@ -14,6 +14,7 @@ import { PrivateEvent } from '@features/privacy/providers/shared-privacy-provide
 import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
 
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -38,13 +39,15 @@ export class RailgunTransferPageComponent {
 
   @Input({ required: true }) public readonly railgunId: string;
 
-  @Input({ required: true }) balances:
+  @Input({ required: true }) balances: Record<
+    RailgunSupportedChain,
     | {
         address: string;
         amount: string;
         blockchain: BlockchainName;
       }[]
-    | null;
+    | null
+  >;
 
   private readonly _transferAsset$ = new BehaviorSubject<BalanceToken | null>(null);
 

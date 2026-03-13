@@ -14,6 +14,7 @@ import { FromAssetsService } from '@features/trade/components/assets-selector/se
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RailgunTokensFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-swap-tokens-facade.service';
+import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
   selector: 'app-railgun-swap-page',
@@ -29,13 +30,15 @@ import { RailgunTokensFacadeService } from '@features/privacy/providers/railgun/
 export class RailgunSwapPageComponent {
   @Input({ required: true }) public readonly railgunWalletInfo: RailgunWalletInfo;
 
-  @Input({ required: true }) public readonly balances:
+  @Input({ required: true }) public readonly balances: Record<
+    RailgunSupportedChain,
     | {
         address: string;
         amount: string;
         blockchain: BlockchainName;
       }[]
-    | null;
+    | null
+  >;
 
   @Output() public readonly handleSwap = new EventEmitter<{
     from: TokenAmount;

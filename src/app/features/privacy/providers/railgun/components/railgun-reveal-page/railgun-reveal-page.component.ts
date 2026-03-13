@@ -9,6 +9,7 @@ import { RevealService } from '@features/privacy/providers/railgun/services/reve
 import { firstValueFrom } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -23,13 +24,15 @@ import { NotificationsService } from '@core/services/notifications/notifications
 export class RailgunRevealPageComponent {
   @Input({ required: true }) public readonly railgunId: string;
 
-  @Input({ required: true }) balances:
+  @Input({ required: true }) balances: Record<
+    RailgunSupportedChain,
     | {
         address: string;
         amount: string;
         blockchain: BlockchainName;
       }[]
-    | null;
+    | null
+  >;
 
   public readonly receiverCtrl = new FormControl<string>('');
 
