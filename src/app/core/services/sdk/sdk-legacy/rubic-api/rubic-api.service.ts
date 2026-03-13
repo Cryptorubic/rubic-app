@@ -145,24 +145,17 @@ export class RubicApiService {
 
   public async quoteAllRoutes(body: QuoteRequestInterface): Promise<QuoteAllInterface> {
     try {
-      const result = await firstValueFrom(
-        this.sdkLegacyService.httpClient.post<QuoteAllInterface | SwapErrorResponseInterface>(
+      return await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteAllInterface>(
           `${this.apiUrl}/api/routes/quoteAll`,
           body
         )
       );
-      if ('error' in result) {
-        throw this.getApiError(result);
-      }
-      return result;
     } catch (err: RubicAny) {
-      if (err instanceof RubicSdkError) {
-        throw err;
+      if ('errors' in err.error) {
+        throw this.getApiError({ error: err.error.errors[0], id: '' });
       }
-      if ('error' in err) {
-        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
-      }
-      throw this.getApiError(err);
+      throw err;
     }
   }
 
