@@ -6,7 +6,10 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, startWith } from 'rxjs';
+import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
+import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
+import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -20,6 +23,21 @@ import { firstValueFrom } from 'rxjs';
 })
 export class PrivacycashHidePageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
+
+  private readonly privateTokensFacade = inject(PrivacycashPrivateTokensFacadeService);
+
+  public readonly hideFormCreationConfig: PrivateShieldFormConfig = {
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true
+  };
+
+  public readonly shieldedTokens$ = this.privateTokensFacade
+    .getTokensList('allChains', '', 'from', {} as SwapFormInput)
+    .pipe(
+      map(tokens => tokens.filter(t => t.amount.gt(0))),
+      startWith([])
+    );
 
   public readonly receiverCtrl = new FormControl<string>('');
 

@@ -1,16 +1,22 @@
 <div
   *ngLet="{
-    step: currentStep$ | async
+    step: currentStep$ | async,
+    disabledPages: disabledPages$ | async
   } as data"
   class="container"
 >
   <app-page-navigation
     [pages]="steps"
     [activePage]="data.step"
+    [disabledPages]="data.disabledPages"
     (onSelect)="onStepChange($event)"
   ></app-page-navigation>
 
   <div class="main">
+    <app-privacycash-signature-window
+      *ngIf="data.step.type === 'login'"
+    ></app-privacycash-signature-window>
+
     <app-privacycash-hide-page *ngIf="data.step.type === 'hide'"></app-privacycash-hide-page>
 
     <app-privacycash-swap-page *ngIf="data.step.type === 'swap'"></app-privacycash-swap-page>

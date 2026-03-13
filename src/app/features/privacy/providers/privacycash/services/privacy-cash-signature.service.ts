@@ -9,7 +9,7 @@ import { EncryptionService } from 'privacycash/utils';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PrivacycashSignatureService {
   private readonly _encryptionService: EncryptionService;
 
@@ -21,6 +21,10 @@ export class PrivacycashSignatureService {
 
   public get signature(): Uint8Array | null {
     return this._signature$.value;
+  }
+
+  public removeSignature(): void {
+    this._signature$.next(null);
   }
 
   private setSignature(signature: Uint8Array): void {

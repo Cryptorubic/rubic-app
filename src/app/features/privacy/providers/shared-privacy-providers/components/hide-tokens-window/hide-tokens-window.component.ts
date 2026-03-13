@@ -18,6 +18,7 @@ import { receiverAnimation } from '../../animations/receiver-animation';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { SwapAmount } from '../../models/swap-info';
+import { PrivateShieldFormConfig } from '../../models/swap-form-types';
 
 @Component({
   selector: 'app-hide-tokens-window',
@@ -27,6 +28,12 @@ import { SwapAmount } from '../../models/swap-info';
   animations: [receiverAnimation()]
 })
 export class HideTokensWindowComponent {
+  @Input() creationConfig: PrivateShieldFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true
+  };
+
   @Input() receiverCtrl: FormControl<string>;
 
   @Output() public handleHide = new EventEmitter<PrivateEvent>();

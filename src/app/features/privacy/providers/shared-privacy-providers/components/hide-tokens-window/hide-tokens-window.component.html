@@ -6,7 +6,10 @@
     displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <app-input-output-container [round]="'all'" [marginTop]="false">
+  <app-input-output-container
+    [round]="creationConfig.withReceiver ? 'top' : 'all'"
+    [marginTop]="false"
+  >
     <app-asset-selector
       left
       selectorType="from"
@@ -27,15 +30,21 @@
       ></app-user-balance-container>
     </div>
   </app-input-output-container>
+
   <ng-content></ng-content>
+
   <app-target-network-address
-    *ngIf="state.displayReceiver"
+    *ngIf="state.displayReceiver && creationConfig.withReceiver"
     [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
 
-  <div class="buttons-container">
+  <div
+    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    class="buttons-container"
+  >
     <button
+      *ngIf="creationConfig.withActionButton"
       [showLoader]="state.loading"
       tuiButton
       appearance="primary"
@@ -43,8 +52,11 @@
       size="m"
       (click)="hide()"
     >
-      Hide tokens
+      {{ creationConfig.buttonText ? creationConfig.buttonText : 'Hide tokens' }}
     </button>
-    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+    <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
   </div>
 </app-window-container>
