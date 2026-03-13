@@ -62,18 +62,11 @@
     *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
     class="buttons-container"
   >
-    <button
+    <app-private-action-button
       *ngIf="creationConfig.withActionButton"
-      tuiButton
       [showLoader]="state.loading"
-      [disabled]="state.loading || swapInfoNotFilled || notEnoughBalance"
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="swap()"
-    >
-      {{ creationConfig.buttonText ? creationConfig.buttonText : 'Review Order' }}
-    </button>
+      (onClick)="swap()"
+    ></app-private-action-button>
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"
       (handleClick)="toggleReceiver()"

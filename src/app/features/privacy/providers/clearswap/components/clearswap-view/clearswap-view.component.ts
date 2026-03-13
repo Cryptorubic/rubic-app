@@ -1,22 +1,29 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CLEARSWAP_PAGES } from '@app/features/privacy/providers/clearswap/constants/clearswap-pages';
+import { ClearswapPrivateActionButtonService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-action-button.service';
 import { PageType } from '@app/features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type';
-import { BehaviorSubject } from 'rxjs';
+import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Component({
   selector: 'app-clearswap-view',
   templateUrl: './clearswap-view.component.html',
   styleUrls: ['./clearswap-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: PrivateActionButtonService, useClass: ClearswapPrivateActionButtonService }
+  ]
 })
 export class ClearswapViewComponent {
-  private readonly _activePage$ = new BehaviorSubject<PageType>(CLEARSWAP_PAGES[0]);
-
-  public readonly activePage$ = this._activePage$.asObservable();
+  public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = CLEARSWAP_PAGES;
 
+  constructor(private readonly privatePageTypeService: PrivatePageTypeService) {
+    this.privatePageTypeService.activePage = this.pages[0];
+  }
+
   public onPageSelect(page: PageType): void {
-    this._activePage$.next(page);
+    this.privatePageTypeService.activePage = page;
   }
 }

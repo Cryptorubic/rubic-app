@@ -11,6 +11,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
+import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -62,7 +63,8 @@ export class HinkalSwapTokensPageComponent {
                 toToken as TokenAmount<EvmBlockchainName>
               )
           }
-        ]
+        ],
+        warnings: HINKAL_WARNINGS
       });
 
       await firstValueFrom(preview$);

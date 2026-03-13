@@ -26,6 +26,7 @@ import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains
 import { SignMessageModalComponent } from '../../../shared-privacy-providers/components/sign-message-modal/sign-message-modal.component';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HinkalWorkerService } from './hinkal-worker.service';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -45,7 +46,8 @@ export class HinkalFacadeService {
     private readonly hinkalSwapService: HinkalSwapService,
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly modalService: ModalService,
-    private readonly hinkalWorkerService: HinkalWorkerService
+    private readonly hinkalWorkerService: HinkalWorkerService,
+    private readonly notificationService: NotificationsService
   ) {
     this.initSubs();
   }
@@ -59,8 +61,18 @@ export class HinkalFacadeService {
   }
 
   private async refreshBalancesAfterAction(chain: EvmBlockchainName): Promise<void> {
-    await waitFor(2000);
+    await waitFor(3000);
     this.hinkalBalanceService.refreshBalances([chain]);
+  }
+
+  private showSuccessNotification(message: string): void {
+    this.notificationService.show(message, {
+      status: 'info',
+      autoClose: 15_000,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
   }
 
   public async deposit(
@@ -71,9 +83,13 @@ export class HinkalFacadeService {
       await this.walletConnectorService.switchChain(tokenAmount.blockchain);
     }
 
-    return this.hinkalSwapService
-      .deposit(tokenAmount, receiverPrivateShieldedKey)
-      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(tokenAmount.blockchain));
+    const isSuccess = await this.hinkalSwapService.deposit(tokenAmount, receiverPrivateShieldedKey);
+
+    if (isSuccess) {
+      await this.refreshBalancesAfterAction(tokenAmount.blockchain);
+
+      this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+    }
   }
 
   public async withdraw(token: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
@@ -81,9 +97,14 @@ export class HinkalFacadeService {
       await this.walletConnectorService.switchChain(token.blockchain);
     }
 
-    return this.hinkalSwapService
-      .withdraw(token, receiver)
-      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(token.blockchain));
+    const isSuccess = await this.hinkalSwapService.withdraw(token, receiver);
+
+    if (isSuccess) {
+      await this.refreshBalancesAfterAction(token.blockchain);
+      this.showSuccessNotification(
+        'Transaction sent. This may take a moment. Please keep Rubic App open'
+      );
+    }
   }
 
   public async transfer(
@@ -94,9 +115,17 @@ export class HinkalFacadeService {
       await this.walletConnectorService.switchChain(token.blockchain);
     }
 
-    return this.hinkalSwapService
-      .privateTransfer(token, receiverPrivateShieldedKey)
-      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(token.blockchain));
+    const isSuccess = await this.hinkalSwapService.privateTransfer(
+      token,
+      receiverPrivateShieldedKey
+    );
+
+    if (isSuccess) {
+      await this.refreshBalancesAfterAction(token.blockchain);
+      this.showSuccessNotification(
+        'Transaction sent. This may take a moment. Please keep Rubic App open'
+      );
+    }
   }
 
   public async swap(
@@ -107,9 +136,14 @@ export class HinkalFacadeService {
       await this.walletConnectorService.switchChain(fromToken.blockchain);
     }
 
-    return this.hinkalSwapService
-      .privateSwap(fromToken, toToken)
-      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(fromToken.blockchain));
+    const isSuccess = await this.hinkalSwapService.privateSwap(fromToken, toToken);
+
+    if (isSuccess) {
+      this.refreshBalancesAfterAction(fromToken.blockchain);
+      this.showSuccessNotification(
+        'Transaction sent. This may take a moment. Please keep Rubic App open'
+      );
+    }
   }
 
   private async updateInstance(

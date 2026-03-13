@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatestWith, filter, map, takeUntil } from 'rxjs';
-import { PRIVACYCASH_STEPS } from '../../constants/privacycash-steps';
-import { Step, StepType } from '../../models/step';
+import { Observable, combineLatestWith, filter, map, takeUntil } from 'rxjs';
+import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -9,6 +8,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EphemeralWalletTokensService } from '../../services/common/token-facades/ephemeral-wallet-tokens.service';
 import { PrivacycashSignatureService } from '../../services/privacy-cash-signature.service';
 import { isNil } from '@app/shared/utils/utils';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -26,23 +27,26 @@ export class PrivacycashMainPageComponent implements OnInit {
 
   private readonly privacycashSignatureService = inject(PrivacycashSignatureService);
 
-  public readonly steps = PRIVACYCASH_STEPS;
+  public readonly activePage$ = this.privatePageTypeService.activePage$;
 
-  private readonly _currentStep$ = new BehaviorSubject<Step>(
-    this.steps.find(step => step.type === 'login')
-  );
-
-  public readonly currentStep$ = this._currentStep$.asObservable();
+  public readonly pages = PRIVACYCASH_PAGES;
 
   public readonly disabledPages$: Observable<PageType[]> =
     this.privacycashSignatureService.signature$.pipe(
       map(signature => {
         if (!isNil(signature) && signature.length) return [];
-        return this.steps.filter(step => step.type !== 'login');
+        return this.pages.filter(page => page.type !== 'login');
       })
     );
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privatePageTypeService: PrivatePageTypeService,
+    private readonly tokensFacade: TokensFacadeService
+  ) {
+    this.privatePageTypeService.activePage =
+      this.pages.find(page => page.type === 'login') || this.pages[0];
+  }
 
   ngOnInit(): void {
     this.walletConnectorService.addressChange$
@@ -52,7 +56,8 @@ export class PrivacycashMainPageComponent implements OnInit {
           this.privacycashTokensService.updatePrivateBalances();
         } else {
           this.privacycashSignatureService.removeSignature();
-          this._currentStep$.next(this.steps.find(step => step.type === 'login'));
+          this.privatePageTypeService.activePage =
+            this.pages.find(page => page.type === 'login') || this.pages[0];
         }
       });
     this.privacycashTokensService.updateBalances$
@@ -75,9 +80,7 @@ export class PrivacycashMainPageComponent implements OnInit {
       });
   }
 
-  public onStepChange(value: PageType): void {
-    const stepType = value.type as StepType;
-    const currentStep = this.steps.find(s => s.type === stepType) || this.steps[0];
-    this._currentStep$.next(currentStep);
+  public onPageSelect(page: PageType): void {
+    this.privatePageTypeService.activePage = page;
   }
 }

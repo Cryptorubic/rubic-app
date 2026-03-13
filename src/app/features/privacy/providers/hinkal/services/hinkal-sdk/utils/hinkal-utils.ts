@@ -24,10 +24,16 @@ export class HinkalUtils {
 
       const treeMap = this.restoreMerkle(parsedMerkle.merkleTree.tree);
       const treeMapAccessToken = this.restoreMerkle(parsedMerkle.merkleTreeAccessToken.tree);
+      const reverseTreeMap = parsedMerkle.merkleTree.reverseTree
+        ? this.restoreMerkle(parsedMerkle.merkleTree.reverseTree)
+        : undefined;
+      const reverseTreeMapAccessToken = parsedMerkle.merkleTreeAccessToken.reverseTree
+        ? this.restoreMerkle(parsedMerkle.merkleTreeAccessToken.reverseTree)
+        : undefined;
 
       hinkal.merkleTreeHinkal = MerkleTree.createWithData(
         treeMap,
-        undefined,
+        reverseTreeMap,
         BigInt(parsedMerkle.merkleTree.index),
         BigInt(parsedMerkle.merkleTree.count),
         poseidonFunction,
@@ -37,7 +43,7 @@ export class HinkalUtils {
 
       hinkal.merkleTreeAccessToken = MerkleTree.createWithData(
         treeMapAccessToken,
-        undefined,
+        reverseTreeMapAccessToken,
         BigInt(parsedMerkle.merkleTreeAccessToken.index),
         BigInt(parsedMerkle.merkleTreeAccessToken.count),
         poseidonFunction,
@@ -47,6 +53,7 @@ export class HinkalUtils {
 
       hinkal.approvals = new Map(Object.entries(parsedMerkle.approvals));
       hinkal.nullifiers = new Set(parsedMerkle.nullifiers);
+      hinkal.encryptedOutputs = parsedMerkle.encryptedOutputs;
     }
 
     await hinkal.getEventsFromHinkal();

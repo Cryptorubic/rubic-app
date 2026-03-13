@@ -67,7 +67,7 @@ export class HinkalInstanceService {
       this._currSignature$.next(signature);
 
       await this.updateAdapter(wallet);
-      this.workerService.request({
+      await this.workerService.request({
         chainId: blockchainId[blockchain],
         address,
         signature,

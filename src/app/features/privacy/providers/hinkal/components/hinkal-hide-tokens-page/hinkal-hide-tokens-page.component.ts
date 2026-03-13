@@ -9,6 +9,7 @@ import { firstValueFrom, map, switchMap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 
 @Component({
   selector: 'app-hinkal-hide-tokens-page',
@@ -44,14 +45,15 @@ export class HinkalHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield Tokens',
+            label: 'Shield',
             action: () =>
               this.hinkalFacadeService.deposit(
                 token as TokenAmount<EvmBlockchainName>,
                 this.receiverCtrl.value
               )
           }
-        ]
+        ],
+        warnings: HINKAL_WARNINGS
       });
       await firstValueFrom(preview$);
     } finally {

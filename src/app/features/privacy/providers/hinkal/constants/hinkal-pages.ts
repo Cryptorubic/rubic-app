@@ -7,7 +7,7 @@ export const HINKAL_PAGES: PageType[] = [
   },
   {
     type: 'hide',
-    label: 'Shield Tokens'
+    label: 'Shield'
   },
   {
     type: 'transfer',
@@ -15,10 +15,10 @@ export const HINKAL_PAGES: PageType[] = [
   },
   {
     type: 'swap',
-    label: 'Private Swap'
+    label: 'Swap'
   },
   {
     type: 'reveal',
-    label: 'Unshield Tokens'
+    label: 'Unshield'
   }
 ];

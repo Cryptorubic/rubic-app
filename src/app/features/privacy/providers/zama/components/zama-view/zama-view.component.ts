@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
-import { BehaviorSubject } from 'rxjs';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Component({
   selector: 'app-zama-view',
@@ -11,11 +11,15 @@ import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZamaViewComponent {
-  private readonly _activePage$ = new BehaviorSubject<PageType>(ZAMA_PAGES[0]);
+  public readonly activePage$ = this.privatePageTypeService.activePage$;
 
-  public readonly activePage$ = this._activePage$.asObservable();
+  public readonly pages = ZAMA_PAGES;
 
-  constructor(private readonly zamaFacadeService: ZamaFacadeService) {
+  constructor(
+    private readonly zamaFacadeService: ZamaFacadeService,
+    private readonly privatePageTypeService: PrivatePageTypeService
+  ) {
+    this.privatePageTypeService.activePage = this.pages[0];
     this.initZama();
   }
 
@@ -23,10 +27,8 @@ export class ZamaViewComponent {
     await this.zamaFacadeService.initServices();
   }
 
-  public readonly pages = ZAMA_PAGES;
-
   public onPageSelect(page: PageType): void {
-    this._activePage$.next(page);
+    this.privatePageTypeService.activePage = page;
   }
 
   public ngOnDestroy() {

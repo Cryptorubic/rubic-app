@@ -36,15 +36,9 @@
     [addressCtrl]="receiverCtrl"
   ></app-target-network-address>
 
-  <button
+  <app-private-action-button
     *ngIf="creationConfig.withActionButton"
     [showLoader]="state.loading"
-    tuiButton
-    appearance="primary"
-    type="button"
-    size="m"
-    (click)="transfer()"
-  >
-    {{ creationConfig.buttonText ? creationConfig.buttonText : 'Transfer Tokens' }}
-  </button>
+    (onClick)="transfer()"
+  ></app-private-action-button>
 </app-window-container>

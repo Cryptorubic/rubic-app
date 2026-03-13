@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { HINKAL_PAGES } from '../../constants/hinkal-pages';
-import { BehaviorSubject } from 'rxjs';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { BlockchainName } from '@cryptorubic/core';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -13,9 +13,7 @@ import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HinkalViewComponent {
-  private readonly _activePage$ = new BehaviorSubject<PageType>(HINKAL_PAGES[0]);
-
-  public readonly activePage$ = this._activePage$.asObservable();
+  public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly activeChain$ = this.hinkalFacadeService.activeChain$;
 
@@ -23,10 +21,15 @@ export class HinkalViewComponent {
 
   public readonly pages = HINKAL_PAGES;
 
-  constructor(private readonly hinkalFacadeService: HinkalFacadeService) {}
+  constructor(
+    private readonly hinkalFacadeService: HinkalFacadeService,
+    private readonly privatePageTypeService: PrivatePageTypeService
+  ) {
+    this.privatePageTypeService.activePage = this.pages[0];
+  }
 
   public onPageSelect(page: PageType): void {
-    this._activePage$.next(page);
+    this.privatePageTypeService.activePage = page;
   }
 
   public onSwitchNetwork(chain: BlockchainName): void {

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -9,7 +8,6 @@ import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
-
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -29,14 +27,10 @@ export class ClearswapSwapPageComponent {
 
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
-    this.notificationsService,
     this.receiverCtrl
   );
 
-  constructor(
-    private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly notificationsService: NotificationsService
-  ) {}
+  constructor(private readonly clearswapSwapService: ClearswapSwapService) {}
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {

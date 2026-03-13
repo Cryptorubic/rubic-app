@@ -6,6 +6,7 @@ import { PublicTokensSelectorComponent } from '@features/privacy/providers/share
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
 import { PrivatePreviewSwapComponent } from '../../components/private-preview-swap/private-preview-swap.component';
 import { PreviewPrivateSwapOptions } from '../../components/private-preview-swap/models/preview-swap-options';
+import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,14 @@ export class PrivateModalsService {
     );
   }
 
-  public openPrivateTokensModal(injector: Injector): Observable<BalanceToken> {
+  public openPrivateTokensModal(
+    injector: Injector,
+    assetsSelectorConfig: AssetsSelectorConfig = {
+      withChainsFilter: true,
+      withTokensFilter: true,
+      withFavoriteTokens: true
+    }
+  ): Observable<BalanceToken> {
     return this.modalService.showDialog(
       PrivateTokensSelectorComponent,
       {
@@ -39,7 +47,8 @@ export class PrivateModalsService {
         size: 'l',
         showMobileMenu: true,
         data: {
-          formType: 'to'
+          formType: 'to',
+          assetsSelectorConfig
         },
         fitContent: true
       },
