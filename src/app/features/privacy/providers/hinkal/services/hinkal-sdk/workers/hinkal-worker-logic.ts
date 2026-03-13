@@ -1,8 +1,9 @@
-import { Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
+import { getInputUtxoAndBalance, Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
 import { set, get } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
 import { HinkalPrivateBalance } from '../../../models/hinkal-private-balances';
 import { BlockchainsInfo } from '@cryptorubic/core';
+import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerLogic {
   private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
@@ -53,14 +54,18 @@ export class HinkalWorkerLogic {
   }
 
   public async getBalances(): Promise<HinkalPrivateBalance> {
-    await this.hinkal.getEventsFromHinkal();
-    const ethAddress = await this.hinkal.getEthereumAddress();
-    const chainId = this.hinkal.getCurrentChainId();
-    const balances = await this.fetchBalances(chainId, ethAddress);
-    const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
-    return {
-      [blockchain]: balances
-    };
+    try {
+      await this.hinkal.getEventsFromHinkal();
+      const ethAddress = await this.hinkal.getEthereumAddress();
+      const chainId = this.hinkal.getCurrentChainId();
+      const balances = await this.fetchBalances(chainId, ethAddress);
+      const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
+      return {
+        [blockchain]: balances
+      };
+    } catch {
+      return {};
+    }
   }
 
   private async fetchBalances(
@@ -68,17 +73,27 @@ export class HinkalWorkerLogic {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      const resp = await this.hinkal.getTotalBalance(
+      const { inputUtxos } = await getInputUtxoAndBalance({
+        hinkal: this.hinkal,
         chainId,
-        this.hinkal.userKeys,
-        address,
-        true,
-        true
-      );
+        ethAddress: address,
+        resetCacheBefore: true,
+        allowRemoteDecryption: true
+      });
 
-      return resp.map(tokenBalance => ({
-        tokenAddress: tokenBalance.token.erc20TokenAddress,
-        amount: tokenBalance.balance.toString()
+      const fetchedBalances = inputUtxos.reduce((acc, val) => {
+        const balance = acc[val.erc20TokenAddress.toLowerCase()];
+        const currAmount = new BigNumber(val.amount.toString());
+
+        return {
+          ...acc,
+          [val.erc20TokenAddress.toLowerCase()]: balance ? balance.plus(currAmount) : currAmount
+        };
+      }, {} as Record<string, BigNumber>);
+
+      return Object.entries(fetchedBalances).map(([token, amount]) => ({
+        tokenAddress: token,
+        amount: amount.toString()
       }));
     } catch (err) {
       console.log('FETCHED BALANCE ERR', err);
@@ -87,34 +102,38 @@ export class HinkalWorkerLogic {
   }
 
   private async saveSnapshot(chainId: number): Promise<void> {
-    const hinkalSnapshot = (await get('hinkalSnapshot')) || {};
-    const jsonMerkleTree = this.hinkal.merkleTreeHinkal.toJSON();
-    const jsonMerkleTreeAccessToken = this.hinkal.merkleTreeAccessToken.toJSON();
+    try {
+      const hinkalSnapshot = (await get('hinkalSnapshot')) || {};
+      const jsonMerkleTree = this.hinkal.merkleTreeHinkal.toJSON();
+      const jsonMerkleTreeAccessToken = this.hinkal.merkleTreeAccessToken.toJSON();
 
-    const snapshot = {
-      approvals: Object.fromEntries(this.hinkal.approvals),
-      nullifiers: Array.from(this.hinkal.nullifiers),
-      merkleTreeAccessToken: {
-        tree: jsonMerkleTreeAccessToken.tree,
-        index: jsonMerkleTreeAccessToken.index,
-        count: jsonMerkleTreeAccessToken.count,
-        ...(jsonMerkleTreeAccessToken.reverseTree && {
-          reverseTree: jsonMerkleTreeAccessToken.reverseTree
-        })
-      },
-      merkleTree: {
-        tree: jsonMerkleTree.tree,
-        index: jsonMerkleTree.index,
-        count: jsonMerkleTree.count,
-        ...(jsonMerkleTree.reverseTree && { reverseTree: jsonMerkleTree.reverseTree })
-      },
-      encryptedOutputs: this.hinkal.encryptedOutputs
-    };
+      const snapshot = {
+        approvals: Object.fromEntries(this.hinkal.approvals),
+        nullifiers: Array.from(this.hinkal.nullifiers),
+        merkleTreeAccessToken: {
+          tree: jsonMerkleTreeAccessToken.tree,
+          index: jsonMerkleTreeAccessToken.index,
+          count: jsonMerkleTreeAccessToken.count,
+          ...(jsonMerkleTreeAccessToken.reverseTree && {
+            reverseTree: jsonMerkleTreeAccessToken.reverseTree
+          })
+        },
+        merkleTree: {
+          tree: jsonMerkleTree.tree,
+          index: jsonMerkleTree.index,
+          count: jsonMerkleTree.count,
+          ...(jsonMerkleTree.reverseTree && { reverseTree: jsonMerkleTree.reverseTree })
+        },
+        encryptedOutputs: this.hinkal.encryptedOutputs
+      };
 
-    hinkalSnapshot[chainId] = JSON.stringify(snapshot, (_, value) =>
-      typeof value === 'bigint' ? value.toString() : value
-    );
+      hinkalSnapshot[chainId] = JSON.stringify(snapshot, (_, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      );
 
-    await set('hinkalSnapshot', hinkalSnapshot);
+      await set('hinkalSnapshot', hinkalSnapshot);
+    } catch (err) {
+      console.log('FAILED TO SAVE SNAPSHOT', err);
+    }
   }
 }
