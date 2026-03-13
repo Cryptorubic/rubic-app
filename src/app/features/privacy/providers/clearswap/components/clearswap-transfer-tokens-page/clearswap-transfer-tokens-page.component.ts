@@ -1,6 +1,6 @@
-import { FormControl } from '@angular/forms';
 /* eslint-disable rxjs/no-exposed-subjects */
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -17,13 +17,18 @@ import {
   Observable,
   of,
   retry,
+  startWith,
   Subject,
   switchMap,
+  takeUntil,
+  tap,
   throwError,
   timer
 } from 'rxjs';
 import { ClearswapErrorService } from '../../services/clearswap-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -31,6 +36,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
   styleUrls: ['./clearswap-transfer-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService }
   ]
@@ -43,11 +49,28 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
     private readonly clearswapErrorService: ClearswapErrorService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
-    this.nextTransfer$.pipe(switchMap(event => this.transfer(event))).subscribe();
+    this.nextTransfer$
+      .pipe(
+        switchMap(event => this.transfer(event)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.privateActionButtonService.setReceiverAddress(address);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {
