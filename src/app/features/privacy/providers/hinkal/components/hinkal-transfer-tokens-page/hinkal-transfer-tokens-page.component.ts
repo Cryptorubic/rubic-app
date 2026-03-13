@@ -8,6 +8,7 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
+import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -37,7 +38,8 @@ export class HinkalTransferTokensPageComponent {
                 this.targetAddressService.address
               )
           }
-        ]
+        ],
+        warnings: HINKAL_WARNINGS
       });
 
       await firstValueFrom(preview$);

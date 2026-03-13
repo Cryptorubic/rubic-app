@@ -30,7 +30,7 @@ export class HinkalRevealTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Unshield Tokens',
+            label: 'Unshield',
             action: () =>
               this.hinkalFacadeService.withdraw(
                 token as TokenAmount<EvmBlockchainName>,

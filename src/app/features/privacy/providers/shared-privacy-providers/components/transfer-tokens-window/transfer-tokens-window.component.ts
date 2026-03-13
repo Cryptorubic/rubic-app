@@ -93,10 +93,12 @@ export class TransferTokensWindowComponent implements OnInit {
         fromToken: transferAsset,
         toToken: transferAsset,
         fromAmount: this._transferAmount$.value,
-        toAmount: {
-          actualValue: new BigNumber(options.dstTokenAmount || 0),
-          visibleValue: options.dstTokenAmount || '0'
-        },
+        toAmount: options.dstTokenAmount
+          ? {
+              actualValue: new BigNumber(options.dstTokenAmount),
+              visibleValue: options.dstTokenAmount
+            }
+          : this._transferAmount$.value,
         swapType: 'transfer',
         swapOptions: options
       });
