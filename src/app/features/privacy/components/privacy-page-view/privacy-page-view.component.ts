@@ -1,16 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { PrivateAction } from '../../constants/private-mode-tx-types';
-import { map } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
-import {
-  PrivateSwapFormConfig,
-  PrivateTransferFormConfig
-} from '../../providers/shared-privacy-providers/models/swap-form-types';
+import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
@@ -37,15 +34,28 @@ import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/mo
 export class PrivacyPageViewComponent {
   public readonly swapWindowCreationConfig: PrivateSwapFormConfig = {
     withActionButton: false,
+    withDstSelector: true,
     withDstAmount: false,
     withReceiver: false,
-    withSrcAmount: false
+    withSrcAmount: false,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false
+    }
   };
 
-  public readonly transferWindowCreationConfig: PrivateTransferFormConfig = {
+  public readonly transferWindowCreationConfig: PrivateSwapFormConfig = {
     withActionButton: false,
+    withDstSelector: false,
+    withDstAmount: false,
     withReceiver: false,
-    withSrcAmount: false
+    withSrcAmount: false,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false
+    }
   };
 
   public readonly quoteAdapter = new EmptyQuoteAdapter();
@@ -64,13 +74,25 @@ export class PrivacyPageViewComponent {
 
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
+  private readonly _clearOutput$ = new BehaviorSubject<object>({});
+
+  public readonly clearOutput$ = this._clearOutput$.asObservable();
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService
   ) {}
 
-  public handleTabSelected(action: string): void {
-    this.privacyMainPageService.setSelectedTab(action as PrivateAction);
+  public handleTabSelected(selectedTab: string): void {
+    const action = selectedTab as PrivateAction;
+    if (action === 'Transfer') {
+      const swapInfo = this.privacyMainPageService.formValue;
+      this.privacyMainPageService.patchFormValue({
+        toAsset: swapInfo.fromAsset
+      });
+      this._clearOutput$.next({});
+    }
+    this.privacyMainPageService.setSelectedTab(action);
   }
 
   public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {

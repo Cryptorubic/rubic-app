@@ -7,8 +7,6 @@ import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashTokensService } from './privacycash-tokens.service';
-import { MinimalTokenWithBalance } from '../../../models/privacycash-tokens-facade-models';
-import { compareTokens } from '@app/shared/utils/utils';
 
 @Injectable()
 export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
@@ -25,25 +23,15 @@ export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
       this.privacycashTokensService.tokens$.pipe(first())
     ]).pipe(
       map(([rubicTokens, privacycashTokens]) => {
-        // address is rubic supported(native is So11111111111111111111111111111111111111111)
-        const pcTokensMap = privacycashTokens.reduce(
+        const rubicTokensMap = rubicTokens.reduce(
           (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
-          {} as Record<string, MinimalTokenWithBalance>
+          {} as Record<string, AvailableTokenAmount>
         );
-        // @TODO_1767 inputValue всегда пустой нужно чекать токены селектора из другого места
-        const oppositeSelectedToken =
-          direction === 'from' ? inputValue.toToken : inputValue.fromToken;
-
-        return rubicTokens
-          .filter(token => {
-            const pcTokenFound = !!pcTokensMap[this.getKey(token)];
-            return pcTokenFound && !compareTokens(token, oppositeSelectedToken);
-          })
-          .map(token => {
-            const pcTokenWithBalance = pcTokensMap[this.getKey(token)];
-            const amount = SdkToken.fromWei(pcTokenWithBalance.balanceWei, token.decimals);
-            return { ...token, amount };
-          });
+        return privacycashTokens.map(pcTokenWithBalance => {
+          const rubicToken = rubicTokensMap[this.getKey(pcTokenWithBalance)];
+          const amount = SdkToken.fromWei(pcTokenWithBalance.balanceWei, rubicToken.decimals);
+          return { ...rubicToken, amount };
+        });
       })
     );
   }

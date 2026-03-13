@@ -57,6 +57,7 @@ https://explorer.web3privacy.info/'
     </div>
 
     <div
+      *ngIf="providerInfo.minAmountUsd > 0"
       class="min-amount"
       [tuiHint]="
         'Minimum amount required for a private swap. It may vary depending on the selected token.'

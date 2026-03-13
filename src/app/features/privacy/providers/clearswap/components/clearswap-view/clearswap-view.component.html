@@ -1,18 +1,14 @@
-<ng-container
-  *ngLet="{
-    activePage: activePage$ | async
-  } as data"
->
+<ng-container *ngIf="activePage$ | async as activePage">
   <div class="wrapper">
     <app-page-navigation
-      [activePage]="data.activePage"
+      [activePage]="activePage"
       [pages]="pages"
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
 
     <app-clearswap-transfer-tokens-page
-      *ngIf="data.activePage.type === 'transfer'"
+      *ngIf="activePage.type === 'transfer'"
     ></app-clearswap-transfer-tokens-page>
-    <app-clearswap-swap-page *ngIf="data.activePage.type === 'swap'"></app-clearswap-swap-page>
+    <app-clearswap-swap-page *ngIf="activePage.type === 'swap'"></app-clearswap-swap-page>
   </div>
 </ng-container>

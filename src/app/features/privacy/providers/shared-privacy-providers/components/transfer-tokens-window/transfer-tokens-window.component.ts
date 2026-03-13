@@ -21,6 +21,7 @@ import { PrivateTransferInfo } from '../../models/transfer-info';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapAmount } from '../../models/swap-info';
 import { PrivateTransferFormConfig } from '../../models/swap-form-types';
+import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 
 @Component({
   selector: 'app-transfer-tokens-window',
@@ -40,13 +41,9 @@ export class TransferTokensWindowComponent implements OnInit {
 
   @Output() public formChanged = new EventEmitter<PrivateTransferInfo>();
 
-  private readonly _transferAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  public readonly transferAsset$ = this.privateTransferWindowService.transferAsset$;
 
-  public readonly transferAsset$ = this._transferAsset$.asObservable();
-
-  private readonly _transferAmount$ = new BehaviorSubject<SwapAmount | null>(null);
-
-  public readonly transferAmount$ = this._transferAmount$.asObservable();
+  public readonly transferAmount$ = this.privateTransferWindowService.transferAmount$;
 
   private readonly injector = inject(Injector);
 
@@ -56,7 +53,10 @@ export class TransferTokensWindowComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privateTransferWindowService: PrivateTransferWindowService
+  ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
@@ -74,12 +74,12 @@ export class TransferTokensWindowComponent implements OnInit {
     this.modalService
       .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
-        this._transferAsset$.next(selectedToken);
+        this.privateTransferWindowService.transferAsset = selectedToken;
       });
   }
 
   public updateInputValue(value: SwapAmount): void {
-    this._transferAmount$.next(value);
+    this.privateTransferWindowService.transferAmount = value;
   }
 
   public handleMaxButton(): void {}
@@ -92,13 +92,11 @@ export class TransferTokensWindowComponent implements OnInit {
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: transferAsset,
         toToken: transferAsset,
-        fromAmount: this._transferAmount$.value,
-        toAmount: options.dstTokenAmount
-          ? {
-              actualValue: new BigNumber(options.dstTokenAmount),
-              visibleValue: options.dstTokenAmount
-            }
-          : this._transferAmount$.value,
+        fromAmount: this.privateTransferWindowService.transferAmount,
+        toAmount: {
+          actualValue: new BigNumber(options.dstTokenAmount || 0),
+          visibleValue: options.dstTokenAmount || '0'
+        },
         swapType: 'transfer',
         swapOptions: options
       });
@@ -108,16 +106,16 @@ export class TransferTokensWindowComponent implements OnInit {
   public async transfer(): Promise<void> {
     this._loading$.next(true);
     const token = new TokenAmount({
-      ...this._transferAsset$.value,
+      ...this.privateTransferWindowService.transferAsset,
       weiAmount: Token.toWei(
-        this._transferAmount$.value?.actualValue,
-        this._transferAsset$.value?.decimals
+        this.privateTransferWindowService.transferAmount?.actualValue,
+        this.privateTransferWindowService.transferAsset?.decimals
       )
     });
     this.handleTransfer.emit({
       token,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal(this._transferAsset$.value)
+      openPreview: this.createPreviewModal(this.privateTransferWindowService.transferAsset)
     });
   }
 }

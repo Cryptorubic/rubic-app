@@ -11,8 +11,6 @@ import { Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 
 @Component({
@@ -28,10 +26,6 @@ import { PrivacycashPrivateTokensFacadeService } from '../../services/common/tok
 })
 export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
-
-  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly notificationsService = inject(NotificationsService);
 
@@ -54,9 +48,6 @@ export class PrivacycashSwapPageComponent {
         swapInfo.fromAmount.actualValue,
         swapInfo.fromAsset.decimals
       );
-      const receiverAddr = this.targetNetworkAddressService.address
-        ? this.targetNetworkAddressService.address
-        : this.walletConnectorService.address;
 
       const preview$ = openPreview({
         steps: [
@@ -66,8 +57,7 @@ export class PrivacycashSwapPageComponent {
               this.privacycashSwapService.swapPartialPrivateBalance(
                 pcSupportedSrcToken,
                 pcSupportedDstToken,
-                new BigNumber(srcAmountWei),
-                receiverAddr
+                new BigNumber(srcAmountWei)
               )
           }
         ]

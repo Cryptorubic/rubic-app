@@ -37,8 +37,6 @@ export class PrivacycashTokensService {
 
   public readonly tokens$ = this._tokens$.asObservable();
 
-  //@TODO_1767
-  // Балансы обновлять после каждого действия(шилд/аншилд/свап/трансфер)
   public updatePrivateBalances(): void {
     this._updateBalances$.next(true);
   }
@@ -51,7 +49,7 @@ export class PrivacycashTokensService {
     }));
   }
 
-  public async loadTokensListWithBalances(): Promise<void> {
+  public async loadBalances(): Promise<void> {
     const pcAllSupportedMinimalTokens: MinimalToken[] = getMinimalTokensByChain('allChains');
     const pcSupportedTokens: MinimalTokenWithBalance[] = await Promise.all(
       pcAllSupportedMinimalTokens.map(minimalToken => {

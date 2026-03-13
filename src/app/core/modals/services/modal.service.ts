@@ -55,6 +55,7 @@ import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-inf
 import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { PrivacycashSignatureModalComponent } from '@app/features/privacy/providers/privacycash/components/privacycash-signature-modal/privacycash-signature-modal.component';
+import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 
 @Injectable({
   providedIn: 'root'
@@ -299,11 +300,11 @@ export class ModalService {
    * Show Wallet Modal dialog.
    * @param injector Injector
    */
-  public openWalletModal(injector: Injector): Observable<void> {
+  public openWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
     this.setOpenedModalName('wallet');
     return this.showDialog<WalletsModalComponent, void>(
       WalletsModalComponent,
-      { title: 'Connect wallet', size: 'm', fitContent: true },
+      { title: 'Connect wallet', size: 'm', fitContent: true, data },
       injector
     );
   }
