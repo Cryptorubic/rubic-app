@@ -228,7 +228,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openInputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ fromAsset: selectedToken });
       });
@@ -236,7 +236,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openOutputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });

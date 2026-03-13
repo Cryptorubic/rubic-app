@@ -37,7 +37,12 @@ export class PrivacyPageViewComponent {
     withDstSelector: true,
     withDstAmount: false,
     withReceiver: false,
-    withSrcAmount: false
+    withSrcAmount: false,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false
+    }
   };
 
   public readonly transferWindowCreationConfig: PrivateSwapFormConfig = {
@@ -45,7 +50,12 @@ export class PrivacyPageViewComponent {
     withDstSelector: false,
     withDstAmount: false,
     withReceiver: false,
-    withSrcAmount: false
+    withSrcAmount: false,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false
+    }
   };
 
   public readonly quoteAdapter = new EmptyQuoteAdapter();
