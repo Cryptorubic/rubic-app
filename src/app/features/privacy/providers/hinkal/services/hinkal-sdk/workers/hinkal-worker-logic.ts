@@ -1,9 +1,8 @@
-import { getInputUtxoAndBalance, Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
+import { Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
 import { set, get } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
 import { HinkalPrivateBalance } from '../../../models/hinkal-private-balances';
 import { BlockchainsInfo } from '@cryptorubic/core';
-import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerLogic {
   private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
@@ -36,8 +35,11 @@ export class HinkalWorkerLogic {
   }
 
   public async refreshStoredSnapshot(): Promise<void> {
-    await this.hinkal.resetMerkleTreesIfNecessary();
-    await this.saveSnapshot(this.hinkal.getCurrentChainId());
+    try {
+      await this.hinkal.resetMerkleTreesIfNecessary();
+      await this.hinkal.getEventsFromHinkal();
+      await this.saveSnapshot(this.hinkal.getCurrentChainId());
+    } catch {}
   }
 
   public async switchSnapshot(chainId: number): Promise<void> {
@@ -73,27 +75,41 @@ export class HinkalWorkerLogic {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      const { inputUtxos } = await getInputUtxoAndBalance({
-        hinkal: this.hinkal,
+      // const { inputUtxos } = await getInputUtxoAndBalance({
+      //   hinkal: this.hinkal,
+      //   chainId,
+      //   ethAddress: address,
+      //   resetCacheBefore: true,
+      //   allowRemoteDecryption: true
+      // });
+
+      // const fetchedBalances = inputUtxos.reduce((acc, val) => {
+      //   const balance = acc[val.erc20TokenAddress.toLowerCase()];
+      //   const currAmount = new BigNumber(val.amount.toString());
+
+      //   return {
+      //     ...acc,
+      //     [val.erc20TokenAddress.toLowerCase()]: balance ? balance.plus(currAmount) : currAmount
+      //   };
+      // }, {} as Record<string, BigNumber>);
+
+      // return Object.entries(fetchedBalances).map(([token, amount]) => ({
+      //   tokenAddress: token,
+      //   amount: amount.toString()
+      // }));
+      const resp = await this.hinkal.getTotalBalance(
         chainId,
-        ethAddress: address,
-        resetCacheBefore: true,
-        allowRemoteDecryption: true
-      });
+        this.hinkal.userKeys,
+        address,
+        true,
+        true
+      );
 
-      const fetchedBalances = inputUtxos.reduce((acc, val) => {
-        const balance = acc[val.erc20TokenAddress.toLowerCase()];
-        const currAmount = new BigNumber(val.amount.toString());
+      console.log('BALANCE FETCHED', resp);
 
-        return {
-          ...acc,
-          [val.erc20TokenAddress.toLowerCase()]: balance ? balance.plus(currAmount) : currAmount
-        };
-      }, {} as Record<string, BigNumber>);
-
-      return Object.entries(fetchedBalances).map(([token, amount]) => ({
-        tokenAddress: token,
-        amount: amount.toString()
+      return resp.map(tokenBalance => ({
+        tokenAddress: tokenBalance.token.erc20TokenAddress,
+        amount: tokenBalance.balance.toString()
       }));
     } catch (err) {
       console.log('FETCHED BALANCE ERR', err);
