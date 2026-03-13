@@ -17,14 +17,14 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       postMessage({ result: null, type: 'init', success: true });
     }
 
-    if (type === 'fetchBalance') {
-      const balances = await hinkalWorkerLogic.fetchBalances(chainId, address);
-      postMessage({ success: true, result: balances, type: 'fetchBalance' });
-    }
-
     if (type === 'switchNetwork') {
       await hinkalWorkerLogic.switchNetwork(chainId, address);
       postMessage({ success: true, result: null, type: 'switchNetwork' });
+    }
+
+    if (type === 'updateBalance') {
+      const balances = await hinkalWorkerLogic.getBalances();
+      postMessage({ success: true, result: balances, type: 'updateBalance' });
     }
   } catch (err) {
     console.log('WORKER ERROR', err);
