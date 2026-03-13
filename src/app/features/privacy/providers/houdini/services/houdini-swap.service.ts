@@ -3,8 +3,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Token } from '@app/shared/models/tokens/token';
-import { BLOCKCHAIN_NAME, BlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TronAdapter } from '@cryptorubic/web3';
+import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
+import { InsufficientFundsError, TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { lastValueFrom, timer, switchMap, takeWhile } from 'rxjs';
 import { HOUDINI_STATUS } from '../models/status';
@@ -27,32 +27,38 @@ export class HoudiniSwapService {
     fromToken: TokenAmount<BlockchainName>,
     toToken: Token,
     receiver: string
-  ): Promise<{
-    tradeId: string;
-    tokenAmount: string;
-    tokenAmountWei: BigNumber;
-  }> {
-    try {
-      const quoteResponse = await this.rubicApiService.quoteAllRoutes({
-        srcTokenBlockchain: fromToken.blockchain,
-        srcTokenAddress: fromToken.address,
-        srcTokenAmount: fromToken.tokenAmount.toString(),
-        dstTokenBlockchain: toToken.blockchain,
-        dstTokenAddress: toToken.address,
-        preferredProvider: 'houdini',
-        fromAddress: this.walletConnectorService.address,
-        receiver,
-        showDangerousRoutes: true
-      });
-      const route = quoteResponse.routes[0];
+  ): Promise<
+    | {
+        tradeId: string;
+        tokenAmount: string;
+        tokenAmountWei: BigNumber;
+      }
+    | { tradeError: ErrorInterface }
+  > {
+    const quoteResponse = await this.rubicApiService.quoteAllRoutes({
+      srcTokenBlockchain: fromToken.blockchain,
+      srcTokenAddress: fromToken.address,
+      srcTokenAmount: fromToken.tokenAmount.toString(),
+      dstTokenBlockchain: toToken.blockchain,
+      dstTokenAddress: toToken.address,
+      preferredProvider: 'houdini',
+      fromAddress: this.walletConnectorService.address,
+      receiver,
+      showDangerousRoutes: true
+    });
+    const route = quoteResponse.routes[0];
+    if (route) {
       return {
         tradeId: route.id,
         tokenAmount: route.estimate.destinationTokenAmount,
         tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
       };
-    } catch (err) {
-      console.error(err);
     }
+
+    const failed = quoteResponse.failed[0];
+    return {
+      tradeError: failed.data
+    };
   }
 
   public async transfer(
@@ -103,6 +109,9 @@ export class HoudiniSwapService {
         this.notificationsService.showError('The operation has failed.');
       }
     } catch (err) {
+      if (err instanceof InsufficientFundsError) {
+        this.notificationsService.showError('Insufficient funds.');
+      }
       console.error(err);
     }
   }
