@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HoudiniPrivateAssetsService } from '@app/features/privacy/providers/houdini/services/houdini-private-assets.service';
 import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/services/houdini-swap.service';
@@ -12,6 +11,9 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
+import { HoudiniErrorService } from '../../services/houdini-error.service';
+import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
+import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -21,21 +23,22 @@ import { firstValueFrom } from 'rxjs';
   providers: [
     { provide: FromAssetsService, useClass: HoudiniPrivateAssetsService },
     { provide: ToAssetsService, useClass: HoudiniPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: HoudiniTokensFacadeService }
+    { provide: TokensFacadeService, useClass: HoudiniTokensFacadeService },
+    { provide: PrivateActionButtonService, useClass: HoudiniPrivateActionButtonService }
   ]
 })
 export class HoudiniMainPageComponent {
   public readonly quoteAdapter = new HoudiniQuoteAdapter(
     this.houdiniSwapService,
-    this.notificationsService,
-    this.targetAddressService
+    this.targetAddressService,
+    this.houdiniErrorService
   );
 
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
-    private readonly notificationsService: NotificationsService,
     private readonly targetAddressService: TargetNetworkAddressService,
-    private readonly privatePageTypeService: PrivatePageTypeService
+    private readonly privatePageTypeService: PrivatePageTypeService,
+    private readonly houdiniErrorService: HoudiniErrorService
   ) {
     this.privatePageTypeService.activePage = {
       type: 'swap',

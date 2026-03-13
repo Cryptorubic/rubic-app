@@ -8,6 +8,9 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { HoudiniPrivateAssetsService } from './services/houdini-private-assets.service';
 import { HoudiniTokensFacadeService } from './services/houdini-tokens-facade.service';
 import { HoudiniSwapService } from './services/houdini-swap.service';
+import { HoudiniPrivateActionButtonService } from './services/houdini-private-action-button.service';
+import { HoudiniErrorService } from './services/houdini-error.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @NgModule({
   declarations: [HoudiniMainPageComponent],
@@ -18,6 +21,13 @@ import { HoudiniSwapService } from './services/houdini-swap.service';
     SharedModule,
     TuiButtonModule
   ],
-  providers: [HoudiniPrivateAssetsService, HoudiniTokensFacadeService, HoudiniSwapService]
+  providers: [
+    TuiDestroyService,
+    HoudiniPrivateAssetsService,
+    HoudiniTokensFacadeService,
+    HoudiniSwapService,
+    HoudiniPrivateActionButtonService,
+    HoudiniErrorService
+  ]
 })
 export class HoudiniModule {}
