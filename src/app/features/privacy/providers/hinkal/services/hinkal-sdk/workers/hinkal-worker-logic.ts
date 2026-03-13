@@ -1,6 +1,8 @@
-import { Hinkal, MultiThreadedUtxoUtils, prepareHinkalWithSignature } from '@hinkal/common';
+import { Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
 import { set, get } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
+import { HinkalPrivateBalance } from '../../../models/hinkal-private-balances';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 export class HinkalWorkerLogic {
   private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
@@ -16,10 +18,6 @@ export class HinkalWorkerLogic {
       generateProofRemotely: true,
       disableCaching: true
     });
-
-    // @TODO remove after nested utxoWorkers cancelation fix
-    //@ts-ignore
-    (this.hinkal.utxoUtils as MultiThreadedUtxoUtils).NUM_WORKERS = 1;
   }
 
   public async updateInstance(address: string, chainId: number, signature?: string): Promise<void> {
@@ -36,19 +34,15 @@ export class HinkalWorkerLogic {
     }
   }
 
+  public async refreshStoredSnapshot(): Promise<void> {
+    await this.hinkal.resetMerkleTreesIfNecessary();
+    await this.saveSnapshot(this.hinkal.getCurrentChainId());
+  }
+
   public async switchSnapshot(chainId: number): Promise<void> {
     //await HinkalUtils.updateSnapshot(this.hinkal, chainId);
     await this.hinkal.resetMerkleTreesIfNecessary();
-    // await this.watchBalances();
     await this.saveSnapshot(chainId);
-  }
-
-  public async getBalances(): Promise<{ tokenAddress: string; amount: string }[]> {
-    await this.hinkal.getEventsFromHinkal();
-    const ethAddress = await this.hinkal.getEthereumAddress();
-    const resp = await this.fetchBalances(this.hinkal.getCurrentChainId(), ethAddress);
-
-    return resp;
   }
 
   public async switchNetwork(chainId: number, address: string): Promise<void> {
@@ -56,6 +50,17 @@ export class HinkalWorkerLogic {
       await this.updateInstance(address, chainId);
       await this.switchSnapshot(chainId);
     }
+  }
+
+  public async getBalances(): Promise<HinkalPrivateBalance> {
+    await this.hinkal.getEventsFromHinkal();
+    const ethAddress = await this.hinkal.getEthereumAddress();
+    const chainId = this.hinkal.getCurrentChainId();
+    const balances = await this.fetchBalances(chainId, ethAddress);
+    const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
+    return {
+      [blockchain]: balances
+    };
   }
 
   private async fetchBalances(
@@ -71,7 +76,6 @@ export class HinkalWorkerLogic {
         true
       );
 
-      console.log(resp);
       return resp.map(tokenBalance => ({
         tokenAddress: tokenBalance.token.erc20TokenAddress,
         amount: tokenBalance.balance.toString()

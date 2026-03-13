@@ -26,6 +26,11 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       const balances = await hinkalWorkerLogic.getBalances();
       postMessage({ success: true, result: balances, type: 'updateBalance' });
     }
+
+    if (type === 'refreshStoredSnapshot') {
+      await hinkalWorkerLogic.refreshStoredSnapshot();
+      postMessage({ success: true, result: null, type: 'refreshStoredSnapshot' });
+    }
   } catch (err) {
     console.log('WORKER ERROR', err);
     postMessage({ success: false, result: null, type: data.type });

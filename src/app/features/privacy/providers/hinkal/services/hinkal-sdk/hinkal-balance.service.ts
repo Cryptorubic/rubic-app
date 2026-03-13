@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, skip, Subscription, switchMap, tap, timer } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
-import { BlockchainsInfo } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { HinkalInstanceService } from './hinkal-instance.service';
@@ -22,7 +21,6 @@ export class HinkalBalanceService {
     return timer(0, 20000)
       .pipe(
         skip(1),
-
         switchMap(() => {
           console.log('FETCH BALANCE');
           return this.workerService.request<void>({
@@ -35,15 +33,14 @@ export class HinkalBalanceService {
 
   public subscribeOnBalancePolling(): Subscription {
     return this.workerService
-      .subscribeOnEvent({
+      .subscribeOnEvent<HinkalPrivateBalance>({
         type: 'updateBalance'
       })
       .pipe(tap(v => console.log('BALANCE HANDLED', v)))
       .subscribe(balances => {
         this._balances$.next({
-          [BlockchainsInfo.getBlockchainNameById(
-            this.hinkalInstance.hinkalInstance.getCurrentChainId()
-          )]: balances
+          ...this._balances$.value,
+          ...balances
         });
       });
   }

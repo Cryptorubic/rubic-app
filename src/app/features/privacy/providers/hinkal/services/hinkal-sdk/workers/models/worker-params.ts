@@ -1,4 +1,4 @@
-export type HinkalWorkerType = 'init' | 'updateBalance' | 'switchNetwork';
+export type HinkalWorkerType = 'init' | 'updateBalance' | 'switchNetwork' | 'refreshStoredSnapshot';
 
 export interface WorkerParams {
   type: HinkalWorkerType;
