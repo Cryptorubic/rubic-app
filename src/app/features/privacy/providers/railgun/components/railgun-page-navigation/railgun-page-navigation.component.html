@@ -1,0 +1,10 @@
+<tui-stepper orientation="vertical" [activeItemIndex]="stepIndex">
+  <button
+    [disabled]="(i !== 0 && !railgunAddress) || (i === 0 && railgunAddress)"
+    *ngFor="let step of steps; let i = index"
+    tuiStep
+    (click)="onStepClick(step)"
+  >
+    {{ step.label }}
+  </button>
+</tui-stepper>

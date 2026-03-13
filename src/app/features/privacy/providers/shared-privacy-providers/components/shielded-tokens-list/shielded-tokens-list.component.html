@@ -1,0 +1,17 @@
+<app-window-container class="wrapper">
+  <ng-container header> Shielded tokens</ng-container>
+  <div class="wrapper__container">
+    <tui-scrollbar>
+      <ul class="wrapper__container-list" *ngIf="tokens.length; else emptyList">
+        <app-shielded-tokens-list-element
+          *ngFor="let token of tokens"
+          [token]="token"
+        ></app-shielded-tokens-list-element>
+      </ul>
+    </tui-scrollbar>
+  </div>
+</app-window-container>
+
+<ng-template #emptyList>
+  <span class="empty-list">No shielded tokens</span>
+</ng-template>

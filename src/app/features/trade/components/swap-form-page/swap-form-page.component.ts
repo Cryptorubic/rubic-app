@@ -16,6 +16,7 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -73,6 +74,8 @@ export class SwapFormPageComponent {
     distinctUntilChanged()
   );
 
+  public readonly receiverCtrl = this.targetNetworkAddressService.addressControl;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
@@ -85,7 +88,8 @@ export class SwapFormPageComponent {
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
@@ -95,6 +99,7 @@ export class SwapFormPageComponent {
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
     if (isMobile) {
+      // @TODO получить выбранный в модалке токен внутри subcribe и перезаписать this.swapFormService.inputControl.patchValue
       this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
