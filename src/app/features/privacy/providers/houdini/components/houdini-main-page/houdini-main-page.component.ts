@@ -6,6 +6,7 @@ import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/serv
 import { HoudiniTokensFacadeService } from '@app/features/privacy/providers/houdini/services/houdini-tokens-facade.service';
 import { HoudiniQuoteAdapter } from '@app/features/privacy/providers/houdini/utils/houdini-quote-adapter';
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
@@ -33,8 +34,14 @@ export class HoudiniMainPageComponent {
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
     private readonly notificationsService: NotificationsService,
-    private readonly targetAddressService: TargetNetworkAddressService
-  ) {}
+    private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly privatePageTypeService: PrivatePageTypeService
+  ) {
+    this.privatePageTypeService.activePage = {
+      type: 'swap',
+      label: 'Swap'
+    };
+  }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
