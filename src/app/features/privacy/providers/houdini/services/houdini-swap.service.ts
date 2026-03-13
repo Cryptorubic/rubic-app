@@ -4,7 +4,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
-import { TronAdapter } from '@cryptorubic/web3';
+import { InsufficientFundsError, TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { lastValueFrom, timer, switchMap, takeWhile } from 'rxjs';
 import { HOUDINI_STATUS } from '../models/status';
@@ -109,6 +109,9 @@ export class HoudiniSwapService {
         this.notificationsService.showError('The operation has failed.');
       }
     } catch (err) {
+      if (err instanceof InsufficientFundsError) {
+        this.notificationsService.showError('Insufficient funds.');
+      }
       console.error(err);
     }
   }
