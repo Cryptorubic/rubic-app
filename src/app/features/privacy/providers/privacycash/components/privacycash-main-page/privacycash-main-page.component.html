@@ -1,13 +1,13 @@
 <div
   *ngLet="{
-    step: currentStep$ | async
+    step: activePage$ | async
   } as data"
   class="container"
 >
   <app-page-navigation
-    [pages]="steps"
+    [pages]="pages"
     [activePage]="data.step"
-    (onSelect)="onStepChange($event)"
+    (onSelect)="onPageSelect($event)"
   ></app-page-navigation>
 
   <div class="main">

@@ -1,6 +1,7 @@
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { SwapAmount } from './swap-info';
 import BigNumber from 'bignumber.js';
+import { Observable } from 'rxjs';
 
 export interface PrivateQuoteAdapter {
   /**
@@ -10,7 +11,7 @@ export interface PrivateQuoteAdapter {
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ) => Promise<{
+  ) => Observable<{
     toAmountWei: BigNumber;
     tradeId?: string;
   }>;

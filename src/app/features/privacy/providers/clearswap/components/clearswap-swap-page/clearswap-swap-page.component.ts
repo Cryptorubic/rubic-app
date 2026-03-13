@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -26,13 +25,11 @@ import { firstValueFrom } from 'rxjs';
 export class ClearswapSwapPageComponent {
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
-    this.notificationsService,
     this.targetAddressService
   );
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly notificationsService: NotificationsService,
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
