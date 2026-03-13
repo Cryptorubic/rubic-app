@@ -28,7 +28,7 @@ export class HinkalInstanceService {
   ) {
     this._hinkalInstance = new Hinkal({
       generateProofRemotely: true,
-      disableCaching: false
+      disableCaching: true
       // disableMerkleTreeUpdates: true
     });
   }
