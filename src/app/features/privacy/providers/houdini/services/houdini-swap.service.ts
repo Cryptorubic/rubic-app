@@ -8,6 +8,7 @@ import { TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { lastValueFrom, timer, switchMap, takeWhile } from 'rxjs';
 import { HOUDINI_STATUS } from '../models/status';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -18,7 +19,8 @@ export class HoudiniSwapService {
   constructor(
     private readonly rubicApiService: RubicApiService,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public async quote(
@@ -38,6 +40,7 @@ export class HoudiniSwapService {
         dstTokenBlockchain: toToken.blockchain,
         dstTokenAddress: toToken.address,
         preferredProvider: 'houdini',
+        fromAddress: this.walletConnectorService.address,
         receiver,
         showDangerousRoutes: true
       });
@@ -67,6 +70,7 @@ export class HoudiniSwapService {
         dstTokenBlockchain: toToken.blockchain,
         dstTokenAddress: toToken.address,
         preferredProvider: 'houdini',
+        fromAddress: this.walletConnectorService.address,
         receiver
       });
       const depositAddress = swapResponse.transaction.depositAddress;
