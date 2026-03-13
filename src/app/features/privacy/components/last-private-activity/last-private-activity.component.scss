@@ -1,0 +1,29 @@
+@use 'src/scss/core' as *;
+
+:host {
+  app-window-container {
+    ::ng-deep header h5 {
+      text-align: center;
+    }
+  }
+
+  .main {
+    @include flex(row, center, start);
+    flex-wrap: wrap;
+    gap: 8px;
+
+    @include b($tablet) {
+      @include flex(column, flex-start, start);
+      gap: 2px;
+
+      app-last-private-activity-element {
+        width: 100%;
+        min-width: 100%;
+      }
+    }
+
+    app-last-private-activity-element {
+      min-width: 284px;
+    }
+  }
+}

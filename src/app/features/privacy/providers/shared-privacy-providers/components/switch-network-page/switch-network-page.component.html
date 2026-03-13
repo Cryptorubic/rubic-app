@@ -1,0 +1,30 @@
+<app-window-container>
+  <ng-container header>Switch chain</ng-container>
+  <div>
+    <tui-select
+      class="b-form"
+      tuiTextfieldSize="m"
+      [formControl]="chainControl"
+      [valueContent]="item"
+      [tuiTextfieldLabelOutside]="true"
+    >
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="supportedChains"
+        [itemContent]="item"
+      ></tui-data-list-wrapper>
+    </tui-select>
+  </div>
+</app-window-container>
+
+<ng-template #item let-chain>
+  <div class="item" *ngIf="getChainInfo(chain) as chainInfo" (click)="handleSwitchChain(chain)">
+    <tui-avatar
+      size="xs"
+      class="avatar"
+      [avatarUrl]="chainInfo.img || null"
+      [text]="chainInfo.name"
+    ></tui-avatar>
+    <div class="name">{{ chainInfo.name }}</div>
+  </div>
+</ng-template>

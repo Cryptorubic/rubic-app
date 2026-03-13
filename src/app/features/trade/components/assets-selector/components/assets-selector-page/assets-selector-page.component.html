@@ -23,7 +23,11 @@
 
     <ng-container>
       <app-blockchains-filter-list
-        *ngIf="!isMobile && state.selectorListType !== 'blockchains'"
+        *ngIf="
+          !isMobile &&
+          state.selectorListType !== 'blockchains' &&
+          assetsSelectorConfig.withChainsFilter
+        "
         [selectedFilter]="state.blockchainFilter"
         (selectFilter)="handleBlockchainFilterSelection($event)"
       ></app-blockchains-filter-list>
@@ -55,6 +59,7 @@
                 [tokensSearchQuery]="state.tokensSearchQuery"
                 [tokensToShow]="state.tokensToShow"
                 [totalBlockchains]="totalBlockchains"
+                [assetsSelectorConfig]="assetsSelectorConfig"
                 (selectAssetList)="selectAssetList($event)"
                 (selectToken)="selectToken($event)"
                 (switchMode)="switchMode()"
@@ -73,7 +78,7 @@
             (queryChange)="onTokensQuery($event)"
           ></app-search-tokens-bar>
           <app-switch-list-type-button
-            *ngIf="state.selectorListType === 'tokens'"
+            *ngIf="state.selectorListType === 'tokens' && assetsSelectorConfig.withFavoriteTokens"
             [assetListType]="state.assetListType"
             (switchListType)="switchMode()"
           >

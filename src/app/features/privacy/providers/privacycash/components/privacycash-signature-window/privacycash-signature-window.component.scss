@@ -1,0 +1,21 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .signature-window-wrapper {
+    @include flex(column, center, center);
+    gap: 12px;
+    width: 100%;
+    padding: 15px;
+
+    font-size: 16px;
+    text-align: center;
+
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+  }
+
+  button {
+    width: 100%;
+    max-width: 360px;
+  }
+}

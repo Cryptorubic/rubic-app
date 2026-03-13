@@ -1,0 +1,25 @@
+@use 'src/scss/core' as *;
+
+:host {
+  position: relative;
+  
+  ::ng-deep app-window-container {
+    display: block;
+    width: 600px;
+    margin-bottom: 12px;
+    @include b($mobile-md) {
+      width: 100%;
+    }
+  }
+}
+  
+.wrapper {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 0 auto;
+
+  @include b($mobile-md) {
+    flex-direction: column;
+  }
+}

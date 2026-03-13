@@ -1,0 +1,9 @@
+<div class="hide-page-wrapper">
+  <app-hide-tokens-window
+    (handleHide)="hide($event)"
+    [receiverCtrl]="receiverCtrl"
+    [creationConfig]="hideFormCreationConfig"
+  ></app-hide-tokens-window>
+
+  <app-shielded-tokens-list [tokens]="shieldedTokens$ | async"></app-shielded-tokens-list>
+</div>

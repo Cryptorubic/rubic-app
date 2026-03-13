@@ -1,0 +1,7 @@
+<app-hide-tokens-window (handleHide)="hide($event)" [receiverCtrl]="receiverCtrl">
+  <tui-notification class="notification" status="warning">
+    The shielding process take 1 hour due to an AML check.
+  </tui-notification>
+</app-hide-tokens-window>
+
+<app-shielded-tokens-list [tokens]="[]"></app-shielded-tokens-list>

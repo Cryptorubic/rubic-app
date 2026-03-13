@@ -1,0 +1,41 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .tab-bar {
+    @include flex(row, center, center);
+    gap: 2px;
+
+    width: 100%;
+    height: 55px;
+
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .tab-item {
+    @include flex(row, center, center);
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--tui-secondary);
+    cursor: pointer;
+
+    transition: all 0.1s;
+
+    &:first-child {
+      border-radius: 25px 0 0 25px;
+    }
+
+    &:last-child {
+      border-radius: 0 25px 25px 0;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &-selected {
+      background-color: var(--tui-primary-active);
+    }
+  }
+}

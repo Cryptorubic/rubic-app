@@ -1,0 +1,56 @@
+diff --git a/node_modules/@railgun-community/waku-broadcaster-client-web/dist/waku/waku-observers.js b/node_modules/@railgun-community/waku-broadcaster-client-web/dist/waku/waku-observers.js
+index 14a943a..30b2d62 100644
+--- a/node_modules/@railgun-community/waku-broadcaster-client-web/dist/waku/waku-observers.js
++++ b/node_modules/@railgun-community/waku-broadcaster-client-web/dist/waku/waku-observers.js
+@@ -52,9 +52,9 @@ export class WakuObservers {
+         }
+         BroadcasterDebug.log(`Add Waku observers for chain: ${chain.type}:${chain.id}`);
+         WakuObservers.currentChain = chain;
+-        await this.removeAllObservers(waku);
++        await WakuObservers.removeAllObservers(waku);
+         BroadcasterDebug.log('Removed all observers');
+-        await this.addChainObservers(waku, chain);
++        await WakuObservers.addChainObservers(waku, chain);
+         BroadcasterDebug.log(`Waku listening for events on chain: ${chain.type}:${chain.id}`);
+     };
+     static resetCurrentChain = () => {
+@@ -71,14 +71,14 @@ export class WakuObservers {
+         this.checkSubscriptionsHealth(waku);
+     };
+     static async unsubscribe(waku) {
+-        if (isDefined(waku) && isDefined(waku?.filter) && isDefined(this.currentSubscriptions)) {
++        if (isDefined(waku) && isDefined(waku?.filter) && isDefined(WakuObservers.currentSubscriptions)) {
+             waku.filter.unsubscribeAll();
+         }
+-        this.currentSubscriptions = [];
+-        this.currentContentTopics = [];
++        WakuObservers.currentSubscriptions = [];
++        WakuObservers.currentContentTopics = [];
+     }
+     static removeAllObservers = async (waku) => {
+-        await this.unsubscribe(waku);
++        await WakuObservers.unsubscribe(waku);
+     };
+     static getDecodersForChain = (chain) => {
+         const contentTopicFees = contentTopics.fees(chain);
+@@ -104,7 +104,7 @@ export class WakuObservers {
+         if (!isDefined(waku.filter)) {
+             return;
+         }
+-        await this.addSubscriptions(chain, waku).catch(err => {
++        await WakuObservers.addSubscriptions(chain, waku).catch(err => {
+             BroadcasterDebug.log(`Error adding Observers. ${err.message}`);
+             return undefined;
+         });
+@@ -138,9 +138,9 @@ export class WakuObservers {
+             BroadcasterDebug.log('AddSubscription: No Waku or Chain defined.');
+             return;
+         }
+-        const subscriptionParams = this.getDecodersForChain(chain);
++        const subscriptionParams = WakuObservers.getDecodersForChain(chain);
+         const topics = subscriptionParams.map(params => params.topic);
+-        const newTopics = topics.filter(topic => !this.currentContentTopics.includes(topic));
++        const newTopics = topics.filter(topic => !WakuObservers.currentContentTopics.includes(topic));
+         this.currentContentTopics.push(...newTopics);
+         for (const params of subscriptionParams) {
+             const { decoder, callback } = params;

@@ -1,0 +1,15 @@
+<div class="nav">
+  <button
+    tuiButton
+    type="button"
+    size="m"
+    appearance="secondary"
+    *ngFor="let page of pages; index as i"
+    class="nav__item"
+    [class.nav__item-active]="i === activePageIndex"
+    (click)="onPageSelect(page)"
+    [disabled]="isPageDisabled(page)"
+  >
+    {{ page.label }}
+  </button>
+</div>

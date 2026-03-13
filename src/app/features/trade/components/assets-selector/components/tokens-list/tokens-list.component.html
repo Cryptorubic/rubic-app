@@ -1,17 +1,22 @@
-<div *ngIf="!isMobile" class="tokens-list__search-bar-container">
+<div
+  *ngIf="!isMobile"
+  class="tokens-list__search-bar-container"
+  [ngClass]="{ 'tokens-list__hide-favorites': !assetsSelectorConfig.withFavoriteTokens }"
+>
   <app-search-tokens-bar
     [searchQuery]="tokensSearchQuery"
     [totalBlockchains]="totalBlockchains"
     (queryChange)="onTokenSearch.emit($event)"
   ></app-search-tokens-bar>
   <app-switch-list-type-button
+    *ngIf="assetsSelectorConfig.withFavoriteTokens"
     [assetListType]="listType"
     (switchListType)="switchMode.emit()"
   ></app-switch-list-type-button>
 </div>
 
 <app-tokens-list-filters
-  *ngIf="isUtility"
+  *ngIf="isUtility && assetsSelectorConfig.withTokensFilter"
   [assetListType]="listType"
   (onSelect)="selectTokenFilter($event)"
 >
@@ -21,7 +26,7 @@
   class="tokens-container"
   [ngClass]="{
     'large-iframe-token-container': useLargeIframe,
-    'tokens-container__all-chains': isUtility
+    'tokens-container__all-chains': isUtility && assetsSelectorConfig.withTokensFilter
   }"
 >
   <tui-loader [showLoader]="loading" [overlay]="true">

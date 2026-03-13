@@ -14,7 +14,7 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
 
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, ChainType } from '@cryptorubic/core';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-utility-store';
 import { TrendingUtilityStore } from '@core/services/tokens/models/tranding-utility-store';
@@ -44,7 +44,7 @@ export class TokensFacadeService {
 
   private readonly tokensQueryService = inject(TokensQueryService);
 
-  private readonly tokensBuilderService = inject(TokensBuilderService);
+  protected readonly tokensBuilderService = inject(TokensBuilderService);
 
   private readonly tokensPaginationService = inject(TokensPaginationService);
 
@@ -127,6 +127,14 @@ export class TokensFacadeService {
 
   public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {
     return this.tokensBuilderService.getTokensBasedOnType(type);
+  }
+
+  public updateBalanceTokens(
+    address: string,
+    chainType: ChainType,
+    chains: BlockchainName[]
+  ): Promise<void> {
+    return this.tokensBalanceService.fetchListBalances(address, chainType, chains);
   }
 
   public getTokensList(

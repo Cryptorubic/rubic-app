@@ -1,0 +1,45 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .private-activity-element {
+    @include flex(row, center, space-between);
+    width: 100%;
+    padding: 16px 16px 23px 23px;
+
+    background-color: var(--tui-base-02);
+    border-radius: var(--tui-radius-s);
+
+    user-select: none;
+
+    @include b($tablet) {
+      border-radius: 0;
+    }
+
+    .left {
+      @include flex(column, flex-start, start);
+      gap: 13px;
+
+      .name {
+        @include flex(row, center, start);
+        gap: 8px;
+
+        font-size: 18px;
+      }
+
+      .type {
+        color: var(--tui-text-02);
+        font-size: 12px;
+      }
+    }
+
+    .right {
+      width: 83px;
+
+      app-rubic-button {
+        ::ng-deep button {
+          font-weight: 500 !important;
+        }
+      }
+    }
+  }
+}

@@ -29,6 +29,7 @@ import {
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
+import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -42,7 +43,15 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Input({ required: true }) type: 'from' | 'to';
 
+  @Input() assetsSelectorConfig: AssetsSelectorConfig = {
+    withChainsFilter: true,
+    withTokensFilter: true,
+    withFavoriteTokens: true
+  };
+
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
+
+  @Output() public readonly handleBack = new EventEmitter<void>();
 
   public readonly selectorListType$ = of('tokens');
 
@@ -148,6 +157,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
+    this.handleBack.emit();
   }
 
   /**
