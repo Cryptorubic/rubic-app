@@ -102,7 +102,8 @@ export class RailgunTransferPageComponent {
                 token.address,
                 token.stringWeiAmount,
                 this.receiverCtrl.value,
-                () => {}
+                () => {},
+                token.blockchain
               );
               this.notificationService.show('Transfer successful.', {
                 status: 'success',

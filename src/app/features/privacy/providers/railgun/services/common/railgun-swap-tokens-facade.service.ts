@@ -9,6 +9,7 @@ import { inject, Injectable } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Injectable()
 export class RailgunTokensFacadeService extends TokensFacadeService {
@@ -22,56 +23,58 @@ export class RailgunTokensFacadeService extends TokensFacadeService {
   ): Observable<AvailableTokenAmount[]> {
     return this.railgunFacade.balancesSnapshot$.pipe(
       switchMap(snapshot => {
-        const availableTokensForBlockchains = snapshot.Spendable.erc20Amounts;
-        const blockchainName = BlockchainsInfo.getBlockchainNameById(snapshot.Spendable.chain.id);
         const isBlockchain = BlockchainsInfo.isBlockchainName(type);
+        if (isBlockchain) {
+          const blockchainName = type as RailgunSupportedChain;
+          const availableTokensForBlockchains = snapshot[blockchainName].Spendable.erc20Amounts;
 
-        if (direction === 'to') {
+          if (direction === 'to') {
+            return this.tokensBuilderService
+              .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue)
+              .pipe(
+                map(tokens => {
+                  return tokens.map(token => {
+                    const balance = availableTokensForBlockchains.find(availableToken =>
+                      compareAddresses(availableToken.tokenAddress, token.address)
+                    )?.amount;
+
+                    return {
+                      ...token,
+                      amount: balance
+                        ? Token.fromWei(balance.toString(), token.decimals)
+                        : new BigNumber(0)
+                    };
+                  });
+                })
+              );
+          }
+
           return this.tokensBuilderService
             .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue)
             .pipe(
               map(tokens => {
-                return tokens.map(token => {
-                  const balance = availableTokensForBlockchains.find(availableToken =>
-                    compareAddresses(availableToken.tokenAddress, token.address)
-                  )?.amount;
+                return tokens
+                  .filter(token => {
+                    const blockchain = token.blockchain as BlockchainName;
+                    const isAvailable =
+                      availableTokensForBlockchains.some(availableToken =>
+                        compareAddresses(availableToken.tokenAddress, token.address)
+                      ) && blockchain === blockchainName;
+                    return isAvailable;
+                  })
+                  .map(token => {
+                    const balance = availableTokensForBlockchains.find(availableToken =>
+                      compareAddresses(availableToken.tokenAddress, token.address)
+                    )?.amount;
 
-                  return {
-                    ...token,
-                    amount: balance
-                      ? Token.fromWei(balance.toString(), token.decimals)
-                      : new BigNumber(0)
-                  };
-                });
+                    return {
+                      ...token,
+                      amount: Token.fromWei(balance.toString(), token.decimals) || token.amount
+                    };
+                  });
               })
             );
         }
-
-        return this.tokensBuilderService
-          .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue)
-          .pipe(
-            map(tokens => {
-              return tokens
-                .filter(token => {
-                  const blockchain = token.blockchain as BlockchainName;
-                  const isAvailable =
-                    availableTokensForBlockchains.some(availableToken =>
-                      compareAddresses(availableToken.tokenAddress, token.address)
-                    ) && blockchain === blockchainName;
-                  return isAvailable;
-                })
-                .map(token => {
-                  const balance = availableTokensForBlockchains.find(availableToken =>
-                    compareAddresses(availableToken.tokenAddress, token.address)
-                  )?.amount;
-
-                  return {
-                    ...token,
-                    amount: Token.fromWei(balance.toString(), token.decimals) || token.amount
-                  };
-                });
-            })
-          );
       })
     );
   }
