@@ -21,7 +21,6 @@ import {
   EvmBlockchainName,
   TokenAmount
 } from '@cryptorubic/core';
-import { waitFor } from '@cryptorubic/web3';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { SignMessageModalComponent } from '../../../shared-privacy-providers/components/sign-message-modal/sign-message-modal.component';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -56,13 +55,10 @@ export class HinkalFacadeService {
     const walletSub = this.subscribeOnAddressChanged().subscribe();
     const activeNetworkSub = this.subscribeOnActiveNetworkChanged().subscribe();
     const walletNetworkSub = this.subscribeOnWalletNetworkChanged().subscribe();
+    const pollSub = this.hinkalBalanceService.initBalancePolling();
+    const balanceSub = this.hinkalBalanceService.subscribeOnBalancePolling();
 
-    this.subs.push(walletSub, activeNetworkSub, walletNetworkSub);
-  }
-
-  private async refreshBalancesAfterAction(chain: EvmBlockchainName): Promise<void> {
-    await waitFor(3000);
-    this.hinkalBalanceService.refreshBalances([chain]);
+    this.subs.push(walletSub, activeNetworkSub, walletNetworkSub, pollSub, balanceSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -86,8 +82,6 @@ export class HinkalFacadeService {
     const isSuccess = await this.hinkalSwapService.deposit(tokenAmount, receiverPrivateShieldedKey);
 
     if (isSuccess) {
-      await this.refreshBalancesAfterAction(tokenAmount.blockchain);
-
       this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
     }
   }
@@ -100,7 +94,6 @@ export class HinkalFacadeService {
     const isSuccess = await this.hinkalSwapService.withdraw(token, receiver);
 
     if (isSuccess) {
-      await this.refreshBalancesAfterAction(token.blockchain);
       this.showSuccessNotification(
         'Transaction sent. This may take a moment. Please keep Rubic App open'
       );
@@ -121,7 +114,6 @@ export class HinkalFacadeService {
     );
 
     if (isSuccess) {
-      await this.refreshBalancesAfterAction(token.blockchain);
       this.showSuccessNotification(
         'Transaction sent. This may take a moment. Please keep Rubic App open'
       );
@@ -139,7 +131,6 @@ export class HinkalFacadeService {
     const isSuccess = await this.hinkalSwapService.privateSwap(fromToken, toToken);
 
     if (isSuccess) {
-      this.refreshBalancesAfterAction(fromToken.blockchain);
       this.showSuccessNotification(
         'Transaction sent. This may take a moment. Please keep Rubic App open'
       );
@@ -191,9 +182,7 @@ export class HinkalFacadeService {
       distinctUntilChanged(),
       switchMap(([address, network]) => {
         const chain = network as EvmBlockchainName;
-        return this.updateInstance(address, chain).then(() =>
-          this.refreshBalancesAfterAction(chain)
-        );
+        return this.updateInstance(address, chain);
       })
     );
   }
@@ -204,13 +193,11 @@ export class HinkalFacadeService {
       skip(1),
       distinctUntilChanged(),
       switchMap(chain =>
-        this.hinkalWorkerService
-          .request({
-            chainId: blockchainId[chain],
-            type: 'switchNetwork',
-            address: this.walletConnectorService.address
-          })
-          .then(() => this.refreshBalancesAfterAction(chain as EvmBlockchainName))
+        this.hinkalWorkerService.request<void>({
+          chainId: blockchainId[chain],
+          type: 'switchNetwork',
+          address: this.walletConnectorService.address
+        })
       )
     );
   }

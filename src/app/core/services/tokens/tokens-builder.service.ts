@@ -46,14 +46,14 @@ export class TokensBuilderService {
 
   public getTokensList(
     type: AssetListType,
-    query: string,
+    _query: string,
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
-        if (query) this.balanceService.fetchDifferentChainsBalances(tokens, false);
+        this.balanceService.fetchDifferentChainsBalances(tokens, false);
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {
