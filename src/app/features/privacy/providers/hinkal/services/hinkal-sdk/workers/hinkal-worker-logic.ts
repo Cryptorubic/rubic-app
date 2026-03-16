@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HinkalPrivateBalance } from '../../../models/hinkal-private-balances';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
+import { Mutex } from 'async-mutex';
 
 export class HinkalWorkerLogic {
   private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
@@ -11,6 +12,8 @@ export class HinkalWorkerLogic {
   public get currSignature(): string {
     return this._currSignature$.value;
   }
+
+  private readonly mutex = new Mutex();
 
   private readonly hinkal: Hinkal<unknown>;
 
@@ -21,55 +24,61 @@ export class HinkalWorkerLogic {
     });
   }
 
-  public async updateInstance(address: string, chainId: number, signature?: string): Promise<void> {
-    try {
-      await prepareHinkalWithSignature(
-        this.hinkal,
-        address,
-        chainId,
-        signature || this.currSignature
-      );
-      if (signature) this._currSignature$.next(signature);
-    } catch (err) {
-      console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
-    }
+  public async updateInstance(address: string, chainId: number, signature: string): Promise<void> {
+    return this.mutex.runExclusive(async () => {
+      try {
+        await prepareHinkalWithSignature(this.hinkal, address, chainId, signature);
+        this._currSignature$.next(signature);
+      } catch (err) {
+        console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
+      }
+    });
   }
 
   public async refreshStoredSnapshot(): Promise<void> {
-    try {
-      await this.hinkal.resetMerkleTreesIfNecessary();
-      await this.hinkal.getEventsFromHinkal();
-      await this.saveSnapshot(this.hinkal.getCurrentChainId());
-    } catch {}
+    return this.mutex.runExclusive(async () => {
+      try {
+        await this.hinkal.resetMerkleTreesIfNecessary();
+        await this.hinkal.getEventsFromHinkal();
+        await this.saveSnapshot(this.hinkal.getCurrentChainId());
+      } catch {}
+    });
   }
 
   public async switchSnapshot(chainId: number): Promise<void> {
-    //await HinkalUtils.updateSnapshot(this.hinkal, chainId);
-    await this.hinkal.resetMerkleTreesIfNecessary();
-    await this.saveSnapshot(chainId);
+    return this.mutex.runExclusive(async () => {
+      //await HinkalUtils.updateSnapshot(this.hinkal, chainId);
+      await this.hinkal.resetMerkleTreesIfNecessary();
+      await this.saveSnapshot(chainId);
+    });
   }
 
   public async switchNetwork(chainId: number, address: string): Promise<void> {
-    if (this.hinkal.getProviderAdapter().chainId !== chainId) {
-      this.hinkal.snapshotsClearInterval();
-      await this.updateInstance(address, chainId);
-      await this.switchSnapshot(chainId);
-    }
+    return this.mutex.runExclusive(async () => {
+      if (this.hinkal.getProviderAdapter().chainId !== chainId) {
+        //this.hinkal.snapshotsClearInterval();
+        await prepareHinkalWithSignature(this.hinkal, address, chainId, this.currSignature);
+        await this.hinkal.resetMerkleTreesIfNecessary();
+        await this.saveSnapshot(chainId);
+      }
+    });
   }
 
   public async getBalances(): Promise<HinkalPrivateBalance> {
-    try {
-      await this.hinkal.getEventsFromHinkal();
-      const ethAddress = await this.hinkal.getEthereumAddress();
-      const chainId = this.hinkal.getCurrentChainId();
-      const balances = await this.fetchBalances(chainId, ethAddress);
-      const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
-      return {
-        [blockchain]: balances
-      };
-    } catch {
-      return {};
-    }
+    return this.mutex.runExclusive(async () => {
+      try {
+        await this.hinkal.getEventsFromHinkal();
+        const ethAddress = await this.hinkal.getEthereumAddress();
+        const chainId = this.hinkal.getCurrentChainId();
+        const balances = await this.fetchBalances(chainId, ethAddress);
+        const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
+        return {
+          [blockchain]: balances
+        };
+      } catch {
+        return {};
+      }
+    });
   }
 
   private async fetchBalances(
