@@ -1,9 +1,9 @@
-export type HinkalWorkerType = 'init' | 'fetchBalance' | 'switchNetwork';
+export type HinkalWorkerType = 'init' | 'updateBalance' | 'switchNetwork' | 'refreshStoredSnapshot';
 
 export interface WorkerParams {
-  address: string;
-  chainId: number;
   type: HinkalWorkerType;
+  address?: string;
+  chainId?: number;
   signature?: string;
 }
 

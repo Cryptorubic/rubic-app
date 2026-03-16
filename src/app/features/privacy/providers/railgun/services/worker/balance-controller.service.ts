@@ -55,24 +55,16 @@ export class BalanceControllerService {
   public installCallbacks(): void {
     if (this.callbacksInstalled) return;
 
-    // Will get called throughout a private balance scan.
     setOnUTXOMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
-      postWorkerMessage({ method: 'utxoScanUpdate', response: eventData.progress });
+      postWorkerMessage({ method: 'utxoScanUpdate', response: eventData });
     });
 
-    // Will get called throughout a private balance scan.
     setOnTXIDMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
       postWorkerMessage({ method: 'txidScanUpdate', response: eventData });
     });
 
-    // Will get called at end of scan per txidVersion + balanceBucket.
     setOnBalanceUpdateCallback((eventData: RailgunBalancesEvent) => {
       postWorkerMessage({ method: 'balanceUpdate', response: eventData });
-      // const prev = this._balancesByBucket$.value;
-      // this._balancesByBucket$.next({
-      //   ...prev,
-      //   [event.balanceBucket]: event
-      // });
     });
 
     this.callbacksInstalled = true;
@@ -83,7 +75,6 @@ export class BalanceControllerService {
    * This is the core "Updating Balances" operation.
    */
   public async refreshBalances(chain: Chain, walletIds: string[]): Promise<void> {
-    // refreshBalances triggers scans and then balance callback events.
     await refreshBalances(chain, walletIds);
   }
 

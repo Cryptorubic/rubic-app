@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WorkerParams, WorkerResponse } from './workers/models/worker-params';
+import { filter, fromEvent, map, Observable } from 'rxjs';
 
 @Injectable()
 export class HinkalWorkerService {
@@ -17,5 +18,12 @@ export class HinkalWorkerService {
       this.worker.addEventListener('message', handler);
       this.worker.postMessage(params);
     });
+  }
+
+  public subscribeOnEvent<T>(params: WorkerParams): Observable<T> {
+    return fromEvent<MessageEvent<WorkerResponse<T>>>(this.worker, 'message').pipe(
+      filter(event => event.data.type === params.type),
+      map(event => event.data.result)
+    );
   }
 }

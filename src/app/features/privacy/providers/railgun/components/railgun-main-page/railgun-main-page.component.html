@@ -18,7 +18,7 @@
         (onSelect)="onPageSelect($event)"
       ></app-page-navigation>
 
-      <div [@fadeAnimation] *ngIf="data.utxoScan > 0" class="progress">
+      <div [@fadeAnimation] *ngIf="data.utxoScan > 0 && data.utxoScan < 100" class="progress">
         <h3 class="progress__text">Loading...</h3>
         <label tuiProgressLabel class="progress__wrapper">
           {{ data.utxoScan }}%

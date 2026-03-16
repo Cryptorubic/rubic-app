@@ -31,6 +31,10 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
 import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
 import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
+import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
+import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +73,10 @@ import { RailgunWalletCreateComponent } from './components/railgun-wallet-create
     RevealService,
     PrivateSwapService,
     RailgunTransferService,
-    TargetNetworkAddressService
+    TargetNetworkAddressService,
+    TuiDestroyService,
+    { provide: PrivateActionButtonService, useClass: RailgunPrivateActionButtonService },
+    RailgunErrorService
   ]
 })
 export class RailgunModule {}

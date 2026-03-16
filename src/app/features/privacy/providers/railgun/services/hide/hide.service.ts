@@ -110,8 +110,8 @@ export class HideService {
     railgunWalletAddress: string,
     tokenAddress: string,
     tokenAmount: bigint,
-    opts?: {
-      network?: NetworkName;
+    opts: {
+      network: NetworkName;
       sendWithPublicWallet?: boolean;
       wallet?: Wallet | HDNodeWallet;
     }
@@ -121,7 +121,7 @@ export class HideService {
     gasDetails: unknown;
     nullifiers: unknown;
   }> {
-    const network = opts?.network || NetworkName.Polygon;
+    const network = opts.network;
     const sendWithPublicWallet = opts?.sendWithPublicWallet ?? true;
 
     const mnemonic = await this.railgunFacade.getMnemonic();

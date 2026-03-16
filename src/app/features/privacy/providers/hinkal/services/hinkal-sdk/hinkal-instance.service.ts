@@ -28,7 +28,7 @@ export class HinkalInstanceService {
   ) {
     this._hinkalInstance = new Hinkal({
       generateProofRemotely: true,
-      disableCaching: false
+      disableCaching: true
       // disableMerkleTreeUpdates: true
     });
   }
@@ -67,7 +67,7 @@ export class HinkalInstanceService {
       this._currSignature$.next(signature);
 
       await this.updateAdapter(wallet);
-      await this.workerService.request({
+      this.workerService.request({
         chainId: blockchainId[blockchain],
         address,
         signature,

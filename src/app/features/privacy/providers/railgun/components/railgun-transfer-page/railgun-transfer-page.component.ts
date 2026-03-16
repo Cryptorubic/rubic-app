@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Injector, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Injector, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
@@ -14,6 +14,9 @@ import { PrivateEvent } from '@features/privacy/providers/shared-privacy-provide
 import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
 
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -22,10 +25,11 @@ import { NotificationsService } from '@core/services/notifications/notifications
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: ToAssetsService, useClass: RailgunPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: RailgunRevealFacadeService }
+    { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
+    TuiDestroyService
   ]
 })
-export class RailgunTransferPageComponent {
+export class RailgunTransferPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   private readonly notificationService = inject(NotificationsService);
@@ -36,15 +40,21 @@ export class RailgunTransferPageComponent {
 
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
+  private readonly actionButtonService = inject(PrivateActionButtonService);
+
+  private readonly destroy$ = inject(TuiDestroyService);
+
   @Input({ required: true }) public readonly railgunId: string;
 
-  @Input({ required: true }) balances:
+  @Input({ required: true }) balances: Record<
+    RailgunSupportedChain,
     | {
         address: string;
         amount: string;
         blockchain: BlockchainName;
       }[]
-    | null;
+    | null
+  >;
 
   private readonly _transferAsset$ = new BehaviorSubject<BalanceToken | null>(null);
 
@@ -66,6 +76,18 @@ export class RailgunTransferPageComponent {
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
+
+  ngOnInit(): void {
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.actionButtonService.setReceiverAddress(address);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
 
   public openSelector(): void {
     this.modalService
@@ -102,7 +124,8 @@ export class RailgunTransferPageComponent {
                 token.address,
                 token.stringWeiAmount,
                 this.receiverCtrl.value,
-                () => {}
+                () => {},
+                token.blockchain
               );
               this.notificationService.show('Transfer successful.', {
                 status: 'success',
