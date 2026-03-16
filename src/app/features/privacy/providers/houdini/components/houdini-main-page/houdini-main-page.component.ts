@@ -8,7 +8,6 @@ import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
@@ -16,6 +15,7 @@ import { HoudiniPrivateActionButtonService } from '../../services/houdini-privat
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -35,16 +35,17 @@ export class HoudiniMainPageComponent implements OnInit {
 
   public readonly quoteAdapter = new HoudiniQuoteAdapter(
     this.houdiniSwapService,
-    this.targetAddressService,
-    this.houdiniErrorService
+    this.receiverCtrl,
+    this.houdiniErrorService,
+    this.notificationsService
   );
 
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
-    private readonly targetAddressService: TargetNetworkAddressService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly houdiniErrorService: HoudiniErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly notificationsService: NotificationsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.privatePageTypeService.activePage = {
@@ -81,7 +82,7 @@ export class HoudiniMainPageComponent implements OnInit {
                 swapInfo.tradeId,
                 fromToken as TokenAmount<BlockchainName>,
                 swapInfo.toAsset,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]
