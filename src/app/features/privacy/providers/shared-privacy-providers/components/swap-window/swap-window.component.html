@@ -69,6 +69,7 @@
     ></app-private-action-button>
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"
+      [toBlockchain]="state.swapInfo.toAsset ? state.swapInfo.toAsset.blockchain : 'target network'"
       (handleClick)="toggleReceiver()"
     ></app-receiver-address-button>
   </div>

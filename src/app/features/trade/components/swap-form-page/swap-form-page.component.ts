@@ -43,6 +43,8 @@ export class SwapFormPageComponent {
 
   public readonly toAsset$ = this.swapFormService.toToken$;
 
+  public readonly toBlockchain$ = this.swapFormService.toBlockchain$;
+
   public readonly fromAmount$ = this.swapFormService.fromAmount$;
 
   public readonly toAmount$ = this.swapFormService.toAmount$.pipe(

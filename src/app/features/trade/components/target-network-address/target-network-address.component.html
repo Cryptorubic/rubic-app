@@ -5,7 +5,7 @@
     [formControl]="addressCtrl"
     [pseudoFocus]="addressCtrl.invalid"
     [pseudoInvalid]="addressCtrl.invalid"
-    [tuiTextfieldCleaner]="!!addressCtrl.value"
+    [tuiTextfieldCleaner]="false"
     [tuiTextfieldLabelOutside]="false"
     (focusedChange)="onFocusChange($event)"
   >
@@ -19,6 +19,13 @@
       </label>
     </div>
   </tui-input>
+
+  <span
+    *ngIf="!!addressCtrl.value"
+    class="clear-btn"
+    [inlineSVG]="'assets/images/icons/close.svg'"
+    (click)="clear()"
+  ></span>
 
   <ng-template #success>
     <div
