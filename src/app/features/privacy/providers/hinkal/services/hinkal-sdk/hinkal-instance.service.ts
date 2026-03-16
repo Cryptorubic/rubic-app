@@ -10,8 +10,6 @@ import { HinkalWorkerService } from './hinkal-worker.service';
 
 @Injectable()
 export class HinkalInstanceService {
-  private readonly hinkalSigningMessage = 'Login to Hinkal Protocol';
-
   private readonly _hinkalInstance: Hinkal<unknown>;
 
   public get hinkalInstance(): Hinkal<unknown> {
@@ -54,8 +52,7 @@ export class HinkalInstanceService {
   ): Promise<boolean> {
     try {
       const adapter = this.adapterFactory.getAdapter(blockchain);
-
-      const signature = await adapter.signer.signMessage(this.hinkalSigningMessage);
+      const signature = await adapter.signer.signMessage(this.hinkalInstance.signingMessage);
 
       await prepareHinkalWithSignature(
         this._hinkalInstance,

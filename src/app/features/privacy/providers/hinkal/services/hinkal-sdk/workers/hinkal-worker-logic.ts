@@ -51,6 +51,7 @@ export class HinkalWorkerLogic {
 
   public async switchNetwork(chainId: number, address: string): Promise<void> {
     if (this.hinkal.getProviderAdapter().chainId !== chainId) {
+      this.hinkal.snapshotsClearInterval();
       await this.updateInstance(address, chainId);
       await this.switchSnapshot(chainId);
     }
