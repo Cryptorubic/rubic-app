@@ -72,7 +72,7 @@ export class RailgunEngineService {
           chainId,
           providers: [this.getProviderInfo(chainRpc)]
         };
-        const pollingInterval = 1000 * 60 * 5; // 5 min
+        const pollingInterval = 1000 * 60 * 15; // 15 min
 
         return loadProvider(JSONProvider, chain, pollingInterval);
       }
@@ -92,7 +92,7 @@ export class RailgunEngineService {
       provider: providerUrl,
       priority: 3,
       weight: 2,
-      maxLogsPerBatch: 1
+      maxLogsPerBatch: 200
     };
   }
 
