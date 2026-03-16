@@ -12,7 +12,12 @@ import {
   TuiStepperModule,
   TuiToggleModule
 } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiErrorModule,
+  TuiHintModule,
+  TuiNotificationModule
+} from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunPageNavigationComponent } from '@features/privacy/providers/railgun/components/railgun-page-navigation/railgun-page-navigation.component';
@@ -35,6 +40,8 @@ import { RailgunPrivateActionButtonService } from '@features/privacy/providers/r
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -65,7 +72,10 @@ import { RailgunErrorService } from '@features/privacy/providers/railgun/service
     TuiNotificationModule,
     TuiProgressModule,
     TuiCheckboxLabeledModule,
-    TuiToggleModule
+    TuiToggleModule,
+    InlineSVGModule,
+    ClipboardModule,
+    TuiHintModule
   ],
   providers: [
     RailgunFacadeService,

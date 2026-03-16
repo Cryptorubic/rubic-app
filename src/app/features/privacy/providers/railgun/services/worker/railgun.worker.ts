@@ -20,13 +20,15 @@ import {
 } from '@railgun-community/shared-models';
 import {
   gasEstimateForShield,
+  gasEstimateForShieldBaseToken,
   gasEstimateForUnprovenTransfer,
   gasEstimateForUnprovenUnshield,
   generateTransferProof,
   generateUnshieldProof,
   populateProvedTransfer,
   populateProvedUnshield,
-  populateShield
+  populateShield,
+  populateShieldBaseToken
 } from '@railgun-community/wallet';
 import { Wallet } from 'ethers';
 
@@ -132,6 +134,36 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
         postWorkerMessage({ method: 'gasEstimateForShield', response: esimates });
         break;
       }
+      case 'gasEstimateForShieldNative': {
+        const {
+          txIdVersion,
+          network,
+          shieldPrivateKey,
+          erc20AmountRecipients,
+          railgunAddress,
+          fromWalletAddress
+        } = data.params as {
+          txIdVersion: TXIDVersion;
+          network: NetworkName;
+          shieldPrivateKey: string;
+          erc20AmountRecipients: RailgunERC20AmountRecipient[];
+          nftAmountRecipients: []; // nftAmountRecipients
+          fromWalletAddress: string;
+          railgunAddress: string;
+        };
+        const esimates = await gasEstimateForShieldBaseToken(
+          txIdVersion,
+          network,
+          railgunAddress,
+          // railgunAddress
+          shieldPrivateKey,
+          erc20AmountRecipients[0],
+          fromWalletAddress
+        );
+
+        postWorkerMessage({ method: 'gasEstimateForShieldNative', response: esimates });
+        break;
+      }
       case 'populateShield': {
         const {
           txIdVersion,
@@ -158,6 +190,36 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
         );
         postWorkerMessage({
           method: 'populateShield',
+          response: { transaction, nullifiers }
+        });
+        break;
+      }
+      case 'populateShieldNative': {
+        const {
+          txIdVersion,
+          network,
+          shieldPrivateKey,
+          erc20AmountRecipients,
+          railgunAddress,
+          gasDetails
+        } = data.params as {
+          txIdVersion: TXIDVersion;
+          network: NetworkName;
+          shieldPrivateKey: string;
+          erc20AmountRecipients: RailgunERC20AmountRecipient[];
+          railgunAddress: string;
+          gasDetails: TransactionGasDetails;
+        };
+        const { transaction, nullifiers } = await populateShieldBaseToken(
+          txIdVersion,
+          network,
+          railgunAddress,
+          shieldPrivateKey,
+          erc20AmountRecipients[0],
+          gasDetails
+        );
+        postWorkerMessage({
+          method: 'populateShieldNative',
           response: { transaction, nullifiers }
         });
         break;

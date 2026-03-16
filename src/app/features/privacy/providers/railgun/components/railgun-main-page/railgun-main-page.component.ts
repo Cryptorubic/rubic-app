@@ -28,7 +28,9 @@ export class RailgunMainPageComponent {
   public readonly disabledPages$ = this._disabledPages$.asObservable().pipe(
     combineLatestWith(this.utxoScan$),
     map(([disabledPages, utxoScan]) => {
-      if (utxoScan === 100 || utxoScan === 0) {
+      const chains = Object.values(utxoScan);
+      const sum = chains.reduce((acc, curr) => acc + curr, 0);
+      if (sum === chains.length * 100 || sum === 0) {
         return disabledPages;
       }
       return [

@@ -125,7 +125,7 @@ export class RailgunTransferPageComponent implements OnInit {
                 token.stringWeiAmount,
                 this.receiverCtrl.value,
                 () => {},
-                token.blockchain
+                token.blockchain as RailgunSupportedChain
               );
               this.notificationService.show('Transfer successful.', {
                 status: 'success',

@@ -60,7 +60,7 @@ export class RailgunRevealPageComponent {
                 token.address,
                 bigintAmount.toString(),
                 () => {},
-                token.blockchain
+                token.blockchain as RailgunSupportedChain
               );
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',

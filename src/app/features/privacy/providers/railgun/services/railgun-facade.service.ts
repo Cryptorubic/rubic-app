@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { Store } from '@core/services/store/models/store';
-import { BehaviorSubject, debounceTime, firstValueFrom, from, map, of } from 'rxjs';
+import { BehaviorSubject, debounceTime, firstValueFrom, from, of } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { switchTap } from '@shared/utils/utils';
 import {
@@ -91,18 +91,20 @@ export class RailgunFacadeService {
     [BLOCKCHAIN_NAME.POLYGON]: 0
   });
 
-  public readonly utxoScan$ = this._utxoScan$.asObservable().pipe(
-    debounceTime(10),
-    map(object => {
-      const values = Object.values(object);
-      const normalizedValues = values.map(value => (value === 0 ? 100 : value));
-      const sum = normalizedValues.reduce((acc, value) => acc + value, 0);
-      const total = sum / values.length;
-      const result = Math.round(total * 100) / 100;
+  public readonly utxoScan$ = this._utxoScan$.asObservable().pipe(debounceTime(5));
 
-      return result;
-    })
-  );
+  // public readonly utxoScan$ = this._utxoScan$.asObservable().pipe(
+  //   debounceTime(10),
+  //   map(object => {
+  //     const values = Object.values(object);
+  //     const normalizedValues = values.map(value => (value === 0 ? 100 : value));
+  //     const sum = normalizedValues.reduce((acc, value) => acc + value, 0);
+  //     const total = sum / values.length;
+  //     const result = Math.round(total * 100) / 100;
+  //
+  //     return result;
+  //   })
+  // );
 
   public readonly balances$ = this._balances$.asObservable();
 
@@ -401,6 +403,45 @@ export class RailgunFacadeService {
     });
   }
 
+  public async gasEstimateForShieldNative(
+    network: NetworkName,
+    wallet: Wallet | HDNodeWallet,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const shieldPrivateKey = await getShieldSignature(wallet);
+    // Address of public wallet we are shielding from
+    const fromWalletAddress = wallet.address;
+    const { railgunAddress } = await firstValueFrom(this.railgunAccount$);
+
+    this.railgunWorker.postMessage({
+      method: 'gasEstimateForShieldNative',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        shieldPrivateKey,
+        erc20AmountRecipients,
+        railgunAddress,
+        fromWalletAddress
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'gasEstimateForShieldNative') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
+        }
+      };
+    });
+  }
+
   public async populateShield(
     network: NetworkName,
     erc20AmountRecipients: RailgunERC20AmountRecipient[],
@@ -436,13 +477,50 @@ export class RailgunFacadeService {
     });
   }
 
-  public async gasEstimateForUnshield(
+  public async populateShieldNative(
     network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    shieldPrivateKey: string,
+    gasDetails: TransactionGasDetails
+  ): Promise<{ transaction: ContractTransaction; nullifiers: string[] }> {
+    const { railgunAddress } = await firstValueFrom(this.railgunAccount$);
+    this.railgunWorker.postMessage({
+      method: 'populateShieldNative',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        shieldPrivateKey,
+        erc20AmountRecipients,
+        railgunAddress,
+        gasDetails: gasDetails
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
+      }) => {
+        if (data.method === 'populateShieldNative') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
+        }
+      };
+    });
+  }
+
+  public async gasEstimateForUnshield(
+    network: PrivacySupportedNetworks,
     erc20AmountRecipients: RailgunERC20AmountRecipient[]
   ): Promise<{ gasEstimate: bigint }> {
     const walletId = (await firstValueFrom(this.railgunAccount$)).id;
     const mnemonic = await this.getMnemonic();
-    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const blockchain = fromPrivateToRubicChainMap[network];
+    const { wallet } = getProviderWallet(blockchain, mnemonic);
     const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
 
     this.railgunWorker.postMessage({
@@ -555,12 +633,13 @@ export class RailgunFacadeService {
   }
 
   public async gasEstimateForTransfer(
-    network: NetworkName,
+    network: PrivacySupportedNetworks,
     erc20AmountRecipients: RailgunERC20AmountRecipient[]
   ): Promise<{ gasEstimate: bigint }> {
     const walletId = (await firstValueFrom(this.railgunAccount$)).id;
     const mnemonic = await this.getMnemonic();
-    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const blockchain = fromPrivateToRubicChainMap[network];
+    const { wallet } = getProviderWallet(blockchain, mnemonic);
     const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
 
     this.railgunWorker.postMessage({

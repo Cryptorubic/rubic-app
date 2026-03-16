@@ -9,6 +9,7 @@ import {
   PreviewPrivateSwapOptions,
   PreviewSwapWarning,
   PrivateStep,
+  PrivateSwapOptions,
   PrivateSwapType
 } from './models/preview-swap-options';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -54,6 +55,8 @@ export class PrivatePreviewSwapComponent {
 
   private steps: PrivateStep[];
 
+  private readonly swapOptions: PrivateSwapOptions;
+
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
   }
@@ -79,6 +82,7 @@ export class PrivatePreviewSwapComponent {
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
     this.feeInfo = context.data.swapOptions.feeInfo || null;
+    this.swapOptions = context.data.swapOptions;
   }
 
   private getTokenAsset(token: BalanceToken): AssetSelector {
@@ -116,6 +120,9 @@ export class PrivatePreviewSwapComponent {
   }
 
   public getAverageSwapTimeMinutes(): string {
+    if (this.swapOptions.swapTime) {
+      return this.swapOptions.swapTime;
+    }
     return this.fromAsset.secondLabel === this.toAsset.secondLabel ? '1 min' : '30 min';
   }
 
