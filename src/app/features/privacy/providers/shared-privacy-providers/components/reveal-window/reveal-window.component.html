@@ -6,7 +6,7 @@
     displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <app-input-output-container [round]="'all'" [marginTop]="false">
+  <app-input-output-container [round]="state.displayReceiver ? 'top' : 'all'" [marginTop]="false">
     <app-asset-selector
       left
       selectorType="to"
@@ -45,6 +45,9 @@
     >
       Reveal tokens
     </button>
-    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+    <app-receiver-address-button
+      [toBlockchain]="state.revealAsset ? state.revealAsset.blockchain : 'target network'"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
   </div>
 </app-window-container>

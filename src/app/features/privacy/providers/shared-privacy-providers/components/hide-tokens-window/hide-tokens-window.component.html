@@ -7,7 +7,7 @@
   } as state"
 >
   <app-input-output-container
-    [round]="creationConfig.withReceiver ? 'top' : 'all'"
+    [round]="creationConfig.withReceiver && state.displayReceiver ? 'top' : 'all'"
     [marginTop]="false"
   >
     <app-asset-selector
@@ -56,6 +56,7 @@
     </button>
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"
+      [toBlockchain]="state.hideAsset ? state.hideAsset.blockchain : 'target network'"
       (handleClick)="toggleReceiver()"
     ></app-receiver-address-button>
   </div>

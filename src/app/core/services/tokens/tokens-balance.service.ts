@@ -28,6 +28,7 @@ import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.servi
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { getChainTypeSafe } from './utils/get-chain-type-safe';
 
 @Injectable({
   providedIn: 'root'
@@ -266,10 +267,12 @@ export class TokensBalanceService {
   ): Promise<BalanceToken[]> {
     const chainTokensMap: Partial<Record<BlockchainName, Token[]>> = {};
     tokens.forEach(token => {
-      if (!chainTokensMap[token.blockchain]) {
-        chainTokensMap[token.blockchain] = [];
+      if (this.authService.userChainType === getChainTypeSafe(token.blockchain)) {
+        if (!chainTokensMap[token.blockchain]) {
+          chainTokensMap[token.blockchain] = [];
+        }
+        chainTokensMap[token.blockchain].push(token);
       }
-      chainTokensMap[token.blockchain].push(token);
     });
     const promises = Object.entries(chainTokensMap).map(
       ([chain, chainTokens]: [BlockchainName, Token[]]) => {
@@ -319,14 +322,6 @@ export class TokensBalanceService {
     chainType: ChainType,
     chains: BlockchainName[]
   ): Promise<void> {
-    const getChainTypeSafe = (chain: BlockchainName): ChainType | null => {
-      try {
-        return BlockchainsInfo.getChainType(chain);
-      } catch {
-        return null;
-      }
-    };
-
     const resultChains = chains.filter(
       (chain: BlockchainName) => chainType === getChainTypeSafe(chain)
     );
