@@ -7,6 +7,7 @@ import { PageType } from '@features/privacy/providers/shared-privacy-providers/c
 import { RAILGUN_PAGES } from '@features/privacy/providers/railgun/constants/railgun-pages';
 import { combineLatestWith } from 'rxjs/operators';
 import { fadeAnimation } from '@shared/utils/utils';
+import { PrivatePageTypeService } from '@features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -16,6 +17,8 @@ import { fadeAnimation } from '@shared/utils/utils';
   animations: [fadeAnimation]
 })
 export class RailgunMainPageComponent {
+  private readonly privacyService = inject(PrivatePageTypeService);
+
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   public readonly utxoScan$ = this.railgunFacade.utxoScan$;
@@ -25,7 +28,9 @@ export class RailgunMainPageComponent {
   public readonly disabledPages$ = this._disabledPages$.asObservable().pipe(
     combineLatestWith(this.utxoScan$),
     map(([disabledPages, utxoScan]) => {
-      if (utxoScan === 0) {
+      const chains = Object.values(utxoScan);
+      const sum = chains.reduce((acc, curr) => acc + curr, 0);
+      if (sum === chains.length * 100 || sum === 0) {
         return disabledPages;
       }
       return [
@@ -40,9 +45,7 @@ export class RailgunMainPageComponent {
     })
   );
 
-  private readonly _activePage$ = new BehaviorSubject<PageType>(RAILGUN_PAGES[0]);
-
-  public readonly activePage$ = this._activePage$.asObservable();
+  public readonly activePage$ = this.privacyService.activePage$;
 
   public readonly pages = RAILGUN_PAGES;
 
@@ -60,6 +63,7 @@ export class RailgunMainPageComponent {
 
   constructor() {
     this.initializeRailgun();
+    this.privacyService.activePage = RAILGUN_PAGES[0];
   }
 
   ngOnInit() {
@@ -81,7 +85,7 @@ export class RailgunMainPageComponent {
 
   private handleLogin(): void {
     this._disabledPages$.next([RAILGUN_PAGES[0], RAILGUN_PAGES[4]]);
-    this._activePage$.next(RAILGUN_PAGES[1]);
+    this.privacyService.activePage = RAILGUN_PAGES[1];
   }
 
   public onStepChange(step: StepType): void {
@@ -90,11 +94,11 @@ export class RailgunMainPageComponent {
 
   public logout(): void {
     this.railgunFacade.logout();
-    this._activePage$.next(RAILGUN_PAGES[0]);
+    this.privacyService.activePage = RAILGUN_PAGES[0];
     this._disabledPages$.next(RAILGUN_PAGES.slice(1));
   }
 
   public onPageSelect(page: PageType): void {
-    this._activePage$.next(page);
+    this.privacyService.activePage = page;
   }
 }

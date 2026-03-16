@@ -1,9 +1,5 @@
 import { inject, Injectable, NgZone } from '@angular/core';
-import {
-  calculateGasPrice,
-  NetworkName,
-  RailgunERC20AmountRecipient
-} from '@railgun-community/shared-models';
+import { calculateGasPrice, RailgunERC20AmountRecipient } from '@railgun-community/shared-models';
 import {
   getGasDetailsForTransaction,
   getProviderWallet,
@@ -11,8 +7,11 @@ import {
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
+import {
+  fromRubicToPrivateChainMap,
+  RailgunSupportedChain
+} from '@features/privacy/providers/railgun/constants/network-map';
 
 @Injectable()
 export class RevealService {
@@ -29,29 +28,27 @@ export class RevealService {
   public async unshieldTokens(
     tokenAddress: string,
     tokenAmount: string,
-    proofProgress: (progress: string) => void
+    proofProgress: (progress: string) => void,
+    tokenBlockchain: RailgunSupportedChain
   ): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
     ];
+    const chain = fromRubicToPrivateChainMap[tokenBlockchain];
 
     const { gasEstimate } = await this.railgunFacade.gasEstimateForUnshield(
-      NetworkName.Polygon,
+      chain,
       erc20AmountRecipients
     );
 
     // generate unshield proof
-    await this.railgunFacade.generateUnshieldProof(
-      NetworkName.Polygon,
-      erc20AmountRecipients,
-      proofProgress
-    );
+    await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
 
     const mnemonic = await this.railgunFacade.getMnemonic();
-    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);
 
     const transactionGasDetails = await getGasDetailsForTransaction(
-      NetworkName.Polygon,
+      chain,
       gasEstimate,
       true,
       wallet
@@ -62,7 +59,7 @@ export class RevealService {
     // populate tx
 
     const { transaction } = await this.railgunFacade.populateUnshield(
-      NetworkName.Polygon,
+      chain,
       erc20AmountRecipients,
       transactionGasDetails,
       overallBatchMinGasPrice

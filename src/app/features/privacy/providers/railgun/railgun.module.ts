@@ -12,7 +12,12 @@ import {
   TuiStepperModule,
   TuiToggleModule
 } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiErrorModule,
+  TuiHintModule,
+  TuiNotificationModule
+} from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunPageNavigationComponent } from '@features/privacy/providers/railgun/components/railgun-page-navigation/railgun-page-navigation.component';
@@ -31,6 +36,12 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
 import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
 import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
+import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
+import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -61,7 +72,10 @@ import { RailgunWalletCreateComponent } from './components/railgun-wallet-create
     TuiNotificationModule,
     TuiProgressModule,
     TuiCheckboxLabeledModule,
-    TuiToggleModule
+    TuiToggleModule,
+    InlineSVGModule,
+    ClipboardModule,
+    TuiHintModule
   ],
   providers: [
     RailgunFacadeService,
@@ -69,7 +83,10 @@ import { RailgunWalletCreateComponent } from './components/railgun-wallet-create
     RevealService,
     PrivateSwapService,
     RailgunTransferService,
-    TargetNetworkAddressService
+    TargetNetworkAddressService,
+    TuiDestroyService,
+    { provide: PrivateActionButtonService, useClass: RailgunPrivateActionButtonService },
+    RailgunErrorService
   ]
 })
 export class RailgunModule {}

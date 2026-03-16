@@ -5,7 +5,8 @@
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async
+    toAmount: toAmount$ | async,
+    toBlockchain: toBlockchain$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -62,7 +63,10 @@
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
-      <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+      <app-receiver-address-button
+        [toBlockchain]="state.toBlockchain ? state.toBlockchain : 'target network'"
+        (handleClick)="toggleReceiver()"
+      ></app-receiver-address-button>
     </div>
   </ng-container>
 </app-window-container>

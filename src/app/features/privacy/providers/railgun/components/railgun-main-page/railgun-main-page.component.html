@@ -17,14 +17,6 @@
         [disabledPages]="data.disabledPages"
         (onSelect)="onPageSelect($event)"
       ></app-page-navigation>
-
-      <div [@fadeAnimation] *ngIf="data.utxoScan > 0" class="progress">
-        <h3 class="progress__text">Loading...</h3>
-        <label tuiProgressLabel class="progress__wrapper">
-          {{ data.utxoScan }}%
-          <progress new tuiProgressBar size="l" [max]="100" [value]="data.utxoScan"></progress>
-        </label>
-      </div>
     </div>
 
     <app-railgun-login-page
@@ -40,6 +32,7 @@
       [accountId]="data.railgunAccount.id"
       [evmAddress]="data.railgunAccount.evmWalletAddress"
       (handleLogout)="logout()"
+      [utxoScan]="data.utxoScan"
     ></app-railgun-account-info>
 
     <app-railgun-transfer-page

@@ -7,6 +7,7 @@ import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { firstValueFrom } from 'rxjs';
+import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -33,6 +34,7 @@ export class RailgunHideTokensPageComponent {
   private readonly notificationService = inject(NotificationsService);
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+    // const gasInfo: AppGasData = { amount, amountInUsd, symbol: token.symbol };
     try {
       const preview$ = openPreview({
         steps: [
@@ -43,7 +45,10 @@ export class RailgunHideTokensPageComponent {
               await this.hideService.shieldERC20(
                 this.railgunWalletAddress,
                 token.address,
-                bigintAmount
+                bigintAmount,
+                {
+                  network: fromRubicToPrivateChainMap[token.blockchain]
+                }
               );
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
@@ -57,7 +62,9 @@ export class RailgunHideTokensPageComponent {
               );
             }
           }
-        ]
+        ],
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
+        swapTime: '1 hour'
       });
       await firstValueFrom(preview$);
     } finally {
