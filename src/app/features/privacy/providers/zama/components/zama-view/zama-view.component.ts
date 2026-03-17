@@ -7,13 +7,21 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
+import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { ZamaActionButtonService } from '../../services/zama-action-button.service';
 
 @Component({
   selector: 'app-zama-view',
   templateUrl: './zama-view.component.html',
   styleUrls: ['./zama-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [
+    TuiDestroyService,
+    {
+      provide: PrivateActionButtonService,
+      useClass: ZamaActionButtonService
+    }
+  ]
 })
 export class ZamaViewComponent {
   public readonly activePage$ = this.privatePageTypeService.activePage$;

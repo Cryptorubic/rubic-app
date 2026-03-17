@@ -43,17 +43,12 @@
     *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
     class="buttons-container"
   >
-    <button
+    <app-private-action-button
       *ngIf="creationConfig.withActionButton"
       [showLoader]="state.loading"
-      tuiButton
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="hide()"
-    >
-      {{ creationConfig.buttonText ? creationConfig.buttonText : 'Hide tokens' }}
-    </button>
+      (onClick)="hide()"
+    ></app-private-action-button>
+
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"
       [toBlockchain]="state.hideAsset ? state.hideAsset.blockchain : 'target network'"

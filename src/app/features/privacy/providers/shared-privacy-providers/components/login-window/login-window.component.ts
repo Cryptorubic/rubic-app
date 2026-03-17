@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-login-window',
@@ -9,9 +10,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 export class LoginWindowComponent {
   @Input({ required: true }) authorized: boolean;
 
-  @Input() isPlatformLoaded: boolean = false;
+  @Input() showLoader: boolean = false;
 
   @Output() handleClick = new EventEmitter();
+
+  public readonly currUser$ = this.authService.currentUser$;
+
+  constructor(private readonly authService: AuthService) {}
 
   public onClick(): void {
     this.handleClick.emit();

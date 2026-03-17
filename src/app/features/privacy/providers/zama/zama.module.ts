@@ -19,6 +19,7 @@ import { ZamaRevealFacadeService } from './services/zama-reveal-tokens-facade.se
 import { TuiButtonModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
 import { ZamaTransferTokensPageComponent } from './components/zama-transfer-tokens-page/zama-transfer-tokens-page.component';
 import { ZamaLoginPageComponent } from './components/zama-login-page/zama-login-page.component';
+import { ZamaActionButtonService } from './services/zama-action-button.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ZamaLoginPageComponent } from './components/zama-login-page/zama-login-
     ZamaSwapService,
     ZamaTokensService,
     ZamaSignatureService,
-    ZamaRevealFacadeService
+    ZamaRevealFacadeService,
+    ZamaActionButtonService
   ]
 })
 export class ZamaModule {}

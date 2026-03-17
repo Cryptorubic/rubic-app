@@ -35,16 +35,10 @@
   ></app-target-network-address>
 
   <div class="buttons-container">
-    <button
+    <app-private-action-button
       [showLoader]="state.loading"
-      tuiButton
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="reveal()"
-    >
-      Reveal tokens
-    </button>
+      (onClick)="reveal()"
+    ></app-private-action-button>
     <app-receiver-address-button
       [toBlockchain]="state.revealAsset ? state.revealAsset.blockchain : 'target network'"
       (handleClick)="toggleReceiver()"

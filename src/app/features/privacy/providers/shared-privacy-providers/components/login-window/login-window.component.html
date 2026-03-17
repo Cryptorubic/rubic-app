@@ -1,21 +1,25 @@
 <div class="signature-window-wrapper">
-  <ng-container *ngIf="!authorized; else template">
+  <ng-container *ngIf="!authorized; else logged">
     <b>
       Sign a message with your wallet <br />
       to access your private balance
     </b>
     <button
+      *ngIf="currUser$ | async; else connectWallet"
       tuiButton
       type="button"
       size="m"
       appearance="primary"
       (click)="onClick()"
-      [showLoader]="!isPlatformLoaded"
+      [showLoader]="showLoader"
     >
       Sign
     </button>
   </ng-container>
-  <ng-template #template>
+  <ng-template #logged>
     <b> You logged in successfully.</b>
+  </ng-template>
+  <ng-template #connectWallet>
+    <app-login-button></app-login-button>
   </ng-template>
 </div>

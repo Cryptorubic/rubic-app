@@ -6,6 +6,8 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { BehaviorSubject, filter, map, Observable } from 'rxjs';
+import { HideWindowService } from '../hide-window-service/hide-window.service';
+import { RevealWindowService } from '../reveal-window/reveal-window.service';
 
 @Injectable()
 export class PrivateActionButtonService {
@@ -33,6 +35,8 @@ export class PrivateActionButtonService {
     @Inject(Injector) protected readonly injector: Injector,
     protected readonly privateTransferWindowService: PrivateTransferWindowService,
     protected readonly privateSwapWindowService: PrivateSwapWindowService,
+    protected readonly hideWindowService: HideWindowService,
+    protected readonly revealWindowService: RevealWindowService,
     protected readonly privatePageTypeService: PrivatePageTypeService
   ) {}
 
