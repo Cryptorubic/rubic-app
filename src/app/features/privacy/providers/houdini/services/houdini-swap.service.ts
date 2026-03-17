@@ -8,7 +8,8 @@ import {
   QuoteRequestInterface,
   QuoteResponseInterface,
   TokenAmount,
-  Token
+  Token,
+  EvmBlockchainName
 } from '@cryptorubic/core';
 import { Token as SharedToken } from '@app/shared/models/tokens/token';
 import { RubicSdkError } from '@cryptorubic/web3';
@@ -100,9 +101,13 @@ export class HoudiniSwapService {
     }
   }
 
-  public async swap(): Promise<void> {
+  public async swap(fromToken: TokenAmount<BlockchainName>): Promise<void> {
     try {
       const trade = await this.getTrade();
+
+      if (fromToken.blockchain !== this.walletConnectorService.network) {
+        await this.walletConnectorService.switchChain(fromToken.blockchain as EvmBlockchainName);
+      }
 
       //TODO: maybe add some callback later
       const approveCallback = {

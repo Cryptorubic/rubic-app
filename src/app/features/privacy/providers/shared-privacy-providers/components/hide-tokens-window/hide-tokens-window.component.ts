@@ -19,6 +19,7 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { SwapAmount } from '../../models/swap-info';
 import { PrivateShieldFormConfig } from '../../models/swap-form-types';
+import { HideWindowService } from '../../services/hide-window-service/hide-window.service';
 
 @Component({
   selector: 'app-hide-tokens-window',
@@ -38,20 +39,15 @@ export class HideTokensWindowComponent {
 
   @Output() public handleHide = new EventEmitter<PrivateEvent>();
 
+  private readonly hideTokensWindowService = inject(HideWindowService);
+
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
-  private readonly _hideAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  public readonly hideAsset$ = this.hideTokensWindowService.hideAsset$;
 
-  public readonly hideAsset$ = this._hideAsset$.asObservable();
-
-  private readonly _hideAmount$ = new BehaviorSubject<{
-    visibleValue: string;
-    actualValue: BigNumber;
-  } | null>(null);
-
-  public readonly hideAmount$ = this._hideAmount$.asObservable();
+  public readonly hideAmount$ = this.hideTokensWindowService.hideAmount$;
 
   private readonly injector = inject(Injector);
 
@@ -65,12 +61,12 @@ export class HideTokensWindowComponent {
     this.modalService
       .openPublicTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
-        this._hideAsset$.next(selectedToken);
+        this.hideTokensWindowService.setHideAsset(selectedToken);
       });
   }
 
   public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
-    this._hideAmount$.next(value);
+    this.hideTokensWindowService.setHideAmount(value);
   }
 
   public handleMaxButton(): void {}
@@ -101,16 +97,19 @@ export class HideTokensWindowComponent {
 
   public async hide(): Promise<void> {
     this._loading$.next(true);
+    const hideAsset = this.hideTokensWindowService.hideAsset;
+    const hideAmount = this.hideTokensWindowService.hideAmount;
+
     const token = new TokenAmount({
-      ...this._hideAsset$.value,
-      weiAmount: Token.toWei(this._hideAmount$.value?.actualValue, this._hideAsset$.value?.decimals)
+      ...hideAsset,
+      weiAmount: Token.toWei(hideAmount.actualValue, hideAsset.decimals)
     });
 
     this.handleHide.emit({
       token,
       balanceToken: this._hideAsset$.value,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal(this._hideAsset$.value, this._hideAmount$.value)
+      openPreview: this.createPreviewModal(hideAsset, hideAmount)
     });
   }
 

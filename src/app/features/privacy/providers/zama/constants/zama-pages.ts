@@ -2,6 +2,10 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 
 export const ZAMA_PAGES: PageType[] = [
   {
+    type: 'login',
+    label: 'Login'
+  },
+  {
     type: 'hide',
     label: 'Shield'
   },

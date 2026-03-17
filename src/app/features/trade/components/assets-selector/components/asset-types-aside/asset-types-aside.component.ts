@@ -28,6 +28,8 @@ export class AssetTypesAsideComponent {
 
   @Input({ required: true }) assetListType: AssetListType;
 
+  @Input({ required: true }) showAllChains: boolean;
+
   @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
 
   @Output() handleFilterSelect = new EventEmitter<BlockchainFilters>();
