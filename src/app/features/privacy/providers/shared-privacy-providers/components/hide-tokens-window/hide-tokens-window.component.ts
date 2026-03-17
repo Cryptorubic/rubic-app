@@ -107,7 +107,7 @@ export class HideTokensWindowComponent {
 
     this.handleHide.emit({
       token,
-      balanceToken: this._hideAsset$.value,
+      balanceToken: hideAsset,
       loadingCallback: () => this._loading$.next(false),
       openPreview: this.createPreviewModal(hideAsset, hideAmount)
     });
