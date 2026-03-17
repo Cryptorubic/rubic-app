@@ -121,13 +121,6 @@ export class PrivatePreviewSwapComponent {
     TokensFacadeService.onTokenImageError($event);
   }
 
-  public getAverageSwapTimeMinutes(): string {
-    if (this.swapOptions.swapTime) {
-      return this.swapOptions.swapTime;
-    }
-    return this.fromAsset.secondLabel === this.toAsset.secondLabel ? '1 min' : '30 min';
-  }
-
   private setLoadingState(): void {
     this._currentStep$.next({
       label: 'Transaction in process ...',

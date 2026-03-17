@@ -50,8 +50,7 @@ export class PrivacycashTransferPageComponent {
             action: () => this.privacycashSwapService.transfer(token, receiverAddr)
           }
         ],
-        dstTokenAmount: dstToken.tokenAmount.toFixed(),
-        swapTime: '1 min'
+        dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

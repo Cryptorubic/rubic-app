@@ -53,8 +53,7 @@ export class PrivacycashRefundPageComponent {
             action: () => this.privacycashRefundService.refundTokens(token.address, receiverAddr)
           }
         ],
-        dstTokenAmount,
-        swapTime: '1 min'
+        dstTokenAmount
       });
       await firstValueFrom(preview$);
     } finally {

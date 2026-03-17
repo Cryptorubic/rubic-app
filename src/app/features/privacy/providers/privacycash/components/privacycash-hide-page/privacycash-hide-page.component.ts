@@ -52,8 +52,7 @@ export class PrivacycashHidePageComponent {
             action: () => this.privacycashSwapService.shield(token)
           }
         ],
-        dstTokenAmount: token.tokenAmount.toFixed(),
-        swapTime: '1 min'
+        dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

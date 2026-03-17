@@ -18,7 +18,6 @@ export interface PrivateSwapOptions {
   gasInfo?: AppGasData;
   feeInfo?: FeeInfo;
   warnings?: PreviewSwapWarning[];
-  swapTime?: string;
   steps: PrivateStep[];
 }
 
