@@ -31,13 +31,13 @@
     </div>
   </app-input-output-container>
 
-  <ng-content></ng-content>
-
   <app-target-network-address
     *ngIf="state.displayReceiver && creationConfig.withReceiver"
     [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
+
+  <ng-content></ng-content>
 
   <div
     *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"

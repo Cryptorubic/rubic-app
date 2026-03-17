@@ -30,7 +30,7 @@ export class ZamaTransferTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Transfer tokens',
+            label: 'Transfer',
             action: () =>
               this.zamaFacadeService.transfer(
                 token as TokenAmount<EvmBlockchainName>,

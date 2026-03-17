@@ -4,7 +4,16 @@
       Sign a message with your wallet <br />
       to access your private balance
     </b>
-    <button tuiButton type="button" size="m" appearance="primary" (click)="onClick()">Sign</button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="onClick()"
+      [showLoader]="!isPlatformLoaded"
+    >
+      Sign
+    </button>
   </ng-container>
   <ng-template #template>
     <b> You logged in successfully.</b>

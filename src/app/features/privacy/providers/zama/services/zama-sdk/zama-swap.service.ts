@@ -58,7 +58,10 @@ export class ZamaSwapService {
     }
   }
 
-  public async wrap(wrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
+  public async wrap(
+    wrapToken: TokenAmount<EvmBlockchainName>,
+    receiver?: string
+  ): Promise<boolean> {
     try {
       const isApproved = await this.approveBeforeWrap(wrapToken);
       const adapter = this.getEvmAdapter(wrapToken.blockchain);
@@ -75,15 +78,17 @@ export class ZamaSwapService {
       await adapter.signer.sendTransaction({
         txOptions: tx
       });
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
   public async confidentialTransfer(
     transferToken: TokenAmount<EvmBlockchainName>,
     receiver: string
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       const adapter = this.getEvmAdapter(transferToken.blockchain);
       const shieldedTokenAddress = this.getErc7984Token(
@@ -113,15 +118,17 @@ export class ZamaSwapService {
       await adapter.signer.trySendTransaction({
         txOptions: tx
       });
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
   public async unwrap(
     unwrapToken: TokenAmount<EvmBlockchainName>,
     receiver?: string
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       const adapter = this.getEvmAdapter(unwrapToken.blockchain);
 
@@ -190,8 +197,10 @@ export class ZamaSwapService {
       );
 
       await adapter.signer.trySendTransaction({ txOptions: finilizeWrapTx });
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 }

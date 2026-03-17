@@ -1,0 +1,5 @@
+<app-login-window
+  [authorized]="authorized$ | async"
+  [isPlatformLoaded]="(sdkLoading$ | async) === false"
+  (handleClick)="handleClick()"
+></app-login-window>

@@ -1,15 +1,18 @@
 <ng-container
   *ngLet="{
-    activePage: activePage$ | async
+    activePage: activePage$ | async,
+    disabledPages: disabledPages$ | async,
   } as data"
 >
   <div class="wrapper">
     <app-page-navigation
+      [disabledPages]="data.disabledPages"
       [activePage]="data.activePage"
       [pages]="pages"
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
 
+    <app-zama-login-page *ngIf="data.activePage.type === 'login'"></app-zama-login-page>
     <app-zama-hide-tokens-page *ngIf="data.activePage.type === 'hide'"></app-zama-hide-tokens-page>
     <app-zama-reveal-tokens-page
       *ngIf="data.activePage.type === 'reveal'"

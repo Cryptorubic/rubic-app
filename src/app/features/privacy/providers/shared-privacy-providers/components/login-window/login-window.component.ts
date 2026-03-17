@@ -9,6 +9,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 export class LoginWindowComponent {
   @Input({ required: true }) authorized: boolean;
 
+  @Input() isPlatformLoaded: boolean = false;
+
   @Output() handleClick = new EventEmitter();
 
   public onClick(): void {
