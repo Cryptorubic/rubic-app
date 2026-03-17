@@ -8,7 +8,7 @@ import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
-import { BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
@@ -68,7 +68,7 @@ export class HoudiniMainPageComponent implements OnInit {
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
-      const fromToken = new TokenAmount({
+      const _ = new TokenAmount({
         ...swapInfo.fromAsset,
         tokenAmount: swapInfo.fromAmount.actualValue
       });
@@ -77,13 +77,7 @@ export class HoudiniMainPageComponent implements OnInit {
         steps: [
           {
             label: 'Swap',
-            action: () =>
-              this.houdiniSwapService.transfer(
-                swapInfo.tradeId,
-                fromToken as TokenAmount<BlockchainName>,
-                swapInfo.toAsset,
-                this.receiverCtrl.value
-              )
+            action: () => this.houdiniSwapService.swap()
           }
         ]
       });
