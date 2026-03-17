@@ -42,7 +42,7 @@ export class RailgunHideTokensPageComponent {
             label: 'Hide Tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              await this.hideService.shieldERC20(
+              await this.hideService.shield(
                 this.railgunWalletAddress,
                 token.address,
                 bigintAmount,
@@ -63,8 +63,7 @@ export class RailgunHideTokensPageComponent {
             }
           }
         ],
-        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
-        swapTime: '1 hour'
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

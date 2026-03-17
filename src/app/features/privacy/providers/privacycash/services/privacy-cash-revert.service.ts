@@ -11,6 +11,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../constants/privacycash-consts';
 
 @Injectable()
 export class PrivacycashRefundService {
@@ -43,7 +44,10 @@ export class PrivacycashRefundService {
         0
       );
     const burnerWalletBalanceWei = await adapter.getBalance(ephemeralKeypair.publicKey.toBase58());
-    const amountLeftForGasWei = Token.toWei(0.0033, nativeTokensList.SOLANA.decimals);
+    const amountLeftForGasWei = Token.toWei(
+      EPHEMERAL_WALLET_GAS_AMOUNT,
+      nativeTokensList.SOLANA.decimals
+    );
     const availableBalanceToRefundWei = burnerWalletBalanceWei.minus(amountLeftForGasWei);
     if (availableBalanceToRefundWei.lte(0)) {
       this.notificationsService.showWarning('Nothing to refund.');

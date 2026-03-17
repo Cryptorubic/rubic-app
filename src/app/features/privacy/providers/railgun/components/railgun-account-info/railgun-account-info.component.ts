@@ -55,7 +55,7 @@ export class RailgunAccountInfoComponent {
         const icon = blockchainIcon[chain];
         const label = blockchainLabel[chain];
         const color = blockchainColor[chain];
-        const progress = nativeProgress === 0 ? 100 : nativeProgress;
+        const progress = nativeProgress;
 
         return { icon, label, color, progress };
       }

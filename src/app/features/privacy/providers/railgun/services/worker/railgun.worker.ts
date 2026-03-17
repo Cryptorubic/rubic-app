@@ -8,16 +8,8 @@ import { ProofService } from '@features/privacy/providers/railgun/services/worke
 import { RailgunEngineService } from '@features/privacy/providers/railgun/services/worker/railgun-engine.service';
 import { MnemonicService } from '@features/privacy/providers/railgun/services/worker/mnemonic.service';
 import { BalanceControllerService } from '@features/privacy/providers/railgun/services/worker/balance-controller.service';
-import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 import { RailgunRequest } from '@features/privacy/providers/railgun/services/worker/models';
 import { postWorkerMessage } from '@features/privacy/providers/railgun/services/worker/utils';
-import {
-  Chain,
-  NetworkName,
-  RailgunERC20AmountRecipient,
-  TransactionGasDetails,
-  TXIDVersion
-} from '@railgun-community/shared-models';
 import {
   gasEstimateForShield,
   gasEstimateForShieldBaseToken,
@@ -31,6 +23,24 @@ import {
   populateShieldBaseToken
 } from '@railgun-community/wallet';
 import { Wallet } from 'ethers';
+import {
+  CreatePrivateWalletRequest,
+  GasEstimateForShieldNativeRequest,
+  GasEstimateForShieldRequest,
+  GasEstimateForTransferRequest,
+  GasEstimateForUnshieldRequest,
+  GenerateTransferProofRequest,
+  GenerateUnshieldProofRequest,
+  LoadWalletRequest,
+  PopulateShieldNativeRequest,
+  PopulateShieldRequest,
+  PopulateTransferRequest,
+  PopulateUnshieldRequest,
+  RefreshBalancesRequest,
+  SetupFromPasswordRequest,
+  UnlockFromPasswordRequest,
+  WalletCredentialsRequest
+} from '@features/privacy/providers/railgun/models/worker-types';
 
 export class RailgunAdapter {
   public readonly artifactService = new ArtifactStoreService();
@@ -63,77 +73,89 @@ export class RailgunAdapter {
 let adapter: RailgunAdapter;
 
 addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) => {
+  const { id, method, params } = data;
+
   try {
-    switch (data.method) {
+    switch (method) {
       case 'init': {
         adapter = new RailgunAdapter();
         await adapter.initServices();
-        postWorkerMessage({ method: 'initialized', response: null });
+        postWorkerMessage({ id, method: 'initialized', response: null });
         break;
       }
+
       case 'setupFromPassword': {
-        const account = data.params as string;
-        const encryptionKeys = await adapter.encryptionService.setupFromPassword(account);
-        postWorkerMessage({ method: 'setupFromPassword', response: encryptionKeys });
+        const password = params as SetupFromPasswordRequest;
+        const encryptionKeys = await adapter.encryptionService.setupFromPassword(password);
+        postWorkerMessage({ id, method, response: encryptionKeys });
         break;
       }
+
+      case 'unlockFromPassword': {
+        const { password } = params as UnlockFromPasswordRequest;
+        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+        postWorkerMessage({ id, method, response: encryptionKey });
+        break;
+      }
+
       case 'createPrivateWallet': {
-        const { phrase, blockchain, encryptionKey } = data.params as {
-          phrase: string;
-          blockchain: PrivacySupportedNetworks;
-          encryptionKey: string;
-        };
+        const { phrase, blockchain, encryptionKey } = params as CreatePrivateWalletRequest;
         const wallet = await adapter.mnemonicService.createPrivateWallet(
           phrase,
           blockchain,
           encryptionKey
         );
-        postWorkerMessage({ method: 'createPrivateWallet', response: wallet });
+        postWorkerMessage({ id, method, response: wallet });
         break;
       }
+
+      case 'loadWallet': {
+        const { password, railgunId } = params as LoadWalletRequest;
+        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+        const wallet = await adapter.mnemonicService.loadWallet(railgunId, encryptionKey);
+        postWorkerMessage({ id, method, response: wallet });
+        break;
+      }
+
+      case 'getMnemonic': {
+        const { password, walletId } = params as WalletCredentialsRequest;
+        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+        const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
+        postWorkerMessage({ id, method, response: mnemonic });
+        break;
+      }
+
+      case 'getEvmWallet': {
+        const { password, walletId } = params as WalletCredentialsRequest;
+        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+        const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
+        const evmWallet = Wallet.fromPhrase(mnemonic).address;
+        postWorkerMessage({ id, method, response: evmWallet });
+        break;
+      }
+
       case 'refreshBalances': {
-        const { chain, walletIds } = data.params as { chain: Chain; walletIds: string[] };
+        const { chain, walletIds } = params as RefreshBalancesRequest;
         await adapter.balanceControllerService.refreshBalances(chain, walletIds);
         break;
       }
-      case 'getMnemonic': {
-        const { password, walletId } = data.params as { walletId: string; password: string };
-        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
-        postWorkerMessage({
-          method: 'getMnemonic',
-          response: mnemonic
-        });
-        break;
-      }
+
       case 'gasEstimateForShield': {
-        const {
+        const { txIdVersion, network, shieldPrivateKey, erc20AmountRecipients, fromWalletAddress } =
+          params as GasEstimateForShieldRequest;
+
+        const estimates = await gasEstimateForShield(
           txIdVersion,
           network,
           shieldPrivateKey,
           erc20AmountRecipients,
-          nftAmountRecipients,
-          fromWalletAddress
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          shieldPrivateKey: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          nftAmountRecipients: []; // nftAmountRecipients
-          fromWalletAddress: string;
-        };
-        const esimates = await gasEstimateForShield(
-          txIdVersion,
-          network,
-          shieldPrivateKey,
-          erc20AmountRecipients,
-          nftAmountRecipients,
+          [],
           fromWalletAddress
         );
-
-        postWorkerMessage({ method: 'gasEstimateForShield', response: esimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'gasEstimateForShieldNative': {
         const {
           txIdVersion,
@@ -142,58 +164,36 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           erc20AmountRecipients,
           railgunAddress,
           fromWalletAddress
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          shieldPrivateKey: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          nftAmountRecipients: []; // nftAmountRecipients
-          fromWalletAddress: string;
-          railgunAddress: string;
-        };
-        const esimates = await gasEstimateForShieldBaseToken(
+        } = params as GasEstimateForShieldNativeRequest;
+
+        const estimates = await gasEstimateForShieldBaseToken(
           txIdVersion,
           network,
           railgunAddress,
-          // railgunAddress
           shieldPrivateKey,
           erc20AmountRecipients[0],
           fromWalletAddress
         );
-
-        postWorkerMessage({ method: 'gasEstimateForShieldNative', response: esimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'populateShield': {
-        const {
-          txIdVersion,
-          network,
-          shieldPrivateKey,
-          erc20AmountRecipients,
-          nftAmountRecipients,
-          gasDetails
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          shieldPrivateKey: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          nftAmountRecipients: []; // nftAmountRecipients
-          gasDetails: TransactionGasDetails;
-        };
+        const { txIdVersion, network, shieldPrivateKey, erc20AmountRecipients, gasDetails } =
+          params as PopulateShieldRequest;
+
         const { transaction, nullifiers } = await populateShield(
           txIdVersion,
           network,
           shieldPrivateKey,
           erc20AmountRecipients,
-          nftAmountRecipients,
+          [],
           gasDetails
         );
-        postWorkerMessage({
-          method: 'populateShield',
-          response: { transaction, nullifiers }
-        });
+        postWorkerMessage({ id, method, response: { transaction, nullifiers } });
         break;
       }
+
       case 'populateShieldNative': {
         const {
           txIdVersion,
@@ -202,14 +202,8 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           erc20AmountRecipients,
           railgunAddress,
           gasDetails
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          shieldPrivateKey: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          railgunAddress: string;
-          gasDetails: TransactionGasDetails;
-        };
+        } = params as PopulateShieldNativeRequest;
+
         const { transaction, nullifiers } = await populateShieldBaseToken(
           txIdVersion,
           network,
@@ -218,69 +212,57 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           erc20AmountRecipients[0],
           gasDetails
         );
-        postWorkerMessage({
-          method: 'populateShieldNative',
-          response: { transaction, nullifiers }
-        });
+        postWorkerMessage({ id, method, response: { transaction, nullifiers } });
         break;
       }
+
       case 'gasEstimateForUnshield': {
         const { txIdVersion, network, walletId, password, gasDetails, erc20AmountRecipients } =
-          data.params as {
-            txIdVersion: TXIDVersion;
-            network: NetworkName;
-            walletId: string;
-            password: string;
-            gasDetails: TransactionGasDetails;
-            erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          };
+          params as GasEstimateForUnshieldRequest;
+
         const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const esimates = await gasEstimateForUnprovenUnshield(
+        const estimates = await gasEstimateForUnprovenUnshield(
           txIdVersion,
           network,
           walletId,
           encryptionKey,
           erc20AmountRecipients,
-          [], // nft amount recipients
+          [],
           gasDetails,
           undefined,
           true
         );
-
-        postWorkerMessage({ method: 'gasEstimateForUnshield', response: esimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'generateUnshieldProof': {
-        const { txIdVersion, network, walletId, password, erc20AmountRecipients } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          walletId: string;
-          password: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-        };
+        const { txIdVersion, network, walletId, password, erc20AmountRecipients } =
+          params as GenerateUnshieldProofRequest;
 
         const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const esimates = await generateUnshieldProof(
+        const estimates = await generateUnshieldProof(
           txIdVersion,
           network,
           walletId,
           encryptionKey,
           erc20AmountRecipients,
-          [], // nft amount recipients
+          [],
           undefined,
           true,
           1n,
           progress => {
             postWorkerMessage({
+              id,
               method: 'generateUnshieldProofProgress',
               response: progress
             });
           }
         );
-
-        postWorkerMessage({ method: 'generateUnshieldProof', response: esimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'populateUnshield': {
         const {
           txIdVersion,
@@ -289,14 +271,8 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           erc20AmountRecipients,
           gasDetails,
           overallBatchMinGasPrice
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          walletId: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          gasDetails: TransactionGasDetails;
-          overallBatchMinGasPrice: bigint;
-        };
+        } = params as PopulateUnshieldRequest;
+
         const { transaction, nullifiers } = await populateProvedUnshield(
           txIdVersion,
           network,
@@ -308,42 +284,14 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           overallBatchMinGasPrice,
           gasDetails
         );
-        postWorkerMessage({
-          method: 'populateUnshield',
-          response: { transaction, nullifiers }
-        });
+        postWorkerMessage({ id, method, response: { transaction, nullifiers } });
         break;
       }
-      case 'unlockFromPassword': {
-        const { password } = data.params as { password: string };
-        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        postWorkerMessage({
-          method: 'unlockFromPassword',
-          response: encryptionKey
-        });
-        break;
-      }
-      case 'loadWallet': {
-        const { password, railgunId } = data.params as { password: string; railgunId: string };
-        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const wallet = await adapter.mnemonicService.loadWallet(railgunId, encryptionKey);
 
-        postWorkerMessage({
-          method: 'loadWallet',
-          response: wallet
-        });
-        break;
-      }
       case 'gasEstimateForTransfer': {
         const { txIdVersion, network, walletId, password, gasDetails, erc20AmountRecipients } =
-          data.params as {
-            txIdVersion: TXIDVersion;
-            network: NetworkName;
-            walletId: string;
-            password: string;
-            gasDetails: TransactionGasDetails;
-            erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          };
+          params as GasEstimateForTransferRequest;
+
         const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
         const estimates = await gasEstimateForUnprovenTransfer(
           txIdVersion,
@@ -352,26 +300,21 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           encryptionKey,
           undefined,
           erc20AmountRecipients,
-          [], // nft amount recipients
+          [],
           gasDetails,
           undefined,
           true
         );
-
-        postWorkerMessage({ method: 'gasEstimateForTransfer', response: estimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'generateTransferProof': {
-        const { txIdVersion, network, walletId, password, erc20AmountRecipients } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          walletId: string;
-          password: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-        };
+        const { txIdVersion, network, walletId, password, erc20AmountRecipients } =
+          params as GenerateTransferProofRequest;
 
         const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const esimates = await generateTransferProof(
+        const estimates = await generateTransferProof(
           txIdVersion,
           network,
           walletId,
@@ -379,21 +322,22 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           false,
           undefined,
           erc20AmountRecipients,
-          [], // nft amount recipients
+          [],
           undefined,
           true,
           1n,
           progress => {
             postWorkerMessage({
+              id,
               method: 'generateTransferProofProgress',
               response: progress
             });
           }
         );
-
-        postWorkerMessage({ method: 'generateTransferProof', response: esimates });
+        postWorkerMessage({ id, method, response: estimates });
         break;
       }
+
       case 'populateTransfer': {
         const {
           txIdVersion,
@@ -402,14 +346,8 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           erc20AmountRecipients,
           gasDetails,
           overallBatchMinGasPrice
-        } = data.params as {
-          txIdVersion: TXIDVersion;
-          network: NetworkName;
-          walletId: string;
-          erc20AmountRecipients: RailgunERC20AmountRecipient[];
-          gasDetails: TransactionGasDetails;
-          overallBatchMinGasPrice: bigint;
-        };
+        } = params as PopulateTransferRequest;
+
         const { transaction, nullifiers } = await populateProvedTransfer(
           txIdVersion,
           network,
@@ -423,31 +361,14 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           overallBatchMinGasPrice,
           gasDetails
         );
-        postWorkerMessage({
-          method: 'populateTransfer',
-          response: { transaction, nullifiers }
-        });
-        break;
-      }
-      case 'getEvmWallet': {
-        const { password, walletId } = data.params as { walletId: string; password: string };
-        const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
-        const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
-        const evmWallet = Wallet.fromPhrase(mnemonic).address;
-
-        postWorkerMessage({
-          method: 'getEvmWallet',
-          response: evmWallet
-        });
+        postWorkerMessage({ id, method, response: { transaction, nullifiers } });
         break;
       }
     }
   } catch (err: unknown) {
-    let message = 'Unknown worker error';
-    if (err instanceof Error) message = err.message;
-    if (typeof err === 'string') message = err;
-
+    const message = err instanceof Error ? err.message : String(err);
     postWorkerMessage({
+      id,
       method: data.method,
       error: message
     });

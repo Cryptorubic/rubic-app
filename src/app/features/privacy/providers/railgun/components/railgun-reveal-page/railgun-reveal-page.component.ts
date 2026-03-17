@@ -56,7 +56,7 @@ export class RailgunRevealPageComponent {
                 icon: '',
                 defaultAutoCloseTime: 0
               });
-              await this.revealService.unshieldTokens(
+              await this.revealService.unshield(
                 token.address,
                 bigintAmount.toString(),
                 () => {},

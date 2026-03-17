@@ -1,5 +1,9 @@
 export const WRAP_SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
 
+/**
+ * this amount shoud stay on ephemeral wallet to perform tranfer of stucked tokenss
+ */
+export const EPHEMERAL_WALLET_GAS_AMOUNT = 0.0033;
 export const swap_reserved_rent_fee = 0.0033;
 export const deposit_rent_fee = 0.002;
 
