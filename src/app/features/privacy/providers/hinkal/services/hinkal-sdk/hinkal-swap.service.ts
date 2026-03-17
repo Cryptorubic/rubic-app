@@ -15,6 +15,7 @@ import { blockchainId, EvmBlockchainName, TokenAmount } from '@cryptorubic/core'
 import { HinkalUtils } from './utils/hinkal-utils';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { HinkalQuoteService } from '../hinkal-quote.service';
+import { HinkalWorkerService } from './hinkal-worker.service';
 
 @Injectable()
 export class HinkalSwapService {
@@ -22,11 +23,21 @@ export class HinkalSwapService {
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly errorService: ErrorsService,
-    private readonly hinkalQuoteService: HinkalQuoteService
+    private readonly hinkalQuoteService: HinkalQuoteService,
+    private readonly hinkalWorker: HinkalWorkerService
   ) {}
 
   private getPrivateTxContract(chainId: number): string {
     return networkRegistry[chainId].contractData.emporiumAddress;
+  }
+
+  private async refreshAndUpdateSnapshot(chainId: number): Promise<void> {
+    try {
+      await this.hinkalWorker.request({ type: 'refreshStoredSnapshot' });
+      await HinkalUtils.updateSnapshot(this.hinkalInstanceService.hinkalInstance, chainId);
+    } catch (err) {
+      console.log('FAILED TO REFRESH SNAPSHOT', err);
+    }
   }
 
   public async deposit(
@@ -34,10 +45,9 @@ export class HinkalSwapService {
     stealthAddress?: string
   ): Promise<boolean> {
     try {
+      this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
       const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
-
-      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
       await (stealthAddress
         ? hinkalInstance.depositForOther(
@@ -59,11 +69,11 @@ export class HinkalSwapService {
     receiver?: string
   ): Promise<boolean> {
     try {
+      await this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
+
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
       const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
-
-      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
       await hinkalInstance.withdraw(
         [withdrawToken],
@@ -87,10 +97,9 @@ export class HinkalSwapService {
     recipientStealthAddress: string
   ): Promise<boolean> {
     try {
+      await this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
       const transferToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
-
-      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
       await hinkalInstance.transfer(
         [transferToken],
@@ -116,6 +125,8 @@ export class HinkalSwapService {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');
+
+      await this.refreshAndUpdateSnapshot(blockchainId[fromToken.blockchain]);
 
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
       const fromChainId = blockchainId[fromToken.blockchain];
@@ -150,8 +161,6 @@ export class HinkalSwapService {
         isHidden: false,
         isImported: false
       };
-
-      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[fromToken.blockchain]);
 
       // await hinkalInstance.actionFundApproveAndTransact(
       //   [fromTokenChanges, toTokenChanges],

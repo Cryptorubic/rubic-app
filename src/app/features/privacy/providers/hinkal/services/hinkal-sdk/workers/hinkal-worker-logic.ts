@@ -1,14 +1,9 @@
-import {
-  getInputUtxoAndBalance,
-  Hinkal,
-  MultiThreadedUtxoUtils,
-  prepareHinkalWithSignature,
-  Utxo
-} from '@hinkal/common';
-import BigNumber from 'bignumber.js';
+import { getInputUtxoAndBalance, Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
 import { set, get } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
-import { HinkalUtils } from '../utils/hinkal-utils';
+import { HinkalPrivateBalance } from '../../../models/hinkal-private-balances';
+import { BlockchainsInfo } from '@cryptorubic/core';
+import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerLogic {
   private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
@@ -22,12 +17,8 @@ export class HinkalWorkerLogic {
   constructor() {
     this.hinkal = new Hinkal({
       generateProofRemotely: true,
-      disableCaching: false
+      disableCaching: true
     });
-
-    // @TODO remove after nested utxoWorkers cancelation fix
-    //@ts-ignore
-    (this.hinkal.utxoUtils as MultiThreadedUtxoUtils).NUM_WORKERS = 1;
   }
 
   public async updateInstance(address: string, chainId: number, signature?: string): Promise<void> {
@@ -44,10 +35,17 @@ export class HinkalWorkerLogic {
     }
   }
 
+  public async refreshStoredSnapshot(): Promise<void> {
+    try {
+      await this.hinkal.resetMerkleTreesIfNecessary();
+      await this.hinkal.getEventsFromHinkal();
+      await this.saveSnapshot(this.hinkal.getCurrentChainId());
+    } catch {}
+  }
+
   public async switchSnapshot(chainId: number): Promise<void> {
-    await HinkalUtils.updateSnapshot(this.hinkal, chainId);
+    //await HinkalUtils.updateSnapshot(this.hinkal, chainId);
     await this.hinkal.resetMerkleTreesIfNecessary();
-    // await this.hinkal.getEventsFromHinkal();
     await this.saveSnapshot(chainId);
   }
 
@@ -58,30 +56,33 @@ export class HinkalWorkerLogic {
     }
   }
 
-  public async fetchBalances(
+  public async getBalances(): Promise<HinkalPrivateBalance> {
+    try {
+      await this.hinkal.getEventsFromHinkal();
+      const ethAddress = await this.hinkal.getEthereumAddress();
+      const chainId = this.hinkal.getCurrentChainId();
+      const balances = await this.fetchBalances(chainId, ethAddress);
+      const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
+      return {
+        [blockchain]: balances
+      };
+    } catch {
+      return {};
+    }
+  }
+
+  private async fetchBalances(
     chainId: number,
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      if (this.hinkal.getProviderAdapter().chainId !== chainId) {
-        await this.updateInstance(address, chainId);
-        await this.switchSnapshot(chainId);
-      }
-
       const { inputUtxos } = await getInputUtxoAndBalance({
         hinkal: this.hinkal,
         chainId,
-        resetCacheBefore: true,
-        allowRemoteDecryption: true,
         ethAddress: address,
-        passedShieldedPrivateKey: this.hinkal.userKeys.getShieldedPrivateKey(),
-        passedShieldedPublicKey: this.hinkal.userKeys.getShieldedPublicKey()
-      }).catch(err => {
-        console.log('UTXO FETCH ERR', err);
-        return { inputUtxos: [] as Utxo[] };
+        resetCacheBefore: true,
+        allowRemoteDecryption: true
       });
-
-      console.log(inputUtxos);
 
       const fetchedBalances = inputUtxos.reduce((acc, val) => {
         const balance = acc[val.erc20TokenAddress.toLowerCase()];
@@ -99,38 +100,43 @@ export class HinkalWorkerLogic {
       }));
     } catch (err) {
       console.log('FETCHED BALANCE ERR', err);
+      return [];
     }
   }
 
   private async saveSnapshot(chainId: number): Promise<void> {
-    const hinkalSnapshot = (await get('hinkalSnapshot')) || {};
-    const jsonMerkleTree = this.hinkal.merkleTreeHinkal.toJSON();
-    const jsonMerkleTreeAccessToken = this.hinkal.merkleTreeAccessToken.toJSON();
+    try {
+      const hinkalSnapshot = (await get('hinkalSnapshot')) || {};
+      const jsonMerkleTree = this.hinkal.merkleTreeHinkal.toJSON();
+      const jsonMerkleTreeAccessToken = this.hinkal.merkleTreeAccessToken.toJSON();
 
-    const snapshot = {
-      approvals: Object.fromEntries(this.hinkal.approvals),
-      nullifiers: Array.from(this.hinkal.nullifiers),
-      merkleTreeAccessToken: {
-        tree: jsonMerkleTreeAccessToken.tree,
-        index: jsonMerkleTreeAccessToken.index,
-        count: jsonMerkleTreeAccessToken.count,
-        ...(jsonMerkleTreeAccessToken.reverseTree && {
-          reverseTree: jsonMerkleTreeAccessToken.reverseTree
-        })
-      },
-      merkleTree: {
-        tree: jsonMerkleTree.tree,
-        index: jsonMerkleTree.index,
-        count: jsonMerkleTree.count,
-        ...(jsonMerkleTree.reverseTree && { reverseTree: jsonMerkleTree.reverseTree })
-      },
-      encryptedOutputs: this.hinkal.encryptedOutputs
-    };
+      const snapshot = {
+        approvals: Object.fromEntries(this.hinkal.approvals),
+        nullifiers: Array.from(this.hinkal.nullifiers),
+        merkleTreeAccessToken: {
+          tree: jsonMerkleTreeAccessToken.tree,
+          index: jsonMerkleTreeAccessToken.index,
+          count: jsonMerkleTreeAccessToken.count,
+          ...(jsonMerkleTreeAccessToken.reverseTree && {
+            reverseTree: jsonMerkleTreeAccessToken.reverseTree
+          })
+        },
+        merkleTree: {
+          tree: jsonMerkleTree.tree,
+          index: jsonMerkleTree.index,
+          count: jsonMerkleTree.count,
+          ...(jsonMerkleTree.reverseTree && { reverseTree: jsonMerkleTree.reverseTree })
+        },
+        encryptedOutputs: this.hinkal.encryptedOutputs
+      };
 
-    hinkalSnapshot[chainId] = JSON.stringify(snapshot, (_, value) =>
-      typeof value === 'bigint' ? value.toString() : value
-    );
+      hinkalSnapshot[chainId] = JSON.stringify(snapshot, (_, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      );
 
-    await set('hinkalSnapshot', hinkalSnapshot);
+      await set('hinkalSnapshot', hinkalSnapshot);
+    } catch (err) {
+      console.log('FAILED TO SAVE SNAPSHOT', err);
+    }
   }
 }
