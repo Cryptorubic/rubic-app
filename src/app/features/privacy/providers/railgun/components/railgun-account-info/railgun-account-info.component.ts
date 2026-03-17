@@ -89,4 +89,8 @@ export class RailgunAccountInfoComponent {
       this.cdr.markForCheck();
     });
   }
+
+  public trackByFn(_: number, item: UtxoChain): string {
+    return item.label;
+  }
 }
