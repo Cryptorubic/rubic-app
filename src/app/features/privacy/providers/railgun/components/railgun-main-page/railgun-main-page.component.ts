@@ -75,7 +75,7 @@ export class RailgunMainPageComponent {
   }
 
   private async initializeRailgun(): Promise<void> {
-    this.railgunFacade.initService();
+    this.railgunFacade.initWorker();
   }
 
   public onSubmit(account: PublicAccount): void {

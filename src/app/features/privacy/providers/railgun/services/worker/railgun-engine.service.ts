@@ -7,7 +7,11 @@ import {
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import initPoseidonWasm from '@railgun-community/poseidon-hash-wasm';
-import { FallbackProviderJsonConfig, ProviderJson } from '@railgun-community/shared-models';
+import {
+  FallbackProviderJsonConfig,
+  POIList,
+  ProviderJson
+} from '@railgun-community/shared-models';
 
 export class RailgunEngineService {
   public async start(args: RailgunEngineInitArgs): Promise<void> {
@@ -26,26 +30,19 @@ export class RailgunEngineService {
   }
 
   private async startInternal(args: RailgunEngineInitArgs): Promise<void> {
-    const walletSource = this.normalizeWalletSource(args.walletSource ?? 'quickstartdemo');
+    const walletSource = this.normalizeWalletSource('railrubic');
+    const shouldDebug = false;
+    const useNativeArtifacts = false;
+    const skipMerkletreeScans = false;
+    const poiNodeURLs = ['https://ppoi-agg.horsewithsixlegs.xyz'];
+    const customPOILists: POIList[] = [];
+    const verboseScanLogging = false;
 
-    const shouldDebug = args.shouldDebug ?? true;
-    const useNativeArtifacts = args.useNativeArtifacts ?? false;
-    const skipMerkletreeScans = args.skipMerkletreeScans ?? false;
-
-    const poiNodeURLs = args.poiNodeURLs ?? ['https://ppoi-agg.horsewithsixlegs.xyz'];
-
-    const customPOILists = args.customPOILists ?? [];
-    const verboseScanLogging = args.verboseScanLogging ?? true;
-
-    // Minimal input guards (keep it strict but not annoying)
     if (!args.db) {
       throw new Error('RailgunEngineService: "db" is required');
     }
     if (!args.artifactStore) {
       throw new Error('RailgunEngineService: "artifactStore" is required');
-    }
-    if (!Array.isArray(poiNodeURLs) || poiNodeURLs.length === 0) {
-      throw new Error('RailgunEngineService: "poiNodeURLs" must be non-empty');
     }
 
     await startRailgunEngine(
@@ -83,7 +80,7 @@ export class RailgunEngineService {
   private normalizeWalletSource(input: string): string {
     // RAILGUN: max 16 chars, lowercase. Also avoid spaces for sanity.
     const normalized = input.trim().toLowerCase().replace(/\s+/g, '');
-    if (normalized.length === 0) return 'quickstartdemo';
+    if (normalized.length === 0) return 'railrubic';
     return normalized.slice(0, 16);
   }
 

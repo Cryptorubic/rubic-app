@@ -1,4 +1,4 @@
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { calculateGasPrice, RailgunERC20AmountRecipient } from '@railgun-community/shared-models';
 import {
   getGasDetailsForTransaction,
@@ -7,7 +7,6 @@ import {
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import {
   fromRubicToPrivateChainMap,
   RailgunSupportedChain
@@ -15,17 +14,11 @@ import {
 
 @Injectable()
 export class RevealService {
-  private readonly ngZone = inject(NgZone);
-
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly authService = inject(AuthService);
 
-  private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
-
-  constructor() {}
-
-  public async unshieldTokens(
+  public async unshield(
     tokenAddress: string,
     tokenAmount: string,
     proofProgress: (progress: string) => void,
@@ -55,8 +48,6 @@ export class RevealService {
     );
 
     const overallBatchMinGasPrice = await calculateGasPrice(transactionGasDetails);
-
-    // populate tx
 
     const { transaction } = await this.railgunFacade.populateUnshield(
       chain,

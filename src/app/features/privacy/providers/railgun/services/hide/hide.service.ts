@@ -65,7 +65,7 @@ export class HideService {
    * Populates the actual transaction data for shielding, including gas details.
    */
   public async erc20PopulateShieldTransaction(
-    network: NetworkName,
+    network: PrivacySupportedNetworks,
     wallet: Wallet | HDNodeWallet,
     erc20AmountRecipients: RailgunERC20AmountRecipient[],
     sendWithPublicWallet: boolean
@@ -109,8 +109,8 @@ export class HideService {
   /**
    * Populates the actual transaction data for shielding, including gas details.
    */
-  public async PopulateShieldTransactionNative(
-    network: NetworkName,
+  public async nativePopulateShieldTransaction(
+    network: PrivacySupportedNetworks,
     wallet: Wallet | HDNodeWallet,
     erc20AmountRecipients: RailgunERC20AmountRecipient[],
     sendWithPublicWallet: boolean
@@ -148,7 +148,7 @@ export class HideService {
   /**
    * High-level helper: creates recipients, populates tx, sends it, waits for confirmation.
    */
-  public async shieldERC20(
+  public async shield(
     railgunWalletAddress: string,
     tokenAddress: string,
     tokenAmount: bigint,
@@ -178,7 +178,7 @@ export class HideService {
     ];
 
     const { gasEstimate, gasDetails, transaction, nullifiers } = isNative
-      ? await this.PopulateShieldTransactionNative(
+      ? await this.nativePopulateShieldTransaction(
           network,
           wallet,
           erc20AmountRecipients,
