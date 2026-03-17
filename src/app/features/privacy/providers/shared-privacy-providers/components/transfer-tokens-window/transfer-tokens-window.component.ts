@@ -58,7 +58,7 @@ export class TransferTokensWindowComponent implements OnInit {
 
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateTransferWindowService: PrivateTransferWindowService
+    public readonly privateTransferWindowService: PrivateTransferWindowService
   ) {}
 
   ngOnInit(): void {
@@ -85,7 +85,13 @@ export class TransferTokensWindowComponent implements OnInit {
     this.privateTransferWindowService.transferAmount = value;
   }
 
-  public handleMaxButton(): void {}
+  public handleMaxButton(): void {
+    const token = this.privateTransferWindowService.transferAsset;
+    this.privateTransferWindowService.transferAmount = {
+      visibleValue: token.amount.toString(),
+      actualValue: token.amount
+    };
+  }
 
   private createPreviewModal(transferAsset: BalanceToken): PreviewSwapModalFactory {
     const injector = this.injector;
