@@ -42,7 +42,7 @@ export class RailgunHideTokensPageComponent {
             label: 'Hide Tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              await this.hideService.shieldERC20(
+              await this.hideService.shield(
                 this.railgunWalletAddress,
                 token.address,
                 bigintAmount,

@@ -2,67 +2,48 @@ import { Injectable } from '@angular/core';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { Token } from '@app/shared/models/tokens/token';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   ErrorInterface,
-  EvmBlockchainName,
-  TokenAmount
+  QuoteRequestInterface,
+  QuoteResponseInterface,
+  TokenAmount,
+  Token,
+  EvmBlockchainName
 } from '@cryptorubic/core';
-import {
-  EvmAdapter,
-  EvmBasicTransactionOptions,
-  EvmTransactionConfig,
-  InsufficientFundsError,
-  WalletNotConnectedError
-} from '@cryptorubic/web3';
+import { Token as SharedToken } from '@app/shared/models/tokens/token';
+import { RubicSdkError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
-import { lastValueFrom, timer, switchMap, takeWhile, BehaviorSubject } from 'rxjs';
-import { HOUDINI_STATUS } from '../models/status';
+import { BehaviorSubject } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { GasService } from '@app/core/services/gas-service/gas.service';
+import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { CrossChainService } from '@app/features/trade/services/cross-chain/cross-chain.service';
+import DelayedApproveError from '@app/core/errors/models/common/delayed-approve.error';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import { SWAP_PROVIDER_TYPE } from '@app/features/trade/models/swap-provider-type';
+import AmountChangeWarning from '@app/core/errors/models/cross-chain/amount-change-warning';
+import { PrivateSwapWindowService } from '../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { SettingsService } from '@app/features/trade/services/settings-service/settings.service';
+import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
+import { InsufficientGasError } from '@app/core/errors/models/common/insufficient-gas-error';
+import { HoudiniErrorService } from './houdini-error.service';
 
 @Injectable()
 export class HoudiniSwapService {
-  private readonly _useProxy$ = new BehaviorSubject<boolean | null>(null);
+  private readonly _latestQuoteRequest$ = new BehaviorSubject<QuoteRequestInterface | null>(null);
 
-  private readonly _contractSpender$ = new BehaviorSubject<string | null>(null);
+  private readonly _latestQuoteResponse$ = new BehaviorSubject<QuoteResponseInterface | null>(null);
 
-  private readonly _fromToken$ = new BehaviorSubject<TokenAmount<BlockchainName> | null>(null);
-
-  private readonly _toToken$ = new BehaviorSubject<Token | null>(null);
-
-  public get useProxy(): boolean {
-    return this._useProxy$.value;
+  public get latestQuoteRequest(): QuoteRequestInterface {
+    return this._latestQuoteRequest$.value;
   }
 
-  public get contractSpender(): string {
-    return this._contractSpender$.value;
-  }
-
-  public get fromToken(): TokenAmount<BlockchainName> {
-    return this._fromToken$.value;
-  }
-
-  public get toToken(): Token {
-    return this._toToken$.value;
-  }
-
-  public get chainAdapter(): EvmAdapter {
-    return this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      this.fromToken.blockchain as EvmBlockchainName
-    );
-  }
-
-  private get gasLimitRatio(): number {
-    if (
-      this.toToken.blockchain === BLOCKCHAIN_NAME.ZETACHAIN ||
-      this.fromToken.blockchain === BLOCKCHAIN_NAME.ZETACHAIN
-    ) {
-      return 1.5;
-    }
-    return 1.05;
+  public get latestQuoteResponse(): QuoteResponseInterface {
+    return this._latestQuoteResponse$.value;
   }
 
   constructor(
@@ -70,12 +51,15 @@ export class HoudiniSwapService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly gasService: GasService
+    private readonly crossChainService: CrossChainService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService,
+    private readonly settingsService: SettingsService,
+    private readonly houdiniErrorService: HoudiniErrorService
   ) {}
 
   public async quote(
     fromToken: TokenAmount<BlockchainName>,
-    toToken: Token,
+    toToken: SharedToken,
     receiver: string
   ): Promise<
     | {
@@ -85,7 +69,7 @@ export class HoudiniSwapService {
       }
     | { tradeError: ErrorInterface }
   > {
-    const quoteResponse = await this.rubicApiService.quoteAllRoutes({
+    const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
       srcTokenAddress: fromToken.address,
       srcTokenAmount: fromToken.tokenAmount.toString(),
@@ -95,151 +79,218 @@ export class HoudiniSwapService {
       fromAddress: this.walletConnectorService.address,
       receiver,
       showDangerousRoutes: true
-    });
-    const route = quoteResponse.routes[0];
-    if (route) {
-      this._contractSpender$.next(route.transaction.approvalAddress!);
-      this._useProxy$.next(route.useRubicContract);
-
-      return {
-        tradeId: route.id,
-        tokenAmount: route.estimate.destinationTokenAmount,
-        tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
-      };
-    }
-
-    const failed = quoteResponse.failed[0];
-    return {
-      tradeError: failed.data
     };
+
+    try {
+      const quoteResponse = await this.rubicApiService.fetchBestQuote(quoteRequest);
+      // const route = quoteResponse?.routes[0];
+      if (quoteResponse) {
+        this.filterHoudiniSlippageWarning(quoteResponse);
+
+        this._latestQuoteRequest$.next(quoteRequest);
+        this._latestQuoteResponse$.next(quoteResponse);
+
+        return {
+          tradeId: quoteResponse.id,
+          tokenAmount: quoteResponse.estimate.destinationTokenAmount,
+          tokenAmountWei: new BigNumber(quoteResponse.estimate.destinationWeiAmount)
+        };
+      }
+    } catch (err) {
+      return this.parseQuoteError(err);
+    }
   }
 
-  public async transfer(
-    id: string,
-    fromToken: TokenAmount<BlockchainName>,
-    toToken: Token,
-    receiver: string
-  ): Promise<void> {
+  public async swap(fromToken: TokenAmount<BlockchainName>): Promise<void> {
     try {
-      this._fromToken$.next(fromToken);
-      this._toToken$.next(toToken);
-
-      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-        fromToken.blockchain
-      );
+      const trade = await this.getTrade();
 
       if (fromToken.blockchain !== this.walletConnectorService.network) {
         await this.walletConnectorService.switchChain(fromToken.blockchain as EvmBlockchainName);
       }
 
-      const optionsToApprove: EvmBasicTransactionOptions = {
-        ...(shouldCalculateGasPrice && { gasPriceOptions })
+      //TODO: maybe add some callback later
+      const approveCallback = {
+        onHash: (_: string) => {},
+        onSwap: (..._: unknown[]) => {},
+        onError: () => {}
       };
 
-      await this.approveSwap(optionsToApprove);
+      const swapCallback = {
+        onHash: (_: string) => {},
+        onSwap: () => {
+          this.notificationsService.showSuccess('The operation was successful.');
+        },
+        onError: (_: RubicError<ERROR_TYPE> | null) => {},
+        onSimulationSuccess: () => Promise.resolve<boolean>(true),
+        onRateChange: (_: RateChangeInfo) => Promise.resolve<boolean>(true)
+      };
 
-      const swapResponse = await this.rubicApiService.fetchSwapData<EvmTransactionConfig>({
-        id,
-        srcTokenBlockchain: fromToken.blockchain,
-        srcTokenAddress: fromToken.address,
-        srcTokenAmount: fromToken.tokenAmount.toString(),
-        dstTokenBlockchain: toToken.blockchain,
-        dstTokenAddress: toToken.address,
-        preferredProvider: 'houdini',
-        fromAddress: this.walletConnectorService.address,
-        receiver
-      });
+      await this.handleApprove(trade, approveCallback);
 
-      const { data, to, value, gas } = swapResponse.transaction;
-
-      await this.chainAdapter.signer.trySendTransaction({
-        txOptions: {
-          data,
-          to,
-          value,
-          gas,
-          onTransactionHash: () => {
-            this.notificationsService.showInfo(
-              'Transaction has started. Please wait 3–5 minutes until the operation is complete.'
-            );
-          },
-          gasLimitRatio: this.gasLimitRatio,
-          gasPriceOptions
-          // ...(options?.useEip155 && {
-          //   chainId: `0x${blockchainId[this.from.blockchain].toString(16)}`
-          // })
-        }
-      });
-
-      const { status } = await lastValueFrom(
-        timer(30_000, 30_000).pipe(
-          switchMap(() => this.rubicApiService.fetchCrossChainTxStatusExtended(id)),
-          takeWhile(
-            res => res.status !== HOUDINI_STATUS.SUCCESS && res.status !== HOUDINI_STATUS.FAIL,
-            true
-          )
-        )
-      );
-      if (status === HOUDINI_STATUS.SUCCESS) {
-        this.notificationsService.showSuccess('The operation was successful.');
-      } else {
-        this.notificationsService.showError('The operation has failed.');
-      }
+      await this.handleSwap(trade, true, swapCallback);
     } catch (err) {
-      if (err instanceof InsufficientFundsError) {
-        this.notificationsService.showError('Insufficient funds.');
-      }
+      this.showSwapError(err);
+    }
+  }
+
+  public async getTrade(): Promise<CrossChainTrade> {
+    const { trade: trade } = await TransformUtils.transformCrossChain(
+      this.latestQuoteResponse,
+      this.latestQuoteRequest,
+      this.latestQuoteRequest.integratorAddress!,
+      this.sdkLegacyService,
+      this.rubicApiService
+    );
+
+    return trade;
+  }
+
+  public async handleApprove(
+    trade: CrossChainTrade,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: (...args: unknown[]) => void;
+      onError?: () => void;
+    }
+  ): Promise<void> {
+    try {
+      await this.crossChainService.approveTrade(trade, callback.onHash);
+      callback?.onSwap();
+    } catch (err) {
       console.error(err);
+      callback?.onError();
+      let error = err;
+      if (err?.message?.includes('Transaction was not mined within 50 blocks')) {
+        error = new DelayedApproveError();
+      }
+      throw error;
+      // this.errorsService.catch(error);
     }
   }
 
-  private async needApprove(): Promise<boolean> {
-    this.checkWalletConnected();
+  public async handleSwap(
+    trade: CrossChainTrade,
+    checkSlippageAndPI?: boolean,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: () => void;
+      onError?: (err: RubicError<ERROR_TYPE> | null) => void;
+      onSimulationSuccess?: () => Promise<boolean>;
+      onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
+    }
+  ): Promise<void> {
+    let txHash: string;
 
-    if (this.fromToken.isNative && this.fromToken.blockchain !== BLOCKCHAIN_NAME.METIS) {
-      return false;
+    try {
+      const isEqulaFromAmount = this.checkIsEqualFromAmount(trade.from.tokenAmount);
+      if (!isEqulaFromAmount) {
+        throw new Error('Trade has invalid from amount');
+      }
+
+      const allowSlippageAndPI = checkSlippageAndPI
+        ? await this.settingsService.checkSlippageAndPriceImpact(
+            SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+            trade
+          )
+        : true;
+
+      if (!allowSlippageAndPI) {
+        callback.onError?.(null);
+        return;
+      }
+
+      txHash = await this.crossChainService.swapTrade(
+        trade,
+        callback.onHash,
+        callback.onSimulationSuccess
+      );
+    } catch (err) {
+      if (err instanceof AmountChangeWarning) {
+        const rateChangeInfo = {
+          oldAmount: Token.fromWei(err.oldAmount, trade.to.decimals),
+          newAmount: Token.fromWei(err.newAmount, trade.to.decimals),
+          tokenSymbol: trade.to.symbol
+        };
+
+        const allowSwap = await callback.onRateChange(rateChangeInfo);
+
+        if (allowSwap) {
+          try {
+            txHash = await this.crossChainService.swapTrade(
+              trade,
+              callback.onHash,
+              callback.onSimulationSuccess,
+              {
+                skipAmountCheck: true,
+                useCacheData: true
+              }
+            );
+          } catch (innerErr) {
+            throw innerErr;
+            // this.catchSwapError(innerErr, trade, callback?.onError);
+          }
+        } else {
+          throw new UserRejectError();
+          // this.catchSwapError(new SdkUserRejectError(), trade, callback?.onError);
+        }
+      } else {
+        throw err;
+        // this.catchSwapError(err, trade, callback?.onError);
+      }
     }
 
-    if (!this.useProxy || !this.contractSpender) return false;
+    if (txHash) {
+      callback.onSwap?.();
+    }
+  }
 
-    const fromTokenAddress =
-      this.fromToken.isNative && this.fromToken.blockchain === BLOCKCHAIN_NAME.METIS
-        ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
-        : this.fromToken.address;
+  private checkIsEqualFromAmount(fromAmount: BigNumber): boolean {
+    const swapInfo = this.privateSwapWindowService.swapInfo;
+    const formSourceTokenAmount = swapInfo.fromAmount.actualValue;
+    const formSourceTokenDecimals = swapInfo.fromAsset.decimals;
 
-    const allowance = await this.chainAdapter.getAllowance(
-      fromTokenAddress,
-      this.walletConnectorService.address,
-      this.contractSpender
+    const formSourceTokenWeiAmount = Token.toWei(formSourceTokenAmount, formSourceTokenDecimals);
+    const formSourceTokenNonWeiAmount = Token.fromWei(
+      formSourceTokenWeiAmount,
+      formSourceTokenDecimals
     );
-    return this.fromToken.weiAmount.gt(allowance.allowanceWei);
+
+    return fromAmount.eq(formSourceTokenNonWeiAmount);
   }
 
-  private async approveSwap(options: EvmBasicTransactionOptions): Promise<string | void> {
-    const needApprove = await this.needApprove();
-    if (!needApprove) {
-      return;
-    }
-
-    this.checkWalletConnected();
-    await this.chainAdapter.signer.checkBlockchainCorrect(this.fromToken.blockchain);
-
-    const fromTokenAddress =
-      this.fromToken.isNative && this.fromToken.blockchain === BLOCKCHAIN_NAME.METIS
-        ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
-        : this.fromToken.address;
-
-    return this.chainAdapter.approveTokens(
-      fromTokenAddress,
-      this.contractSpender,
-      this.fromToken.weiAmount,
-      options
+  //TODO: check is it okay to do it - without the filter it fails each time on trade parsing because of hardcoded API 7001 (SlippageChangedWarning) error
+  private filterHoudiniSlippageWarning(quoteResponse: QuoteResponseInterface): void {
+    quoteResponse.warnings = quoteResponse.warnings.filter(
+      w =>
+        !(
+          w.code === 7001 &&
+          w.reason.includes('Slippage for houdini is set automatically and can vary from 0 to 5%.')
+        )
     );
   }
 
-  private checkWalletConnected(): never | void {
-    if (!this.walletConnectorService.address) {
-      throw new WalletNotConnectedError();
+  private parseQuoteError(error: RubicSdkError): { tradeError: ErrorInterface } {
+    //TODO: refactor this later maybe
+    if (error.message.includes('No routes found.')) {
+      return {
+        tradeError: {
+          code: 2001,
+          reason: 'No routes found'
+        }
+      };
     }
+  }
+
+  private showSwapError(error: RubicError<ERROR_TYPE>): void {
+    if (error instanceof InsufficientFundsError) {
+      this.notificationsService.showError('Insufficient funds.');
+      this.houdiniErrorService.setTradeError({ reason: 'Insufficient funds' });
+    }
+    if (error instanceof InsufficientGasError) {
+      this.notificationsService.showError('Insufficient gas.');
+      this.houdiniErrorService.setTradeError({ reason: 'Insufficient gas' });
+    }
+    console.error(error);
   }
 }
