@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, tap } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { StepType } from '@features/privacy/providers/railgun/models/step';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
@@ -8,6 +8,7 @@ import { RAILGUN_PAGES } from '@features/privacy/providers/railgun/constants/rai
 import { combineLatestWith } from 'rxjs/operators';
 import { fadeAnimation } from '@shared/utils/utils';
 import { PrivatePageTypeService } from '@features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { TokenService } from '@core/services/sdk/sdk-legacy/token-service/token.service';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -33,15 +34,7 @@ export class RailgunMainPageComponent {
       if (sum === chains.length * 100 || sum === 0) {
         return disabledPages;
       }
-      return [
-        ...new Set([
-          ...disabledPages,
-          RAILGUN_PAGES[2],
-          RAILGUN_PAGES[3],
-          RAILGUN_PAGES[4],
-          RAILGUN_PAGES[5]
-        ])
-      ];
+      return [...new Set([...disabledPages, RAILGUN_PAGES[4]])];
     })
   );
 
@@ -59,7 +52,17 @@ export class RailgunMainPageComponent {
 
   public readonly balances$ = this.railgunFacade.balances$;
 
-  public readonly pendingBalances$ = this.railgunFacade.pendingBalances$;
+  private readonly tokensService = inject(TokenService);
+
+  public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$.pipe(
+    tap(el => {
+      console.log('PENDING: ', el);
+    })
+  );
+
+  public showBalanceLoading$ = this.utxoScan$.pipe(
+    map(scan => Object.values(scan).some(el => el < 100))
+  );
 
   constructor() {
     this.initializeRailgun();

@@ -11,6 +11,7 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import BigNumber from 'bignumber.js';
+import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
 
 export type Store = {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -81,6 +82,8 @@ export type Store = {
   LOBSTR_WALLET_ADDRESS: string;
 
   RAILGUN_ENCRYPTION_CREDS_V1: string;
+
+  RAILGUN_SHIELDED_TOKENS: ShieldedBalanceToken[];
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -102,5 +105,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_TOTAL_VALUES: null,
   IS_RUSSIAN_IP: null,
   LOBSTR_WALLET_ADDRESS: null,
-  RAILGUN_ENCRYPTION_CREDS_V1: null
+  RAILGUN_ENCRYPTION_CREDS_V1: null,
+  RAILGUN_SHIELDED_TOKENS: null
 };
