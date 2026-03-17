@@ -6,13 +6,11 @@ import { HinkalBalanceService } from './hinkal-balance.service';
 import {
   BehaviorSubject,
   distinctUntilChanged,
-  firstValueFrom,
   Observable,
   skip,
   Subscription,
   switchMap,
-  tap,
-  withLatestFrom
+  tap
 } from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
@@ -21,9 +19,6 @@ import {
   EvmBlockchainName,
   TokenAmount
 } from '@cryptorubic/core';
-import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
-import { SignMessageModalComponent } from '../../../shared-privacy-providers/components/sign-message-modal/sign-message-modal.component';
-import { ModalService } from '@app/core/modals/services/modal.service';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
@@ -44,7 +39,6 @@ export class HinkalFacadeService {
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly hinkalSwapService: HinkalSwapService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly modalService: ModalService,
     private readonly hinkalWorkerService: HinkalWorkerService,
     private readonly notificationService: NotificationsService
   ) {
@@ -52,13 +46,13 @@ export class HinkalFacadeService {
   }
 
   private initSubs(): void {
-    const walletSub = this.subscribeOnAddressChanged().subscribe();
+    //const walletSub = this.subscribeOnAddressChanged().subscribe();
     const activeNetworkSub = this.subscribeOnActiveNetworkChanged().subscribe();
     const walletNetworkSub = this.subscribeOnWalletNetworkChanged().subscribe();
     const pollSub = this.hinkalBalanceService.initBalancePolling();
     const balanceSub = this.hinkalBalanceService.subscribeOnBalancePolling();
 
-    this.subs.push(walletSub, activeNetworkSub, walletNetworkSub, pollSub, balanceSub);
+    this.subs.push(activeNetworkSub, walletNetworkSub, pollSub, balanceSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -137,54 +131,26 @@ export class HinkalFacadeService {
     }
   }
 
-  private async updateInstance(
-    userAddress: string | null,
-    blockchain: EvmBlockchainName
-  ): Promise<void> {
-    if (!userAddress) {
-      this.hinkalInstanceService.resetInstance();
-      return;
-    }
-
-    const signMessage = async () => {
-      try {
-        let chain = blockchain;
-        if (!HINKAL_SUPPORTED_CHAINS.includes(chain)) {
-          chain = HINKAL_SUPPORTED_CHAINS[0];
-          await this.walletConnectorService.switchChain(chain);
-        }
-
-        return this.hinkalInstanceService.updateInstance(
-          userAddress,
-          chain,
-          this.walletConnectorService.provider.wallet
-        );
-      } catch {}
-    };
-
-    await firstValueFrom(
-      this.modalService.showDialog(SignMessageModalComponent, {
-        size: 's',
-        dismissible: false,
-        fitContent: true,
-        closeable: false,
-        data: {
-          signMessage,
-          isSdkLoading$: false
-        }
-      })
-    );
+  public logout(): void {
+    this.hinkalInstanceService.resetInstance();
+    this.hinkalBalanceService.stopPolling();
   }
 
-  private subscribeOnAddressChanged(): Observable<void> {
-    return this.walletConnectorService.addressChange$.pipe(
-      withLatestFrom(this.activeChain$),
-      distinctUntilChanged(),
-      switchMap(([address, network]) => {
-        const chain = network as EvmBlockchainName;
-        return this.updateInstance(address, chain);
-      })
-    );
+  public async updateInstance(): Promise<void> {
+    try {
+      if (!this.walletConnectorService.address) {
+        this.notificationService.showWarning('Wallet not connected');
+        return;
+      }
+
+      const isSuccess = await this.hinkalInstanceService.updateInstance(
+        this.walletConnectorService.address,
+        this.walletConnectorService.network as EvmBlockchainName,
+        this.walletConnectorService.provider?.wallet
+      );
+
+      if (isSuccess) this.hinkalBalanceService.startPolling();
+    } catch {}
   }
 
   private subscribeOnActiveNetworkChanged(): Observable<void> {
@@ -206,7 +172,7 @@ export class HinkalFacadeService {
     return this.walletConnectorService.networkChange$.pipe(
       distinctUntilChanged(),
       switchMap(() =>
-        this.hinkalInstanceService.updateAdapter(this.walletConnectorService.provider.wallet)
+        this.hinkalInstanceService.updateAdapter(this.walletConnectorService.provider?.wallet)
       )
     );
   }

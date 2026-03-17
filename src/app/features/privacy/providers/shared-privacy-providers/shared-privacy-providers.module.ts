@@ -61,6 +61,7 @@ import { SwitchNetworkPageComponent } from './components/switch-network-page/swi
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { LoginWindowComponent } from './components/login-window/login-window.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared
     PrivatePreviewSwapComponent,
     SignMessageModalComponent,
     PrivateActionButtonComponent,
-    SwitchNetworkPageComponent
+    SwitchNetworkPageComponent,
+    LoginWindowComponent
   ],
   imports: [
     CommonModule,
@@ -111,7 +113,8 @@ import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
     SwapWindowComponent,
-    SwitchNetworkPageComponent
+    SwitchNetworkPageComponent,
+    LoginWindowComponent
   ],
   providers: [
     SwapsFormService,

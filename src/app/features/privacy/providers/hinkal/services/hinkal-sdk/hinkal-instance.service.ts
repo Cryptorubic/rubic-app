@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 import { EthersProviderAdapter } from '@hinkal/common/providers/EthersProviderAdapter';
 import { BehaviorSubject } from 'rxjs';
 import { HinkalWorkerService } from './hinkal-worker.service';
+import { ErrorsService } from '@app/core/errors/errors.service';
 
 @Injectable()
 export class HinkalInstanceService {
@@ -16,13 +17,14 @@ export class HinkalInstanceService {
     return this._hinkalInstance;
   }
 
-  private readonly _currSignature$ = new BehaviorSubject<string>('');
+  private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
 
   public readonly currSignature$ = this._currSignature$.asObservable();
 
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly workerService: HinkalWorkerService
+    private readonly workerService: HinkalWorkerService,
+    private readonly errorsService: ErrorsService
   ) {
     this._hinkalInstance = new Hinkal({
       generateProofRemotely: true,
@@ -74,6 +76,7 @@ export class HinkalInstanceService {
       return true;
     } catch (err) {
       console.error('FAILED TO UPDATE HINKAL INSTANCE', err);
+      this.errorsService.catch(err);
       return false;
     }
   }
