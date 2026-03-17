@@ -1,0 +1,12 @@
+<div class="signature-window-wrapper">
+  <ng-container *ngIf="!authorized; else template">
+    <b>
+      Sign a message with your wallet <br />
+      to access your private balance
+    </b>
+    <button tuiButton type="button" size="m" appearance="primary" (click)="onClick()">Sign</button>
+  </ng-container>
+  <ng-template #template>
+    <b> You logged in successfully.</b>
+  </ng-template>
+</div>

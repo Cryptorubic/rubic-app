@@ -2,6 +2,10 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 
 export const HINKAL_PAGES: PageType[] = [
   {
+    type: 'login',
+    label: 'Login'
+  },
+  {
     type: 'walletInfo',
     label: 'Wallet Info'
   },

@@ -19,7 +19,6 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
       return `${token.blockchain}::${token.address.toLowerCase()}`;
     };
     const pcSupportedTokensByChain: MinimalToken[] = getMinimalTokensByChain(type);
-    // address is rubic supported(native is So11111111111111111111111111111111111111111)
     const addrToTokenMap = pcSupportedTokensByChain.reduce(
       (acc, token) => ({ ...acc, [getKey(token)]: token }),
       {} as Record<string, MinimalToken>

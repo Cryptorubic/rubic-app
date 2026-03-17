@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BLOCKCHAIN_NAME, PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, Token, TokenAmount } from '@cryptorubic/core';
 import {
   WRAP_SOL_ADDRESS,
   addr_to_symbol_map,
@@ -15,7 +15,6 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { BlockchainToken } from '@app/shared/models/tokens/blockchain-token';
 import { PrivacycashApiService } from './privacy-cash-api.service';
-import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../utils/converter';
 import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
@@ -43,13 +42,13 @@ export class PrivacycashSwapService {
    * @param srcToken token with PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
    * @param dstToken token with PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
    * @param srcAmountNonWei ex. 0.002
-   * @returns dstToken PriceTokenAmount where native address is So11111111111111111111111111111111111111111
+   * @returns dstToken TokenAmount where native address is So11111111111111111111111111111111111111111
    */
   public async quote(
-    srcToken: BalanceToken,
-    dstToken: BalanceToken,
+    srcToken: TokenAmount,
+    dstToken: Token,
     srcAmountNonWei: BigNumber
-  ): Promise<PriceTokenAmount> {
+  ): Promise<TokenAmount> {
     const rubicSrcToken = { ...srcToken, address: toRubicTokenAddr(srcToken.address) };
     const rubicDstToken = { ...dstToken, address: toRubicTokenAddr(dstToken.address) };
 
@@ -67,15 +66,19 @@ export class PrivacycashSwapService {
         feesResp.rent_fees[addr_to_symbol_map[srcToken.address.toLowerCase()]]
       ).multipliedBy(receiversCount);
       const withdrawFeeNonWei = withdrawRateFee.plus(withdrawRentFee);
-
+      console.log('ESTIMATES ====>', {
+        withdrawFeeNonWei: withdrawFeeNonWei.toFixed(),
+        withdrawRateFee: withdrawRateFee.toFixed(),
+        srcAmountNonWei: srcAmountNonWei.toFixed()
+      });
       return withdrawFeeNonWei;
     };
 
     if (isDirectTransfer) {
+      console.log('isDirectTransfer XXXXXX');
       const dstAmount = srcAmountNonWei.minus(estimateDirectWithdrawFee());
-      return new PriceTokenAmount({
+      return new TokenAmount({
         ...rubicSrcToken,
-        price: new BigNumber(rubicSrcToken.price || 0),
         tokenAmount: dstAmount.gt(0) ? dstAmount : new BigNumber(0)
       });
     }
@@ -94,21 +97,32 @@ export class PrivacycashSwapService {
       isDstNative ? swap_reserved_rent_fee : 0
     );
 
-    return new PriceTokenAmount({
+    return new TokenAmount({
       ...rubicDstToken,
-      price: new BigNumber(rubicDstToken.price || 0),
       tokenAmount: dstAmountNonWeiWithoutReservedRentFee
     });
   }
 
   // withdraw private-public
-  public async transfer(srcToken: TokenAmount, receiverAddr: string): Promise<void> {
+  public async transfer(token: TokenAmount, receiverAddr: string): Promise<void> {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const recipientPK = new PublicKey(receiverAddr);
+    const feesResp = await this.privacycashApiService.fetchFees();
+    const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
+    const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
+    const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
+    const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
+
+    if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
+      this.notificationsService.showWarning(
+        `The transfer amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
+      );
+      return;
+    }
 
     await this.makePartialWithdraw(
-      toPrivacyCashTokenAddr(srcToken.address),
-      srcToken.weiAmount.toNumber(),
+      toPrivacyCashTokenAddr(token.address),
+      token.weiAmount.toNumber(),
       senderPK,
       recipientPK
     );
@@ -133,6 +147,18 @@ export class PrivacycashSwapService {
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const recipientPK = new PublicKey(receiverAddr);
+    const feesResp = await this.privacycashApiService.fetchFees();
+    const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
+    const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
+    const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
+    const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
+
+    if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
+      this.notificationsService.showWarning(
+        `The transfer amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
+      );
+      return;
+    }
 
     await this.makePartialWithdraw(
       toPrivacyCashTokenAddr(token.address),
@@ -163,12 +189,14 @@ export class PrivacycashSwapService {
 
       const srcAmountNonWei = Token.fromWei(srcAmountWei, srcToken.decimals);
       const feesResp = await this.privacycashApiService.fetchFees();
-      const srcTokenUsdPricePerOne =
-        feesResp.prices[addr_to_symbol_map[srcToken.address.toLowerCase()]];
-      const srcTokenUsdAmount = srcTokenUsdPricePerOne * Number(srcAmountNonWei);
+      const pcTokenSymbol = addr_to_symbol_map[srcToken.address.toLowerCase()];
+      const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
+      const srcTokenUsdAmount = srcAmountNonWei.multipliedBy(srcTokenUsdPricePerOne);
 
-      if (!compareAddresses(srcToken.address, dstToken.address) && srcTokenUsdAmount < 10) {
-        this.notificationsService.showWarning(`Amount must be more than $10 to perform a swap.`);
+      if (srcTokenUsdAmount.lt(10)) {
+        this.notificationsService.showWarning(
+          `The swap amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
+        );
         return;
       }
 
@@ -243,7 +271,7 @@ export class PrivacycashSwapService {
           return Promise.resolve(tx);
         }
       );
-      this.notificationsService.showInfo('Swap successful. Check the receiver’s wallet balance.');
+      this.notificationsService.showInfo('Swap successful.');
     } finally {
       this.ephemeralWalletTokensService.updateBalances();
       this.privacycashTokensService.updatePrivateBalances();

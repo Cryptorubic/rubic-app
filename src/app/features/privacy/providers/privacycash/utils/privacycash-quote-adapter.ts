@@ -6,6 +6,7 @@ import { PrivacycashSwapService } from '../services/privacy-cash-swap.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { toPrivacyCashTokenAddr } from './converter';
 import { from, map, Observable } from 'rxjs';
+import { Token, TokenAmount } from '@cryptorubic/core';
 
 export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
   constructor(
@@ -21,14 +22,15 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
     toAmountWei: BigNumber;
     tradeId?: string;
   }> {
-    const pcSupportedSrcToken = {
+    const pcSupportedSrcToken: TokenAmount = new TokenAmount({
       ...fromAsset,
-      address: toPrivacyCashTokenAddr(fromAsset.address)
-    };
-    const pcSupportedDstToken = {
+      address: toPrivacyCashTokenAddr(fromAsset.address),
+      tokenAmount: fromAsset.amount
+    });
+    const pcSupportedDstToken: Token = new Token({
       ...toAsset,
       address: toPrivacyCashTokenAddr(toAsset.address)
-    };
+    });
 
     return from(
       this.privacycashSwapService.quote(

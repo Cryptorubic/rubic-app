@@ -63,8 +63,7 @@ export class RailgunHideTokensPageComponent {
             }
           }
         ],
-        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
-        swapTime: '1 hour'
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

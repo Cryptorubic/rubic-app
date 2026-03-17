@@ -51,7 +51,8 @@ export class PrivacycashHidePageComponent {
             label: 'Hide Tokens',
             action: () => this.privacycashSwapService.shield(token)
           }
-        ]
+        ],
+        dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

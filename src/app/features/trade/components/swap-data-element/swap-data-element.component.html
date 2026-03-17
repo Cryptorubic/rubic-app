@@ -28,6 +28,7 @@
   </div>
 
   <div
+    *ngIf="averageTimeMins && time95PercentSwapsMins"
     class="provider-info__element time"
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"

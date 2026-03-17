@@ -7,24 +7,24 @@ import { ethers } from 'ethers';
 import { EthersProviderAdapter } from '@hinkal/common/providers/EthersProviderAdapter';
 import { BehaviorSubject } from 'rxjs';
 import { HinkalWorkerService } from './hinkal-worker.service';
+import { ErrorsService } from '@app/core/errors/errors.service';
 
 @Injectable()
 export class HinkalInstanceService {
-  private readonly hinkalSigningMessage = 'Login to Hinkal Protocol';
-
   private readonly _hinkalInstance: Hinkal<unknown>;
 
   public get hinkalInstance(): Hinkal<unknown> {
     return this._hinkalInstance;
   }
 
-  private readonly _currSignature$ = new BehaviorSubject<string>('');
+  private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
 
   public readonly currSignature$ = this._currSignature$.asObservable();
 
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly workerService: HinkalWorkerService
+    private readonly workerService: HinkalWorkerService,
+    private readonly errorsService: ErrorsService
   ) {
     this._hinkalInstance = new Hinkal({
       generateProofRemotely: true,
@@ -54,8 +54,7 @@ export class HinkalInstanceService {
   ): Promise<boolean> {
     try {
       const adapter = this.adapterFactory.getAdapter(blockchain);
-
-      const signature = await adapter.signer.signMessage(this.hinkalSigningMessage);
+      const signature = await adapter.signer.signMessage(this.hinkalInstance.signingMessage);
 
       await prepareHinkalWithSignature(
         this._hinkalInstance,
@@ -77,6 +76,7 @@ export class HinkalInstanceService {
       return true;
     } catch (err) {
       console.error('FAILED TO UPDATE HINKAL INSTANCE', err);
+      this.errorsService.catch(err);
       return false;
     }
   }
