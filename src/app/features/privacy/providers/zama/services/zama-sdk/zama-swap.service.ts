@@ -49,7 +49,11 @@ export class ZamaSwapService {
 
       if (!needApprove) return true;
 
-      const resp = await adapter.approveTokens(wrapToken.address, shieldedTokenAddress);
+      const resp = await adapter.approveTokens(
+        wrapToken.address,
+        shieldedTokenAddress,
+        wrapToken.weiAmount
+      );
 
       return !!resp;
     } catch (err) {

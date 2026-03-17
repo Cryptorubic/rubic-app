@@ -4,10 +4,11 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ZamaTokensService } from './zama-sdk/zama-tokens.service';
 import { compareAddresses, EvmBlockchainName } from '@cryptorubic/core';
 
+@Injectable()
 export class ZamaHideTokensFacadeService extends TokensFacadeService {
   private readonly tokensService = inject(ZamaTokensService);
 
