@@ -47,7 +47,6 @@ import {
   PopulateShieldRequest,
   PopulateTransferRequest,
   PopulateUnshieldRequest,
-  RefreshBalancesRequest,
   SetupFromPasswordRequest,
   SetupFromPasswordResponse,
   UnlockFromPasswordRequest,
@@ -57,6 +56,8 @@ import {
 
 @Injectable()
 export class RailgunFacadeService {
+  private syncResolvers = new Map<number, () => void>();
+
   private railgunWorker = new Worker(new URL('./worker/railgun.worker', import.meta.url), {
     type: 'module'
   });
@@ -251,26 +252,19 @@ export class RailgunFacadeService {
       id: blockchainId[chain]
     }));
 
-    const activeBlockchainName = this._selectedBlockchain$.value;
-    const activeChainId = blockchainId[activeBlockchainName];
-
-    const sortedChains = [...balanceChains].sort((a, b) => {
-      if (a.id === activeChainId) return -1;
-      if (b.id === activeChainId) return 1;
-      return 0;
-    });
-
-    for (const chain of sortedChains) {
+    for (const chain of balanceChains) {
       try {
-        await this.sendWorkerRequest<void, RefreshBalancesRequest>('refreshBalances', {
-          chain,
-          walletIds
-        });
+        await new Promise<void>(resolve => {
+          this.syncResolvers.set(chain.id, resolve);
 
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
-        await new Promise(resolve => setTimeout(resolve, 800));
+          this.sendWorkerRequest('refreshBalances', { chain, walletIds }).catch(() => {
+            this.syncResolvers.delete(chain.id);
+            resolve();
+          });
+        });
       } catch (error) {
-        console.error(`[RailgunFacade] Failed to refresh balances for chain ${chain.id}:`, error);
+        console.error(`[RailgunFacade] Error syncing chain ${chain.id}:`, error);
+        this.syncResolvers.delete(chain.id);
       }
     }
   }
@@ -295,7 +289,7 @@ export class RailgunFacadeService {
       this._railgunAccount$.next({ ...walletInfo, evmWalletAddress: evmWallet });
       this.lastUsedPassword = account.password;
 
-      await this.refreshBalances([walletInfo.id]);
+      this.refreshBalances([walletInfo.id]);
     } catch (error) {
       console.warn('[RailgunFacade] Account handling failed:', error);
     }
@@ -627,23 +621,42 @@ export class RailgunFacadeService {
       ) as RailgunSupportedChain;
       if (!blockchain) return;
 
-      const progressPercent = Number(
-        new BigNumber(eventData.progress).multipliedBy(100).toFixed(2)
-      );
+      const previousProgress = this._utxoScan$.value[blockchain] || 0;
+      let progressPercent: number;
 
-      if (
-        Math.abs(this._utxoScan$.value[blockchain] - progressPercent) < 0.5 &&
-        progressPercent !== 100
-      ) {
-        return;
+      if (eventData.progress === 0) {
+        progressPercent = previousProgress === 100 ? 100 : 0;
+      } else {
+        progressPercent = Number(new BigNumber(eventData.progress).multipliedBy(100).toFixed(0));
       }
 
-      this._utxoScan$.next({
-        ...this._utxoScan$.value,
-        [blockchain]: progressPercent
-      });
+      const hasSignificantChange =
+        Math.abs(this._utxoScan$.value[blockchain] - progressPercent) >= 1;
+
+      if (hasSignificantChange || progressPercent === 100) {
+        this._utxoScan$.next({
+          ...this._utxoScan$.value,
+          [blockchain]: progressPercent
+        });
+      }
+
+      const isFinished =
+        progressPercent === 100 || (eventData.progress === 0 && previousProgress > 0);
+
+      if (isFinished) {
+        const resolve = this.syncResolvers.get(eventData.chain.id);
+        if (resolve) {
+          resolve();
+          this.syncResolvers.delete(eventData.chain.id);
+        }
+      }
     } catch (error) {
       console.error('[RailgunFacade] Error during UTXO scan update handling:', error);
+      const resolve = this.syncResolvers.get(eventData.chain.id);
+      if (resolve) {
+        resolve();
+        this.syncResolvers.delete(eventData.chain.id);
+      }
     }
   }
 }
