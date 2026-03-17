@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, ErrorInterface } from '@cryptorubic/core';
+import { BlockchainName, ErrorInterface } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
@@ -32,11 +32,9 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     network: BlockchainName | null,
     swapInfo: PrivateSwapInfo,
     receiver: string,
-    tradeError: ErrorInterface
+    tradeError: Partial<ErrorInterface>
   ): Promise<PrivateActionButtonState> {
-    const chainType = network ? BlockchainsInfo.getChainType(network) : null;
-
-    if (!network || chainType !== CHAIN_TYPE.EVM) {
+    if (!network) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -47,6 +45,12 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       return {
         type: 'error',
         text: 'Select tokens'
+      };
+    }
+    if (swapInfo.fromAsset.blockchain === swapInfo.toAsset.blockchain) {
+      return {
+        type: 'error',
+        text: 'Trade is not available'
       };
     }
     if (
@@ -64,7 +68,9 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Enter receiver address'
       };
     }
-    const isAddressCorrect = await Web3Pure.getInstance(network).isAddressCorrect(receiver);
+    const isAddressCorrect = await Web3Pure.getInstance(
+      swapInfo.toAsset.blockchain
+    ).isAddressCorrect(receiver);
     if (!isAddressCorrect) {
       return {
         type: 'error',

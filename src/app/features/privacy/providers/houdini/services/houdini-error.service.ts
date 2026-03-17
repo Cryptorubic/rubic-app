@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, takeUntil, tap } from 'rxjs';
 
 @Injectable()
 export class HoudiniErrorService {
-  private readonly _tradeError$ = new BehaviorSubject<ErrorInterface | null>(null);
+  private readonly _tradeError$ = new BehaviorSubject<Partial<ErrorInterface> | null>(null);
 
   public readonly tradeError$ = this._tradeError$.asObservable();
 
@@ -29,7 +29,7 @@ export class HoudiniErrorService {
       .subscribe();
   }
 
-  public setTradeError(tradeError: ErrorInterface): void {
+  public setTradeError(tradeError: Partial<ErrorInterface>): void {
     this._tradeError$.next(tradeError);
   }
 }
