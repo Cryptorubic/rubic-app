@@ -205,6 +205,11 @@ export class RubicApiService {
       );
 
       if ('error' in resp) {
+        const errorResp = resp as SwapErrorResponseInterface;
+        if (errorResp) {
+          throw this.getApiError(errorResp);
+        }
+
         throw this.getApiError((resp as { error: SwapErrorResponseInterface }).error);
       }
       return resp;
