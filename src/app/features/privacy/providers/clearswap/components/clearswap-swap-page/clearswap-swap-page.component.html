@@ -1,6 +1,7 @@
 <app-swap-window
   [quoteAdapter]="quoteAdapter"
   [receiverAddressRequired]="true"
-  (swapClicked)="swap($event)"
   [receiverCtrl]="receiverCtrl"
+  [creationConfig]="clearswapFormConfig"
+  (swapClicked)="swap($event)"
 ></app-swap-window>

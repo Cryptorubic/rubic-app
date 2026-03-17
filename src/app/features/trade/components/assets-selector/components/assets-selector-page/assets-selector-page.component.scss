@@ -12,9 +12,15 @@
 
   &__header {
     display: flex;
+    align-items: center;
 
     font-weight: bold;
     font-size: 15px;
+
+    app-back-button {
+      position: relative;
+      top: 1px;
+    }
   }
 }
 
@@ -32,7 +38,6 @@ app-search-blockchains-bar {
 .token-list-container {
   width: 100%;
   min-height: 410px;
-  max-height: 410px;
 
   &__list {
     height: 100%;

@@ -35,6 +35,7 @@
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list">
       <app-assets-type-aside-element
+        *ngIf="showAllChains"
         [type]="type"
         [blockchainItem]="allChainsSelectorItem"
         [selectedAssetType]="assetListType"

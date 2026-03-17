@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core'
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -36,6 +37,8 @@ export class ClearswapSwapPageComponent implements OnInit {
     this.clearswapErrorService,
     this.notificationsService
   );
+
+  public readonly clearswapFormConfig = clearswapFormConfig;
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
