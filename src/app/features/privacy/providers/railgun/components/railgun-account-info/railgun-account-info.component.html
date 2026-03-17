@@ -32,7 +32,7 @@
         <div [@fadeAnimation] *ngIf="scanInProgress" class="account-info__wrapper">
           <h3 class="account-info__label">Balances loading:</h3>
           <div class="account-info__progress-wrapper">
-            <ng-container *ngFor="let value of utxoChains">
+            <ng-container *ngFor="let value of utxoChains; trackBy: trackByFn">
               <label tuiProgressLabel>
                 <img class="account-info__progress-image" [src]="value.icon" [alt]="value.label" />
                 <span class="percent">{{ value.progress }}%</span>
