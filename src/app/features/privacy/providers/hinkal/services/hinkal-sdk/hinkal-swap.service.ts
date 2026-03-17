@@ -35,6 +35,7 @@ export class HinkalSwapService {
     try {
       await this.hinkalWorker.request({ type: 'refreshStoredSnapshot' });
       await HinkalUtils.updateSnapshot(this.hinkalInstanceService.hinkalInstance, chainId);
+      await this.hinkalInstanceService.hinkalInstance.resetMerkleTreesIfNecessary();
     } catch (err) {
       console.log('FAILED TO REFRESH SNAPSHOT', err);
     }
@@ -56,6 +57,8 @@ export class HinkalSwapService {
             stealthAddress
           )
         : hinkalInstance.deposit([depositToken], [BigInt(token.stringWeiAmount)]));
+
+      hinkalInstance.snapshotsClearInterval();
 
       return true;
     } catch (err) {
@@ -85,6 +88,9 @@ export class HinkalSwapService {
         undefined,
         false
       );
+
+      hinkalInstance.snapshotsClearInterval();
+
       return true;
     } catch (err) {
       this.errorService.catch(err);
@@ -110,6 +116,8 @@ export class HinkalSwapService {
         undefined,
         false
       );
+
+      hinkalInstance.snapshotsClearInterval();
 
       return true;
     } catch (err) {
@@ -220,6 +228,8 @@ export class HinkalSwapService {
         undefined,
         false
       );
+
+      hinkalInstance.snapshotsClearInterval();
 
       return true;
     } catch (err) {
