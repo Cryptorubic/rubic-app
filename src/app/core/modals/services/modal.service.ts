@@ -54,7 +54,6 @@ import { PrivateProvidersListComponent } from '@app/features/privacy/components/
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
 import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
-import { PrivacycashSignatureWindowComponent } from '@app/features/privacy/providers/privacycash/components/privacycash-signature-window/privacycash-signature-window.component';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 
 @Injectable({
@@ -542,16 +541,6 @@ export class ModalService {
         PrivacyAuthWindowComponent,
         { size: 'page' }
       )
-    );
-  }
-
-  public openPrivacycashSignatureModal(): Promise<boolean> {
-    return firstValueFrom(
-      this.showDialog(PrivacycashSignatureWindowComponent, {
-        size: 's',
-        closeable: true,
-        fitContent: true
-      })
     );
   }
 }
