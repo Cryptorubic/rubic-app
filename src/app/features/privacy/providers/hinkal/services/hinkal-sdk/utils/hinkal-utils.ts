@@ -2,6 +2,7 @@ import { Token } from '@app/shared/models/tokens/token';
 import { blockchainId, PriceToken, TokenAmount } from '@cryptorubic/core';
 import { ERC20Token, Hinkal, MERKLE_LEVELS, MerkleTree, poseidonFunction } from '@hinkal/common';
 import { get } from 'idb-keyval';
+import { StoredSnapshot } from '../workers/models/stored-snapshot';
 export class HinkalUtils {
   public static convertRubicTokenToHinkalToken(
     token: Token | PriceToken | TokenAmount
@@ -20,7 +21,7 @@ export class HinkalUtils {
     const cachedShapshot = hinkalSnapshot[chainId];
 
     if (cachedShapshot) {
-      const parsedMerkle = JSON.parse(cachedShapshot);
+      const parsedMerkle = JSON.parse(cachedShapshot) as StoredSnapshot;
 
       const treeMap = this.restoreMerkle(parsedMerkle.merkleTree.tree);
       const treeMapAccessToken = this.restoreMerkle(parsedMerkle.merkleTreeAccessToken.tree);
@@ -51,7 +52,16 @@ export class HinkalUtils {
         0n
       );
 
-      hinkal.approvals = new Map(Object.entries(parsedMerkle.approvals));
+      hinkal.approvals = new Map(
+        Object.entries(parsedMerkle.approvals).map(([token, approval]) => {
+          const parsedApproval = approval.map(v => ({
+            tokenAddress: v.tokenAddress,
+            amount: BigInt(v.amount),
+            inHinkalAddress: BigInt(v.inHinkalAddress)
+          }));
+          return [token, parsedApproval];
+        })
+      );
       hinkal.nullifiers = new Set(parsedMerkle.nullifiers);
       hinkal.encryptedOutputs = parsedMerkle.encryptedOutputs;
     }
