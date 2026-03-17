@@ -42,7 +42,8 @@ export class PrivacyPageViewComponent {
     assetsSelectorConfig: {
       withChainsFilter: false,
       withTokensFilter: false,
-      withFavoriteTokens: false
+      withFavoriteTokens: false,
+      showAllChains: true
     }
   };
 
@@ -55,7 +56,8 @@ export class PrivacyPageViewComponent {
     assetsSelectorConfig: {
       withChainsFilter: false,
       withTokensFilter: false,
-      withFavoriteTokens: false
+      withFavoriteTokens: false,
+      showAllChains: true
     }
   };
 

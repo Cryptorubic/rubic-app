@@ -203,16 +203,20 @@ export class SwapWindowComponent implements OnInit {
             tradeId
           });
         }),
-        catchError(err =>
-          from(
+        catchError(err => {
+          this.patchSwapInfo({
+            toAmount: null,
+            tradeId: null
+          });
+          return from(
             this.quoteAdapter.quoteFallback(
               swapInfo.fromAsset,
               swapInfo.toAsset,
               swapInfo.fromAmount,
               err
             )
-          )
-        ),
+          );
+        }),
         switchMap(() => EMPTY),
         finalize(() => {
           this._loading$.next(false);

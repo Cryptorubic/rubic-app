@@ -46,7 +46,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   @Input() assetsSelectorConfig: AssetsSelectorConfig = {
     withChainsFilter: true,
     withTokensFilter: true,
-    withFavoriteTokens: true
+    withFavoriteTokens: true,
+    showAllChains: true
   };
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
@@ -103,9 +104,13 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setWindowHeight();
+    if (this.assetsSelectorConfig.listType) {
+      this.lastDefaultMode = this.assetsSelectorConfig.listType;
+      this.assetsSelectorService.assetListType = this.assetsSelectorConfig.listType;
+    }
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
       distinctUntilChanged(),
-      startWith('allChains' as AssetListType)
+      startWith(this.assetsSelectorConfig.listType || ('allChains' as AssetListType))
     );
 
     this.tokensSearchQuery$ = this.assetListType$.pipe(

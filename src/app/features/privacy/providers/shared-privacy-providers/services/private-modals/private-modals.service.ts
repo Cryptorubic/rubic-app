@@ -37,7 +37,8 @@ export class PrivateModalsService {
     assetsSelectorConfig: AssetsSelectorConfig = {
       withChainsFilter: true,
       withTokensFilter: true,
-      withFavoriteTokens: true
+      withFavoriteTokens: true,
+      showAllChains: true
     }
   ): Observable<BalanceToken> {
     return this.modalService.showDialog(

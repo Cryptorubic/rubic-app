@@ -43,6 +43,7 @@
             [blockchainFilter]="state.blockchainFilter"
             [totalBlockchains]="totalBlockchains"
             [assetListType]="state.assetListType"
+            [showAllChains]="assetsSelectorConfig.showAllChains"
             (handleBlockchainSelect)="selectAssetList($event)"
             (handleFilterSelect)="handleBlockchainFilterSelection($event)"
             (onSearchQuery)="onBlockchainsQuery($event)"
