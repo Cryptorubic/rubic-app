@@ -23,6 +23,7 @@
         [amountValue]="state.swapInfo.fromAmount"
       ></app-amount-transput>
       <app-user-balance-container
+        [fromToken$]="fromToken$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>

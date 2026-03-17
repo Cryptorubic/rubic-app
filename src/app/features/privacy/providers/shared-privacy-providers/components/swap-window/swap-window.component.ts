@@ -18,6 +18,7 @@ import {
   EMPTY,
   finalize,
   from,
+  map,
   Observable,
   startWith,
   switchMap,
@@ -91,6 +92,11 @@ export class SwapWindowComponent implements OnInit {
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
+
+  public readonly fromToken$ = this.swapInfo$.pipe(
+    distinctUntilChanged((prev, curr) => compareTokens(prev.fromAsset, curr.fromAsset)),
+    map(swapInfo => swapInfo.fromAsset)
+  );
 
   public get swapInfo(): PrivateSwapInfo {
     return this.privateSwapWindowService.swapInfo;
@@ -251,7 +257,15 @@ export class SwapWindowComponent implements OnInit {
     this.patchSwapInfo({ fromAmount: value });
   }
 
-  public handleMaxButton(): void {}
+  public handleMaxButton(): void {
+    const token = this.privateSwapWindowService.swapInfo.fromAsset;
+    this.patchSwapInfo({
+      fromAmount: {
+        visibleValue: token.amount.toString(),
+        actualValue: token.amount
+      }
+    });
+  }
 
   public async swap(): Promise<void> {
     this._loading$.next(true);
