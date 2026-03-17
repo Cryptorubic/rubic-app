@@ -17,6 +17,8 @@ import * as Sentry from '@sentry/angular';
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     CoreModule,
     SharedModule,
     TuiRootModule,
@@ -26,8 +28,6 @@ import * as Sentry from '@sentry/angular';
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'
     }),
-    BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     NgxGoogleAnalyticsModule

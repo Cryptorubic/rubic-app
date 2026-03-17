@@ -19,7 +19,6 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
       return `${token.blockchain}::${token.address.toLowerCase()}`;
     };
     const pcSupportedTokensByChain: MinimalToken[] = getMinimalTokensByChain(type);
-    // address is rubic supported(native is So11111111111111111111111111111111111111111)
     const addrToTokenMap = pcSupportedTokensByChain.reduce(
       (acc, token) => ({ ...acc, [getKey(token)]: token }),
       {} as Record<string, MinimalToken>
@@ -27,10 +26,6 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
 
     return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
       map(tokens => {
-        console.log(
-          'SOLANA_TOKENS ==>',
-          tokens.filter(t => t.blockchain === 'SOLANA')
-        );
         return tokens.filter(token => !!addrToTokenMap[getKey(token)]);
       })
     );

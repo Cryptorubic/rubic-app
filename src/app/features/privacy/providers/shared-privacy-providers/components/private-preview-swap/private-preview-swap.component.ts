@@ -9,6 +9,7 @@ import {
   PreviewPrivateSwapOptions,
   PreviewSwapWarning,
   PrivateStep,
+  PrivateSwapOptions,
   PrivateSwapType
 } from './models/preview-swap-options';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -19,7 +20,6 @@ import { AppGasData } from '@app/features/trade/models/provider-info';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
-import { SwapAmount } from '../../models/swap-info';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -54,6 +54,8 @@ export class PrivatePreviewSwapComponent {
 
   private steps: PrivateStep[];
 
+  private readonly swapOptions: PrivateSwapOptions;
+
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
   }
@@ -68,8 +70,11 @@ export class PrivatePreviewSwapComponent {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
 
-    this.fromValue = this.getTokenValue(context.data.fromToken, context.data.fromAmount);
-    this.toValue = this.getTokenValue(context.data.toToken, context.data.toAmount);
+    this.fromValue = this.getTokenValue(
+      context.data.fromToken,
+      context.data.fromAmount.actualValue
+    );
+    this.toValue = this.getTokenValue(context.data.toToken, context.data.toAmount.actualValue);
 
     const [initialStep, ...steps] = context.data.swapOptions.steps;
     this._currentStep$.next(initialStep);
@@ -79,6 +84,7 @@ export class PrivatePreviewSwapComponent {
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
     this.feeInfo = context.data.swapOptions.feeInfo || null;
+    this.swapOptions = context.data.swapOptions;
   }
 
   private getTokenAsset(token: BalanceToken): AssetSelector {
@@ -96,13 +102,13 @@ export class PrivatePreviewSwapComponent {
 
   private getTokenValue(
     token: BalanceToken,
-    amount: SwapAmount
+    tokenAmount: BigNumber
   ): { tokenAmount: BigNumber; fiatAmount: string } {
     return {
-      tokenAmount: amount.actualValue,
+      tokenAmount: tokenAmount,
       fiatAmount:
-        amount.actualValue.gt(0) && token.price
-          ? amount.actualValue.multipliedBy(token.price || 0).toFixed(2)
+        tokenAmount.gt(0) && token.price
+          ? tokenAmount.multipliedBy(token.price || 0).toFixed(2)
           : null
     };
   }
@@ -113,10 +119,6 @@ export class PrivatePreviewSwapComponent {
 
   public onImageError($event: Event): void {
     TokensFacadeService.onTokenImageError($event);
-  }
-
-  public getAverageSwapTimeMinutes(): string {
-    return this.fromAsset.secondLabel === this.toAsset.secondLabel ? '1 min' : '30 min';
   }
 
   private setLoadingState(): void {

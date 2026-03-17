@@ -1,26 +1,31 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, skip, Subscription, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, filter, Subscription, switchMap, tap, timer, withLatestFrom } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { HinkalWorkerService } from './hinkal-worker.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
-import { HinkalInstanceService } from './hinkal-instance.service';
 
 @Injectable()
 export class HinkalBalanceService {
-  constructor(
-    private readonly workerService: HinkalWorkerService,
-    private readonly authService: AuthService,
-    private readonly hinkalInstance: HinkalInstanceService
-  ) {}
+  constructor(private readonly workerService: HinkalWorkerService) {}
+
+  private isPollingActive$ = new BehaviorSubject<boolean>(false);
 
   private readonly _balances$ = new BehaviorSubject<HinkalPrivateBalance>({});
+
+  public stopPolling(): void {
+    this.isPollingActive$.next(false);
+  }
+
+  public startPolling(): void {
+    this.isPollingActive$.next(true);
+  }
 
   public readonly balances$ = this._balances$.asObservable();
 
   public initBalancePolling(): Subscription {
     return timer(0, 20000)
       .pipe(
-        skip(1),
+        withLatestFrom(this.isPollingActive$),
+        filter(([_, isPollingActive]) => isPollingActive),
         switchMap(() => {
           console.log('FETCH BALANCE');
           return this.workerService.request<void>({

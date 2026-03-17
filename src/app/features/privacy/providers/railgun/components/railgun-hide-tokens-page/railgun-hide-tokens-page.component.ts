@@ -34,6 +34,7 @@ export class RailgunHideTokensPageComponent {
   private readonly notificationService = inject(NotificationsService);
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+    // const gasInfo: AppGasData = { amount, amountInUsd, symbol: token.symbol };
     try {
       const preview$ = openPreview({
         steps: [
@@ -61,7 +62,8 @@ export class RailgunHideTokensPageComponent {
               );
             }
           }
-        ]
+        ],
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
       await firstValueFrom(preview$);
     } finally {

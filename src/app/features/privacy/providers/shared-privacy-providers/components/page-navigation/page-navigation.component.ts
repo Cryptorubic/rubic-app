@@ -27,6 +27,6 @@ export class PageNavigationComponent {
   }
 
   public isPageDisabled(page: PageType): boolean {
-    return this.disabledPages.some(disabledPage => disabledPage.type === page.type);
+    return (this.disabledPages || []).some(disabledPage => disabledPage?.type === page?.type);
   }
 }

@@ -103,7 +103,9 @@ export class TokensFacadeService {
     return this.tokensBootstrapService.tier1TokensLoaded$;
   }
 
-  constructor(private readonly tokensStore: NewTokensStoreService) {
+  constructor(private readonly tokensStore: NewTokensStoreService) {}
+
+  public init(): void {
     this.tokensBootstrapService.buildTokenLists();
     this.tokensBalanceService.initSubscribes();
     this.tokensQueryService.subscribeOnQuery();

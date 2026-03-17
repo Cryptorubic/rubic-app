@@ -15,7 +15,10 @@ import { PopulateShieldResult } from '@features/privacy/providers/railgun/models
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
+import { Web3Pure } from '@cryptorubic/web3';
+import { wrappedNativeTokensList } from '@cryptorubic/core';
 
 @Injectable()
 export class HideService {
@@ -104,6 +107,45 @@ export class HideService {
   }
 
   /**
+   * Populates the actual transaction data for shielding, including gas details.
+   */
+  public async PopulateShieldTransactionNative(
+    network: NetworkName,
+    wallet: Wallet | HDNodeWallet,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    sendWithPublicWallet: boolean
+  ): Promise<PopulateShieldResult> {
+    const { gasEstimate } = await this.railgunFacade.gasEstimateForShieldNative(
+      network,
+      wallet,
+      erc20AmountRecipients
+    );
+
+    const gasDetails = await getGasDetailsForTransaction(
+      network,
+      gasEstimate,
+      sendWithPublicWallet,
+      wallet
+    );
+
+    const shieldPrivateKey = await getShieldSignature(wallet);
+
+    const { transaction, nullifiers } = await this.railgunFacade.populateShieldNative(
+      network,
+      erc20AmountRecipients,
+      shieldPrivateKey,
+      gasDetails
+    );
+
+    return {
+      gasEstimate,
+      gasDetails,
+      transaction,
+      nullifiers
+    };
+  }
+
+  /**
    * High-level helper: creates recipients, populates tx, sends it, waits for confirmation.
    */
   public async shieldERC20(
@@ -111,7 +153,7 @@ export class HideService {
     tokenAddress: string,
     tokenAmount: bigint,
     opts: {
-      network: NetworkName;
+      network: PrivacySupportedNetworks;
       sendWithPublicWallet?: boolean;
       wallet?: Wallet | HDNodeWallet;
     }
@@ -125,19 +167,29 @@ export class HideService {
     const sendWithPublicWallet = opts?.sendWithPublicWallet ?? true;
 
     const mnemonic = await this.railgunFacade.getMnemonic();
-    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const blockchain = fromPrivateToRubicChainMap[network];
+    const { wallet } = getProviderWallet(blockchain, mnemonic);
+
+    const isNative = Web3Pure.isNativeAddress(blockchain, tokenAddress);
+    const erc20TokenAddress = isNative ? wrappedNativeTokensList[blockchain].address : tokenAddress;
 
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-      serializeERC20Transfer(tokenAddress, tokenAmount, railgunWalletAddress)
+      serializeERC20Transfer(erc20TokenAddress, tokenAmount, railgunWalletAddress)
     ];
 
-    const { gasEstimate, gasDetails, transaction, nullifiers } =
-      await this.erc20PopulateShieldTransaction(
-        network,
-        wallet,
-        erc20AmountRecipients,
-        sendWithPublicWallet
-      );
+    const { gasEstimate, gasDetails, transaction, nullifiers } = isNative
+      ? await this.PopulateShieldTransactionNative(
+          network,
+          wallet,
+          erc20AmountRecipients,
+          sendWithPublicWallet
+        )
+      : await this.erc20PopulateShieldTransaction(
+          network,
+          wallet,
+          erc20AmountRecipients,
+          sendWithPublicWallet
+        );
 
     const sentTx = await wallet.sendTransaction(transaction);
     await sentTx.wait();

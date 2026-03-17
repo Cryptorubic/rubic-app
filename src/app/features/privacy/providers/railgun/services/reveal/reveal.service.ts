@@ -7,9 +7,11 @@ import {
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import {
+  fromRubicToPrivateChainMap,
+  RailgunSupportedChain
+} from '@features/privacy/providers/railgun/constants/network-map';
 
 @Injectable()
 export class RevealService {
@@ -27,7 +29,7 @@ export class RevealService {
     tokenAddress: string,
     tokenAmount: string,
     proofProgress: (progress: string) => void,
-    tokenBlockchain: BlockchainName
+    tokenBlockchain: RailgunSupportedChain
   ): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
@@ -43,7 +45,7 @@ export class RevealService {
     await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
 
     const mnemonic = await this.railgunFacade.getMnemonic();
-    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);
 
     const transactionGasDetails = await getGasDetailsForTransaction(
       chain,

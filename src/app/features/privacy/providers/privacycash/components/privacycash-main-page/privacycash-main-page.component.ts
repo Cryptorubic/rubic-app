@@ -9,7 +9,6 @@ import { EphemeralWalletTokensService } from '../../services/common/token-facade
 import { PrivacycashSignatureService } from '../../services/privacy-cash-signature.service';
 import { isNil } from '@app/shared/utils/utils';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -41,8 +40,7 @@ export class PrivacycashMainPageComponent implements OnInit {
 
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privatePageTypeService: PrivatePageTypeService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly privatePageTypeService: PrivatePageTypeService
   ) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];
