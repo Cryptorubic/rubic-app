@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PrivacycashRefundService } from '../../services/privacy-cash-revert.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-
 import { firstValueFrom } from 'rxjs';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -10,6 +9,8 @@ import { PrivacycashPrivateAssetsService } from '../../services/common/assets-se
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { EphemeralWalletTokensFacadeService } from '../../services/common/token-facades/ephemeral-wallet-tokens-facade.service';
 import { FormControl } from '@angular/forms';
+import { Web3Pure } from '@cryptorubic/web3';
+import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts';
 
 @Component({
   selector: 'app-privacycash-refund-page',
@@ -30,23 +31,30 @@ export class PrivacycashRefundPageComponent {
 
   public readonly refundFormCreationConfig: PrivateTransferFormConfig = {
     withActionButton: true,
-    withReceiver: false,
+    withReceiver: true,
     withSrcAmount: false,
     buttonText: 'Refund Tokens'
   };
 
   public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
+      const dstTokenAmount = isNative
+        ? token.tokenAmount.minus(EPHEMERAL_WALLET_GAS_AMOUNT).toFixed()
+        : token.tokenAmount.toFixed();
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
+
       const preview$ = openPreview({
         steps: [
           {
             label: 'Refund tokens',
             action: () => this.privacycashRefundService.refundTokens(token.address, receiverAddr)
           }
-        ]
+        ],
+        dstTokenAmount,
+        swapTime: '1 min'
       });
       await firstValueFrom(preview$);
     } finally {

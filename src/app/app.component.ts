@@ -143,6 +143,7 @@ export class AppComponent implements AfterViewInit {
    * Waits for all initializing observables to complete.
    */
   private initApp(): void {
+    this.tokensFacadeService.init();
     forkJoin([
       this.loadPlatformConfig(),
       this.initQueryParamsSubscription(),

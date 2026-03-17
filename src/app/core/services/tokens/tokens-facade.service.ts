@@ -103,11 +103,9 @@ export class TokensFacadeService {
     return this.tokensBootstrapService.tier1TokensLoaded$;
   }
 
-  constructor(private readonly tokensStore: NewTokensStoreService) {
-    // @TODO_1712 убрать подписки из конструктора
-    // так как на каждую форму создается новый инстэнс TokensFacade
-    // Можно вынести их в метод отдельный и для мейн формы вызывать метод в trade-view.component.ts
-    // Для форм приват хаба можно его вызывать на мейн странице каждого из приватных провайдеров
+  constructor(private readonly tokensStore: NewTokensStoreService) {}
+
+  public init(): void {
     this.tokensBootstrapService.buildTokenLists();
     this.tokensBalanceService.initSubscribes();
     this.tokensQueryService.subscribeOnQuery();
