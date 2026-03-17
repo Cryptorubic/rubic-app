@@ -62,6 +62,8 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { LoginWindowComponent } from './components/login-window/login-window.component';
+import { HideWindowService } from './services/hide-window-service/hide-window.service';
+import { RevealWindowService } from './services/reveal-window/reveal-window.service';
 
 @NgModule({
   declarations: [
@@ -143,7 +145,9 @@ import { LoginWindowComponent } from './components/login-window/login-window.com
     PrivateActionButtonService,
     PrivatePageTypeService,
     PrivateTransferWindowService,
-    PrivateSwapWindowService
+    PrivateSwapWindowService,
+    HideWindowService,
+    RevealWindowService
   ]
 })
 export class SharedPrivacyProvidersModule {}

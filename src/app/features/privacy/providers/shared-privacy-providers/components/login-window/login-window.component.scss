@@ -17,8 +17,16 @@
     }
   }
 
+  app-login-button,
   button {
     width: 100%;
     max-width: 360px;
   }
+
+  ::ng-deep app-login-button {
+    button {
+      width: 100%;
+    }
+  }
+  
 }
