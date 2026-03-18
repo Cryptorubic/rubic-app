@@ -26,7 +26,7 @@
         [amountValue]="state.transferAmount"
       ></app-amount-transput>
       <app-user-balance-container
-        [fromToken$]="privateTransferWindowService.transferAsset$"
+        [fromToken$]="transferAsset$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>

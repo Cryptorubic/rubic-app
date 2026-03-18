@@ -58,7 +58,7 @@ export class TransferTokensWindowComponent implements OnInit {
 
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
-    public readonly privateTransferWindowService: PrivateTransferWindowService
+    private readonly privateTransferWindowService: PrivateTransferWindowService
   ) {}
 
   ngOnInit(): void {
