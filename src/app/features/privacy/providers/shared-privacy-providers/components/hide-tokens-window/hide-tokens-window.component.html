@@ -26,6 +26,7 @@
         [amountValue]="state.hideAmount"
       ></app-amount-transput>
       <app-user-balance-container
+        [fromToken$]="hideAsset$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>

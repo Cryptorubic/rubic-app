@@ -1,13 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
-import { BlockchainName } from '@cryptorubic/core';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { firstValueFrom } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
+import { StoreService } from '@core/services/store/store.service';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { HideWindowService } from '@features/privacy/providers/shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -19,13 +24,9 @@ import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/
 export class RailgunHideTokensPageComponent {
   @Input({ required: true }) public readonly railgunWalletAddress: string;
 
-  @Input({ required: true }) public readonly pendingBalances:
-    | {
-        address: string;
-        amount: string;
-        blockchain: BlockchainName;
-      }[]
-    | null;
+  @Input({ required: true }) public readonly pendingBalances: ShieldedBalanceToken[] = [];
+
+  private readonly railgunFacadeService = inject(RailgunFacadeService);
 
   public readonly receiverCtrl = new FormControl<string>('');
 
@@ -33,7 +34,35 @@ export class RailgunHideTokensPageComponent {
 
   private readonly notificationService = inject(NotificationsService);
 
-  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  private readonly storeService = inject(StoreService);
+
+  private readonly hideWindowService = inject(HideWindowService);
+
+  constructor() {
+    this.hideWindowService.hideAsset$.pipe(distinctUntilChanged()).subscribe(token => {
+      const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
+      if (isNative) {
+        this.notificationService.show(
+          'This transaction will automatically wrap your ETH into WETH (1:1) and shield the wrapped tokens in RAILGUN.',
+          {
+            label: 'RAILGUN does not support shielding native tokens',
+            status: 'info',
+            autoClose: 10_000,
+            data: null,
+            icon: 'info',
+            defaultAutoCloseTime: 0
+          }
+        );
+      }
+    });
+  }
+
+  public async hide({
+    token,
+    balanceToken,
+    loadingCallback,
+    openPreview
+  }: PrivateEvent): Promise<void> {
     // const gasInfo: AppGasData = { amount, amountInUsd, symbol: token.symbol };
     try {
       const preview$ = openPreview({
@@ -50,6 +79,7 @@ export class RailgunHideTokensPageComponent {
                   network: fromRubicToPrivateChainMap[token.blockchain]
                 }
               );
+              this.setShieldedToken(balanceToken);
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
                 {
@@ -71,5 +101,14 @@ export class RailgunHideTokensPageComponent {
     }
   }
 
-  private notifyHideInProgress(): void {}
+  private setShieldedToken(token: BalanceToken): void {
+    const shieldToken: ShieldedBalanceToken = {
+      ...token,
+      shieldingCompleteAtMs: new Date(Date.now() + 3600000).toLocaleTimeString()
+    };
+    const alreadyShielded = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS') || [];
+    const newShielded = [...alreadyShielded, shieldToken];
+    this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newShielded);
+    this.railgunFacadeService.setShieldedTokens(newShielded);
+  }
 }

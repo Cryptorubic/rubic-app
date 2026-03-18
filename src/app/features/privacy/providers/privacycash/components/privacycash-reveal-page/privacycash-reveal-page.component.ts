@@ -8,8 +8,9 @@ import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { firstValueFrom } from 'rxjs';
-import { TokenAmount } from '@cryptorubic/core';
+import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
+import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -26,6 +27,8 @@ export class PrivacycashRevealPageComponent {
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
+  private readonly tokenService = inject(TokenService);
+
   public readonly receiverCtrl = new FormControl<string>('');
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
@@ -34,11 +37,13 @@ export class PrivacycashRevealPageComponent {
         ...token.asStructWithAmount,
         address: toPrivacyCashTokenAddr(token.address)
       });
-      const dstToken = await this.privacycashSwapService.quote(
-        pcSupportedToken,
-        pcSupportedToken,
-        token.tokenAmount
-      );
+      const [dstToken, tokenPrice] = await Promise.all([
+        this.privacycashSwapService.quote(pcSupportedToken, pcSupportedToken, token.tokenAmount),
+        this.tokenService.getTokenPrice(token)
+      ]);
+
+      const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
+      const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -50,6 +55,15 @@ export class PrivacycashRevealPageComponent {
             action: () => this.privacycashSwapService.unshield(token, receiverAddr)
           }
         ],
+        feeInfo: {
+          provider: {
+            platformFee: {
+              percent: pcFeePercent.toNumber(),
+              token: new PriceTokenAmount({ ...token.asStructWithAmount, price: tokenPrice })
+            }
+          }
+        },
+        swapType: 'unshield',
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

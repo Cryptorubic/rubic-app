@@ -7,6 +7,12 @@
 //  }
 //}
 
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+}
+
 .wrapper {
   display: flex;
   gap: 12px;

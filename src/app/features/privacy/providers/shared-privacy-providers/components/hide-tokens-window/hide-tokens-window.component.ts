@@ -89,7 +89,7 @@ export class HideTokensWindowComponent {
               visibleValue: options.dstTokenAmount
             }
           : fromAmount,
-        swapType: 'shield',
+        swapType: options.swapType ?? 'shield',
         swapOptions: options
       });
     };
@@ -107,6 +107,7 @@ export class HideTokensWindowComponent {
 
     this.handleHide.emit({
       token,
+      balanceToken: hideAsset,
       loadingCallback: () => this._loading$.next(false),
       openPreview: this.createPreviewModal(hideAsset, hideAmount)
     });

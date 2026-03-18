@@ -6,7 +6,10 @@
     displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <app-input-output-container [round]="state.displayReceiver ? 'top' : 'all'" [marginTop]="false">
+  <app-input-output-container
+    [round]="creationConfig.withReceiver && state.displayReceiver ? 'top' : 'all'"
+    [marginTop]="false"
+  >
     <app-asset-selector
       left
       selectorType="to"
@@ -23,23 +26,29 @@
         [amountValue]="state.revealAmount"
       ></app-amount-transput>
       <app-user-balance-container
+        [fromToken$]="revealAsset$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>
   </app-input-output-container>
 
   <app-target-network-address
-    *ngIf="state.displayReceiver"
+    *ngIf="state.displayReceiver && creationConfig.withReceiver"
     [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
 
-  <div class="buttons-container">
+  <div
+    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    class="buttons-container"
+  >
     <app-private-action-button
+      *ngIf="creationConfig.withActionButton"
       [showLoader]="state.loading"
       (onClick)="reveal()"
     ></app-private-action-button>
     <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
       [toBlockchain]="state.revealAsset ? state.revealAsset.blockchain : 'target network'"
       (handleClick)="toggleReceiver()"
     ></app-receiver-address-button>

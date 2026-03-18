@@ -53,6 +53,7 @@ export class PrivacycashRefundPageComponent {
             action: () => this.privacycashRefundService.refundTokens(token.address, receiverAddr)
           }
         ],
+        swapType: 'refund',
         dstTokenAmount
       });
       await firstValueFrom(preview$);

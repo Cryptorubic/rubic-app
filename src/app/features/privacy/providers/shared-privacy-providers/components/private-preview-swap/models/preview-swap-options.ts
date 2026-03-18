@@ -5,7 +5,7 @@ import { SwapAmount } from '../../../models/swap-info';
 
 export type PreviewSwapWarning = { text: string; link?: string };
 
-export type PrivateSwapType = 'shield' | 'unshield' | 'transfer' | 'swap';
+export type PrivateSwapType = 'shield' | 'unshield' | 'transfer' | 'swap' | 'refund';
 
 export interface PrivateStep {
   label: string;
@@ -18,6 +18,7 @@ export interface PrivateSwapOptions {
   gasInfo?: AppGasData;
   feeInfo?: FeeInfo;
   warnings?: PreviewSwapWarning[];
+  swapType?: PrivateSwapType;
   steps: PrivateStep[];
 }
 

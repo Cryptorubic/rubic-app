@@ -134,7 +134,7 @@ export class SwapWindowComponent implements OnInit {
         toToken: this.swapInfo.toAsset,
         fromAmount: this.swapInfo.fromAmount,
         toAmount: this.swapInfo.toAmount,
-        swapType: 'swap',
+        swapType: options.swapType ?? 'swap',
         swapOptions: options
       });
     };
