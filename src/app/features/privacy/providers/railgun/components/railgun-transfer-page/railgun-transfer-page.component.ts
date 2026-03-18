@@ -144,7 +144,8 @@ export class RailgunTransferPageComponent implements OnInit {
               });
             }
           }
-        ]
+        ],
+        dstTokenAmount: token.stringWeiAmount
       });
 
       await firstValueFrom(preview$);

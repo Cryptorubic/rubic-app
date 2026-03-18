@@ -35,6 +35,7 @@
   <app-target-network-address
     *ngIf="creationConfig.withReceiver"
     [addressCtrl]="receiverCtrl"
+    [placeholderText]="creationConfig?.receiverPlaceholder"
   ></app-target-network-address>
 
   <app-private-action-button

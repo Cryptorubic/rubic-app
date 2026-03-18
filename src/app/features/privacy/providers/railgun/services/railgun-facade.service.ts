@@ -287,10 +287,19 @@ export class RailgunFacadeService {
   }
 
   private async refreshBalances(walletIds: string[]): Promise<void> {
-    const balanceChains = Object.values(fromPrivateToRubicChainMap).map(chain => ({
-      type: 0,
-      id: blockchainId[chain]
-    }));
+    const chainRating: Record<RailgunSupportedChain, number> = {
+      [BLOCKCHAIN_NAME.POLYGON]: 1,
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 2,
+      [BLOCKCHAIN_NAME.ARBITRUM]: 3,
+      [BLOCKCHAIN_NAME.ETHEREUM]: 4
+    };
+    const balanceChains = Object.values(fromPrivateToRubicChainMap)
+      .map(chain => ({
+        type: 0,
+        id: blockchainId[chain],
+        chainRating: chainRating[chain]
+      }))
+      .sort((a, b) => a.chainRating - b.chainRating);
 
     for (const chain of balanceChains) {
       try {

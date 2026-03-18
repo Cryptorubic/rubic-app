@@ -5,12 +5,14 @@ import { FromAssetsService } from '@features/trade/components/assets-selector/se
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { firstValueFrom } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
 import { StoreService } from '@core/services/store/store.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { HideWindowService } from '@features/privacy/providers/shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -33,6 +35,27 @@ export class RailgunHideTokensPageComponent {
   private readonly notificationService = inject(NotificationsService);
 
   private readonly storeService = inject(StoreService);
+
+  private readonly hideWindowService = inject(HideWindowService);
+
+  constructor() {
+    this.hideWindowService.hideAsset$.pipe(distinctUntilChanged()).subscribe(token => {
+      const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
+      if (isNative) {
+        this.notificationService.show(
+          'This transaction will automatically wrap your ETH into WETH (1:1) and shield the wrapped tokens in RAILGUN.',
+          {
+            label: 'RAILGUN does not support shielding native tokens',
+            status: 'info',
+            autoClose: 10_000,
+            data: null,
+            icon: 'info',
+            defaultAutoCloseTime: 0
+          }
+        );
+      }
+    });
+  }
 
   public async hide({
     token,
@@ -77,8 +100,6 @@ export class RailgunHideTokensPageComponent {
       loadingCallback();
     }
   }
-
-  private notifyHideInProgress(): void {}
 
   private setShieldedToken(token: BalanceToken): void {
     const shieldToken: ShieldedBalanceToken = {
