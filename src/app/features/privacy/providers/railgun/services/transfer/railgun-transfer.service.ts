@@ -6,7 +6,6 @@ import {
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import {
   fromRubicToPrivateChainMap,
   RailgunSupportedChain
@@ -15,8 +14,6 @@ import {
 @Injectable()
 export class RailgunTransferService {
   private readonly railgunFacade = inject(RailgunFacadeService);
-
-  private readonly authService = inject(AuthService);
 
   public async transferTokens(
     tokenAddress: string,

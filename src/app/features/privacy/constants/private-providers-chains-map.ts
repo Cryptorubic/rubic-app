@@ -4,7 +4,7 @@ import { PRIVACYCASH_SUPPORTED_CHAINS } from '../providers/privacycash/constants
 import { RAILGUN_SUPPORTED_CHAINS } from '../providers/railgun/constants/network-map';
 import { ZAMA_SUPPORTED_CHAINS } from '../providers/zama/constants/chains';
 import { HINKAL_SUPPORTED_CHAINS } from '../providers/hinkal/constants/chains';
-import { CLEARSWAP_SUPPORTED_CHAINS } from '../providers/clearswap/constants/clearswap-chains';
+import { CLEARSWAP_SUPPORTED_CHAINS } from '../providers/clearswap/constants/clearswap-supported';
 import { HOUDINI_SUPPORTED_CHAINS } from '../providers/houdini/constants/chains';
 
 export const PRIVATE_PROVIDERS_CHAINS_MAP: Record<PrivateTradeType, Readonly<BlockchainName[]>> = {

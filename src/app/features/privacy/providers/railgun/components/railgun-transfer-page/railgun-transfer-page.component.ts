@@ -17,6 +17,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -30,6 +31,8 @@ import { PrivateActionButtonService } from '@features/privacy/providers/shared-p
   ]
 })
 export class RailgunTransferPageComponent implements OnInit {
+  private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
+
   public readonly receiverCtrl = new FormControl<string>('');
 
   private readonly notificationService = inject(NotificationsService);
@@ -77,6 +80,8 @@ export class RailgunTransferPageComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
+  public railgunFacade = inject(RailgunFacadeService);
+
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
       .pipe(
@@ -87,6 +92,9 @@ export class RailgunTransferPageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+    this.railgunFacade.completedChains$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
   public openSelector(): void {

@@ -4,7 +4,8 @@ import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { ErrorInterface } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, combineLatest, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, takeUntil, tap } from 'rxjs';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Injectable()
 export class ClearswapErrorService {
@@ -22,7 +23,16 @@ export class ClearswapErrorService {
       this.privatePageTypeService.activePage$,
       this.privateTransferWindowService.transferAsset$,
       this.privateTransferWindowService.transferAmount$,
-      this.privateSwapWindowService.swapInfo$
+      this.privateSwapWindowService.swapInfo$.pipe(
+        distinctUntilChanged((prev, curr) => {
+          return (
+            compareTokens(prev.fromAsset, curr.fromAsset) &&
+            compareTokens(prev.toAsset, curr.toAsset) &&
+            ((prev.fromAmount === null && curr.fromAmount === null) ||
+              prev.fromAmount?.actualValue.eq(curr.fromAmount?.actualValue))
+          );
+        })
+      )
     ])
       .pipe(
         tap(() => {

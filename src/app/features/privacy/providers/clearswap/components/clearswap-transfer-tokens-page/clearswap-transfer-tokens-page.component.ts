@@ -29,6 +29,7 @@ import { ClearswapErrorService } from '../../services/clearswap-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -45,6 +46,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
   public readonly receiverCtrl = new FormControl<string>('');
+
+  public readonly clearswapFormConfig = clearswapFormConfig;
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,

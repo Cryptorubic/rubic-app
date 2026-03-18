@@ -19,7 +19,14 @@
       <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
     </div>
 
-    <div class="token-card__right"></div>
+    <div class="token-card__right">
+      <div class="">
+        <div class="">Est.{{ token.shieldingCompleteAtMs }}</div>
+        <div class="token-card__description">
+          Shield mined. Your Private Proof of Innocence is pending.
+        </div>
+      </div>
+    </div>
   </div>
 
   <app-dropdown-options-shielded-token [token]="token"></app-dropdown-options-shielded-token>

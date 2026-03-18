@@ -42,8 +42,9 @@ export class ZamaRevealFacadeService extends TokensFacadeService {
 
                 return {
                   ...token,
+                  decimals: 6, // zama erc7984 token wrappers have 6 decimals
                   amount: shieldedBalance
-                    ? Token.fromWei(shieldedBalance.amount, token.decimals)
+                    ? Token.fromWei(shieldedBalance.amount, 6)
                     : new BigNumber(NaN)
                 };
               });

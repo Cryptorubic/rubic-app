@@ -14,7 +14,7 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 export class PrivateAssetsService extends AssetsService {
   protected constructor(
     type: 'from' | 'to',
-    protected readonly supportedBlockchains: Readonly<BlockchainName[]>
+    protected supportedBlockchains: Readonly<BlockchainName[]>
   ) {
     super(type);
     this.postConstructorInit();
@@ -22,6 +22,12 @@ export class PrivateAssetsService extends AssetsService {
 
   public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
     return blockchain.disabledFrom;
+  }
+
+  public setBlockchainList(chains: BlockchainName[]): void {
+    this.supportedBlockchains = chains;
+    this.setAvailableBlockchains();
+    this.blockchainsToShow = this._availableBlockchains;
   }
 
   protected setAvailableBlockchains(): void {

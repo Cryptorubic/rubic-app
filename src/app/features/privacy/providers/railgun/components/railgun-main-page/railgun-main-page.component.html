@@ -6,7 +6,8 @@
     pendingBalances: pendingBalances$ | async,
     activePage: activePage$ | async,
     disabledPages: disabledPages$ | async,
-    utxoScan: utxoScan$ | async
+    utxoScan: utxoScan$ | async,
+    showBalanceLoading: showBalanceLoading$ | async
   } as data"
 >
   <div class="wrapper">
@@ -19,53 +20,60 @@
       ></app-page-navigation>
     </div>
 
-    <app-railgun-login-page
-      *ngIf="data.activePage.type === 'login'"
-      [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
-      [railgunId]="data?.railgunAccount?.id"
-      (formSubmit)="onSubmit($event)"
-    ></app-railgun-login-page>
+    <div class="content">
+      <app-railgun-wallet-loading
+        *ngIf="data.activePage.type !== 'login' && data.showBalanceLoading"
+        [@fadeAnimation]
+        [utxoScan]="data.utxoScan"
+      ></app-railgun-wallet-loading>
 
-    <app-railgun-account-info
-      *ngIf="data.activePage.type === 'wallet' && data.railgunAccount?.railgunAddress"
-      [railgunAddress]="data.railgunAccount.railgunAddress"
-      [accountId]="data.railgunAccount.id"
-      [evmAddress]="data.railgunAccount.evmWalletAddress"
-      (handleLogout)="logout()"
-      [utxoScan]="data.utxoScan"
-    ></app-railgun-account-info>
+      <app-railgun-login-page
+        *ngIf="data.activePage.type === 'login'"
+        [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
+        [railgunId]="data?.railgunAccount?.id"
+        (formSubmit)="onSubmit($event)"
+      ></app-railgun-login-page>
 
-    <app-railgun-transfer-page
-      *ngIf="data.activePage.type === 'transfer'"
-      [railgunId]="data.railgunAccount?.id"
-      [balances]="data.balances"
-    ></app-railgun-transfer-page>
+      <app-railgun-account-info
+        *ngIf="data.activePage.type === 'wallet' && data.railgunAccount?.railgunAddress"
+        [railgunAddress]="data.railgunAccount.railgunAddress"
+        [accountId]="data.railgunAccount.id"
+        [evmAddress]="data.railgunAccount.evmWalletAddress"
+        (handleLogout)="logout()"
+      ></app-railgun-account-info>
 
-    <app-railgun-hide-tokens-page
-      *ngIf="data.activePage.type === 'hide'"
-      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
-      [pendingBalances]="data.pendingBalances"
-    ></app-railgun-hide-tokens-page>
+      <app-railgun-transfer-page
+        *ngIf="data.activePage.type === 'transfer'"
+        [railgunId]="data.railgunAccount?.id"
+        [balances]="data.balances"
+      ></app-railgun-transfer-page>
 
-    <app-railgun-swap-page
-      *ngIf="data.activePage.type === 'swap'"
-      [railgunWalletInfo]="data.railgunAccount"
-      [balances]="data.balances"
-    ></app-railgun-swap-page>
+      <app-railgun-hide-tokens-page
+        *ngIf="data.activePage.type === 'hide'"
+        [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+        [pendingBalances]="data.pendingBalances"
+      ></app-railgun-hide-tokens-page>
 
-    <app-railgun-reveal-page
-      *ngIf="data.activePage.type === 'reveal'"
-      [railgunId]="data.railgunAccount?.id"
-      [balances]="data.balances"
-    ></app-railgun-reveal-page>
+      <app-railgun-swap-page
+        *ngIf="data.activePage.type === 'swap'"
+        [railgunWalletInfo]="data.railgunAccount"
+        [balances]="data.balances"
+      ></app-railgun-swap-page>
 
-    <!--    <ng-container *ngIf="data.railgunAccount">-->
-    <!--      <app-window-container *ngIf="data.balances?.length">-->
-    <!--        <h4>Actual balances:</h4>-->
-    <!--        <div *ngFor="let token of data.balances">-->
-    <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
-    <!--        </div>-->
-    <!--      </app-window-container>-->
-    <!--    </ng-container>-->
+      <app-railgun-reveal-page
+        *ngIf="data.activePage.type === 'reveal'"
+        [railgunId]="data.railgunAccount?.id"
+        [balances]="data.balances"
+      ></app-railgun-reveal-page>
+
+      <!--    <ng-container *ngIf="data.railgunAccount">-->
+      <!--      <app-window-container *ngIf="data.balances?.length">-->
+      <!--        <h4>Actual balances:</h4>-->
+      <!--        <div *ngFor="let token of data.balances">-->
+      <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
+      <!--        </div>-->
+      <!--      </app-window-container>-->
+      <!--    </ng-container>-->
+    </div>
   </div>
 </ng-container>

@@ -17,6 +17,7 @@ import { PrivateEvent } from '../../models/private-event';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { receiverAnimation } from '../../animations/receiver-animation';
+import { RevealWindowService } from '../../services/reveal-window/reveal-window.service';
 
 @Component({
   selector: 'app-reveal-window',
@@ -30,20 +31,15 @@ export class RevealWindowComponent {
 
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
+  private readonly revealWindowService = inject(RevealWindowService);
+
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
-  private readonly _revealAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  public readonly revealAsset$ = this.revealWindowService.revealAsset$;
 
-  public readonly revealAsset$ = this._revealAsset$.asObservable();
-
-  private readonly _revealAmount$ = new BehaviorSubject<{
-    visibleValue: string;
-    actualValue: BigNumber;
-  } | null>(null);
-
-  public readonly revealAmount$ = this._revealAmount$.asObservable();
+  public readonly revealAmount$ = this.revealWindowService.revealAmount$;
 
   private readonly injector = inject(Injector);
 
@@ -57,12 +53,12 @@ export class RevealWindowComponent {
     this.modalService
       .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
-        this._revealAsset$.next(selectedToken);
+        this.revealWindowService.setRevealAsset(selectedToken);
       });
   }
 
   public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
-    this._revealAmount$.next(value);
+    this.revealWindowService.setRevealAmount(value);
   }
 
   public handleMaxButton(): void {}
@@ -72,16 +68,18 @@ export class RevealWindowComponent {
     const modalService = this.modalService;
 
     return (options: PrivateSwapOptions) => {
+      const revealAmount = this.revealWindowService.revealAmount;
+
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: revealAsset,
         toToken: revealAsset,
-        fromAmount: this._revealAmount$.value,
+        fromAmount: revealAmount,
         toAmount: options.dstTokenAmount
           ? {
               actualValue: new BigNumber(options.dstTokenAmount),
               visibleValue: options.dstTokenAmount
             }
-          : this._revealAmount$.value,
+          : revealAmount,
         swapType: 'transfer',
         swapOptions: options
       });
@@ -90,17 +88,17 @@ export class RevealWindowComponent {
 
   public async reveal(): Promise<void> {
     this._loading$.next(true);
+    const revealAsset = this.revealWindowService.revealAsset;
+    const revealAmount = this.revealWindowService.revealAmount;
+
     const token = new TokenAmount({
-      ...this._revealAsset$.value,
-      weiAmount: Token.toWei(
-        this._revealAmount$.value?.actualValue,
-        this._revealAsset$.value?.decimals
-      )
+      ...revealAsset,
+      weiAmount: Token.toWei(revealAmount.actualValue, revealAsset.decimals)
     });
     this.handleReveal.emit({
       token,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal(this._revealAsset$.value)
+      openPreview: this.createPreviewModal(revealAsset)
     });
   }
 

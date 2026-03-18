@@ -42,6 +42,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { RailgunWalletLoadingComponent } from './components/railgun-wallet-loading/railgun-wallet-loading.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     RailgunTransferPageComponent,
     RailgunLoginPageComponent,
     RailgunWalletImportComponent,
-    RailgunWalletCreateComponent
+    RailgunWalletCreateComponent,
+    RailgunWalletLoadingComponent
   ],
   imports: [
     CommonModule,

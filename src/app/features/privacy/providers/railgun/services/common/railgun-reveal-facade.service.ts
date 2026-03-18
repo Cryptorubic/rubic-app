@@ -54,7 +54,7 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
         } else {
           const availableTokens = Object.entries(event).flatMap(([blockchain, bucketRecord]) => {
             const record = bucketRecord;
-            if (!record.Spendable.chain || !record.Spendable.erc20Amounts) {
+            if (!record?.Spendable?.chain || !record?.Spendable?.erc20Amounts) {
               return [];
             }
 
