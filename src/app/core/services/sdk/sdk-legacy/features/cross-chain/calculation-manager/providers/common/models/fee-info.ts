@@ -1,4 +1,4 @@
-import { PriceToken } from '@cryptorubic/core';
+import { PriceToken, PriceTokenAmount } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 
 /**
@@ -44,8 +44,11 @@ export interface FeeInfo {
      * Platform fee which is percent from token in amount.
      */
     platformFee?: {
+      /**
+       * ex. 0.0035 = 0.35%
+       */
       percent: number;
-      token: PriceToken;
+      token: PriceTokenAmount;
     };
   };
 }

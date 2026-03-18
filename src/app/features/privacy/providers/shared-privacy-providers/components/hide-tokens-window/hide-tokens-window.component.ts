@@ -89,7 +89,7 @@ export class HideTokensWindowComponent {
               visibleValue: options.dstTokenAmount
             }
           : fromAmount,
-        swapType: 'shield',
+        swapType: options.swapType ?? 'shield',
         swapOptions: options
       });
     };

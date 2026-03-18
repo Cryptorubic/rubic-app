@@ -4,7 +4,7 @@ import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
-import { HintAppearance, HintDirection } from './model';
+import { HintAppearance, HintDirection, SwapDataElementConfig } from './model';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 
 @Component({
@@ -23,36 +23,70 @@ export class SwapDataElementComponent {
 
   public displayAmount: string | null;
 
+  @Input() creationConfig: SwapDataElementConfig = { feeIcon: 'assets/images/icons/money.svg' };
+
   @Input() hintAppearance: HintAppearance = '';
 
   @Input() hintDirection: HintDirection = 'bottom-right';
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
-    const sum = new BigNumber(0)
+
+    const providerPercentFee = value?.fee?.provider.platformFee;
+    const percentFeeAmount = new BigNumber(providerPercentFee?.percent ?? 0).multipliedBy(
+      providerPercentFee?.token.tokenAmount ?? 0
+    );
+    const percentFeeAmountUsd = percentFeeAmount.multipliedBy(providerPercentFee?.token.price ?? 0);
+
+    const nativeFeeSum = new BigNumber(0)
       .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
 
-    if (value?.nativeToken?.price && sum.gt(0)) {
-      const fiatAmountOut = sum.multipliedBy(value.nativeToken.price);
-      this.displayAmount = fiatAmountOut.gt(0.001) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
-    } else if (value.nativeToken?.symbol && sum.gt(0)) {
+    if (nativeFeeSum.gt(0)) {
+      if (value?.nativeToken?.price) {
+        const fiatAmountOut = nativeFeeSum
+          .multipliedBy(value.nativeToken.price)
+          .plus(percentFeeAmountUsd);
+        this.displayAmount = fiatAmountOut.gt(0.001) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
+      } else if (value.nativeToken?.symbol) {
+        const bnPipe = new BigNumberFormatPipe();
+        const shortenPipe = new ShortenAmountPipe();
+        const uiNativeTokenAmount = shortenPipe.transform(bnPipe.transform(nativeFeeSum), 6, 4);
+        this.displayAmount = `${uiNativeTokenAmount} ${value.nativeToken.symbol}`;
+
+        // adds src token fee in ui, if exists
+        if (percentFeeAmount.gt(0)) {
+          const uiPercentFeeTokenAmount = shortenPipe.transform(
+            bnPipe.transform(percentFeeAmount),
+            6,
+            4
+          );
+          this.displayAmount += `+ ${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
+        }
+      }
+    } else if (percentFeeAmountUsd.gt(0)) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();
-
-      this.displayAmount = `${shortenPipe.transform(bnPipe.transform(sum), 6, 4)} ${
-        value.nativeToken.symbol
-      }`;
+      const uiPercentFeeTokenAmount = shortenPipe.transform(
+        bnPipe.transform(percentFeeAmount),
+        6,
+        4
+      );
+      this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
     } else {
       this.displayAmount = null;
     }
   }
 
-  @Input({ required: true }) gasInfo: AppGasData | null;
+  @Input() gasInfo: AppGasData | null;
 
   @Input() averageTimeMins: string | number;
 
   @Input() time95PercentSwapsMins: string | number;
 
   @Input() hideHint: boolean = false;
+
+  public toPercent(amount: number): string {
+    return new BigNumber(amount).multipliedBy(100).toFixed();
+  }
 }

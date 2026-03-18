@@ -10,6 +10,9 @@ import { firstValueFrom, map, startWith } from 'rxjs';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import BigNumber from 'bignumber.js';
+import { PriceToken } from '@cryptorubic/core';
+import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -25,6 +28,8 @@ export class PrivacycashHidePageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateTokensFacade = inject(PrivacycashPrivateTokensFacadeService);
+
+  private readonly tokenService = inject(TokenService);
 
   public readonly hideFormCreationConfig: PrivateShieldFormConfig = {
     withActionButton: true,
@@ -45,6 +50,7 @@ export class PrivacycashHidePageComponent {
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const tokenPrice = await this.tokenService.getTokenPrice(token);
       const preview$ = openPreview({
         steps: [
           {
@@ -52,6 +58,14 @@ export class PrivacycashHidePageComponent {
             action: () => this.privacycashSwapService.shield(token)
           }
         ],
+        feeInfo: {
+          provider: {
+            cryptoFee: {
+              amount: new BigNumber(0),
+              token: new PriceToken({ ...token.asStruct, price: tokenPrice })
+            }
+          }
+        },
         dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

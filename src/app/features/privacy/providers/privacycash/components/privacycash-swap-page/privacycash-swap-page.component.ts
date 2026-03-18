@@ -8,12 +8,13 @@ import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { Token } from '@cryptorubic/core';
+import { PriceToken, PriceTokenAmount, Token, nativeTokensList } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -30,6 +31,8 @@ export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly notificationsService = inject(NotificationsService);
+
+  private readonly tokenService = inject(TokenService);
 
   public readonly swapFormCreationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
@@ -61,6 +64,21 @@ export class PrivacycashSwapPageComponent {
         swapInfo.fromAsset.decimals
       );
 
+      // if src chain is not SOLANA - preview-swap data can be broken
+      const nativeToken = nativeTokensList[swapInfo.fromAsset.blockchain];
+      const [withdrawalFee, nativePrice] = await Promise.all([
+        this.privacycashSwapService.estimateDirectWithdrawFee(
+          toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
+          swapInfo.fromAmount.actualValue
+        ),
+        this.tokenService.getTokenPrice(nativeToken)
+      ]);
+      const srcTokenFeePercent = withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4);
+      console.log({
+        withdrawalFee: withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).toFixed(),
+        rounded: withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4).toFixed()
+      });
+
       const preview$ = openPreview({
         steps: [
           {
@@ -72,7 +90,23 @@ export class PrivacycashSwapPageComponent {
                 new BigNumber(srcAmountWei)
               )
           }
-        ]
+        ],
+        feeInfo: {
+          provider: {
+            cryptoFee: {
+              amount: new BigNumber(0.006),
+              token: new PriceToken({ ...nativeToken, price: nativePrice })
+            },
+            platformFee: {
+              percent: srcTokenFeePercent.toNumber(),
+              token: new PriceTokenAmount({
+                ...swapInfo.fromAsset,
+                tokenAmount: swapInfo.fromAmount.actualValue,
+                price: new BigNumber(swapInfo.fromAsset.price)
+              })
+            }
+          }
+        }
       });
       await firstValueFrom(preview$);
     } finally {
