@@ -19,7 +19,7 @@
       <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
     </div>
 
-    <div class="token-card__right">
+    <div class="token-card__right" *ngIf="token.shieldingCompleteAtMs">
       <div class="">
         <div class="">Est.{{ token.shieldingCompleteAtMs }}</div>
         <div class="token-card__description">
