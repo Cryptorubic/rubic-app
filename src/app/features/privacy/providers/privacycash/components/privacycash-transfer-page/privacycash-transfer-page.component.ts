@@ -7,9 +7,10 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
-import { TokenAmount } from '@cryptorubic/core';
+import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -26,6 +27,8 @@ export class PrivacycashTransferPageComponent {
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
+  private readonly tokenService = inject(TokenService);
+
   public readonly receiverCtrl = new FormControl<string>('');
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
@@ -34,11 +37,13 @@ export class PrivacycashTransferPageComponent {
         ...token.asStructWithAmount,
         address: toPrivacyCashTokenAddr(token.address)
       });
-      const dstToken = await this.privacycashSwapService.quote(
-        pcSupportedToken,
-        pcSupportedToken,
-        token.tokenAmount
-      );
+      const [dstToken, tokenPrice] = await Promise.all([
+        this.privacycashSwapService.quote(pcSupportedToken, pcSupportedToken, token.tokenAmount),
+        this.tokenService.getTokenPrice(token)
+      ]);
+
+      const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
+      const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -50,6 +55,14 @@ export class PrivacycashTransferPageComponent {
             action: () => this.privacycashSwapService.transfer(token, receiverAddr)
           }
         ],
+        feeInfo: {
+          provider: {
+            platformFee: {
+              percent: pcFeePercent.toNumber(),
+              token: new PriceTokenAmount({ ...token.asStructWithAmount, price: tokenPrice })
+            }
+          }
+        },
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

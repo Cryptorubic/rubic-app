@@ -100,7 +100,7 @@ export class TransferTokensWindowComponent implements OnInit {
           actualValue: new BigNumber(options.dstTokenAmount || 0),
           visibleValue: options.dstTokenAmount || '0'
         },
-        swapType: 'transfer',
+        swapType: options.swapType ?? 'transfer',
         swapOptions: options
       });
     };
