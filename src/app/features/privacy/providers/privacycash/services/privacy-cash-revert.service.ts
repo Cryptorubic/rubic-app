@@ -12,6 +12,7 @@ import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../constants/privacycash-consts';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class PrivacycashRefundService {
@@ -32,6 +33,25 @@ export class PrivacycashRefundService {
     return this.revertSPL(tokenAddr, receiverAddr);
   }
 
+  /**
+   * @returns wei amount
+   */
+  public async quoteRefundableAmount(tokenAddr: string): Promise<BigNumber> {
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SOLANA);
+    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const ephemeralKeypair =
+      await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
+        this.privacycashSignatureService.signature,
+        senderPK,
+        0
+      );
+    const burnerWalletBalanceWei = await adapter.getBalance(
+      ephemeralKeypair.publicKey.toBase58(),
+      tokenAddr
+    );
+    return burnerWalletBalanceWei;
+  }
+
   private async revertNative(receiverAddr: string): Promise<void> {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SOLANA);
     const senderPK = new PublicKey(this.walletConnectorService.address);
@@ -50,7 +70,7 @@ export class PrivacycashRefundService {
     );
     const availableBalanceToRefundWei = burnerWalletBalanceWei.minus(amountLeftForGasWei);
     if (availableBalanceToRefundWei.lte(0)) {
-      this.notificationsService.showWarning('Nothing to refund.');
+      this.notificationsService.showWarning('Withdrawal failed: 0.0033 SOL is required for gas.');
       return;
     }
 

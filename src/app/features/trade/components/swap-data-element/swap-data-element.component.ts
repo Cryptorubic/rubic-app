@@ -23,7 +23,10 @@ export class SwapDataElementComponent {
 
   public displayAmount: string | null;
 
-  @Input() creationConfig: SwapDataElementConfig = { feeIcon: 'assets/images/icons/money.svg' };
+  @Input() creationConfig: SwapDataElementConfig = {
+    feeIcon: 'assets/images/icons/money.svg',
+    withVerboseFeeHint: true
+  };
 
   @Input() hintAppearance: HintAppearance = '';
 
@@ -74,7 +77,7 @@ export class SwapDataElementComponent {
       );
       this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
     } else {
-      this.displayAmount = null;
+      this.displayAmount = this.creationConfig.zeroFeeText ?? null;
     }
   }
 

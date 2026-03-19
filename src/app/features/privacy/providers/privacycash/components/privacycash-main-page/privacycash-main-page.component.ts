@@ -9,13 +9,18 @@ import { EphemeralWalletTokensService } from '../../services/common/token-facade
 import { PrivacycashSignatureService } from '../../services/privacy-cash-signature.service';
 import { isNil } from '@app/shared/utils/utils';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { PrivacycashActionButtonService } from '../../services/common/action-button/privacycash-action-button.service';
 
 @Component({
   selector: 'app-privacy-cash-view',
   templateUrl: './privacycash-main-page.component.html',
   styleUrls: ['./privacycash-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [
+    TuiDestroyService,
+    { provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }
+  ]
 })
 export class PrivacycashMainPageComponent implements OnInit {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
@@ -33,7 +38,9 @@ export class PrivacycashMainPageComponent implements OnInit {
   public readonly disabledPages$: Observable<PageType[]> =
     this.privacycashSignatureService.signature$.pipe(
       map(signature => {
-        if (!isNil(signature) && signature.length) return [];
+        if (!isNil(signature) && signature.length) {
+          return this.pages.filter(page => page.type === 'login');
+        }
         return this.pages.filter(page => page.type !== 'login');
       })
     );
@@ -50,14 +57,22 @@ export class PrivacycashMainPageComponent implements OnInit {
     this.walletConnectorService.addressChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(userAddr => {
-        if (userAddr) {
+        if (!userAddr) this.privacycashSignatureService.removeSignature();
+      });
+
+    this.privacycashSignatureService.signature$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(signature => {
+        if (!!signature && signature.length) {
           this.privacycashTokensService.updatePrivateBalances();
+          this.privatePageTypeService.activePage =
+            this.pages.find(page => page.type === 'hide') || this.pages[0];
         } else {
-          this.privacycashSignatureService.removeSignature();
           this.privatePageTypeService.activePage =
             this.pages.find(page => page.type === 'login') || this.pages[0];
         }
       });
+
     this.privacycashTokensService.updateBalances$
       .pipe(
         combineLatestWith(this.privacycashSignatureService.signature$),
@@ -67,6 +82,7 @@ export class PrivacycashMainPageComponent implements OnInit {
       .subscribe(() => {
         this.privacycashTokensService.loadBalances();
       });
+
     this.ephemeralWalletTokensService.updateBalances$
       .pipe(
         combineLatestWith(this.privacycashSignatureService.signature$),

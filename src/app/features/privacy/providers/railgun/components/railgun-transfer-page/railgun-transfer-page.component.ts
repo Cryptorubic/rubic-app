@@ -99,7 +99,7 @@ export class RailgunTransferPageComponent implements OnInit {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, 'to')
       .subscribe((selectedToken: BalanceToken) => {
         this._transferAsset$.next(selectedToken);
       });

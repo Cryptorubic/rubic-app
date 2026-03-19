@@ -51,7 +51,7 @@ export class RevealWindowComponent {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, 'from')
       .subscribe((selectedToken: BalanceToken) => {
         this.revealWindowService.setRevealAsset(selectedToken);
       });
@@ -61,7 +61,13 @@ export class RevealWindowComponent {
     this.revealWindowService.setRevealAmount(value);
   }
 
-  public handleMaxButton(): void {}
+  public handleMaxButton(): void {
+    const token = this.revealWindowService.revealAsset;
+    this.revealWindowService.setRevealAmount({
+      visibleValue: token.amount.toString(),
+      actualValue: token.amount
+    });
+  }
 
   private createPreviewModal(revealAsset: BalanceToken): PreviewSwapModalFactory {
     const injector = this.injector;

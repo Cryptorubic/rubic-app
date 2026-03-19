@@ -251,15 +251,27 @@ export class PrivacycashSwapService {
 
       // deposit destination token from burner wallet
       this.notificationsService.showInfo(`Shielding target tokens...`);
-      await this.makeDeposit(
-        dstToken.address,
-        dstTokenDepositAmount.toNumber(),
-        ephemeralKeypair.publicKey,
-        (tx: VersionedTransaction) => {
-          tx.sign([ephemeralKeypair]);
-          return Promise.resolve(tx);
+      let retries = 0;
+      while (retries < 5) {
+        try {
+          await this.makeDeposit(
+            dstToken.address,
+            dstTokenDepositAmount.toNumber(),
+            ephemeralKeypair.publicKey,
+            (tx: VersionedTransaction) => {
+              tx.sign([ephemeralKeypair]);
+              return Promise.resolve(tx);
+            }
+          );
+          break;
+        } catch (err) {
+          retries++;
+          console.debug(
+            '[PrivacyCashSwapService_swapPartialPrivateBalance] retry Shielding target tokens'
+          );
         }
-      );
+      }
+
       this.notificationsService.showInfo('Swap successful.');
     } finally {
       this.ephemeralWalletTokensService.updateBalances();
