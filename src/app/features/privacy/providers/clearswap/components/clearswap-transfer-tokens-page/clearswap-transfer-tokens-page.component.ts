@@ -100,8 +100,11 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
       switchMap(quoteResponse => {
         if ('tradeId' in quoteResponse) {
           const { tradeId, tokenAmount: dstTokenAmount } = quoteResponse;
+          const displayAmount =
+            token.tokenAmount.minus(dstTokenAmount).toString() + ' ' + token.symbol;
           return openPreview({
             dstTokenAmount,
+            displayAmount,
             steps: [
               {
                 label: 'Transfer tokens',
