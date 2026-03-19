@@ -34,6 +34,7 @@ export class PrivateModalsService {
 
   public openPrivateTokensModal(
     injector: Injector,
+    direction: 'from' | 'to',
     assetsSelectorConfig: AssetsSelectorConfig = {
       withChainsFilter: true,
       withTokensFilter: true,
@@ -48,7 +49,7 @@ export class PrivateModalsService {
         size: 'l',
         showMobileMenu: true,
         data: {
-          formType: 'to',
+          formType: direction,
           assetsSelectorConfig
         },
         fitContent: true

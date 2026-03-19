@@ -174,12 +174,9 @@ export class SwapWindowComponent implements OnInit {
         switchMap(([swapInfo]) => {
           if (this.assetsNotSelected() || this.amountNotSet()) {
             this.patchSwapInfo({ toAmount: null });
-            {
-              this._loading$.next(false);
-              return EMPTY;
-            }
+            this._loading$.next(false);
+            return EMPTY;
           }
-
           return this.calculate(swapInfo);
         }),
         takeUntil(this.destroy$)
@@ -250,7 +247,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openInputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ fromAsset: selectedToken });
       });
@@ -258,7 +255,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openOutputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });

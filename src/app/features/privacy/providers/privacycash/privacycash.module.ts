@@ -22,6 +22,7 @@ import { PrivacycashTokensService } from './services/common/token-facades/privac
 import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
 import { EphemeralWalletTokensService } from './services/common/token-facades/ephemeral-wallet-tokens.service';
 import { PrivacycashSignatureService } from './services/privacy-cash-signature.service';
+import { PrivacycashActionButtonService } from './services/common/action-button/privacycash-action-button.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { PrivacycashSignatureService } from './services/privacy-cash-signature.s
     PrivacycashPrivateTokensFacadeService,
     PrivacycashTokensService,
     EphemeralWalletTokensFacadeService,
-    EphemeralWalletTokensService
+    EphemeralWalletTokensService,
+    PrivacycashActionButtonService
   ]
 })
 export class PrivacyCashModule {}

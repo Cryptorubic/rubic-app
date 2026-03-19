@@ -15,4 +15,6 @@ export type HintDirection =
 
 export interface SwapDataElementConfig {
   feeIcon: string;
+  withVerboseFeeHint: boolean;
+  zeroFeeText?: string;
 }

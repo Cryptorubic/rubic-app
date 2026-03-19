@@ -1,7 +1,12 @@
 <app-hide-tokens-window
   (handleHide)="hide($event)"
   [receiverCtrl]="receiverCtrl"
-  [creationConfig]="{ withActionButton: true, withReceiver: false, withSrcAmount: true }"
+  [creationConfig]="{
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true,
+    withMaxBtn: true
+  }"
 >
   <tui-notification class="notification" status="warning">
     The shielding process take 1 hour due to an AML check.

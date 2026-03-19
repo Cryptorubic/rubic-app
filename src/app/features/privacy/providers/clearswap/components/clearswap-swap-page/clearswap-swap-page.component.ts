@@ -15,7 +15,22 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import {
+  defer,
+  firstValueFrom,
+  lastValueFrom,
+  retry,
+  startWith,
+  takeUntil,
+  tap,
+  throwError,
+  timer
+} from 'rxjs';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { RubicSdkError } from '@cryptorubic/web3';
+import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -48,6 +63,8 @@ export class ClearswapSwapPageComponent implements OnInit {
     private readonly clearswapErrorService: ClearswapErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
+    private readonly authService: AuthService,
+    private readonly errorService: ErrorsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -70,6 +87,29 @@ export class ClearswapSwapPageComponent implements OnInit {
         tokenAmount: swapInfo.fromAmount.actualValue
       });
 
+      const isEnoughBalance = await lastValueFrom(
+        defer(() =>
+          this.clearswapSwapService.chainAdapter.checkEnoughBalance(
+            fromToken,
+            this.authService.userAddress
+          )
+        ).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('check balance error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('Request failed with status code 429')) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      );
+      if (!isEnoughBalance) {
+        throw new InsufficientFundsError(fromToken.symbol);
+      }
+
       const preview$ = openPreview({
         steps: [
           {
@@ -85,6 +125,12 @@ export class ClearswapSwapPageComponent implements OnInit {
         ]
       });
       await firstValueFrom(preview$);
+    } catch (error) {
+      if (error instanceof RubicError || error instanceof RubicSdkError) {
+        this.errorService.catch(error);
+      } else {
+        this.notificationsService.showError('Something went wrong. Please, try again later.');
+      }
     } finally {
       loadingCallback();
     }

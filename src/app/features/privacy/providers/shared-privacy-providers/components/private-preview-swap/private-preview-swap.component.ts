@@ -66,7 +66,9 @@ export class PrivatePreviewSwapComponent {
   }
 
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
-    feeIcon: 'assets/images/icons/privacy-fee.svg'
+    feeIcon: 'assets/images/icons/privacy-fee.svg',
+    withVerboseFeeHint: false,
+    zeroFeeText: '0$ fees'
   };
 
   constructor(

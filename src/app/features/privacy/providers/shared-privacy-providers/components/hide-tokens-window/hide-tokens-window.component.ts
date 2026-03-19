@@ -32,7 +32,8 @@ export class HideTokensWindowComponent {
   @Input() creationConfig: PrivateShieldFormConfig = {
     withActionButton: true,
     withReceiver: true,
-    withSrcAmount: true
+    withSrcAmount: true,
+    withMaxBtn: true
   };
 
   @Input() receiverCtrl: FormControl<string>;
@@ -69,7 +70,13 @@ export class HideTokensWindowComponent {
     this.hideTokensWindowService.setHideAmount(value);
   }
 
-  public handleMaxButton(): void {}
+  public handleMaxButton(): void {
+    const token = this.hideTokensWindowService.hideAsset;
+    this.hideTokensWindowService.setHideAmount({
+      visibleValue: token.amount.toString(),
+      actualValue: token.amount
+    });
+  }
 
   private createPreviewModal(
     hideAsset: BalanceToken,

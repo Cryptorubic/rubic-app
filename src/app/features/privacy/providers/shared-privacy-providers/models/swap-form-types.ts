@@ -15,6 +15,6 @@ export interface PrivateSwapFormConfig {
 export type PrivateTransferFormConfig = Omit<
   PrivateSwapFormConfig,
   'withDstAmount' | 'withDstSelector'
->;
+> & { withMaxBtn: boolean };
 
 export type PrivateShieldFormConfig = PrivateTransferFormConfig;

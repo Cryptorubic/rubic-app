@@ -23,7 +23,7 @@
   <div
     *ngIf="displayAmount"
     class="provider-info__element"
-    [tuiHint]="feeData"
+    [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
     [tuiHintHideDelay]="hideHint ? 0 : 200"
@@ -45,7 +45,7 @@
   </div>
 </div>
 
-<ng-template #feeData>
+<ng-template #verboseFeeHint>
   <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
     Protocol Fee:
     {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
@@ -61,11 +61,9 @@
     {{ toPercent(feeInfo.provider.platformFee.percent) }}% of
     {{ feeInfo.provider.platformFee.token.symbol }}
   </div>
-  <!-- <div>
-    Percent Fee:
-    {{ feeInfo?.rubicProxy?.platformFee?.percent || 0 }}%
-    {{ feeInfo?.rubicProxy?.platformFee?.token?.symbol }}
-  </div> -->
+</ng-template>
+<ng-template #shortFeeHint>
+  <div>Provider Fee</div>
 </ng-template>
 
 <ng-template #timeTooltip> May take up to {{ time95PercentSwapsMins }} </ng-template>
