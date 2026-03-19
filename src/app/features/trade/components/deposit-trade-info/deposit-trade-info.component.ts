@@ -18,7 +18,7 @@ export class DepositTradeInfoComponent {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly trade$ = this.depositService.depositTrade$;
+  public trade$ = this.depositService.depositTrade$;
 
   public readonly extraField$ = this.trade$.pipe(
     map(trade =>

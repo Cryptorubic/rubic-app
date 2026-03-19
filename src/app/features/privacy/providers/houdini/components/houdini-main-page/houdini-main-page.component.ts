@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Self } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HoudiniPrivateAssetsService } from '@app/features/privacy/providers/houdini/services/houdini-private-assets.service';
 import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/services/houdini-swap.service';
@@ -16,6 +16,7 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { houdiniFormConfig } from '../../constants/form-config';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -30,7 +31,7 @@ import { TargetNetworkAddressService } from '@app/features/trade/services/target
     { provide: PrivateActionButtonService, useClass: HoudiniPrivateActionButtonService }
   ]
 })
-export class HoudiniMainPageComponent implements OnInit {
+export class HoudiniMainPageComponent implements OnInit, OnDestroy {
   public readonly receiverCtrl = this.targetNetworkAddressService.addressControl;
 
   public readonly quoteAdapter = new HoudiniQuoteAdapter(
@@ -39,6 +40,16 @@ export class HoudiniMainPageComponent implements OnInit {
     this.houdiniErrorService,
     this.notificationsService
   );
+
+  public readonly formConfig = houdiniFormConfig;
+
+  public readonly depositTrade$ = this.houdiniSwapService.depositTrade$;
+
+  public readonly depositTradeStatus$ = this.houdiniSwapService.depositTradeStatus$;
+
+  public readonly depositPaymentInfo$ = this.houdiniSwapService.depositPaymentInfo$;
+
+  // public readonly depositTradeData$ = this.houdiniSwapService.depositTradeData$;
 
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
@@ -61,11 +72,14 @@ export class HoudiniMainPageComponent implements OnInit {
         startWith(this.receiverCtrl.value),
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
-          console.log(this.targetNetworkAddressService.address);
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
   }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
