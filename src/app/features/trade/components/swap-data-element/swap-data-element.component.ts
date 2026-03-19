@@ -29,52 +29,60 @@ export class SwapDataElementComponent {
 
   @Input() hintDirection: HintDirection = 'bottom-right';
 
-  @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
+  @Input({ required: true }) set feeInfoChange(value: {
+    fee: FeeInfo | null;
+    nativeToken: Token;
+    displayAmount?: string;
+  }) {
     this.feeInfo = value.fee;
+    if (value.displayAmount) {
+      this.displayAmount = value.displayAmount;
+    } else {
+      const providerPercentFee = value?.fee?.provider.platformFee;
+      const percentFeeAmount = new BigNumber(providerPercentFee?.percent ?? 0).multipliedBy(
+        providerPercentFee?.token.tokenAmount ?? 0
+      );
+      const percentFeeAmountUsd = percentFeeAmount.multipliedBy(
+        providerPercentFee?.token.price ?? 0
+      );
 
-    const providerPercentFee = value?.fee?.provider.platformFee;
-    const percentFeeAmount = new BigNumber(providerPercentFee?.percent ?? 0).multipliedBy(
-      providerPercentFee?.token.tokenAmount ?? 0
-    );
-    const percentFeeAmountUsd = percentFeeAmount.multipliedBy(providerPercentFee?.token.price ?? 0);
+      const nativeFeeSum = new BigNumber(0)
+        .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
+        .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
+      if (nativeFeeSum.gt(0)) {
+        if (value?.nativeToken?.price) {
+          const fiatAmountOut = nativeFeeSum
+            .multipliedBy(value.nativeToken.price)
+            .plus(percentFeeAmountUsd);
+          this.displayAmount = fiatAmountOut.gt(0.001) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
+        } else if (value.nativeToken?.symbol) {
+          const bnPipe = new BigNumberFormatPipe();
+          const shortenPipe = new ShortenAmountPipe();
+          const uiNativeTokenAmount = shortenPipe.transform(bnPipe.transform(nativeFeeSum), 6, 4);
+          this.displayAmount = `${uiNativeTokenAmount} ${value.nativeToken.symbol}`;
 
-    const nativeFeeSum = new BigNumber(0)
-      .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
-      .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
-
-    if (nativeFeeSum.gt(0)) {
-      if (value?.nativeToken?.price) {
-        const fiatAmountOut = nativeFeeSum
-          .multipliedBy(value.nativeToken.price)
-          .plus(percentFeeAmountUsd);
-        this.displayAmount = fiatAmountOut.gt(0.001) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
-      } else if (value.nativeToken?.symbol) {
+          // adds src token fee in ui, if exists
+          if (percentFeeAmount.gt(0)) {
+            const uiPercentFeeTokenAmount = shortenPipe.transform(
+              bnPipe.transform(percentFeeAmount),
+              6,
+              4
+            );
+            this.displayAmount += `+ ${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
+          }
+        }
+      } else if (percentFeeAmountUsd.gt(0)) {
         const bnPipe = new BigNumberFormatPipe();
         const shortenPipe = new ShortenAmountPipe();
-        const uiNativeTokenAmount = shortenPipe.transform(bnPipe.transform(nativeFeeSum), 6, 4);
-        this.displayAmount = `${uiNativeTokenAmount} ${value.nativeToken.symbol}`;
-
-        // adds src token fee in ui, if exists
-        if (percentFeeAmount.gt(0)) {
-          const uiPercentFeeTokenAmount = shortenPipe.transform(
-            bnPipe.transform(percentFeeAmount),
-            6,
-            4
-          );
-          this.displayAmount += `+ ${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
-        }
+        const uiPercentFeeTokenAmount = shortenPipe.transform(
+          bnPipe.transform(percentFeeAmount),
+          6,
+          4
+        );
+        this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
+      } else {
+        this.displayAmount = null;
       }
-    } else if (percentFeeAmountUsd.gt(0)) {
-      const bnPipe = new BigNumberFormatPipe();
-      const shortenPipe = new ShortenAmountPipe();
-      const uiPercentFeeTokenAmount = shortenPipe.transform(
-        bnPipe.transform(percentFeeAmount),
-        6,
-        4
-      );
-      this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
-    } else {
-      this.displayAmount = null;
     }
   }
 
