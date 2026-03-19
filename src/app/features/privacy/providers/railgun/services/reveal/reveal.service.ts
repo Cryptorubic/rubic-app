@@ -12,6 +12,8 @@ import {
   RailgunSupportedChain
 } from '@features/privacy/providers/railgun/constants/network-map';
 import { waitFor } from '@cryptorubic/web3';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class RevealService {
@@ -19,12 +21,18 @@ export class RevealService {
 
   private readonly authService = inject(AuthService);
 
+  private readonly _inProgress$ = new BehaviorSubject(false);
+
   public async unshield(
     tokenAddress: string,
     tokenAmount: string,
     proofProgress: (progress: string) => void,
     tokenBlockchain: RailgunSupportedChain
   ): Promise<void> {
+    if (this._inProgress$.value === true) {
+      throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
+    }
+    this._inProgress$.next(true);
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
     ];
@@ -60,5 +68,9 @@ export class RevealService {
     );
 
     await wallet.sendTransaction(transaction);
+
+    setTimeout(() => {
+      this._inProgress$.next(false);
+    }, 10_000);
   }
 }
