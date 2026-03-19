@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core'
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
@@ -29,7 +30,9 @@ import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
   ]
 })
 export class ClearswapSwapPageComponent implements OnInit {
-  public readonly receiverCtrl = new FormControl<string>('');
+  public readonly receiverCtrl = new FormControl<string>('', {
+    asyncValidators: [isReceiverCorrect()]
+  });
 
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,

@@ -7,6 +7,7 @@ export const clearswapFormConfig: PrivateSwapFormConfig = {
   withDstAmount: true,
   withReceiver: true,
   withSrcAmount: true,
+  receiverPlaceholder: 'Enter receiver address',
   assetsSelectorConfig: {
     withChainsFilter: false,
     withTokensFilter: false,
