@@ -41,22 +41,13 @@ export class HinkalSwapService {
     }
   }
 
-  public async deposit(
-    token: TokenAmount<EvmBlockchainName>,
-    stealthAddress?: string
-  ): Promise<boolean> {
+  public async deposit(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     try {
       this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
       const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
 
-      await (stealthAddress
-        ? hinkalInstance.depositForOther(
-            [depositToken],
-            [BigInt(token.stringWeiAmount)],
-            stealthAddress
-          )
-        : hinkalInstance.deposit([depositToken], [BigInt(token.stringWeiAmount)]));
+      await hinkalInstance.deposit([depositToken], [BigInt(token.stringWeiAmount)]);
 
       hinkalInstance.snapshotsClearInterval();
 
