@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TransactionFailedError } from '@app/core/errors/models/common/transaction-failed-error';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
@@ -8,7 +9,7 @@ import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/mode
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
-import { RubicSdkError, TronAdapter } from '@cryptorubic/web3';
+import { RubicSdkError, TronAdapter, TX_STATUS } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import {
   timer,
@@ -19,11 +20,17 @@ import {
   throwError,
   tap,
   lastValueFrom,
-  catchError
+  catchError,
+  last,
+  combineLatest,
+  of,
+  from
 } from 'rxjs';
 
 @Injectable()
 export class ClearswapSwapService {
+  private lastTransactionHash: string | null = null;
+
   private get chainAdapter(): TronAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.TRON);
   }
@@ -111,7 +118,8 @@ export class ClearswapSwapService {
               tokenWeiAmount: fromToken.stringWeiAmount,
               tokenAddress: fromToken.address,
               txOptions: {
-                onTransactionHash: () => {
+                onTransactionHash: hash => {
+                  this.lastTransactionHash = hash;
                   this.notificationsService.showInfo(
                     'Transaction has started. Please wait 3–5 minutes until the operation is complete.'
                   );
@@ -132,20 +140,37 @@ export class ClearswapSwapService {
           );
         }),
         switchMap(() =>
-          timer(30_000, 30_000).pipe(
-            switchMap(() => this.onChainApiService.getClearswapStatus(id)),
+          timer(5_000, 30_000).pipe(
+            switchMap(() =>
+              combineLatest([
+                this.onChainApiService.getClearswapStatus(id),
+                from(this.chainAdapter.getTransactionStatus(this.lastTransactionHash)).pipe(
+                  catchError(() => {
+                    return of(TX_STATUS.PENDING);
+                  })
+                )
+              ])
+            ),
             takeWhile(
-              res =>
-                res.status !== CLEARSWAP_STATUS.SUCCESS && res.status !== CLEARSWAP_STATUS.FAIL,
+              ([apiResponse, txStatus]) =>
+                !(
+                  apiResponse.status === CLEARSWAP_STATUS.SUCCESS ||
+                  apiResponse.status === CLEARSWAP_STATUS.FAIL ||
+                  txStatus === TX_STATUS.FAIL
+                ),
               true
-            )
+            ),
+            last()
           )
         ),
-        tap(({ status }) => {
-          if (status === CLEARSWAP_STATUS.SUCCESS) {
+        tap(([apiResponse, txStatus]) => {
+          if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
             this.notificationsService.showSuccess('The operation was successful.');
           } else {
-            this.notificationsService.showError('The operation has failed.');
+            if (txStatus === TX_STATUS.FAIL) {
+              throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, this.lastTransactionHash);
+            }
+            throw new RubicError<ERROR_TYPE.TEXT>(`The operation has failed.`);
           }
         }),
         catchError(error => {
