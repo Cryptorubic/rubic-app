@@ -6,6 +6,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
+import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
@@ -35,7 +36,8 @@ export class ClearswapSwapService {
     private readonly rubicApiService: RubicApiService,
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly clearswapTokensFacadeService: ClearswapTokensFacadeService
   ) {}
 
   public async quote(
@@ -161,6 +163,7 @@ export class ClearswapSwapService {
           )
         )
       );
+      this.clearswapTokensFacadeService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
         this.notificationsService.showSuccess('The operation was successful.');
       } else {
