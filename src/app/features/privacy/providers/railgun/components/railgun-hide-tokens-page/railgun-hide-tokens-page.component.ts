@@ -5,7 +5,7 @@ import { FromAssetsService } from '@features/trade/components/assets-selector/se
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { distinctUntilChanged, firstValueFrom, takeUntil } from 'rxjs';
+import { distinctUntilKeyChanged, firstValueFrom, takeUntil } from 'rxjs';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
@@ -46,7 +46,7 @@ export class RailgunHideTokensPageComponent {
 
   constructor() {
     this.hideWindowService.hideAsset$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(distinctUntilKeyChanged('symbol'), takeUntil(this.destroy$))
       .subscribe(token => {
         const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
         if (isNative) {
