@@ -40,6 +40,9 @@ import { PrivateSwapFormConfig } from '../../models/swap-form-types';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
+import { CrossChainDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 
 @Component({
   selector: 'app-swap-window',
@@ -54,6 +57,8 @@ export class SwapWindowComponent implements OnInit {
 
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() status: string;
+
   @Input() creationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
     withDstSelector: true,
@@ -61,6 +66,12 @@ export class SwapWindowComponent implements OnInit {
     withReceiver: true,
     withSrcAmount: true
   };
+
+  @Input() depositTrade: CrossChainTransferTrade | null;
+
+  @Input() depositTradeStatus: CrossChainDepositStatus;
+
+  @Input() depositPaymentInfo: CrossChainPaymentInfo;
 
   @Input() set receiverAddressRequired(value: boolean) {
     if (value) {
@@ -134,7 +145,7 @@ export class SwapWindowComponent implements OnInit {
         toToken: this.swapInfo.toAsset,
         fromAmount: this.swapInfo.fromAmount,
         toAmount: this.swapInfo.toAmount,
-        swapType: 'swap',
+        swapType: options.swapType ?? 'swap',
         swapOptions: options
       });
     };
@@ -163,12 +174,9 @@ export class SwapWindowComponent implements OnInit {
         switchMap(([swapInfo]) => {
           if (this.assetsNotSelected() || this.amountNotSet()) {
             this.patchSwapInfo({ toAmount: null });
-            {
-              this._loading$.next(false);
-              return EMPTY;
-            }
+            this._loading$.next(false);
+            return EMPTY;
           }
-
           return this.calculate(swapInfo);
         }),
         takeUntil(this.destroy$)
@@ -239,7 +247,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openInputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ fromAsset: selectedToken });
       });
@@ -247,7 +255,7 @@ export class SwapWindowComponent implements OnInit {
 
   public openOutputSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });

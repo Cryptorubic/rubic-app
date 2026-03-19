@@ -18,8 +18,11 @@ import { SWAP_TYPE_LABEL } from './constants/swap-type-label';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { AppGasData } from '@app/features/trade/models/provider-info';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
+import { BlockchainsInfo } from '@cryptorubic/core';
+import { Web3Pure } from '@cryptorubic/web3';
+import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -42,11 +45,13 @@ export class PrivatePreviewSwapComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
+  public readonly nativeToken$: Observable<BalanceToken>;
 
   public readonly gasInfo: AppGasData | null;
 
   public readonly feeInfo: FeeInfo | null;
+
+  public readonly displayAmount: string | undefined;
 
   private readonly _currentStep$ = new BehaviorSubject<PrivateStep | null>(null);
 
@@ -60,6 +65,12 @@ export class PrivatePreviewSwapComponent {
     return SWAP_TYPE_LABEL[this.swapType];
   }
 
+  public readonly swapDataCreationConfig: SwapDataElementConfig = {
+    feeIcon: 'assets/images/icons/privacy-fee.svg',
+    withVerboseFeeHint: false,
+    zeroFeeText: '0$ fees'
+  };
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, PreviewPrivateSwapOptions>,
@@ -69,6 +80,13 @@ export class PrivatePreviewSwapComponent {
   ) {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
+
+    const fromChain = context.data.fromToken.blockchain;
+    const chainType = BlockchainsInfo.getChainType(fromChain);
+    const fromChainNativeAddress = Web3Pure.getNativeTokenAddress(chainType);
+    this.nativeToken$ = from(
+      this.tokensFacade.findToken({ address: fromChainNativeAddress, blockchain: fromChain })
+    );
 
     this.fromValue = this.getTokenValue(
       context.data.fromToken,
@@ -84,6 +102,7 @@ export class PrivatePreviewSwapComponent {
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
     this.feeInfo = context.data.swapOptions.feeInfo || null;
+    this.displayAmount = context.data.swapOptions.displayAmount;
     this.swapOptions = context.data.swapOptions;
   }
 

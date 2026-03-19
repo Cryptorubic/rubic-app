@@ -99,7 +99,7 @@ export class RailgunTransferPageComponent implements OnInit {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, 'to')
       .subscribe((selectedToken: BalanceToken) => {
         this._transferAsset$.next(selectedToken);
       });
@@ -142,9 +142,17 @@ export class RailgunTransferPageComponent implements OnInit {
                 icon: '',
                 defaultAutoCloseTime: 0
               });
+              setTimeout(async () => {
+                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
+                this.railgunFacade.refreshBalances(
+                  [wallet.id],
+                  [token.blockchain as RailgunSupportedChain]
+                );
+              }, 5_000);
             }
           }
-        ]
+        ],
+        dstTokenAmount: token.stringWeiAmount
       });
 
       await firstValueFrom(preview$);

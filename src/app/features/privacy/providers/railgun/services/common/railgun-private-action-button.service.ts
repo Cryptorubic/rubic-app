@@ -18,22 +18,31 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
       filter(page => !!page),
-      switchMap(page =>
-        page.type === 'transfer'
-          ? combineLatest([
-              this.walletConnector.networkChange$,
-              this.privateTransferWindowService.transferAsset$,
-              this.privateTransferWindowService.transferAmount$,
-              this._receiverAddress$.asObservable(),
-              this.errorService.tradeError$
-            ]).pipe(switchMap(params => this.getTransferState(...params)))
-          : combineLatest([
-              this.walletConnector.networkChange$,
-              this.privateSwapWindowService.swapInfo$,
-              this._receiverAddress$.asObservable(),
-              this.errorService.tradeError$
-            ]).pipe(switchMap(params => this.getSwapState(...params)))
-      )
+      switchMap(page => {
+        if (page.type === 'hide') {
+          return combineLatest([
+            this.walletConnector.networkChange$,
+            this.hideWindowService.hideAsset$,
+            this.hideWindowService.hideAmount$
+          ]).pipe(switchMap(params => this.getShieldingState(...params)));
+        }
+        if (page.type === 'transfer') {
+          return combineLatest([
+            this.walletConnector.networkChange$,
+            this.privateTransferWindowService.transferAsset$,
+            this.privateTransferWindowService.transferAmount$,
+            this._receiverAddress$.asObservable(),
+            this.errorService.tradeError$
+          ]).pipe(switchMap(params => this.getTransferState(...params)));
+        }
+        if (page.type === 'reveal') {
+          return combineLatest([
+            this.walletConnector.networkChange$,
+            this.revealWindowService.revealAsset$,
+            this.revealWindowService.revealAmount$
+          ]).pipe(switchMap(params => this.getUnshieldingState(...params)));
+        }
+      })
     );
 
   private connectWallet(): void {
@@ -103,6 +112,72 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     return {
       type: 'parent',
       text: 'Review Order'
+    };
+  }
+
+  private async getShieldingState(
+    network: BlockchainName | null,
+    shieldAsset: BalanceToken | null,
+    shieldAmount: {
+      visibleValue: string;
+      actualValue: BigNumber;
+    } | null
+  ): Promise<PrivateActionButtonState> {
+    if (!network) {
+      return {
+        type: 'action',
+        text: 'Connect wallet',
+        action: this.connectWallet.bind(this)
+      };
+    }
+    if (!shieldAsset) {
+      return {
+        type: 'error',
+        text: 'Select token'
+      };
+    }
+    if (isNaN(shieldAmount.actualValue.toNumber()) || shieldAmount.actualValue.isZero()) {
+      return {
+        type: 'error',
+        text: 'Enter amount'
+      };
+    }
+    return {
+      type: 'parent',
+      text: 'Shield token'
+    };
+  }
+
+  private async getUnshieldingState(
+    network: BlockchainName | null,
+    unshieldAsset: BalanceToken | null,
+    unshieldAmount: {
+      visibleValue: string;
+      actualValue: BigNumber;
+    } | null
+  ): Promise<PrivateActionButtonState> {
+    if (!network) {
+      return {
+        type: 'action',
+        text: 'Connect wallet',
+        action: this.connectWallet.bind(this)
+      };
+    }
+    if (!unshieldAsset) {
+      return {
+        type: 'error',
+        text: 'Select token'
+      };
+    }
+    if (isNaN(unshieldAmount.actualValue.toNumber()) || unshieldAmount.actualValue.isZero()) {
+      return {
+        type: 'error',
+        text: 'Enter amount'
+      };
+    }
+    return {
+      type: 'parent',
+      text: 'Unshield token'
     };
   }
 

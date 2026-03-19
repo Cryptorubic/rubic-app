@@ -84,7 +84,6 @@ export class BlockchainsListComponent {
   ) {
     this.context.data?.blockchainsToShow.subscribe(el => {
       this.blockchainsToShow = el;
-      console.log(this.blockchainsToShow);
       this.cdr.detectChanges();
     });
   }

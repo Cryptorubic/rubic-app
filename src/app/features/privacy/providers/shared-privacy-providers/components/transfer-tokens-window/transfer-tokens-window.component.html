@@ -26,7 +26,8 @@
         [amountValue]="state.transferAmount"
       ></app-amount-transput>
       <app-user-balance-container
-        [fromToken$]="privateTransferWindowService.transferAsset$"
+        *ngIf="creationConfig.withMaxBtn"
+        [fromToken$]="transferAsset$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>
@@ -35,6 +36,7 @@
   <app-target-network-address
     *ngIf="creationConfig.withReceiver"
     [addressCtrl]="receiverCtrl"
+    [placeholderText]="creationConfig?.receiverPlaceholder"
   ></app-target-network-address>
 
   <app-private-action-button

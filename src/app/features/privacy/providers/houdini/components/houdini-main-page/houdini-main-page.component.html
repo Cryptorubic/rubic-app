@@ -1,8 +1,25 @@
-<div class="wrapper">
-  <app-swap-window
-    [quoteAdapter]="quoteAdapter"
-    [receiverAddressRequired]="true"
-    (swapClicked)="swap($event)"
-    [receiverCtrl]="receiverCtrl"
-  ></app-swap-window>
-</div>
+<ng-container
+  *ngLet="{
+    depositTrade: depositTrade$ | async,
+    depositTradeStatus: depositTradeStatus$ | async,
+    depositPaymentInfo: depositPaymentInfo$ | async
+  } as state"
+>
+  <div class="wrapper">
+    <app-swap-window
+      [quoteAdapter]="quoteAdapter"
+      [receiverAddressRequired]="true"
+      [creationConfig]="formConfig"
+      [receiverCtrl]="receiverCtrl"
+      [depositTrade]="state.depositTrade"
+      [depositTradeStatus]="state.depositTradeStatus"
+      [depositPaymentInfo]="state.depositPaymentInfo"
+      (swapClicked)="swap($event)"
+    ></app-swap-window>
+
+    <!-- <app-deposit-private-trade-info
+      *ngIf="state.depositTradeData"
+      [tradeData]="state.depositTradeData"
+    ></app-deposit-private-trade-info> -->
+  </div>
+</ng-container>

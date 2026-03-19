@@ -37,7 +37,8 @@ export class TransferTokensWindowComponent implements OnInit {
   @Input() creationConfig: PrivateTransferFormConfig = {
     withActionButton: true,
     withReceiver: true,
-    withSrcAmount: true
+    withSrcAmount: true,
+    withMaxBtn: true
   };
 
   @Output() public handleTransfer = new EventEmitter<PrivateEvent>();
@@ -58,7 +59,7 @@ export class TransferTokensWindowComponent implements OnInit {
 
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
-    public readonly privateTransferWindowService: PrivateTransferWindowService
+    private readonly privateTransferWindowService: PrivateTransferWindowService
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +76,7 @@ export class TransferTokensWindowComponent implements OnInit {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.privateTransferWindowService.transferAsset = selectedToken;
       });
@@ -101,12 +102,17 @@ export class TransferTokensWindowComponent implements OnInit {
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: transferAsset,
         toToken: transferAsset,
-        fromAmount: this.privateTransferWindowService.transferAmount,
+        fromAmount: options.srcTokenAmount
+          ? {
+              actualValue: new BigNumber(options.srcTokenAmount || 0),
+              visibleValue: options.srcTokenAmount || '0'
+            }
+          : this.privateTransferWindowService.transferAmount,
         toAmount: {
           actualValue: new BigNumber(options.dstTokenAmount || 0),
           visibleValue: options.dstTokenAmount || '0'
         },
-        swapType: 'transfer',
+        swapType: options.swapType ?? 'transfer',
         swapOptions: options
       });
     };

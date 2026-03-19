@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith, Observable } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -21,8 +13,23 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
   styleUrls: ['./user-balance-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserBalanceContainerComponent implements OnInit {
-  @Input() fromToken$: Observable<BalanceToken | null> | null = null;
+export class UserBalanceContainerComponent {
+  @Input() set fromToken$(fromToken$: Observable<BalanceToken>) {
+    this.token$ = fromToken$.pipe(
+      combineLatestWith(
+        this.tokensFacade.tokens$,
+        this.fromAssetsService.assetListType$.pipe(
+          switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
+          filter(loading => !loading)
+        )
+      ),
+      filter(() => !!this.tokensFacade.tokens),
+      map(([fromToken]) => {
+        const foundToken = this.tokensFacade.tokens.find(token => compareTokens(fromToken, token));
+        return { ...foundToken, amount: fromToken?.amount };
+      })
+    );
+  }
 
   public token$: Observable<BalanceToken>;
 
@@ -34,24 +41,7 @@ export class UserBalanceContainerComponent implements OnInit {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly swapsFormService: SwapsFormService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly fromAssetsService: FromAssetsService
   ) {}
-
-  ngOnInit() {
-    this.token$ = (this.fromToken$ || this.swapsFormService.fromToken$).pipe(
-      combineLatestWith(
-        this.tokensFacade.tokens$,
-        this.fromAssetsService.assetListType$.pipe(
-          switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
-          filter(loading => !loading)
-        )
-      ),
-      filter(() => !!this.tokensFacade.tokens),
-      map(([fromToken]) => {
-        return this.tokensFacade.tokens.find(token => compareTokens(fromToken, token));
-      })
-    );
-  }
 }

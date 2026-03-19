@@ -366,6 +366,7 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
       }
     }
   } catch (err: unknown) {
+    console.error(err);
     const message = err instanceof Error ? err.message : String(err);
     postWorkerMessage({
       id,

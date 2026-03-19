@@ -14,8 +14,11 @@ export class PrivateTokensSelectorComponent {
 
   public readonly assetsSelectorConfig: AssetsSelectorConfig;
 
+  public readonly direction: 'from' | 'to';
+
   constructor() {
     this.assetsSelectorConfig = this.context.data.assetsSelectorConfig;
+    this.direction = this.context.data.formType ?? 'to';
   }
 
   public selectToken(value: Asset): void {

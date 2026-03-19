@@ -18,6 +18,7 @@ import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { RevealWindowService } from '../../services/reveal-window/reveal-window.service';
+import { PrivateShieldFormConfig } from '@features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 
 @Component({
   selector: 'app-reveal-window',
@@ -28,6 +29,13 @@ import { RevealWindowService } from '../../services/reveal-window/reveal-window.
 })
 export class RevealWindowComponent {
   @Input() receiverCtrl: FormControl<string>;
+
+  @Input() creationConfig: PrivateShieldFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true,
+    withMaxBtn: true
+  };
 
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
@@ -51,7 +59,7 @@ export class RevealWindowComponent {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector)
+      .openPrivateTokensModal(this.injector, 'from')
       .subscribe((selectedToken: BalanceToken) => {
         this.revealWindowService.setRevealAsset(selectedToken);
       });
@@ -61,7 +69,13 @@ export class RevealWindowComponent {
     this.revealWindowService.setRevealAmount(value);
   }
 
-  public handleMaxButton(): void {}
+  public handleMaxButton(): void {
+    const token = this.revealWindowService.revealAsset;
+    this.revealWindowService.setRevealAmount({
+      visibleValue: token.amount.toString(),
+      actualValue: token.amount
+    });
+  }
 
   private createPreviewModal(revealAsset: BalanceToken): PreviewSwapModalFactory {
     const injector = this.injector;
@@ -80,7 +94,7 @@ export class RevealWindowComponent {
               visibleValue: options.dstTokenAmount
             }
           : revealAmount,
-        swapType: 'unshield',
+        swapType: options.swapType ?? 'unshield',
         swapOptions: options
       });
     };

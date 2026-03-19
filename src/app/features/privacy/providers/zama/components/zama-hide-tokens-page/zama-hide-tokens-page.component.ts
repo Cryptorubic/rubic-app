@@ -32,7 +32,8 @@ export class ZamaHideTokensPageComponent {
   public readonly creationConfig: PrivateShieldFormConfig = {
     withActionButton: true,
     withReceiver: false,
-    withSrcAmount: true
+    withSrcAmount: true,
+    withMaxBtn: true
   };
 
   constructor(private readonly zamaFacadeService: ZamaFacadeService) {}
