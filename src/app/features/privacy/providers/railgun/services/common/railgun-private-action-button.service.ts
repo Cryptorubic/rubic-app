@@ -8,12 +8,17 @@ import BigNumber from 'bignumber.js';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { UserInterface } from '@core/services/auth/models/user.interface';
+import { compareAddresses } from '@shared/utils/utils';
 
 @Injectable()
 export class RailgunPrivateActionButtonService extends PrivateActionButtonService {
   private readonly errorService = inject(RailgunErrorService);
 
   private readonly railgunFacadeService = inject(RailgunFacadeService);
+
+  private readonly authService = inject(AuthService);
 
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
@@ -23,7 +28,9 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
           return combineLatest([
             this.walletConnector.networkChange$,
             this.hideWindowService.hideAsset$,
-            this.hideWindowService.hideAmount$
+            this.hideWindowService.hideAmount$,
+            this.railgunFacadeService.railgunAccount$,
+            this.authService.currentUser$
           ]).pipe(switchMap(params => this.getShieldingState(...params)));
         }
         if (page.type === 'transfer') {
@@ -32,14 +39,18 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.privateTransferWindowService.transferAsset$,
             this.privateTransferWindowService.transferAmount$,
             this._receiverAddress$.asObservable(),
-            this.errorService.tradeError$
+            this.errorService.tradeError$,
+            this.railgunFacadeService.railgunAccount$,
+            this.authService.currentUser$
           ]).pipe(switchMap(params => this.getTransferState(...params)));
         }
         if (page.type === 'reveal') {
           return combineLatest([
             this.walletConnector.networkChange$,
             this.revealWindowService.revealAsset$,
-            this.revealWindowService.revealAmount$
+            this.revealWindowService.revealAmount$,
+            this.railgunFacadeService.railgunAccount$,
+            this.authService.currentUser$
           ]).pipe(switchMap(params => this.getUnshieldingState(...params)));
         }
       })
@@ -121,13 +132,21 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     shieldAmount: {
       visibleValue: string;
       actualValue: BigNumber;
-    } | null
+    } | null,
+    railgunWallet: { evmWalletAddress: string },
+    user: UserInterface
   ): Promise<PrivateActionButtonState> {
     if (!network) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+      return {
+        type: 'error',
+        text: 'Switch to your seed phrase wallet'
       };
     }
     if (!shieldAsset) {
@@ -154,13 +173,21 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     unshieldAmount: {
       visibleValue: string;
       actualValue: BigNumber;
-    } | null
+    } | null,
+    railgunWallet: { evmWalletAddress: string },
+    user: UserInterface
   ): Promise<PrivateActionButtonState> {
     if (!network) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+      return {
+        type: 'error',
+        text: 'Switch to your seed phrase wallet'
       };
     }
     if (!unshieldAsset) {
@@ -189,13 +216,21 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
       actualValue: BigNumber;
     } | null,
     receiver: string,
-    tradeError: ErrorInterface
+    tradeError: ErrorInterface,
+    railgunWallet: { evmWalletAddress: string },
+    user: UserInterface
   ): Promise<PrivateActionButtonState> {
     if (!network) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+      return {
+        type: 'error',
+        text: 'Switch to your seed phrase wallet'
       };
     }
     // @TODO add different connected wallets handling

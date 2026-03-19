@@ -148,10 +148,18 @@ export class RailgunTransferPageComponent implements OnInit {
                   [wallet.id],
                   [token.blockchain as RailgunSupportedChain]
                 );
-              }, 5_000);
+              }, 10_000);
+              setTimeout(async () => {
+                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
+                this.railgunFacade.refreshBalances(
+                  [wallet.id],
+                  [token.blockchain as RailgunSupportedChain]
+                );
+              }, 70_000);
             }
           }
         ],
+        swapType: 'transfer',
         dstTokenAmount: token.stringWeiAmount
       });
 
