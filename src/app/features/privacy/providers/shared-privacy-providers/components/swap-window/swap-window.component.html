@@ -60,7 +60,7 @@
   ></app-target-network-address>
 
   <div
-    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    *ngIf="(creationConfig.withActionButton || creationConfig.withReceiver) && !depositTrade"
     class="buttons-container"
   >
     <app-private-action-button
@@ -74,4 +74,10 @@
       (handleClick)="toggleReceiver()"
     ></app-receiver-address-button>
   </div>
+  <ng-container *ngIf="creationConfig.withStatus && depositTrade">
+    <app-deposit-status-info
+      [paymentInfo]="depositPaymentInfo"
+      [status]="depositTradeStatus"
+    ></app-deposit-status-info>
+  </ng-container>
 </app-window-container>
