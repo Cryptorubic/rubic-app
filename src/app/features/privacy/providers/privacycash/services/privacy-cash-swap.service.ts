@@ -273,6 +273,9 @@ export class PrivacycashSwapService {
       }
 
       this.notificationsService.showInfo('Swap successful.');
+    } catch (err) {
+      this.notificationsService.showInfo('Transaction failed. Please request a refund.');
+      throw err;
     } finally {
       this.ephemeralWalletTokensService.updateBalances();
       this.privacycashTokensService.updatePrivateBalances();
