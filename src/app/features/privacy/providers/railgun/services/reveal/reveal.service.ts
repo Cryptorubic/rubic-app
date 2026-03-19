@@ -11,6 +11,7 @@ import {
   fromRubicToPrivateChainMap,
   RailgunSupportedChain
 } from '@features/privacy/providers/railgun/constants/network-map';
+import { waitFor } from '@cryptorubic/web3';
 
 @Injectable()
 export class RevealService {
@@ -36,6 +37,8 @@ export class RevealService {
 
     // generate unshield proof
     await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
+
+    await waitFor(5_000);
 
     const mnemonic = await this.railgunFacade.getMnemonic();
     const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);
