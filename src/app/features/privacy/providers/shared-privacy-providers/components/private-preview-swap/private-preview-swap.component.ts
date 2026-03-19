@@ -51,6 +51,8 @@ export class PrivatePreviewSwapComponent {
 
   public readonly feeInfo: FeeInfo | null;
 
+  public readonly displayAmount: string | undefined;
+
   private readonly _currentStep$ = new BehaviorSubject<PrivateStep | null>(null);
 
   public readonly currentStep$ = this._currentStep$.asObservable();
@@ -100,6 +102,7 @@ export class PrivatePreviewSwapComponent {
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
     this.feeInfo = context.data.swapOptions.feeInfo || null;
+    this.displayAmount = context.data.swapOptions.displayAmount;
     this.swapOptions = context.data.swapOptions;
   }
 

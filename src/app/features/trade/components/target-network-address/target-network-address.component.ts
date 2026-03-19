@@ -19,6 +19,8 @@ import { FormControl } from '@angular/forms';
 export class TargetNetworkAddressComponent {
   @Input({ required: true }) addressCtrl: FormControl<string>;
 
+  @Input() placeholderText: string = 'You must have access to this address';
+
   public isActiveInput: boolean = false;
 
   public readonly isIntegratorWidget =

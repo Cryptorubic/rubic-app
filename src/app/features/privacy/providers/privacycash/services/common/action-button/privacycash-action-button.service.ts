@@ -163,7 +163,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (compareAddresses(userAddr, receiver)) {
       return {
         type: 'error',
-        text: 'Enter another receiver wallet'
+        text: 'Please enter a different wallet as the receiver.'
       };
     }
     const isAddressCorrect = await Web3Pure.getInstance(transferAsset.blockchain).isAddressCorrect(
@@ -183,7 +183,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
 
   private async getRevealState(
     network: BlockchainName | null,
-    userAddr: string,
+    _userAddr: string,
     revealAsset: BalanceToken | null,
     revealAmount: SwapAmount | null,
     receiver: string
@@ -220,27 +220,18 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         text: 'Insufficient balance'
       };
     }
-    if (!receiver) {
-      return {
-        type: 'error',
-        text: 'Enter receiver address'
-      };
+    if (receiver) {
+      const isAddressCorrect = await Web3Pure.getInstance(revealAsset.blockchain).isAddressCorrect(
+        receiver
+      );
+      if (!isAddressCorrect) {
+        return {
+          type: 'error',
+          text: 'Incorrect receiver address'
+        };
+      }
     }
-    if (compareAddresses(userAddr, receiver)) {
-      return {
-        type: 'error',
-        text: 'Enter another receiver wallet'
-      };
-    }
-    const isAddressCorrect = await Web3Pure.getInstance(revealAsset.blockchain).isAddressCorrect(
-      receiver
-    );
-    if (!isAddressCorrect) {
-      return {
-        type: 'error',
-        text: 'Incorrect receiver address'
-      };
-    }
+
     return {
       type: 'parent',
       text: 'Unshield token'

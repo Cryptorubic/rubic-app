@@ -18,6 +18,7 @@ import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { RevealWindowService } from '../../services/reveal-window/reveal-window.service';
+import { PrivateShieldFormConfig } from '@features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 
 @Component({
   selector: 'app-reveal-window',
@@ -28,6 +29,13 @@ import { RevealWindowService } from '../../services/reveal-window/reveal-window.
 })
 export class RevealWindowComponent {
   @Input() receiverCtrl: FormControl<string>;
+
+  @Input() creationConfig: PrivateShieldFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true,
+    withMaxBtn: true
+  };
 
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 

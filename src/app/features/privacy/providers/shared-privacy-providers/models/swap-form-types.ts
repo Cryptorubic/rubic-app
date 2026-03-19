@@ -8,6 +8,7 @@ export interface PrivateSwapFormConfig {
   withActionButton: boolean;
   assetsSelectorConfig?: AssetsSelectorConfig;
   buttonText?: string;
+  receiverPlaceholder?: string;
 }
 
 export type PrivateTransferFormConfig = Omit<

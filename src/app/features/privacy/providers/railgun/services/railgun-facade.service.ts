@@ -64,6 +64,7 @@ import {
   WalletCredentialsRequest
 } from '@features/privacy/providers/railgun/models/worker-types';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable()
 export class RailgunFacadeService {
@@ -213,7 +214,11 @@ export class RailgunFacadeService {
         this.pendingRequests.delete(data.id);
 
         if (data.error) {
-          reject(data.error);
+          let errorInstance = new RubicError(data.error?.message || 'Unknown Railgun Error');
+          if (typeof data.error === 'string') errorInstance = new RubicError(data.error);
+          if (data.err instanceof Error) errorInstance = new RubicError(data.err);
+
+          reject(errorInstance);
         } else {
           resolve(data.response);
         }
@@ -286,11 +291,23 @@ export class RailgunFacadeService {
     });
   }
 
-  private async refreshBalances(walletIds: string[]): Promise<void> {
-    const balanceChains = Object.values(fromPrivateToRubicChainMap).map(chain => ({
-      type: 0,
-      id: blockchainId[chain]
-    }));
+  public async refreshBalances(
+    walletIds: string[],
+    chains?: RailgunSupportedChain[]
+  ): Promise<void> {
+    const chainRating: Record<RailgunSupportedChain, number> = {
+      [BLOCKCHAIN_NAME.POLYGON]: 1,
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 2,
+      [BLOCKCHAIN_NAME.ARBITRUM]: 3,
+      [BLOCKCHAIN_NAME.ETHEREUM]: 4
+    };
+    const balanceChains = (chains || Object.values(fromPrivateToRubicChainMap))
+      .map(chain => ({
+        type: 0,
+        id: blockchainId[chain],
+        chainRating: chainRating[chain]
+      }))
+      .sort((a, b) => a.chainRating - b.chainRating);
 
     for (const chain of balanceChains) {
       try {
@@ -631,6 +648,7 @@ export class RailgunFacadeService {
 
   private handleBalanceUpdate(eventData: RailgunBalancesEvent): void {
     try {
+      console.log(eventData);
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;
@@ -656,6 +674,7 @@ export class RailgunFacadeService {
 
   private handleUtxoScanUpdate(eventData: MerkletreeScanUpdateEvent): void {
     try {
+      console.log(eventData);
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;

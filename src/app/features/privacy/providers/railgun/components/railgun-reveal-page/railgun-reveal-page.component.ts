@@ -87,6 +87,13 @@ export class RailgunRevealPageComponent {
                   defaultAutoCloseTime: 0
                 }
               );
+              setTimeout(async () => {
+                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
+                this.railgunFacade.refreshBalances(
+                  [wallet.id],
+                  [token.blockchain as RailgunSupportedChain]
+                );
+              }, 5_000);
             }
           }
         ],

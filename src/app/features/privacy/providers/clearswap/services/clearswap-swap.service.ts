@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+import { TransactionFailedError } from '@app/core/errors/models/common/transaction-failed-error';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { AuthService } from '@app/core/services/auth/auth.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
@@ -8,18 +11,20 @@ import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/mode
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
-import { RubicSdkError, TronAdapter } from '@cryptorubic/web3';
+import { RubicSdkError, TronAdapter, TX_STATUS } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import {
   timer,
-  switchMap,
-  takeWhile,
   defer,
   retry,
   throwError,
-  tap,
   lastValueFrom,
-  catchError
+  catchError,
+  combineLatest,
+  from,
+  of,
+  switchMap,
+  takeWhile
 } from 'rxjs';
 
 @Injectable()
@@ -32,7 +37,8 @@ export class ClearswapSwapService {
     private readonly rubicApiService: RubicApiService,
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly authService: AuthService
   ) {}
 
   public async quote(
@@ -79,84 +85,118 @@ export class ClearswapSwapService {
     toToken: Token,
     receiver: string
   ): Promise<void> {
-    await lastValueFrom(
-      defer(() =>
-        this.rubicApiService.fetchSwapData<{ depositAddress: string }>({
-          id,
-          srcTokenBlockchain: fromToken.blockchain,
-          srcTokenAddress: fromToken.address,
-          srcTokenAmount: fromToken.tokenAmount.toString(),
-          dstTokenBlockchain: toToken.blockchain,
-          dstTokenAddress: toToken.address,
-          preferredProvider: 'CLEARSWAP',
-          receiver
-        })
-      ).pipe(
-        retry({
-          count: 5,
-          delay: (error, retryCount) => {
-            console.error('swap error:', error, 'retry #', retryCount);
-            if (error?.message?.includes('Cannot retrieve information about')) {
-              return timer(5000);
+    try {
+      const isEnoughBalance = await lastValueFrom(
+        defer(() =>
+          this.chainAdapter.checkEnoughBalance(fromToken, this.authService.userAddress)
+        ).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('check balance error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('Request failed with status code 429')) {
+                return timer(5000);
+              }
+              return throwError(() => error);
             }
-            return throwError(() => error);
-          }
-        }),
-        switchMap(swapResponse => {
-          const depositAddress = swapResponse.transaction.depositAddress;
+          })
+        )
+      );
+      if (!isEnoughBalance) {
+        throw new InsufficientFundsError(fromToken.symbol);
+      }
 
-          return defer(() =>
-            this.chainAdapter.signer.transfer({
-              receiver: depositAddress,
-              tokenWeiAmount: fromToken.stringWeiAmount,
-              tokenAddress: fromToken.address,
-              txOptions: {
-                onTransactionHash: () => {
-                  this.notificationsService.showInfo(
-                    'Transaction has started. Please wait 3–5 minutes until the operation is complete.'
-                  );
-                }
+      const swapResponse = await lastValueFrom(
+        defer(() =>
+          this.rubicApiService.fetchSwapData<{ depositAddress: string }>({
+            id,
+            srcTokenBlockchain: fromToken.blockchain,
+            srcTokenAddress: fromToken.address,
+            srcTokenAmount: fromToken.tokenAmount.toString(),
+            dstTokenBlockchain: toToken.blockchain,
+            dstTokenAddress: toToken.address,
+            preferredProvider: 'CLEARSWAP',
+            receiver
+          })
+        ).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('swap error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('Cannot retrieve information about')) {
+                return timer(5000);
               }
-            })
-          ).pipe(
-            retry({
-              count: 5,
-              delay: (error, retryCount) => {
-                console.error('sign error:', error, 'retry #', retryCount);
-                if (error?.message?.includes('AxiosError: Network Error')) {
-                  return timer(5000);
-                }
-                return throwError(() => error);
+              return throwError(() => error);
+            }
+          })
+        )
+      );
+      const depositAddress = swapResponse.transaction.depositAddress;
+
+      const txHash = await lastValueFrom(
+        defer(() =>
+          this.chainAdapter.signer.transfer({
+            receiver: depositAddress,
+            tokenWeiAmount: fromToken.stringWeiAmount,
+            tokenAddress: fromToken.address,
+            txOptions: {
+              onTransactionHash: () => {
+                this.notificationsService.showInfo(
+                  'Transaction has started. Please wait 3–5 minutes until the operation is complete.'
+                );
               }
-            })
-          );
-        }),
-        switchMap(() =>
-          timer(30_000, 30_000).pipe(
-            switchMap(() => this.onChainApiService.getClearswapStatus(id)),
-            takeWhile(
-              res =>
-                res.status !== CLEARSWAP_STATUS.SUCCESS && res.status !== CLEARSWAP_STATUS.FAIL,
-              true
-            )
+            }
+          })
+        ).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('sign error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('AxiosError: Network Error')) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      );
+
+      const [apiResponse, txStatus] = await lastValueFrom(
+        timer(5_000, 30_000).pipe(
+          switchMap(() =>
+            combineLatest([
+              this.onChainApiService.getClearswapStatus(id),
+              from(this.chainAdapter.getTransactionStatus(txHash)).pipe(
+                catchError(() => {
+                  return of(TX_STATUS.PENDING);
+                })
+              )
+            ])
+          ),
+          takeWhile(
+            ([apiResponseVal, txStatusVal]) =>
+              !(
+                apiResponseVal.status === CLEARSWAP_STATUS.SUCCESS ||
+                apiResponseVal.status === CLEARSWAP_STATUS.FAIL ||
+                txStatusVal === TX_STATUS.FAIL
+              ),
+            true
           )
-        ),
-        tap(({ status }) => {
-          if (status === CLEARSWAP_STATUS.SUCCESS) {
-            this.notificationsService.showSuccess('The operation was successful.');
-          } else {
-            this.notificationsService.showError('The operation has failed.');
-          }
-        }),
-        catchError(error => {
-          if (error instanceof RubicError || error instanceof RubicSdkError) {
-            return throwError(() => error);
-          }
-          return throwError(
-            () => new RubicError<ERROR_TYPE.TEXT>('Something went wrong. Please, try again later.')
-          );
-        })
-      )
-    );
+        )
+      );
+      if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
+        this.notificationsService.showSuccess('The operation was successful.');
+      } else {
+        if (txStatus === TX_STATUS.FAIL) {
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txHash);
+        }
+        throw new RubicError<ERROR_TYPE.TEXT>(`The operation has failed.`);
+      }
+    } catch (error) {
+      if (error instanceof RubicError || error instanceof RubicSdkError) {
+        throw error;
+      }
+      throw new RubicError<ERROR_TYPE.TEXT>('Something went wrong. Please, try again later.');
+    }
   }
 }
