@@ -4,19 +4,19 @@
   } as state"
 >
   <ng-container header>Transaction details</ng-container>
-  <div *ngIf="tradeData?.trade" class="transaction-details">
+  <div *ngIf="tradeInfo" class="transaction-details">
     <app-transaction-details-element
       [title]="text.transactionId.label"
       [description]="text.transactionId.description"
     >
       <div class="row">
-        {{ tradeData.id }}
-        <app-copy-container [text]="tradeData.id"></app-copy-container>
+        {{ tradeInfo.id }}
+        <app-copy-container [text]="tradeInfo.id"></app-copy-container>
       </div>
     </app-transaction-details-element>
 
     <app-transaction-details-element
-      *ngIf="state.wallet && tradeData.trade?.to.blockchain"
+      *ngIf="state.wallet && tradeInfo.trade?.to.blockchain"
       [title]="text.receiver.label"
       [description]="text.receiver.description"
     >
@@ -25,7 +25,7 @@
 
         <a
           [safetyLink]="
-            state.wallet | scannerLink : tradeData.trade.to.blockchain : ADDRESS_TYPE.WALLET
+            state.wallet | scannerLink : tradeInfo.trade.to.blockchain : ADDRESS_TYPE.WALLET
           "
         >
           <img
@@ -37,24 +37,24 @@
       </div>
     </app-transaction-details-element>
 
-    <ng-container *ngIf="tradeData?.extraField">
+    <ng-container *ngIf="tradeInfo?.extraField">
       <app-transaction-details-element
-        [title]="tradeData.extraField.name"
-        [description]="tradeData.extraField.text"
+        [title]="tradeInfo.extraField.name"
+        [description]="tradeInfo.extraField.text"
       >
         <div class="row">
           {{
-            tradeData.extraField.value.length > 25
-              ? (tradeData.extraField.value | shortAddress : 10 : 10)
-              : tradeData.extraField.value
+            tradeInfo.extraField.value.length > 25
+              ? (tradeInfo.extraField.value | shortAddress : 10 : 10)
+              : tradeInfo.extraField.value
           }}
-          <app-copy-container [text]="tradeData.extraField.value"></app-copy-container>
+          <app-copy-container [text]="tradeInfo.extraField.value"></app-copy-container>
         </div>
       </app-transaction-details-element>
     </ng-container>
   </div>
-  <tui-notification *ngIf="tradeData?.extraField" status="warning" class="tui-space_vertical-4">
-    {{ tradeData.extraField.text }}
+  <tui-notification *ngIf="tradeInfo?.extraField" status="warning" class="tui-space_vertical-4">
+    {{ tradeInfo.extraField.text }}
   </tui-notification>
 
   <ng-template></ng-template>

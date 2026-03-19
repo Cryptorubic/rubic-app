@@ -3,12 +3,13 @@
 :host {
   position: relative;
   
-  ::ng-deep app-window-container {
-    display: block;
-    width: 600px;
-    margin-bottom: 12px;
-    @include b($mobile-md) {
-      width: 100%;
+  app-swap-window {
+    ::ng-deep app-window-container {
+      display: block;
+      width: 600px;
+      @include b($mobile-md) {
+        width: 100%;
+      }
     }
   }
 }
