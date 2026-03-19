@@ -64,6 +64,9 @@ import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared
 import { LoginWindowComponent } from './components/login-window/login-window.component';
 import { HideWindowService } from './services/hide-window-service/hide-window.service';
 import { RevealWindowService } from './services/reveal-window/reveal-window.service';
+import { DepositStatusInfoComponent } from './components/deposit-status-info/deposit-status-info.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { DepositPrivateTradeInfoComponent } from './components/deposit-private-trade-info/deposit-private-trade-info.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +85,9 @@ import { RevealWindowService } from './services/reveal-window/reveal-window.serv
     SignMessageModalComponent,
     PrivateActionButtonComponent,
     SwitchNetworkPageComponent,
-    LoginWindowComponent
+    LoginWindowComponent,
+    DepositStatusInfoComponent,
+    DepositPrivateTradeInfoComponent
   ],
   imports: [
     CommonModule,
@@ -102,7 +107,8 @@ import { RevealWindowService } from './services/reveal-window/reveal-window.serv
     TuiNotificationModule,
     TuiDataListWrapperModule,
     TuiAvatarModule,
-    TuiSelectModule
+    TuiSelectModule,
+    ClipboardModule
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -116,7 +122,8 @@ import { RevealWindowService } from './services/reveal-window/reveal-window.serv
     TransferTokensWindowComponent,
     SwapWindowComponent,
     SwitchNetworkPageComponent,
-    LoginWindowComponent
+    LoginWindowComponent,
+    DepositPrivateTradeInfoComponent
   ],
   providers: [
     SwapsFormService,

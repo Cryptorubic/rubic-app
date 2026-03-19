@@ -6,6 +6,7 @@ export interface PrivateSwapFormConfig {
   withDstSelector: boolean;
   withReceiver: boolean;
   withActionButton: boolean;
+  withStatus?: boolean;
   assetsSelectorConfig?: AssetsSelectorConfig;
   buttonText?: string;
 }

@@ -40,6 +40,9 @@ import { PrivateSwapFormConfig } from '../../models/swap-form-types';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
+import { CrossChainDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 
 @Component({
   selector: 'app-swap-window',
@@ -54,6 +57,8 @@ export class SwapWindowComponent implements OnInit {
 
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() status: string;
+
   @Input() creationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
     withDstSelector: true,
@@ -61,6 +66,12 @@ export class SwapWindowComponent implements OnInit {
     withReceiver: true,
     withSrcAmount: true
   };
+
+  @Input() depositTrade: CrossChainTransferTrade | null;
+
+  @Input() depositTradeStatus: CrossChainDepositStatus;
+
+  @Input() depositPaymentInfo: CrossChainPaymentInfo;
 
   @Input() set receiverAddressRequired(value: boolean) {
     if (value) {

@@ -9,12 +9,26 @@ import {
   QuoteResponseInterface,
   TokenAmount,
   Token,
-  EvmBlockchainName
+  EvmBlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE
 } from '@cryptorubic/core';
 import { Token as SharedToken } from '@app/shared/models/tokens/token';
 import { RubicSdkError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  interval,
+  startWith,
+  switchMap,
+  takeWhile,
+  map,
+  of,
+  tap,
+  Subscription,
+  distinctUntilChanged
+} from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -31,19 +45,70 @@ import { SettingsService } from '@app/features/trade/services/settings-service/s
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 import { InsufficientGasError } from '@app/core/errors/models/common/insufficient-gas-error';
 import { HoudiniErrorService } from './houdini-error.service';
+import {
+  transferTradeSupportedProviders,
+  TransferTradeType
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import {
+  API_STATUS_TO_DEPOSIT_STATUS,
+  CROSS_CHAIN_DEPOSIT_STATUS,
+  CrossChainDepositStatus
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Injectable()
 export class HoudiniSwapService {
-  private readonly _latestQuoteRequest$ = new BehaviorSubject<QuoteRequestInterface | null>(null);
+  private readonly _currentTrade$ = new BehaviorSubject<CrossChainTrade | null>(null);
 
-  private readonly _latestQuoteResponse$ = new BehaviorSubject<QuoteResponseInterface | null>(null);
+  public readonly depositTrade$ = this._currentTrade$.pipe(
+    distinctUntilChanged(),
+    map(t => (t instanceof CrossChainTransferTrade ? (t as CrossChainTransferTrade) : null))
+  );
 
-  public get latestQuoteRequest(): QuoteRequestInterface {
-    return this._latestQuoteRequest$.value;
-  }
+  public readonly subscriptions: Subscription[] = [];
 
-  public get latestQuoteResponse(): QuoteResponseInterface {
-    return this._latestQuoteResponse$.value;
+  private readonly _depositTradeStatus$ = new BehaviorSubject<CrossChainDepositStatus>(
+    CROSS_CHAIN_DEPOSIT_STATUS.WAITING
+  );
+
+  public readonly depositTradeStatus$ = this._depositTradeStatus$.asObservable();
+
+  public readonly depositPaymentInfo$ = this.depositTrade$.pipe(
+    switchMap(trade =>
+      trade
+        ? trade.getTransferTrade(
+            this.targetNetworkAddressService.address,
+            this.walletConnectorService.address
+          )
+        : of(null)
+    )
+  );
+
+  //work in progress
+
+  // public readonly depositTradeData$ = combineLatest([
+  //   this.depositTrade$,
+  //   this.depositPaymentInfo$
+  // ]).pipe(
+  //   filter(([trade, paymentInfo]) => !!paymentInfo),
+  //   map(([trade, paymentInfo]) =>
+  //     ({
+  //       id: paymentInfo?.id,
+  //       trade,
+  //       extraField: paymentInfo?.extraField
+  //         ? {
+  //             name: paymentInfo?.extraField.name,
+  //             value: paymentInfo?.extraField.value,
+  //             text: `Please don’t forget to specify the ${paymentInfo?.extraField.name} while sending the ${trade.from.symbol} transaction for the exchange`
+  //           }
+  //         : null
+  //     })
+  //   )
+  // );
+
+  public get currentTrade(): CrossChainTrade {
+    return this._currentTrade$.value;
   }
 
   constructor(
@@ -54,8 +119,11 @@ export class HoudiniSwapService {
     private readonly crossChainService: CrossChainService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly settingsService: SettingsService,
-    private readonly houdiniErrorService: HoudiniErrorService
-  ) {}
+    private readonly houdiniErrorService: HoudiniErrorService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
+  ) {
+    this.subscribeOnStatusReset();
+  }
 
   public async quote(
     fromToken: TokenAmount<BlockchainName>,
@@ -69,6 +137,8 @@ export class HoudiniSwapService {
       }
     | { tradeError: ErrorInterface }
   > {
+    this.resetCurrentTrade();
+
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
       srcTokenAddress: fromToken.address,
@@ -83,12 +153,10 @@ export class HoudiniSwapService {
 
     try {
       const quoteResponse = await this.rubicApiService.fetchBestQuote(quoteRequest);
-      // const route = quoteResponse?.routes[0];
       if (quoteResponse) {
         this.filterHoudiniSlippageWarning(quoteResponse);
 
-        this._latestQuoteRequest$.next(quoteRequest);
-        this._latestQuoteResponse$.next(quoteResponse);
+        await this.setCurrentTrade(quoteRequest, quoteResponse);
 
         return {
           tradeId: quoteResponse.id,
@@ -103,47 +171,39 @@ export class HoudiniSwapService {
 
   public async swap(fromToken: TokenAmount<BlockchainName>): Promise<void> {
     try {
-      const trade = await this.getTrade();
+      const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+      const isTransferTrade =
+        transferTradeSupportedProviders.includes(this.currentTrade.type as TransferTradeType) &&
+        chainType !== CHAIN_TYPE.EVM;
 
-      if (fromToken.blockchain !== this.walletConnectorService.network) {
-        await this.walletConnectorService.switchChain(fromToken.blockchain as EvmBlockchainName);
+      if (!isTransferTrade) {
+        if (fromToken.blockchain !== this.walletConnectorService.network) {
+          await this.walletConnectorService.switchChain(fromToken.blockchain as EvmBlockchainName);
+        }
+
+        //TODO: maybe add some callback later
+        const approveCallback = {
+          onHash: (_: string) => {},
+          onSwap: (..._: unknown[]) => {},
+          onError: () => {}
+        };
+
+        const swapCallback = {
+          onHash: (_: string) => {},
+          onSwap: () => {
+            this.notificationsService.showSuccess('The operation was successful.');
+          },
+          onError: (_: RubicError<ERROR_TYPE> | null) => {},
+          onSimulationSuccess: () => Promise.resolve<boolean>(true),
+          onRateChange: (_: RateChangeInfo) => Promise.resolve<boolean>(true)
+        };
+
+        await this.handleApprove(this.currentTrade, approveCallback);
+        await this.handleSwap(this.currentTrade, true, swapCallback);
       }
-
-      //TODO: maybe add some callback later
-      const approveCallback = {
-        onHash: (_: string) => {},
-        onSwap: (..._: unknown[]) => {},
-        onError: () => {}
-      };
-
-      const swapCallback = {
-        onHash: (_: string) => {},
-        onSwap: () => {
-          this.notificationsService.showSuccess('The operation was successful.');
-        },
-        onError: (_: RubicError<ERROR_TYPE> | null) => {},
-        onSimulationSuccess: () => Promise.resolve<boolean>(true),
-        onRateChange: (_: RateChangeInfo) => Promise.resolve<boolean>(true)
-      };
-
-      await this.handleApprove(trade, approveCallback);
-
-      await this.handleSwap(trade, true, swapCallback);
     } catch (err) {
       this.showSwapError(err);
     }
-  }
-
-  public async getTrade(): Promise<CrossChainTrade> {
-    const { trade: trade } = await TransformUtils.transformCrossChain(
-      this.latestQuoteResponse,
-      this.latestQuoteRequest,
-      this.latestQuoteRequest.integratorAddress!,
-      this.sdkLegacyService,
-      this.rubicApiService
-    );
-
-    return trade;
   }
 
   public async handleApprove(
@@ -158,6 +218,10 @@ export class HoudiniSwapService {
       await this.crossChainService.approveTrade(trade, callback.onHash);
       callback?.onSwap();
     } catch (err) {
+      if (err?.message?.includes('Method is not supported')) {
+        return Promise.resolve();
+      }
+
       console.error(err);
       callback?.onError();
       let error = err;
@@ -292,5 +356,57 @@ export class HoudiniSwapService {
       this.houdiniErrorService.setTradeError({ reason: 'Insufficient gas' });
     }
     console.error(error);
+  }
+
+  private async setCurrentTrade(
+    quoteRequest: QuoteRequestInterface,
+    quoteResponse: QuoteResponseInterface
+  ): Promise<void> {
+    const { trade: trade } = await TransformUtils.transformCrossChain(
+      quoteResponse,
+      quoteRequest,
+      quoteRequest.integratorAddress!,
+      this.sdkLegacyService,
+      this.rubicApiService
+    );
+
+    this._currentTrade$.next(trade);
+  }
+
+  private subscribeOnStatusReset(): void {
+    const sub = this.depositTrade$
+      .pipe(
+        filter(trade => !!trade),
+        switchMap(trade =>
+          interval(30_000).pipe(
+            startWith(-1),
+            switchMap(() => this.getDepositSwapStatus(trade.rubicId)),
+            tap(status => this._depositTradeStatus$.next(status)),
+            takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
+          )
+        )
+      )
+      .subscribe();
+
+    this.subscriptions.push(sub);
+  }
+
+  private resetCurrentTrade(): void {
+    this._currentTrade$.next(null);
+  }
+
+  private async getDepositSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {
+    try {
+      if (!rubicId) {
+        throw new Error(`[HoudiniSwapService_getSwapStatus] Deposit id can't be undefined.`);
+      }
+
+      const response = await this.rubicApiService.fetchCrossChainTxStatusExtended(rubicId);
+
+      return API_STATUS_TO_DEPOSIT_STATUS[response.status];
+    } catch (err) {
+      console.log(err);
+      return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+    }
   }
 }
