@@ -1,0 +1,18 @@
+<app-window-container>
+  <ng-container header>Balance Loading</ng-container>
+  <div [@fadeAnimation] *ngIf="scanInProgress" class="progress">
+    <ng-container *ngFor="let value of utxoChains; trackBy: trackByFn">
+      <label tuiProgressLabel>
+        <img class="progress__image" [src]="value.icon" [alt]="value.label" />
+        <span class="progress__percent">{{ value.progress }}%</span>
+
+        <tui-progress-circle
+          size="l"
+          [max]="100"
+          [value]="value.progress"
+          [style.color]="value.color"
+        ></tui-progress-circle>
+      </label>
+    </ng-container>
+  </div>
+</app-window-container>

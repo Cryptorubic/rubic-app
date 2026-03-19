@@ -9,7 +9,7 @@
 .token-card {
   display: flex;
   align-items: center;
-  width: 510px;
+  width: 100%;
   padding: var(--tui-padding-s);
 
   &:hover {
@@ -60,6 +60,12 @@
     @include flex(column, center, center);
     gap: 2px;
     margin-left: auto;
+
+    text-align: right;
+  }
+
+  &__description {
+    color: var(--tui-text-02);
   }
 
   &__actions {

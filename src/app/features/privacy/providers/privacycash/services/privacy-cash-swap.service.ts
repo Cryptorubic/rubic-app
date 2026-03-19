@@ -55,36 +55,26 @@ export class PrivacycashSwapService {
     const isSrcNative = Web3Pure.isNativeAddress(rubicSrcToken.blockchain, rubicSrcToken.address);
     const isDstNative = Web3Pure.isNativeAddress(rubicDstToken.blockchain, rubicDstToken.address);
     const isDirectTransfer = compareTokens(srcToken, dstToken);
-    const feesResp = await this.privacycashApiService.fetchFees();
     const walletAddr = this.walletConnectorService.address;
 
-    const estimateDirectWithdrawFee = (): BigNumber => {
-      const receiversCount = 1;
-      const fee_rate = feesResp.withdraw_fee_rate;
-      const withdrawRateFee = srcAmountNonWei.multipliedBy(fee_rate);
-      const withdrawRentFee = new BigNumber(
-        feesResp.rent_fees[addr_to_symbol_map[srcToken.address.toLowerCase()]]
-      ).multipliedBy(receiversCount);
-      const withdrawFeeNonWei = withdrawRateFee.plus(withdrawRentFee);
-      console.log('ESTIMATES ====>', {
-        withdrawFeeNonWei: withdrawFeeNonWei.toFixed(),
-        withdrawRateFee: withdrawRateFee.toFixed(),
-        srcAmountNonWei: srcAmountNonWei.toFixed()
-      });
-      return withdrawFeeNonWei;
-    };
-
     if (isDirectTransfer) {
-      console.log('isDirectTransfer XXXXXX');
-      const dstAmount = srcAmountNonWei.minus(estimateDirectWithdrawFee());
+      const directWithdrawFee = await this.estimateDirectWithdrawFee(
+        srcToken.address,
+        srcAmountNonWei
+      );
+      const dstAmount = srcAmountNonWei.minus(directWithdrawFee);
       return new TokenAmount({
         ...rubicSrcToken,
         tokenAmount: dstAmount.gt(0) ? dstAmount : new BigNumber(0)
       });
     }
 
+    const directWithdrawFee = await this.estimateDirectWithdrawFee(
+      srcToken.address,
+      srcAmountNonWei
+    );
     const srcAmountAfterFees = srcAmountNonWei
-      .minus(estimateDirectWithdrawFee())
+      .minus(directWithdrawFee)
       .minus(isSrcNative ? swap_reserved_rent_fee : 0);
     const srcAmountAfterFeesWei = new BigNumber(
       Token.toWei(srcAmountAfterFees, srcToken.decimals)
@@ -96,7 +86,6 @@ export class PrivacycashSwapService {
     const dstAmountNonWeiWithoutReservedRentFee = dstAmountNonWei.minus(
       isDstNative ? swap_reserved_rent_fee : 0
     );
-
     return new TokenAmount({
       ...rubicDstToken,
       tokenAmount: dstAmountNonWeiWithoutReservedRentFee
@@ -278,8 +267,26 @@ export class PrivacycashSwapService {
     }
   }
 
-  // @TODO_1767 был добавлен параметр privateBalanceReceiverPK, чекнуть,
-  // что это возможно - пополнить приватный баланс для другого кошелька
+  /**
+   * @param srcTokenAddr PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
+   * @returns non wei fee taken in src token by PrivacyCash for withdrawal
+   */
+  public async estimateDirectWithdrawFee(
+    srcTokenAddr: string,
+    srcAmountNonWei: BigNumber
+  ): Promise<BigNumber> {
+    const feesResp = await this.privacycashApiService.fetchFees();
+    const receiversCount = 1;
+    const fee_rate = feesResp.withdraw_fee_rate;
+    const withdrawRateFee = srcAmountNonWei.multipliedBy(fee_rate);
+    const withdrawRentFee = new BigNumber(
+      feesResp.rent_fees[addr_to_symbol_map[srcTokenAddr.toLowerCase()]]
+    ).multipliedBy(receiversCount);
+    const withdrawFeeNonWei = withdrawRateFee.plus(withdrawRentFee);
+
+    return withdrawFeeNonWei;
+  }
+
   /**
    * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    */

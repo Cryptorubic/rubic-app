@@ -6,17 +6,19 @@ import {
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import {
   fromRubicToPrivateChainMap,
   RailgunSupportedChain
 } from '@features/privacy/providers/railgun/constants/network-map';
+import { waitFor } from '@cryptorubic/web3';
+import { BehaviorSubject } from 'rxjs';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable()
 export class RailgunTransferService {
   private readonly railgunFacade = inject(RailgunFacadeService);
 
-  private readonly authService = inject(AuthService);
+  private readonly _inProgress$ = new BehaviorSubject(false);
 
   public async transferTokens(
     tokenAddress: string,
@@ -25,6 +27,10 @@ export class RailgunTransferService {
     proofProgress: (progress: string) => void,
     blockchain: RailgunSupportedChain
   ): Promise<void> {
+    if (this._inProgress$.value === true) {
+      throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
+    }
+    this._inProgress$.next(true);
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiver)
     ];
@@ -37,6 +43,8 @@ export class RailgunTransferService {
 
     // generate proof
     await this.railgunFacade.generateTransferProof(chain, erc20AmountRecipients, proofProgress);
+
+    await waitFor(5_000);
 
     const mnemonic = await this.railgunFacade.getMnemonic();
     const { wallet } = getProviderWallet(blockchain, mnemonic);
@@ -60,5 +68,9 @@ export class RailgunTransferService {
     );
 
     await wallet.sendTransaction(transaction);
+
+    setTimeout(() => {
+      this._inProgress$.next(false);
+    }, 10_000);
   }
 }

@@ -172,10 +172,12 @@
       </div>
       <div class="preview__swap-info">
         <app-swap-data-element
+          [creationConfig]="swapDataCreationConfig"
           [gasInfo]="gasInfo"
           [feeInfoChange]="{
             fee: feeInfo,
-            nativeToken: nativeToken$ | async
+            nativeToken: nativeToken$ | async,
+            displayAmount
           }"
         ></app-swap-data-element>
       </div>

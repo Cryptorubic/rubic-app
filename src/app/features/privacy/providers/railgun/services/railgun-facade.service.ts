@@ -1,7 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { Store } from '@core/services/store/models/store';
-import { BehaviorSubject, debounceTime, firstValueFrom, from, map, of, shareReplay } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  from,
+  map,
+  Observable,
+  of,
+  shareReplay
+} from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { switchTap } from '@shared/utils/utils';
 import {
@@ -53,9 +63,15 @@ import {
   UnlockFromPasswordResponse,
   WalletCredentialsRequest
 } from '@features/privacy/providers/railgun/models/worker-types';
+import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable()
 export class RailgunFacadeService {
+  private readonly _shieldedTokens$ = new BehaviorSubject<ShieldedBalanceToken[]>([]);
+
+  public readonly shieldedTokens$ = this._shieldedTokens$.asObservable();
+
   private syncResolvers = new Map<number, () => void>();
 
   private railgunWorker = new Worker(new URL('./worker/railgun.worker', import.meta.url), {
@@ -118,9 +134,28 @@ export class RailgunFacadeService {
 
   public readonly utxoScan$ = this._utxoScan$.asObservable().pipe(debounceTime(5));
 
+  public readonly completedChains$ = this.utxoScan$.pipe(
+    map(scan => {
+      return Object.entries(scan)
+        .filter(([_, progress]) => progress === 100)
+        .map(([chain]) => chain as RailgunSupportedChain);
+    }),
+    distinctUntilChanged()
+  );
+
   public lastUsedPassword = '';
 
-  public readonly balances$ = this.balancesSnapshot$.pipe(
+  public readonly balances$: Observable<
+    Record<
+      RailgunSupportedChain,
+      | {
+          address: string;
+          amount: string;
+          blockchain: BlockchainName;
+        }[]
+      | null
+    >
+  > = this.balancesSnapshot$.pipe(
     map(event => {
       const result: Record<
         string,
@@ -143,19 +178,25 @@ export class RailgunFacadeService {
 
   public readonly pendingBalances$ = this.balancesSnapshot$.pipe(
     map(event => {
-      return Object.values(event).flatMap(
-        update =>
+      return Object.values(event).flatMap(update => {
+        const tokens =
           update?.ShieldPending?.erc20Amounts
-            .filter(token => token.amount > 0n)
+            // .filter(token => token.amount > 0n)
             .map(token => ({
               blockchain: BlockchainsInfo.getBlockchainNameById(update.ShieldPending.chain.id),
               address: token.tokenAddress,
               amount: new BigNumber(token.amount.toString()).toFixed()
-            })) || []
-      );
+            })) || [];
+        return tokens;
+      });
     }),
     shareReplay(1)
   );
+
+  constructor() {
+    const shieldedTokens = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
+    this._shieldedTokens$.next(shieldedTokens || []);
+  }
 
   public initWorker(): void {
     this.railgunWorker.onmessage = ({ data }) => {
@@ -173,7 +214,11 @@ export class RailgunFacadeService {
         this.pendingRequests.delete(data.id);
 
         if (data.error) {
-          reject(data.error);
+          let errorInstance = new RubicError(data.error?.message || 'Unknown Railgun Error');
+          if (typeof data.error === 'string') errorInstance = new RubicError(data.error);
+          if (data.err instanceof Error) errorInstance = new RubicError(data.err);
+
+          reject(errorInstance);
         } else {
           resolve(data.response);
         }
@@ -246,11 +291,23 @@ export class RailgunFacadeService {
     });
   }
 
-  private async refreshBalances(walletIds: string[]): Promise<void> {
-    const balanceChains = Object.values(fromPrivateToRubicChainMap).map(chain => ({
-      type: 0,
-      id: blockchainId[chain]
-    }));
+  public async refreshBalances(
+    walletIds: string[],
+    chains?: RailgunSupportedChain[]
+  ): Promise<void> {
+    const chainRating: Record<RailgunSupportedChain, number> = {
+      [BLOCKCHAIN_NAME.POLYGON]: 1,
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 2,
+      [BLOCKCHAIN_NAME.ARBITRUM]: 3,
+      [BLOCKCHAIN_NAME.ETHEREUM]: 4
+    };
+    const balanceChains = (chains || Object.values(fromPrivateToRubicChainMap))
+      .map(chain => ({
+        type: 0,
+        id: blockchainId[chain],
+        chainRating: chainRating[chain]
+      }))
+      .sort((a, b) => a.chainRating - b.chainRating);
 
     for (const chain of balanceChains) {
       try {
@@ -591,6 +648,7 @@ export class RailgunFacadeService {
 
   private handleBalanceUpdate(eventData: RailgunBalancesEvent): void {
     try {
+      console.log(eventData);
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;
@@ -616,6 +674,7 @@ export class RailgunFacadeService {
 
   private handleUtxoScanUpdate(eventData: MerkletreeScanUpdateEvent): void {
     try {
+      console.log(eventData);
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;
@@ -658,5 +717,9 @@ export class RailgunFacadeService {
         this.syncResolvers.delete(eventData.chain.id);
       }
     }
+  }
+
+  public setShieldedTokens(tokens: ShieldedBalanceToken[]): void {
+    this._shieldedTokens$.next(tokens);
   }
 }

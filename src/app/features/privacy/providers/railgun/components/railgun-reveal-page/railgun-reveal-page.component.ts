@@ -6,10 +6,12 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -18,7 +20,8 @@ import { RailgunSupportedChain } from '@features/privacy/providers/railgun/const
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: ToAssetsService, useClass: RailgunPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: RailgunRevealFacadeService }
+    { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
+    TuiDestroyService
   ]
 })
 export class RailgunRevealPageComponent {
@@ -39,6 +42,18 @@ export class RailgunRevealPageComponent {
   private readonly revealService = inject(RevealService);
 
   private readonly notificationService = inject(NotificationsService);
+
+  private readonly railgunFacade = inject(RailgunFacadeService);
+
+  private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
+
+  private readonly destroy$ = inject(TuiDestroyService);
+
+  ngOnInit() {
+    this.railgunFacade.completedChains$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
+  }
 
   public async reveal(params: PrivateEvent): Promise<void> {
     const { token, loadingCallback, openPreview } = params;
@@ -72,9 +87,17 @@ export class RailgunRevealPageComponent {
                   defaultAutoCloseTime: 0
                 }
               );
+              setTimeout(async () => {
+                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
+                this.railgunFacade.refreshBalances(
+                  [wallet.id],
+                  [token.blockchain as RailgunSupportedChain]
+                );
+              }, 5_000);
             }
           }
-        ]
+        ],
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
 
       await firstValueFrom(preview$);

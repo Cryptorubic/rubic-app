@@ -30,6 +30,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
+import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -45,7 +46,9 @@ import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/c
 export class ClearswapTransferTokensPageComponent implements OnInit {
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
-  public readonly receiverCtrl = new FormControl<string>('');
+  public readonly receiverCtrl = new FormControl<string>('', {
+    asyncValidators: [isReceiverCorrect()]
+  });
 
   public readonly clearswapFormConfig = clearswapFormConfig;
 
@@ -97,8 +100,11 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
       switchMap(quoteResponse => {
         if ('tradeId' in quoteResponse) {
           const { tradeId, tokenAmount: dstTokenAmount } = quoteResponse;
+          const displayAmount =
+            token.tokenAmount.minus(dstTokenAmount).toString() + ' ' + token.symbol;
           return openPreview({
             dstTokenAmount,
+            displayAmount,
             steps: [
               {
                 label: 'Transfer tokens',

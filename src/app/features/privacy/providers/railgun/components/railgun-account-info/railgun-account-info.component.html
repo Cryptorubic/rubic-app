@@ -23,28 +23,8 @@
           <h3 class="account-info__label">Public EVM Address:</h3>
           <p class="account-info__text">{{ evmAddress }}</p>
           <div class="account-info__public-chains">
-            <img *ngFor="let chain of utxoChains" [src]="chain.icon" [alt]="chain.label" />
-
+            <img *ngFor="let chain of supportedChains" [src]="chain.icon" [alt]="chain.label" />
             <app-copy-container [text]="evmAddress"></app-copy-container>
-          </div>
-        </div>
-
-        <div [@fadeAnimation] *ngIf="scanInProgress" class="account-info__wrapper">
-          <h3 class="account-info__label">Balances loading:</h3>
-          <div class="account-info__progress-wrapper">
-            <ng-container *ngFor="let value of utxoChains; trackBy: trackByFn">
-              <label tuiProgressLabel>
-                <img class="account-info__progress-image" [src]="value.icon" [alt]="value.label" />
-                <span class="percent">{{ value.progress }}%</span>
-
-                <tui-progress-circle
-                  size="l"
-                  [max]="100"
-                  [value]="value.progress"
-                  [style.color]="value.color"
-                ></tui-progress-circle>
-              </label>
-            </ng-container>
           </div>
         </div>
       </div>
