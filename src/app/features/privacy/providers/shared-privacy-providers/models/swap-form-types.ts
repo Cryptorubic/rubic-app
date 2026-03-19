@@ -6,6 +6,7 @@ export interface PrivateSwapFormConfig {
   withDstSelector: boolean;
   withReceiver: boolean;
   withActionButton: boolean;
+  withStatus?: boolean;
   assetsSelectorConfig?: AssetsSelectorConfig;
   buttonText?: string;
   receiverPlaceholder?: string;
@@ -14,6 +15,6 @@ export interface PrivateSwapFormConfig {
 export type PrivateTransferFormConfig = Omit<
   PrivateSwapFormConfig,
   'withDstAmount' | 'withDstSelector'
->;
+> & { withMaxBtn: boolean };
 
 export type PrivateShieldFormConfig = PrivateTransferFormConfig;

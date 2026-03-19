@@ -1,5 +1,10 @@
 <app-reveal-window
   (handleReveal)="reveal($event)"
   [receiverCtrl]="receiverCtrl"
-  [creationConfig]="{ withActionButton: true, withReceiver: false, withSrcAmount: true }"
+  [creationConfig]="{
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true,
+    withMaxBtn: true
+  }"
 ></app-reveal-window>

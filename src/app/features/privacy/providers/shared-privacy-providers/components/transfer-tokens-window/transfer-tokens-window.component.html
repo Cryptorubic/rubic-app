@@ -26,6 +26,7 @@
         [amountValue]="state.transferAmount"
       ></app-amount-transput>
       <app-user-balance-container
+        *ngIf="creationConfig.withMaxBtn"
         [fromToken$]="transferAsset$"
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>

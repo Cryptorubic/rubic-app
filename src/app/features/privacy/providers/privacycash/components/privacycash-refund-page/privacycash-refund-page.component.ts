@@ -9,8 +9,7 @@ import { PrivacycashPrivateAssetsService } from '../../services/common/assets-se
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { EphemeralWalletTokensFacadeService } from '../../services/common/token-facades/ephemeral-wallet-tokens-facade.service';
 import { FormControl } from '@angular/forms';
-import { Web3Pure } from '@cryptorubic/web3';
-import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts';
+import { Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-privacycash-refund-page',
@@ -33,15 +32,16 @@ export class PrivacycashRefundPageComponent {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: false,
-    buttonText: 'Refund Tokens'
+    buttonText: 'Refund Tokens',
+    withMaxBtn: false
   };
 
   public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
-      const dstTokenAmount = isNative
-        ? token.tokenAmount.minus(EPHEMERAL_WALLET_GAS_AMOUNT).toFixed()
-        : token.tokenAmount.toFixed();
+      const dstTokenAmountWei = await this.privacycashRefundService.quoteRefundableAmount(
+        token.address
+      );
+      const dstTokenAmount = Token.fromWei(dstTokenAmountWei, token.decimals).dp(4).toFixed();
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -54,6 +54,7 @@ export class PrivacycashRefundPageComponent {
           }
         ],
         swapType: 'refund',
+        srcTokenAmount: dstTokenAmount,
         dstTokenAmount
       });
       await firstValueFrom(preview$);

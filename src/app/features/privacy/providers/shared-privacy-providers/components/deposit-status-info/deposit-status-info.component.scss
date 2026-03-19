@@ -1,0 +1,147 @@
+@use 'src/scss/core' as *;
+
+.deposit-swap-info {
+  margin-top: var(--tui-padding-l);
+
+  background: var(--primary-background);
+  border-radius: var(--tui-radius-m);
+
+  &__target-address {
+    padding: var(--tui-padding-l);
+
+    border-bottom: 2px solid var(--secondary-background);
+  }
+
+  &__title {
+    color: var(--tui-text-03);
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  &__text {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+
+    color: var(--tui-text-01);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  &__disabled {
+    opacity: 0.8;
+
+    user-select: none;
+  }
+  
+  &__copy-icon {
+    width: 18px;
+    height: 18px;
+
+    cursor: pointer;
+
+    ::ng-deep svg {
+      path {
+        stroke: var(--tui-primary);
+      }
+    }
+  }
+
+  &__status {
+    display: flex;
+    flex-direction: row;
+    gap: var(--tui-padding-s);
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: var(--tui-padding-l);
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+
+  &__circle {
+    width: 16px;
+    height: 16px;
+
+    border: 1px solid var(--tui-text-02);
+    border-radius: 50%;
+
+    &_complete {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+
+      background-color: var(--tui-primary);
+      border-color: var(--tui-primary);
+      border-radius: 50%;
+      
+      img {
+        width: 8px;
+        height: 9px;
+      }
+    }
+
+    &_failed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+
+      background-color: #ba0303;
+      border-color: #ba0303;
+      border-radius: 50%;
+      
+      img {
+        width: 8px;
+        height: 9px;
+      }
+    }
+  }
+
+  &__spinner {
+    width: 15px;
+    height: 15px;
+
+    background-image: url('/assets/images/icons/spinner.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    animation: 1s spin linear infinite;
+  }
+
+
+
+  &__label {
+    color: var(--tui-text-01);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+    white-space: nowrap;
+
+    &_completed {
+      color: var(--tui-primary);
+    }
+
+    &_failed {
+      color: #ba0303;
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotateZ(0deg);
+    }
+
+    100% {
+      transform: rotateZ(360deg);
+    }
+  }
+}
