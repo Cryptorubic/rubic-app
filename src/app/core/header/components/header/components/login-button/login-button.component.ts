@@ -4,10 +4,9 @@ import { TuiAppearance } from '@taiga-ui/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { Router } from '@angular/router';
-import { PRIVATE_MODE_URLS } from '@app/features/privacy/models/routes';
-import { PRIVACYCASH_SUPPORTED_WALLETS } from '@app/features/privacy/providers/privacycash/constants/wallets';
 import { PROVIDERS_LIST } from '@app/core/wallets-modal/components/wallets-modal/models/providers';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { PRIVATE_PROVIDERS_WALLETS_MAP } from '@app/features/privacy/constants/private-providers-wallets-map';
 
 @Component({
   selector: 'app-login-button',
@@ -35,9 +34,11 @@ export class LoginButtonComponent {
   }
 
   private filterWallets(): WALLET_NAME[] {
-    const wallets = this.router.url.includes(PRIVATE_MODE_URLS.PRIVACY_CASH)
-      ? PRIVACYCASH_SUPPORTED_WALLETS
-      : PROVIDERS_LIST.map(provider => provider.value);
-    return wallets;
+    const [_, wallets] =
+      Object.entries(PRIVATE_PROVIDERS_WALLETS_MAP).find(([provider]) =>
+        this.router.url.includes(provider)
+      ) || [];
+
+    return wallets || PROVIDERS_LIST.map(provider => provider.value);
   }
 }

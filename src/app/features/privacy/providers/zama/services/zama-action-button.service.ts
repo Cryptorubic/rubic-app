@@ -69,17 +69,17 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    if (asset.decimals > 6) {
-      const stringAmount = assetAmount.actualValue.toFixed();
-      const decimalsLength = stringAmount.split('.')[1]?.length ?? 0;
+    // if (asset.decimals > 6) {
+    //   const stringAmount = assetAmount.actualValue.toFixed();
+    //   const decimalsLength = stringAmount.split('.')[1]?.length ?? 0;
 
-      if (decimalsLength > 6) {
-        return {
-          type: 'error',
-          text: 'Amount contains more than 6 decimals'
-        };
-      }
-    }
+    //   if (decimalsLength > 6) {
+    //     return {
+    //       type: 'error',
+    //       text: 'Max 6 decimals allowed'
+    //     };
+    //   }
+    // }
 
     if (asset.amount.lt(assetAmount.visibleValue)) {
       return {

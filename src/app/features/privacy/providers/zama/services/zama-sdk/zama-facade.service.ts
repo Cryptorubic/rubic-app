@@ -77,8 +77,8 @@ export class ZamaFacadeService {
     });
   }
 
-  public wrap(wrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
-    return this.zamaSwapService.wrap(wrapToken, receiver).then(isSuccess => {
+  public wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
+    return this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
       if (isSuccess) {
         this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
         this.refreshBalancesAfterAction();

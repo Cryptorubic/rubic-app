@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
 import { ZamaInstanceService } from './zama-instance.service';
-import { EvmAdapter } from '@cryptorubic/web3';
+import { EvmAdapter, EvmTransactionConfig, viemBlockchainMapping } from '@cryptorubic/web3';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { compareAddresses, EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import {
+  compareAddresses,
+  EvmBlockchainName,
+  TokenAmount,
+  wrappedNativeTokensList
+} from '@cryptorubic/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
-import { ERC7984_TOKEN_ABI } from './abis/erc7984-token-abi';
+import { ERC7984_TOKEN_ABI, MULTICALL_ABI } from './abis/erc7984-token-abi';
 import { getAddress } from 'ethers';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
-import { decodeEventLog } from 'viem';
+import { decodeEventLog, erc20Abi } from 'viem';
 import { ZamaTokensService } from './zama-tokens.service';
+import { wrapAbi } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/wrap-abi';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class ZamaSwapService {
@@ -31,6 +38,24 @@ export class ZamaSwapService {
     return this.zamaTokensService.supportedTokensMapping[blockchain].find(token =>
       compareAddresses(token.tokenAddress, erc20TokenAddress)
     ).shieldedTokenAddress;
+  }
+
+  private async getShieldedTokenRate(
+    shieldedTokenAddress: string,
+    blockchain: EvmBlockchainName
+  ): Promise<BigNumber> {
+    try {
+      const adapter = this.getEvmAdapter(blockchain);
+      const rate = await adapter.callContractMethod(
+        shieldedTokenAddress,
+        ERC7984_TOKEN_ABI,
+        'rate'
+      );
+
+      return new BigNumber(rate);
+    } catch {
+      return new BigNumber('1000000000000');
+    }
   }
 
   private async approveBeforeWrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<boolean> {
@@ -62,25 +87,88 @@ export class ZamaSwapService {
     }
   }
 
-  public async wrap(
-    wrapToken: TokenAmount<EvmBlockchainName>,
-    receiver?: string
-  ): Promise<boolean> {
+  public async wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     try {
-      const isApproved = await this.approveBeforeWrap(wrapToken);
       const adapter = this.getEvmAdapter(wrapToken.blockchain);
 
-      const receiverAddress = receiver || adapter.signer.walletAddress;
+      const receiverAddress = adapter.signer.walletAddress;
       const shieldedTokenAddress = this.getErc7984Token(wrapToken.blockchain, wrapToken.address);
-      if (!isApproved) return;
 
-      const tx = EvmAdapter.encodeMethodCall(shieldedTokenAddress, ERC7984_TOKEN_ABI, 'wrap', [
-        receiverAddress,
-        wrapToken.stringWeiAmount
-      ]);
+      const erc7984TokenRate = await this.getShieldedTokenRate(
+        shieldedTokenAddress,
+        wrapToken.blockchain
+      );
 
-      await adapter.signer.sendTransaction({
-        txOptions: tx
+      const pureAmount = wrapToken.weiAmount
+        .dividedBy(erc7984TokenRate)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .multipliedBy(erc7984TokenRate)
+        .toFixed(0);
+
+      let callData: EvmTransactionConfig;
+
+      // if(!wrapToken.isNative){
+      //   this.approveBeforeWrap
+      // }
+
+      const shieldTx = EvmAdapter.encodeMethodCall(
+        shieldedTokenAddress,
+        ERC7984_TOKEN_ABI,
+        'wrap',
+        [receiverAddress, pureAmount]
+      );
+
+      if (wrapToken.isNative) {
+        const wrapEthTx = EvmAdapter.encodeMethodCall(
+          wrappedNativeTokensList[wrapToken.blockchain].address,
+          wrapAbi,
+          'deposit',
+          [],
+          pureAmount
+        );
+
+        const approveTx = EvmAdapter.encodeMethodCall(wrapEthTx.to, erc20Abi, 'approve', [
+          shieldedTokenAddress,
+          pureAmount
+        ]);
+
+        //@ts-ignore
+        const multicall = viemBlockchainMapping[wrapToken.blockchain].contracts.multicall3.address;
+
+        const calls = [
+          {
+            target: wrapEthTx.to,
+            allowFailure: false,
+            callData: wrapEthTx.data,
+            value: wrapEthTx.value
+          },
+          {
+            target: approveTx.to,
+            allowFailure: false,
+            callData: approveTx.data,
+            value: '0'
+          },
+          {
+            target: shieldTx.to,
+            allowFailure: false,
+            callData: shieldTx.data,
+            value: '0'
+          }
+        ];
+
+        callData = EvmAdapter.encodeMethodCall(
+          multicall,
+          MULTICALL_ABI,
+          'aggregate3Value',
+          [calls],
+          wrapEthTx.value
+        );
+      } else {
+        callData = shieldTx;
+      }
+
+      await adapter.signer.trySendTransaction({
+        txOptions: callData
       });
       return true;
     } catch (err) {
