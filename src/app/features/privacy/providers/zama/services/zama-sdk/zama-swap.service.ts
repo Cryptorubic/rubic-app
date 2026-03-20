@@ -176,8 +176,11 @@ export class ZamaSwapService {
           pureTokenAmount.stringWeiAmount
         ]);
 
-        //@ts-ignore
-        const multicall = viemBlockchainMapping[wrapToken.blockchain].contracts.multicall3.address;
+        const multicall = (
+          viemBlockchainMapping[pureTokenAmount.blockchain].contracts as {
+            multicall3: { address: string };
+          }
+        ).multicall3.address;
 
         const calls = [
           {
