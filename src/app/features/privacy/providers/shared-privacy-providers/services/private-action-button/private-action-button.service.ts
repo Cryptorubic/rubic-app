@@ -8,6 +8,7 @@ import { PrivateTransferWindowService } from '@app/features/privacy/providers/sh
 import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { HideWindowService } from '../hide-window-service/hide-window.service';
 import { RevealWindowService } from '../reveal-window/reveal-window.service';
+import { PrivateRefundWindowService } from '../private-refund-window/private-refund-window.service';
 
 @Injectable()
 export class PrivateActionButtonService {
@@ -34,6 +35,7 @@ export class PrivateActionButtonService {
     protected readonly modalService: ModalService,
     @Inject(Injector) protected readonly injector: Injector,
     protected readonly privateTransferWindowService: PrivateTransferWindowService,
+    protected readonly privateRefundWindowService: PrivateRefundWindowService,
     protected readonly privateSwapWindowService: PrivateSwapWindowService,
     protected readonly hideWindowService: HideWindowService,
     protected readonly revealWindowService: RevealWindowService,

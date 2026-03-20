@@ -68,7 +68,7 @@ export class PrivatePreviewSwapComponent {
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
     withVerboseFeeHint: false,
-    zeroFeeText: '0$ fees'
+    zeroFeeText: 'Zero fee'
   };
 
   constructor(
@@ -128,7 +128,7 @@ export class PrivatePreviewSwapComponent {
       fiatAmount:
         tokenAmount.gt(0) && token.price
           ? tokenAmount.multipliedBy(token.price || 0).toFixed(2)
-          : null
+          : '0'
     };
   }
 

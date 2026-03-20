@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { getMinimalTokensByChain } from './utils/get-minimal-tokens-by-chain';
 import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { MinimalTokenWithBalance } from '../../../models/privacycash-tokens-facade-models';
@@ -36,6 +36,32 @@ export class PrivacycashTokensService {
   );
 
   public readonly tokens$ = this._tokens$.asObservable();
+
+  private readonly _utxosLoadingState$ = new BehaviorSubject<{ [tokenAddr: string]: boolean }>({});
+
+  /**
+   * Emits true when any token loads private balances
+   */
+  public readonly loading$ = this._utxosLoadingState$.pipe(
+    map(loadingState => Object.values(loadingState).some(loading => loading))
+  );
+
+  private setLoadingState(tokenAddr: string, loading: boolean): void {
+    this._utxosLoadingState$.next({ ...this._utxosLoadingState$.value, [tokenAddr]: loading });
+  }
+
+  /**
+   * used to stop fetching utxos, when wallet disconnected
+   */
+  private _abortController: AbortController = new AbortController();
+
+  public get abortController(): AbortController {
+    return this._abortController;
+  }
+
+  public resetAbortController(): void {
+    this._abortController = new AbortController();
+  }
 
   public updatePrivateBalances(): void {
     this._updateBalances$.next(true);
@@ -104,6 +130,11 @@ export class PrivacycashTokensService {
    * @returns wei balance on PrivacyCash relayer
    */
   private async fetchPrivacyCashBalance(tokenAddr: string, walletPK: PublicKey): Promise<number> {
+    this.setLoadingState(tokenAddr, true);
+    console.debug(
+      '[PrivacycashTokensService_fetchPrivacyCashBalance] loading balances started for ',
+      tokenAddr
+    );
     try {
       await this.privacycashSignatureService.checkRequirements();
 
@@ -115,7 +146,8 @@ export class PrivacycashTokensService {
           publicKey: walletPK,
           connection,
           encryptionService,
-          storage: localStorage
+          storage: localStorage,
+          abortSignal: this.abortController.signal
         });
         const res = getBalanceFromUtxos(utxos);
         console.debug('✅ Successfull getBalance!');
@@ -128,7 +160,8 @@ export class PrivacycashTokensService {
         connection,
         encryptionService,
         storage: localStorage,
-        mintAddress: new PublicKey(tokenAddr)
+        mintAddress: new PublicKey(tokenAddr),
+        abortSignal: this.abortController.signal
       });
       const res = getBalanceFromUtxosSPL(utxos);
       console.debug('✅ Successfull getBalance!');
@@ -137,6 +170,12 @@ export class PrivacycashTokensService {
     } catch (err) {
       console.debug('❌ Failed getBalance!', err);
       return 0;
+    } finally {
+      console.debug(
+        '[PrivacycashTokensService_fetchPrivacyCashBalance] loading balances finished for ',
+        tokenAddr
+      );
+      this.setLoadingState(tokenAddr, false);
     }
   }
 }

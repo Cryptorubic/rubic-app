@@ -9,7 +9,7 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
-import { PriceToken } from '@cryptorubic/core';
+import { PriceToken, nativeTokensList } from '@cryptorubic/core';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -64,7 +64,8 @@ export class PrivacycashHidePageComponent implements OnInit {
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const tokenPrice = await this.tokenService.getTokenPrice(token);
+      const nativeToken = nativeTokensList.SOLANA;
+      const nativeTokenPrice = await this.tokenService.getTokenPrice(nativeToken);
       const preview$ = openPreview({
         steps: [
           {
@@ -75,8 +76,8 @@ export class PrivacycashHidePageComponent implements OnInit {
         feeInfo: {
           provider: {
             cryptoFee: {
-              amount: new BigNumber(0),
-              token: new PriceToken({ ...token.asStruct, price: tokenPrice })
+              amount: new BigNumber(0.002),
+              token: new PriceToken({ ...nativeToken.asStruct, price: nativeTokenPrice })
             }
           }
         },

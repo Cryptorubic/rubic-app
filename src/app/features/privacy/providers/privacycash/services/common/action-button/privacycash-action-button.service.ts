@@ -49,7 +49,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
           case 'refund':
             return combineLatest([
               this.walletConnector.networkChange$,
-              this.privateTransferWindowService.transferAsset$
+              this.privateRefundWindowService.transferAsset$
             ]).pipe(switchMap(params => this.getRefundState(...params)));
         }
       })
@@ -135,7 +135,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         action: this.connectWallet.bind(this)
       };
     }
-    if (isNaN(transferAmount.actualValue.toNumber()) || transferAmount.actualValue.isZero()) {
+    if (isNaN(transferAmount?.actualValue.toNumber()) || transferAmount?.actualValue.isZero()) {
       return {
         type: 'error',
         text: 'Enter amount'
@@ -201,7 +201,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         action: this.connectWallet.bind(this)
       };
     }
-    if (isNaN(revealAmount.actualValue.toNumber()) || revealAmount.actualValue.isZero()) {
+    if (isNaN(revealAmount?.actualValue.toNumber()) || revealAmount?.actualValue.isZero()) {
       return {
         type: 'error',
         text: 'Enter amount'
@@ -256,7 +256,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         action: this.connectWallet.bind(this)
       };
     }
-    if (isNaN(hideAmount.actualValue.toNumber()) || hideAmount.actualValue.isZero()) {
+    if (isNaN(hideAmount?.actualValue.toNumber()) || hideAmount?.actualValue.isZero()) {
       return {
         type: 'error',
         text: 'Enter amount'
