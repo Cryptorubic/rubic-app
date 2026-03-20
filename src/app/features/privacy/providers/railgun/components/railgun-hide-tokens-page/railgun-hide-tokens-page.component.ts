@@ -14,6 +14,7 @@ import { RailgunFacadeService } from '@features/privacy/providers/railgun/servic
 import { HideWindowService } from '@features/privacy/providers/shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -46,7 +47,7 @@ export class RailgunHideTokensPageComponent {
 
   constructor() {
     this.hideWindowService.hideAsset$
-      .pipe(distinctUntilKeyChanged('symbol'), takeUntil(this.destroy$))
+      .pipe(filter(Boolean), distinctUntilKeyChanged('symbol'), takeUntil(this.destroy$))
       .subscribe(token => {
         const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
         if (isNative) {
@@ -113,10 +114,10 @@ export class RailgunHideTokensPageComponent {
   private setShieldedToken(token: BalanceToken): void {
     const shieldToken: ShieldedBalanceToken = {
       ...token,
-      shieldingCompleteAtMs: new Date(Date.now() + 3600000).toLocaleTimeString()
+      shieldingCompleteAtMs: Date.now() + 3600000
     };
     const alreadyShielded = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS') || [];
-    const newShielded = [...alreadyShielded, shieldToken];
+    const newShielded = [shieldToken, ...alreadyShielded];
     this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newShielded);
     this.railgunFacadeService.setShieldedTokens(newShielded);
   }

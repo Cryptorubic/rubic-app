@@ -64,7 +64,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.errorService.tradeError$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
-            this.hideWindowService.hideAsset$.pipe(
+            this.privateTransferWindowService.transferAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
                 this.fromAssetsService.assetListType$.pipe(
@@ -89,7 +89,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.revealWindowService.revealAmount$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
-            this.hideWindowService.hideAsset$.pipe(
+            this.revealWindowService.revealAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
                 this.fromAssetsService.assetListType$.pipe(
