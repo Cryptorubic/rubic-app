@@ -14,8 +14,8 @@ import {
 import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../models/activity-item';
 import { PRIVATE_PROVIDERS_CHAINS_MAP } from '../constants/private-providers-chains-map';
-import { PrivateAction } from '../constants/private-mode-tx-types';
-import { PRIVATE_PROVIDERS_ACTIONS_MAP } from '../constants/private-providers-actions-map';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from '../constants/private-mode-tab';
+import { PRIVATE_PROVIDERS_TABS_MAP } from '../constants/private-providers-tabs-map';
 import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
 import { PrivacyApiService } from './privacy-api.service';
 
@@ -42,7 +42,7 @@ export class PrivacyMainPageService {
     map(swapInfo => swapInfo as PrivacyFormValue)
   );
 
-  private readonly _selectedTab$ = new BehaviorSubject<PrivateAction>('Swap');
+  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 
@@ -66,7 +66,7 @@ export class PrivacyMainPageService {
 
   constructor(private readonly privacyApiService: PrivacyApiService) {}
 
-  public setSelectedTab(tab: PrivateAction): void {
+  public setSelectedTab(tab: PrivateModeTab): void {
     this._selectedTab$.next(tab);
   }
 
@@ -77,7 +77,7 @@ export class PrivacyMainPageService {
   private loadDynamicParams(
     privateProvidersRaw: PrivateProviderRawInfo[],
     formValue: Partial<PrivacyFormValue>,
-    selectedTab: PrivateAction
+    selectedTab: PrivateModeTab
   ): Promise<PrivateProviderInfoUI[]> {
     return Promise.all(
       privateProvidersRaw.map(providerInfo => {
@@ -96,7 +96,7 @@ export class PrivacyMainPageService {
   private filterProviders(
     privateProviders: PrivateProviderInfoUI[],
     formValue: Partial<PrivacyFormValue>,
-    selectedTab: PrivateAction
+    selectedTab: PrivateModeTab
   ): PrivateProviderInfoUI[] {
     if (!formValue.fromAsset && !formValue.toAsset) return privateProviders;
 
@@ -111,13 +111,12 @@ export class PrivacyMainPageService {
       ) {
         return false;
       }
-      const srcChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.fromAsset?.blockchain];
-      const dstChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.toAsset?.blockchain];
+      const srcChainTabs =
+        PRIVATE_PROVIDERS_TABS_MAP[provider.name][formValue.fromAsset?.blockchain];
+      const dstChainTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name][formValue.toAsset?.blockchain];
       if (
-        (srcChainActions && !srcChainActions.includes(selectedTab)) ||
-        (dstChainActions && !dstChainActions.includes(selectedTab))
+        (srcChainTabs && !srcChainTabs.includes(selectedTab)) ||
+        (dstChainTabs && !dstChainTabs.includes(selectedTab))
       ) {
         return false;
       }

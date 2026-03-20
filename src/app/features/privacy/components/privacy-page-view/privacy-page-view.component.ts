@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { PrivateAction } from '../../constants/private-mode-tx-types';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from '../../constants/private-mode-tab';
 import { BehaviorSubject, map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
@@ -83,21 +83,22 @@ export class PrivacyPageViewComponent {
 
   public readonly clearOutput$ = this._clearOutput$.asObservable();
 
+  public readonly tabs = Object.values(PRIVATE_MODE_TAB);
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService
   ) {}
 
-  public handleTabSelected(selectedTab: string): void {
-    const action = selectedTab as PrivateAction;
-    if (action === 'Transfer') {
+  public handleTabSelected(tab: PrivateModeTab): void {
+    if (tab === PRIVATE_MODE_TAB.TRANSFER) {
       const swapInfo = this.privacyMainPageService.formValue;
       this.privacyMainPageService.patchFormValue({
         toAsset: swapInfo.fromAsset
       });
       this._clearOutput$.next({});
     }
-    this.privacyMainPageService.setSelectedTab(action);
+    this.privacyMainPageService.setSelectedTab(tab);
   }
 
   public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {
