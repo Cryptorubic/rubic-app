@@ -29,7 +29,8 @@ export class HinkalHideTokensPageComponent {
   public readonly creationConfig = {
     withActionButton: true,
     withReceiver: false,
-    withSrcAmount: true
+    withSrcAmount: true,
+    withMaxBtn: true
   };
 
   constructor(

@@ -40,14 +40,11 @@ export class ZamaHideTokensPageComponent {
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const preview$ = openPreview({
-        steps: [
-          {
-            label: 'Shield',
-            action: () => this.zamaFacadeService.wrap(token as TokenAmount<EvmBlockchainName>)
-          }
-        ]
-      });
+      const steps = await this.zamaFacadeService.prepareWrapSteps(
+        token as TokenAmount<EvmBlockchainName>
+      );
+
+      const preview$ = openPreview({ steps });
 
       await firstValueFrom(preview$);
     } finally {

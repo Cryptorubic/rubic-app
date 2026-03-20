@@ -12,6 +12,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import BigNumber from 'bignumber.js';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
+import { SignatureInfo } from '@app/features/privacy/providers/zama/services/zama-sdk/models/signature-info';
 
 export type Store = {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -84,6 +85,8 @@ export type Store = {
   RAILGUN_ENCRYPTION_CREDS_V1: string;
 
   RAILGUN_SHIELDED_TOKENS: ShieldedBalanceToken[];
+
+  ZAMA_SIGNATURES_INFO: Record<string, SignatureInfo>;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -106,5 +109,6 @@ export const storeRecord: Record<keyof Store, null> = {
   IS_RUSSIAN_IP: null,
   LOBSTR_WALLET_ADDRESS: null,
   RAILGUN_ENCRYPTION_CREDS_V1: null,
-  RAILGUN_SHIELDED_TOKENS: null
+  RAILGUN_SHIELDED_TOKENS: null,
+  ZAMA_SIGNATURES_INFO: null
 };

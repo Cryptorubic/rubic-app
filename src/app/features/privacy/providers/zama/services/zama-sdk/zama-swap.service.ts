@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ZamaInstanceService } from './zama-instance.service';
-import { EvmAdapter, EvmTransactionConfig, viemBlockchainMapping } from '@cryptorubic/web3';
+import {
+  EvmAdapter,
+  EvmTransactionConfig,
+  GasPrice,
+  viemBlockchainMapping
+} from '@cryptorubic/web3';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import {
   compareAddresses,
@@ -12,10 +17,11 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERC7984_TOKEN_ABI, MULTICALL_ABI } from './abis/erc7984-token-abi';
 import { getAddress } from 'ethers';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
-import { decodeEventLog, erc20Abi } from 'viem';
+import { decodeEventLog, erc20Abi, TransactionReceipt } from 'viem';
 import { ZamaTokensService } from './zama-tokens.service';
 import { wrapAbi } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/wrap-abi';
 import BigNumber from 'bignumber.js';
+import { GasService } from '@app/core/services/gas-service/gas.service';
 
 @Injectable()
 export class ZamaSwapService {
@@ -23,7 +29,8 @@ export class ZamaSwapService {
     private readonly zamaInstanceService: ZamaInstanceService,
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly zamaTokensService: ZamaTokensService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly gasService: GasService
   ) {}
 
   private getEvmAdapter(blockchain: EvmBlockchainName): EvmAdapter {
@@ -38,6 +45,18 @@ export class ZamaSwapService {
     return this.zamaTokensService.supportedTokensMapping[blockchain].find(token =>
       compareAddresses(token.tokenAddress, erc20TokenAddress)
     ).shieldedTokenAddress;
+  }
+
+  private async getGasPriceOptions(blockchain: EvmBlockchainName): Promise<GasPrice | null> {
+    try {
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
+
+      return shouldCalculateGasPrice ? gasPriceOptions : null;
+    } catch {
+      return null;
+    }
   }
 
   private async getShieldedTokenRate(
@@ -58,78 +77,103 @@ export class ZamaSwapService {
     }
   }
 
-  private async approveBeforeWrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+  public async getPureTokenAmount(
+    token: TokenAmount<EvmBlockchainName>
+  ): Promise<TokenAmount<EvmBlockchainName>> {
+    const shieldedTokenAddress = this.getErc7984Token(token.blockchain, token.address);
+
+    const erc7984TokenRate = await this.getShieldedTokenRate(
+      shieldedTokenAddress,
+      token.blockchain
+    );
+
+    const pureWeiAmount = token.weiAmount
+      .dividedBy(erc7984TokenRate)
+      .integerValue(BigNumber.ROUND_DOWN)
+      .multipliedBy(erc7984TokenRate);
+
+    return new TokenAmount({
+      ...token,
+      weiAmount: pureWeiAmount
+    });
+  }
+
+  public async needApprove(pureTokenAmount: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+    if (pureTokenAmount.isNative) return false;
+
+    const adapter = this.getEvmAdapter(pureTokenAmount.blockchain);
+    const shieldedTokenAddress = this.getErc7984Token(
+      pureTokenAmount.blockchain,
+      pureTokenAmount.address
+    );
+
+    const userAddress = adapter.signer.walletAddress;
+
+    const needApprove = await adapter.needApprove(
+      pureTokenAmount,
+      shieldedTokenAddress,
+      userAddress,
+      pureTokenAmount.stringWeiAmount
+    );
+
+    return needApprove;
+  }
+
+  public async approve(pureTokenAmount: TokenAmount<EvmBlockchainName>): Promise<void> {
     try {
-      const adapter = this.getEvmAdapter(wrapToken.blockchain);
-      const shieldedTokenAddress = this.getErc7984Token(wrapToken.blockchain, wrapToken.address);
+      if (pureTokenAmount.isNative) return;
 
-      const userAddress = adapter.signer.walletAddress;
-
-      const needApprove = await adapter.needApprove(
-        wrapToken,
-        shieldedTokenAddress,
-        userAddress,
-        wrapToken.stringWeiAmount
+      const adapter = this.getEvmAdapter(pureTokenAmount.blockchain);
+      const shieldedTokenAddress = this.getErc7984Token(
+        pureTokenAmount.blockchain,
+        pureTokenAmount.address
       );
 
-      if (!needApprove) return true;
+      const needApprove = await this.needApprove(pureTokenAmount);
 
-      const resp = await adapter.approveTokens(
-        wrapToken.address,
+      if (!needApprove) return;
+
+      await adapter.approveTokens(
+        pureTokenAmount.address,
         shieldedTokenAddress,
-        wrapToken.weiAmount
+        pureTokenAmount.weiAmount
       );
-
-      return !!resp;
     } catch (err) {
-      this.errorService.catch(err);
-      return false;
+      throw err;
     }
   }
 
-  public async wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+  public async wrap(pureTokenAmount: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     try {
-      const adapter = this.getEvmAdapter(wrapToken.blockchain);
+      const adapter = this.getEvmAdapter(pureTokenAmount.blockchain);
 
       const receiverAddress = adapter.signer.walletAddress;
-      const shieldedTokenAddress = this.getErc7984Token(wrapToken.blockchain, wrapToken.address);
-
-      const erc7984TokenRate = await this.getShieldedTokenRate(
-        shieldedTokenAddress,
-        wrapToken.blockchain
+      const shieldedTokenAddress = this.getErc7984Token(
+        pureTokenAmount.blockchain,
+        pureTokenAmount.address
       );
 
-      const pureAmount = wrapToken.weiAmount
-        .dividedBy(erc7984TokenRate)
-        .integerValue(BigNumber.ROUND_DOWN)
-        .multipliedBy(erc7984TokenRate)
-        .toFixed(0);
-
       let callData: EvmTransactionConfig;
-
-      // if(!wrapToken.isNative){
-      //   this.approveBeforeWrap
-      // }
 
       const shieldTx = EvmAdapter.encodeMethodCall(
         shieldedTokenAddress,
         ERC7984_TOKEN_ABI,
         'wrap',
-        [receiverAddress, pureAmount]
+        [receiverAddress, pureTokenAmount.stringWeiAmount]
       );
 
-      if (wrapToken.isNative) {
+      if (pureTokenAmount.isNative) {
         const wrapEthTx = EvmAdapter.encodeMethodCall(
-          wrappedNativeTokensList[wrapToken.blockchain].address,
+          wrappedNativeTokensList[pureTokenAmount.blockchain].address,
           wrapAbi,
           'deposit',
           [],
-          pureAmount
+          pureTokenAmount.stringWeiAmount
         );
 
         const approveTx = EvmAdapter.encodeMethodCall(wrapEthTx.to, erc20Abi, 'approve', [
           shieldedTokenAddress,
-          pureAmount
+          pureTokenAmount.stringWeiAmount
         ]);
 
         //@ts-ignore
@@ -167,8 +211,13 @@ export class ZamaSwapService {
         callData = shieldTx;
       }
 
+      const gasPriceOptions = await this.getGasPriceOptions(pureTokenAmount.blockchain);
+
       await adapter.signer.trySendTransaction({
-        txOptions: callData
+        txOptions: {
+          ...callData,
+          gasPriceOptions
+        }
       });
       return true;
     } catch (err) {
@@ -200,15 +249,20 @@ export class ZamaSwapService {
       const encryptedAmount = '0x' + Buffer.from(ciphertexts.handles[0]).toString('hex');
       const inputProof = '0x' + Buffer.from(ciphertexts.inputProof).toString('hex');
 
-      const tx = EvmAdapter.encodeMethodCall(
+      const callData = EvmAdapter.encodeMethodCall(
         shieldedTokenAddress,
         ERC7984_TOKEN_ABI,
         'confidentialTransfer',
         [receiver, encryptedAmount, inputProof]
       );
 
+      const gasPriceOptions = await this.getGasPriceOptions(transferToken.blockchain);
+
       await adapter.signer.trySendTransaction({
-        txOptions: tx
+        txOptions: {
+          ...callData,
+          gasPriceOptions
+        }
       });
       return true;
     } catch (err) {
@@ -219,8 +273,9 @@ export class ZamaSwapService {
 
   public async unwrap(
     unwrapToken: TokenAmount<EvmBlockchainName>,
-    receiver?: string
-  ): Promise<boolean> {
+    receiver?: string,
+    onTransactionSuccess?: (receipt: TransactionReceipt) => void
+  ): Promise<void> {
     try {
       const adapter = this.getEvmAdapter(unwrapToken.blockchain);
 
@@ -242,16 +297,39 @@ export class ZamaSwapService {
       const encryptedAmount = '0x' + Buffer.from(ciphertexts.handles[0]).toString('hex');
       const inputProof = '0x' + Buffer.from(ciphertexts.inputProof).toString('hex');
 
-      const tx = EvmAdapter.encodeMethodCall(shieldedTokenAddress, ERC7984_TOKEN_ABI, 'unwrap', [
-        userAddress,
-        receiverAddress,
-        encryptedAmount,
-        inputProof
-      ]);
+      const unshieldTx = EvmAdapter.encodeMethodCall(
+        shieldedTokenAddress,
+        ERC7984_TOKEN_ABI,
+        'unwrap',
+        [userAddress, receiverAddress, encryptedAmount, inputProof]
+      );
+
+      const gasPriceOptions = await this.getGasPriceOptions(unwrapToken.blockchain);
 
       const receipt = await adapter.signer.trySendTransaction({
-        txOptions: tx
+        txOptions: {
+          ...unshieldTx,
+          gasPriceOptions
+        }
       });
+
+      onTransactionSuccess?.(receipt);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async finalizeUnwrap(
+    unwrapToken: TokenAmount<EvmBlockchainName>,
+    receipt: TransactionReceipt
+  ): Promise<boolean> {
+    try {
+      const zamaInstance = this.getZamaInstance(unwrapToken.blockchain);
+      const shieldedTokenAddress = this.getErc7984Token(
+        unwrapToken.blockchain,
+        unwrapToken.address
+      );
+      const adapter = this.getEvmAdapter(unwrapToken.blockchain);
 
       const log = receipt.logs.find(l => {
         try {

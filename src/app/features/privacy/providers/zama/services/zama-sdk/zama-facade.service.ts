@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ZamaSwapService } from './zama-swap.service';
 import { initSDK } from '@zama-fhe/relayer-sdk/web';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, Subscription } from 'rxjs';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { ZamaInstanceService } from './zama-instance.service';
 import { ZamaTokensService } from './zama-tokens.service';
@@ -11,12 +11,18 @@ import { ZamaSignatureService } from './zama-signature.service';
 import { waitFor } from '@cryptorubic/web3';
 import { ZAMA_SUPPORTED_CHAINS, ZamaSupportedChain } from '../../constants/chains';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { TransactionReceipt } from 'viem';
+import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { ZAMA_PAGES } from '../../constants/zama-pages';
 
 @Injectable()
 export class ZamaFacadeService {
   private readonly _sdkLoading$ = new BehaviorSubject(false);
 
   public readonly sdkLoading$ = this._sdkLoading$.asObservable();
+
+  private readonly subs: Subscription[] = [];
 
   constructor(
     private readonly zamaSwapService: ZamaSwapService,
@@ -25,13 +31,15 @@ export class ZamaFacadeService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly zamaTokensService: ZamaTokensService,
     private readonly zamaSignatureService: ZamaSignatureService,
-    private readonly notificationService: NotificationsService
+    private readonly notificationService: NotificationsService,
+    private readonly privatePageTypeService: PrivatePageTypeService
   ) {}
 
   public async initServices(): Promise<void> {
     try {
       this._sdkLoading$.next(true);
       await this.zamaTokensService.initTokensMapping();
+      this.initSubs();
       await initSDK({
         tfheParams: 'assets/zama/tfhe_bg.wasm',
         kmsParams: 'assets/zama/kms_lib_bg.wasm'
@@ -45,6 +53,16 @@ export class ZamaFacadeService {
     }
   }
 
+  private initSubs(): void {
+    const signatureSub = this.subscribeOnSignatureChanged();
+
+    this.subs.push(signatureSub);
+  }
+
+  public removeSubs(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
+  }
+
   private showSuccessNotification(message: string): void {
     this.notificationService.show(message, {
       status: 'info',
@@ -55,35 +73,84 @@ export class ZamaFacadeService {
     });
   }
 
-  public transfer(token: TokenAmount<EvmBlockchainName>, receiver: string): Promise<void> {
-    return this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
-      if (isSuccess) {
-        this.showSuccessNotification(
-          'Transaction sent. This may take a moment. Please keep Rubic App open'
-        );
-        this.refreshBalancesAfterAction();
-      }
+  public async prepareTransferSteps(
+    token: TokenAmount<EvmBlockchainName>,
+    receiver: string
+  ): Promise<PrivateStep[]> {
+    const steps: PrivateStep[] = [];
+
+    steps.push({
+      label: 'Transfer',
+      action: () =>
+        this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
+          if (isSuccess) {
+            this.showSuccessNotification(
+              'Transaction sent. This may take a moment. Please keep Rubic App open'
+            );
+            this.refreshBalancesAfterAction();
+          }
+        })
     });
+    return steps;
   }
 
-  public unwrap(unwrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
-    return this.zamaSwapService.unwrap(unwrapToken, receiver).then(isSuccess => {
-      if (isSuccess) {
-        this.showSuccessNotification(
-          'Transaction sent. This may take a moment. Please keep Rubic App open'
-        );
-        this.refreshBalancesAfterAction();
-      }
+  public async prepareWrapSteps(wrapToken: TokenAmount<EvmBlockchainName>): Promise<PrivateStep[]> {
+    const steps: PrivateStep[] = [];
+
+    const pureTokenAmount = await this.zamaSwapService.getPureTokenAmount(wrapToken);
+    const needApprove = await this.zamaSwapService.needApprove(pureTokenAmount);
+
+    if (needApprove) {
+      steps.push({
+        label: 'Approve',
+        action: () => this.zamaSwapService.approve(pureTokenAmount)
+      });
+    }
+
+    steps.push({
+      label: 'Shield',
+      action: () =>
+        this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
+          if (isSuccess) {
+            this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+            this.refreshBalancesAfterAction();
+          }
+        })
     });
+
+    return steps;
   }
 
-  public wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
-    return this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
-      if (isSuccess) {
-        this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
-        this.refreshBalancesAfterAction();
-      }
+  public async prepareUnwrapSteps(
+    unwrapToken: TokenAmount<EvmBlockchainName>,
+    receiver?: string
+  ): Promise<PrivateStep[]> {
+    const steps: PrivateStep[] = [];
+
+    let unwrapReceipt: TransactionReceipt;
+
+    const onUnwrapSuccess = (receipt: TransactionReceipt) => {
+      unwrapReceipt = receipt;
+    };
+
+    steps.push({
+      label: 'Unshield',
+      action: () => this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess)
     });
+
+    steps.push({
+      label: 'Finalize unshield',
+      action: () =>
+        this.zamaSwapService.finalizeUnwrap(unwrapToken, unwrapReceipt).then(isSuccess => {
+          if (isSuccess) {
+            this.showSuccessNotification(
+              'Transaction sent. This may take a moment. Please keep Rubic App open'
+            );
+            this.refreshBalancesAfterAction();
+          }
+        })
+    });
+    return steps;
   }
 
   private async refreshBalancesAfterAction(): Promise<void> {
@@ -105,9 +172,26 @@ export class ZamaFacadeService {
         await this.walletConnectorService.switchChain(chain);
       }
 
-      await this.zamaSignatureService
-        .updateSignature(address, chain)
-        .then(isSuccess => isSuccess && this.zamaBalanceService.refreshBalances());
+      await this.zamaSignatureService.updateSignature(address, chain).then(isSuccess => {
+        if (isSuccess) {
+          this.privatePageTypeService.activePage = ZAMA_PAGES.find(page => page.type === 'hide');
+        }
+      });
     } catch {}
+  }
+
+  private subscribeOnSignatureChanged(): Subscription {
+    return combineLatest([
+      this.zamaSignatureService.signatureInfo$,
+      this.zamaInstanceService.currInstance$
+    ])
+      .pipe(distinctUntilChanged())
+      .subscribe(([signature]) => {
+        if (signature) {
+          this.zamaBalanceService.refreshBalances();
+        } else {
+          this.zamaBalanceService.clearBalances();
+        }
+      });
   }
 }

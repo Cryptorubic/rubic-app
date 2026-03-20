@@ -4,4 +4,5 @@ export interface SignatureInfo {
   publicKey: string;
   startTimeStamp: number;
   durationDays: number;
+  expiredAtMs: string;
 }

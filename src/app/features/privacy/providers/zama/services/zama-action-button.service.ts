@@ -88,6 +88,13 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
       };
     }
 
+    if (currPage.type === 'hide' && assetAmount.actualValue.lt('0.000001')) {
+      return {
+        type: 'error',
+        text: `Min amount is 0.000001 ${asset.symbol}`
+      };
+    }
+
     if (currPage.type === 'transfer' && !receiver) {
       return {
         type: 'error',
