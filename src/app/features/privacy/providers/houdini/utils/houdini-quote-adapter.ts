@@ -44,6 +44,9 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
     if (!this.receiverCtrl.value) {
       return throwError(() => new Error('Receiver address must not be empty'));
     }
+
+    this.updateReceiverCtrlValidator(toAsset?.blockchain);
+
     return from(Web3Pure.getInstance(toAsset.blockchain).isAddressCorrect(receiver)).pipe(
       tap(isCorrect => {
         if (!isCorrect) {
@@ -52,8 +55,6 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
       }),
       switchMap(() =>
         defer(() => {
-          this.updateReceiverCtrlValidator(toAsset?.blockchain);
-
           return this.houdiniSwapService.quote(
             new TokenAmount({
               ...fromAsset,
@@ -105,11 +106,12 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
   private updateReceiverCtrlValidator(blockchain?: BlockchainName): void {
     if (!blockchain) return;
 
-    if (!this._currentValidator) {
+    if (this._currentValidator) {
       this.receiverCtrl.removeAsyncValidators(this._currentValidator);
     }
     this._currentValidator = isReceiverCorrect(blockchain);
 
     this.receiverCtrl.addAsyncValidators(this._currentValidator);
+    this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
   }
 }
