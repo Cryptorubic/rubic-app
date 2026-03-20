@@ -19,11 +19,15 @@
       <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
     </div>
 
-    <div class="token-card__right" *ngIf="token.shieldingCompleteAtMs">
-      <div class="">
-        <div class="">Est.{{ token.shieldingCompleteAtMs }}</div>
+    <div class="token-card__right">
+      <div *ngLet="countdown$ | async as countdown">
+        <div>{{ countdown }}</div>
         <div class="token-card__description">
-          Shield mined. Your Private Proof of Innocence is pending.
+          {{
+            countdown === 'Completed'
+              ? 'Shield mined. POI finalized.'
+              : 'Shield mined. POI in progress...'
+          }}
         </div>
       </div>
     </div>

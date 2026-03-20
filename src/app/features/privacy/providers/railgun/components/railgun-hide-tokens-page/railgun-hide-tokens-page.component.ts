@@ -5,7 +5,7 @@ import { FromAssetsService } from '@features/trade/components/assets-selector/se
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { distinctUntilChanged, firstValueFrom, takeUntil } from 'rxjs';
+import { distinctUntilKeyChanged, firstValueFrom, takeUntil } from 'rxjs';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
@@ -46,12 +46,12 @@ export class RailgunHideTokensPageComponent {
 
   constructor() {
     this.hideWindowService.hideAsset$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(distinctUntilKeyChanged('symbol'), takeUntil(this.destroy$))
       .subscribe(token => {
         const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
         if (isNative) {
           this.notificationService.show(
-            'This transaction will automatically wrap your ETH into WETH (1:1) and shield the wrapped tokens in RAILGUN.',
+            `This transaction will automatically wrap your ${token.symbol} into W${token.symbol} (1:1) and shield the wrapped tokens in RAILGUN.`,
             {
               label: 'RAILGUN does not support shielding native tokens',
               status: 'info',
@@ -76,7 +76,7 @@ export class RailgunHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Hide Tokens',
+            label: 'Shield Tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               await this.hideService.shield(
@@ -87,7 +87,7 @@ export class RailgunHideTokensPageComponent {
                   network: fromRubicToPrivateChainMap[token.blockchain]
                 }
               );
-              this.setShieldedToken(balanceToken);
+              this.setShieldedToken({ ...balanceToken, amount: token.tokenAmount });
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
                 {
@@ -101,6 +101,7 @@ export class RailgunHideTokensPageComponent {
             }
           }
         ],
+        swapType: 'shield',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
       await firstValueFrom(preview$);

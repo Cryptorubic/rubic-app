@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TransactionFailedError } from '@app/core/errors/models/common/transaction-failed-error';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
-import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
+import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
@@ -29,7 +28,7 @@ import {
 
 @Injectable()
 export class ClearswapSwapService {
-  private get chainAdapter(): TronAdapter {
+  public get chainAdapter(): TronAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.TRON);
   }
 
@@ -38,7 +37,7 @@ export class ClearswapSwapService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly authService: AuthService
+    private readonly clearswapTokensFacadeService: ClearswapTokensFacadeService
   ) {}
 
   public async quote(
@@ -86,26 +85,6 @@ export class ClearswapSwapService {
     receiver: string
   ): Promise<void> {
     try {
-      const isEnoughBalance = await lastValueFrom(
-        defer(() =>
-          this.chainAdapter.checkEnoughBalance(fromToken, this.authService.userAddress)
-        ).pipe(
-          retry({
-            count: 5,
-            delay: (error, retryCount) => {
-              console.error('check balance error:', error, 'retry #', retryCount);
-              if (error?.message?.includes('Request failed with status code 429')) {
-                return timer(5000);
-              }
-              return throwError(() => error);
-            }
-          })
-        )
-      );
-      if (!isEnoughBalance) {
-        throw new InsufficientFundsError(fromToken.symbol);
-      }
-
       const swapResponse = await lastValueFrom(
         defer(() =>
           this.rubicApiService.fetchSwapData<{ depositAddress: string }>({
@@ -184,6 +163,7 @@ export class ClearswapSwapService {
           )
         )
       );
+      this.clearswapTokensFacadeService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
         this.notificationsService.showSuccess('The operation was successful.');
       } else {

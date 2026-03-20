@@ -61,7 +61,7 @@ export class RailgunRevealPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Reveal Tokens',
+            label: 'Unshield tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
@@ -93,10 +93,18 @@ export class RailgunRevealPageComponent {
                   [wallet.id],
                   [token.blockchain as RailgunSupportedChain]
                 );
-              }, 5_000);
+              }, 10_000);
+              setTimeout(async () => {
+                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
+                this.railgunFacade.refreshBalances(
+                  [wallet.id],
+                  [token.blockchain as RailgunSupportedChain]
+                );
+              }, 70_000);
             }
           }
         ],
+        swapType: 'unshield',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
       });
 

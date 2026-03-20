@@ -3,7 +3,7 @@ import { PrivateQuoteAdapter } from '../../shared-privacy-providers/models/quote
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import BigNumber from 'bignumber.js';
 import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/services/houdini-swap.service';
-import { CHAIN_TYPE, TokenAmount } from '@cryptorubic/core';
+import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import {
   catchError,
   defer,
@@ -18,10 +18,13 @@ import {
 } from 'rxjs';
 import { HoudiniErrorService } from '@app/features/privacy/providers/houdini/services/houdini-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { FormControl } from '@angular/forms';
+import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { Web3Pure } from '@cryptorubic/web3';
+import { isReceiverCorrect } from '../constants/receiver-validator';
 
 export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
+  private _currentValidator: AsyncValidatorFn;
+
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
     private readonly receiverCtrl: FormControl<string>,
@@ -41,23 +44,25 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
     if (!this.receiverCtrl.value) {
       return throwError(() => new Error('Receiver address must not be empty'));
     }
-    return from(Web3Pure.getInstance(CHAIN_TYPE.EVM).isAddressCorrect(receiver)).pipe(
+    return from(Web3Pure.getInstance(toAsset.blockchain).isAddressCorrect(receiver)).pipe(
       tap(isCorrect => {
         if (!isCorrect) {
           throw Error('Incorrect receiver address');
         }
       }),
       switchMap(() =>
-        defer(() =>
-          this.houdiniSwapService.quote(
+        defer(() => {
+          this.updateReceiverCtrlValidator(toAsset?.blockchain);
+
+          return this.houdiniSwapService.quote(
             new TokenAmount({
               ...fromAsset,
               tokenAmount: fromAmount.actualValue
             }),
             toAsset,
             this.receiverCtrl.value
-          )
-        ).pipe(
+          );
+        }).pipe(
           retry({
             count: 5,
             delay: (error, retryCount) => {
@@ -95,5 +100,16 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
     _err: unknown
   ): Promise<BigNumber> {
     return new BigNumber(0);
+  }
+
+  private updateReceiverCtrlValidator(blockchain?: BlockchainName): void {
+    if (!blockchain) return;
+
+    if (!this._currentValidator) {
+      this.receiverCtrl.removeAsyncValidators(this._currentValidator);
+    }
+    this._currentValidator = isReceiverCorrect(blockchain);
+
+    this.receiverCtrl.addAsyncValidators(this._currentValidator);
   }
 }
