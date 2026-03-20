@@ -60,27 +60,32 @@ export class HinkalSwapService {
 
   public async withdraw(
     token: TokenAmount<EvmBlockchainName>,
-    receiver?: string
+    _receiver?: string
   ): Promise<boolean> {
     try {
-      await this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
+      const resp = await this.hinkalWorker.request({
+        type: 'withdraw',
+        token
+      });
+      console.log(resp);
+      // await this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
 
-      const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
-      const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
-      const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
+      // const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
+      // const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
+      // const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
 
-      await hinkalInstance.withdraw(
-        [withdrawToken],
-        [-BigInt(token.stringWeiAmount)],
-        receiverAddress,
-        false,
-        undefined,
-        undefined,
-        undefined,
-        false
-      );
+      // await hinkalInstance.withdraw(
+      //   [withdrawToken],
+      //   [-BigInt(token.stringWeiAmount)],
+      //   receiverAddress,
+      //   false,
+      //   undefined,
+      //   undefined,
+      //   undefined,
+      //   false
+      // );
 
-      hinkalInstance.snapshotsClearInterval();
+      // hinkalInstance.snapshotsClearInterval();
 
       return true;
     } catch (err) {

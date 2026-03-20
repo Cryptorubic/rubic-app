@@ -3,9 +3,10 @@ import { blockchainId, PriceToken, TokenAmount } from '@cryptorubic/core';
 import { ERC20Token, Hinkal, MERKLE_LEVELS, MerkleTree, poseidonFunction } from '@hinkal/common';
 import { get } from 'idb-keyval';
 import { StoredSnapshot } from '../workers/models/stored-snapshot';
+import { PureTokenAmount } from '../workers/models/worker-params';
 export class HinkalUtils {
   public static convertRubicTokenToHinkalToken(
-    token: Token | PriceToken | TokenAmount
+    token: Token | PriceToken | TokenAmount | PureTokenAmount
   ): ERC20Token {
     return {
       name: token.name,

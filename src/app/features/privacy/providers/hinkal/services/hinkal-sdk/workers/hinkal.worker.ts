@@ -9,7 +9,7 @@ const hinkalWorkerLogic = new HinkalWorkerLogic();
 
 addEventListener('message', async ({ data }: { data: WorkerParams }) => {
   try {
-    const { signature, chainId, address, type } = data;
+    const { signature, chainId, address, type, token } = data;
 
     if (type === 'init') {
       await hinkalWorkerLogic.updateInstance(address, chainId, signature);
@@ -30,6 +30,11 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
     if (type === 'refreshStoredSnapshot') {
       await hinkalWorkerLogic.refreshStoredSnapshot();
       postMessage({ success: true, result: null, type: 'refreshStoredSnapshot' });
+    }
+
+    if (type === 'withdraw') {
+      const resp = await hinkalWorkerLogic.withdraw(token);
+      postMessage({ success: Boolean(resp), result: resp, type: 'withdraw' });
     }
   } catch (err) {
     console.log('WORKER ERROR', err);

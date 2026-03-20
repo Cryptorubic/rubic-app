@@ -155,13 +155,16 @@ export class HinkalFacadeService {
       tap(chain => console.log('CHAIN SWITCHED', chain)),
       skip(1),
       distinctUntilChanged(),
-      switchMap(chain =>
-        this.hinkalWorkerService.request<void>({
-          chainId: blockchainId[chain],
-          type: 'switchNetwork',
-          address: this.walletConnectorService.address
-        })
-      )
+      switchMap(chain => {
+        this.hinkalBalanceService.stopPolling();
+        return this.hinkalWorkerService
+          .request<void>({
+            chainId: blockchainId[chain],
+            type: 'switchNetwork',
+            address: this.walletConnectorService.address
+          })
+          .then(() => this.hinkalBalanceService.startPolling());
+      })
     );
   }
 
