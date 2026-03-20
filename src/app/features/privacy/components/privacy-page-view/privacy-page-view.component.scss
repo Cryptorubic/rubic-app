@@ -29,8 +29,7 @@ $mobile-width: 360px;
       width: 100%;
     }
 
-    app-swap-window,
-    app-transfer-tokens-window {
+    app-private-page-swap {
       width: 100%;
       max-width: 600px;
     }
@@ -39,11 +38,6 @@ $mobile-width: 360px;
   app-token-selector-page,
   app-last-private-activity {
     width: 100%;
-  }
-
-  app-input-output-container:first-child {
-    display: block;
-    margin-bottom: 1px;
   }
 
   app-private-providers-list-general {
