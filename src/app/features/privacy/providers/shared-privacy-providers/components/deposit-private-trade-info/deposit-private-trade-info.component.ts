@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { of } from 'rxjs';
 import { switchIif } from '@shared/utils/utils';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { depositInfoText } from './constants/cn-info-text';
-import { TradeData } from './models/trade-data';
+import { TradeInfo } from './models/trade-info';
+import { DepositTradeData } from '../../models/deposit-trade-data';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-deposit-private-trade-info',
@@ -13,14 +16,18 @@ import { TradeData } from './models/trade-data';
   styleUrls: ['./deposit-private-trade-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DepositPrivateTradeInfoComponent {
+export class DepositPrivateTradeInfoComponent implements OnChanges {
   public readonly text = depositInfoText;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  @Input() public tradeData: TradeData;
+  @Input() public inputData: DepositTradeData;
 
-  public readonly walletAddress$ = this.targetAddressService.address$.pipe(
+  @Input({ required: true }) public receiverCtrl: FormControl<string> = new FormControl('');
+
+  public tradeInfo: TradeInfo;
+
+  public readonly walletAddress$ = this.receiverCtrl.valueChanges.pipe(
     switchIif(
       Boolean,
       address => of(address),
@@ -32,4 +39,23 @@ export class DepositPrivateTradeInfoComponent {
     private readonly walletConnector: WalletConnectorService,
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
+
+  ngOnChanges(): void {
+    if (this.inputData) {
+      const { trade, paymentInfo } = this.inputData;
+      this.tradeInfo = paymentInfo
+        ? {
+            id: paymentInfo.id,
+            trade: trade as CrossChainTransferTrade,
+            extraField: paymentInfo.extraField
+              ? {
+                  name: paymentInfo?.extraField.name,
+                  value: paymentInfo?.extraField.value,
+                  text: `Please don’t forget to specify the ${paymentInfo?.extraField.name} while sending the ${trade.from.symbol} transaction for the exchange`
+                }
+              : null
+          }
+        : null;
+    }
+  }
 }

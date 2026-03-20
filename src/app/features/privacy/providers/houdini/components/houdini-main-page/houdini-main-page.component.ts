@@ -9,14 +9,15 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { houdiniFormConfig } from '../../constants/form-config';
+import { FormControl } from '@angular/forms';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -32,7 +33,7 @@ import { houdiniFormConfig } from '../../constants/form-config';
   ]
 })
 export class HoudiniMainPageComponent implements OnInit, OnDestroy {
-  public readonly receiverCtrl = this.targetNetworkAddressService.addressControl;
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly quoteAdapter = new HoudiniQuoteAdapter(
     this.houdiniSwapService,
@@ -43,13 +44,11 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
 
   public readonly formConfig = houdiniFormConfig;
 
-  public readonly depositTrade$ = this.houdiniSwapService.depositTrade$;
+  public readonly depositTradeData$ = this.houdiniSwapService.depositTradeData$;
 
   public readonly depositTradeStatus$ = this.houdiniSwapService.depositTradeStatus$;
 
-  public readonly depositPaymentInfo$ = this.houdiniSwapService.depositPaymentInfo$;
-
-  // public readonly depositTradeData$ = this.houdiniSwapService.depositTradeData$;
+  private _walletSubscription: Subscription;
 
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
@@ -57,7 +56,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly houdiniErrorService: HoudiniErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.privatePageTypeService.activePage = {
@@ -80,6 +79,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
+    this._walletSubscription?.unsubscribe();
   }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {

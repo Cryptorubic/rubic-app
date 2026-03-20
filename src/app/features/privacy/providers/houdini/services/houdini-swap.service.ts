@@ -24,10 +24,8 @@ import {
   switchMap,
   takeWhile,
   map,
-  of,
   tap,
-  Subscription,
-  distinctUntilChanged
+  Subscription
 } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
@@ -55,15 +53,20 @@ import {
   CrossChainDepositStatus
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { DepositTradeData } from '../../shared-privacy-providers/models/deposit-trade-data';
 
 @Injectable()
 export class HoudiniSwapService {
-  private readonly _currentTrade$ = new BehaviorSubject<CrossChainTrade | null>(null);
+  private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
-  public readonly depositTrade$ = this._currentTrade$.pipe(
-    distinctUntilChanged(),
-    map(t => (t instanceof CrossChainTransferTrade ? (t as CrossChainTransferTrade) : null))
+  // private readonly _paymentInfo$ = new BehaviorSubject<CrossChainPaymentInfo | null>(null);
+
+  public readonly depositTradeData$ = this._currentTradeData$.pipe(
+    map(t => ({
+      trade:
+        t?.trade instanceof CrossChainTransferTrade ? (t.trade as CrossChainTransferTrade) : null,
+      ...(t?.paymentInfo && { paymentInfo: t.paymentInfo })
+    }))
   );
 
   public readonly subscriptions: Subscription[] = [];
@@ -74,41 +77,8 @@ export class HoudiniSwapService {
 
   public readonly depositTradeStatus$ = this._depositTradeStatus$.asObservable();
 
-  public readonly depositPaymentInfo$ = this.depositTrade$.pipe(
-    switchMap(trade =>
-      trade
-        ? trade.getTransferTrade(
-            this.targetNetworkAddressService.address,
-            this.walletConnectorService.address
-          )
-        : of(null)
-    )
-  );
-
-  //work in progress
-
-  // public readonly depositTradeData$ = combineLatest([
-  //   this.depositTrade$,
-  //   this.depositPaymentInfo$
-  // ]).pipe(
-  //   filter(([trade, paymentInfo]) => !!paymentInfo),
-  //   map(([trade, paymentInfo]) =>
-  //     ({
-  //       id: paymentInfo?.id,
-  //       trade,
-  //       extraField: paymentInfo?.extraField
-  //         ? {
-  //             name: paymentInfo?.extraField.name,
-  //             value: paymentInfo?.extraField.value,
-  //             text: `Please don’t forget to specify the ${paymentInfo?.extraField.name} while sending the ${trade.from.symbol} transaction for the exchange`
-  //           }
-  //         : null
-  //     })
-  //   )
-  // );
-
   public get currentTrade(): CrossChainTrade {
-    return this._currentTrade$.value;
+    return this._currentTradeData$.value?.trade;
   }
 
   constructor(
@@ -119,8 +89,7 @@ export class HoudiniSwapService {
     private readonly crossChainService: CrossChainService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly settingsService: SettingsService,
-    private readonly houdiniErrorService: HoudiniErrorService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly houdiniErrorService: HoudiniErrorService
   ) {
     this.subscribeOnStatusReset();
   }
@@ -137,7 +106,7 @@ export class HoudiniSwapService {
       }
     | { tradeError: ErrorInterface }
   > {
-    this.resetCurrentTrade();
+    this._currentTradeData$.next(null);
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -156,7 +125,7 @@ export class HoudiniSwapService {
       if (quoteResponse) {
         this.filterHoudiniSlippageWarning(quoteResponse);
 
-        await this.setCurrentTrade(quoteRequest, quoteResponse);
+        await this.setCurrentTrade(quoteRequest, quoteResponse, receiver);
 
         return {
           tradeId: quoteResponse.id,
@@ -360,7 +329,8 @@ export class HoudiniSwapService {
 
   private async setCurrentTrade(
     quoteRequest: QuoteRequestInterface,
-    quoteResponse: QuoteResponseInterface
+    quoteResponse: QuoteResponseInterface,
+    receiver: string
   ): Promise<void> {
     const { trade: trade } = await TransformUtils.transformCrossChain(
       quoteResponse,
@@ -370,17 +340,32 @@ export class HoudiniSwapService {
       this.rubicApiService
     );
 
-    this._currentTrade$.next(trade);
+    const tradeData: DepositTradeData = {
+      trade,
+      paymentInfo: null
+    };
+
+    if (trade instanceof CrossChainTransferTrade) {
+      const paymentInfo = await trade.getTransferTrade(
+        receiver,
+        this.walletConnectorService.address
+      );
+
+      // this._paymentInfo$.next(paymentInfo);
+      tradeData.paymentInfo = paymentInfo;
+    }
+
+    this._currentTradeData$.next(tradeData);
   }
 
   private subscribeOnStatusReset(): void {
-    const sub = this.depositTrade$
+    const sub = this.depositTradeData$
       .pipe(
-        filter(trade => !!trade),
-        switchMap(trade =>
+        filter(tradeData => !!tradeData?.trade),
+        switchMap(tradeData =>
           interval(30_000).pipe(
             startWith(-1),
-            switchMap(() => this.getDepositSwapStatus(trade.rubicId)),
+            switchMap(() => this.getDepositSwapStatus(tradeData.trade.rubicId)),
             tap(status => this._depositTradeStatus$.next(status)),
             takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
           )
@@ -389,10 +374,6 @@ export class HoudiniSwapService {
       .subscribe();
 
     this.subscriptions.push(sub);
-  }
-
-  private resetCurrentTrade(): void {
-    this._currentTrade$.next(null);
   }
 
   private async getDepositSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {

@@ -94,7 +94,7 @@ export class RevealWindowComponent {
               visibleValue: options.dstTokenAmount
             }
           : revealAmount,
-        swapType: options.swapType ?? 'transfer',
+        swapType: options.swapType ?? 'unshield',
         swapOptions: options
       });
     };

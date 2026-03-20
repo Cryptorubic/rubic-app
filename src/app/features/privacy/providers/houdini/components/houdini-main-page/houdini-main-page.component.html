@@ -1,8 +1,7 @@
 <ng-container
   *ngLet="{
-    depositTrade: depositTrade$ | async,
-    depositTradeStatus: depositTradeStatus$ | async,
-    depositPaymentInfo: depositPaymentInfo$ | async
+    depositTradeData: depositTradeData$ | async,
+    depositTradeStatus: depositTradeStatus$ | async
   } as state"
 >
   <div class="wrapper">
@@ -11,15 +10,16 @@
       [receiverAddressRequired]="true"
       [creationConfig]="formConfig"
       [receiverCtrl]="receiverCtrl"
-      [depositTrade]="state.depositTrade"
+      [depositTrade]="state.depositTradeData?.trade"
       [depositTradeStatus]="state.depositTradeStatus"
-      [depositPaymentInfo]="state.depositPaymentInfo"
+      [depositPaymentInfo]="state.depositTradeData?.paymentInfo"
       (swapClicked)="swap($event)"
     ></app-swap-window>
 
-    <!-- <app-deposit-private-trade-info
-      *ngIf="state.depositTradeData"
-      [tradeData]="state.depositTradeData"
-    ></app-deposit-private-trade-info> -->
+    <app-deposit-private-trade-info
+      *ngIf="state.depositTradeData?.paymentInfo"
+      [inputData]="state.depositTradeData"
+      [receiverCtrl]="receiverCtrl"
+    ></app-deposit-private-trade-info>
   </div>
 </ng-container>
