@@ -4,7 +4,7 @@ export interface ShieldedBalanceToken extends BalanceToken {
   /**
    * Date in ms when shielding is finished.
    */
-  shieldingCompleteAtMs?: string;
+  shieldingCompleteAtMs?: number;
 
   shieldTxHash?: string;
 

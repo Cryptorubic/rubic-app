@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { BehaviorSubject, map, tap } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { StepType } from '@features/privacy/providers/railgun/models/step';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
@@ -54,11 +54,7 @@ export class RailgunMainPageComponent {
 
   private readonly tokensService = inject(TokenService);
 
-  public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$.pipe(
-    tap(el => {
-      console.log('PENDING: ', el);
-    })
-  );
+  public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$;
 
   public showBalanceLoading$ = this.utxoScan$.pipe(
     map(scan => Object.values(scan).some(el => el < 100))

@@ -160,7 +160,7 @@ export class RailgunTransferPageComponent implements OnInit {
           }
         ],
         swapType: 'transfer',
-        dstTokenAmount: token.stringWeiAmount
+        dstTokenAmount: token.tokenAmount.toFixed()
       });
 
       await firstValueFrom(preview$);
