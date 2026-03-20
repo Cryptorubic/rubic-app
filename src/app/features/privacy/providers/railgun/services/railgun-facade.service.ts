@@ -648,7 +648,9 @@ export class RailgunFacadeService {
 
   private handleBalanceUpdate(eventData: RailgunBalancesEvent): void {
     try {
-      console.log(eventData);
+      if (eventData.balanceBucket === 'Spendable') {
+        console.log(`Balances for ${eventData.chain.id}:`, eventData.erc20Amounts);
+      }
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;
