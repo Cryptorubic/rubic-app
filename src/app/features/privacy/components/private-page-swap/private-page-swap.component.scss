@@ -1,0 +1,76 @@
+@use 'src/scss/core' as *;
+
+.selectros-container {
+  position: relative;
+
+  display: flex;
+  gap: 2px;
+
+  app-asset-selector {
+    flex: 1;
+
+    background: var(--io-background);
+
+    &:first-child {
+      padding: 12px 10px;
+
+      border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+    }
+
+    &:last-child {
+      display: flex;
+      justify-content: end;
+      padding: 12px 20px 12px 0;
+
+      border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+    }
+  }
+
+  app-form-switcher {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: rotate(90deg);
+
+    ::ng-deep {
+      .switcher {
+        transform: translate(-50%, 50%);
+      }
+    }
+  }
+}
+
+.empty-asset-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+
+  color: $text-gray-2;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+// app-form-switcher {
+//   display: flex;
+//   justify-content: center;
+//   height: 2px;
+
+//   background: linear-gradient(90deg,
+//   var(--io-background) 0%,
+//   rgba(0, 0, 0, 0) 50%,
+//   var(--io-background) 100%);
+// }
+
+.buttons-container {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+
+  app-private-action-button {
+    display: block;
+    flex-grow: 1;
+  }
+}

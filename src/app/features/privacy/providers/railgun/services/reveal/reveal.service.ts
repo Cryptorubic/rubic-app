@@ -29,48 +29,52 @@ export class RevealService {
     proofProgress: (progress: string) => void,
     tokenBlockchain: RailgunSupportedChain
   ): Promise<void> {
-    if (this._inProgress$.value === true) {
-      throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
+    try {
+      if (this._inProgress$.value === true) {
+        throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
+      }
+      this._inProgress$.next(true);
+      const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
+        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
+      ];
+      const chain = fromRubicToPrivateChainMap[tokenBlockchain];
+
+      const { gasEstimate } = await this.railgunFacade.gasEstimateForUnshield(
+        chain,
+        erc20AmountRecipients
+      );
+
+      // generate unshield proof
+      await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
+
+      await waitFor(5_000);
+
+      const mnemonic = await this.railgunFacade.getMnemonic();
+      const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);
+
+      const transactionGasDetails = await getGasDetailsForTransaction(
+        chain,
+        gasEstimate,
+        true,
+        wallet
+      );
+
+      const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);
+
+      const { transaction } = await this.railgunFacade.populateUnshield(
+        chain,
+        erc20AmountRecipients,
+        transactionGasDetails,
+        overallBatchMinGasPrice
+      );
+
+      await wallet.sendTransaction(transaction);
+    } catch (err) {
+      throw err;
+    } finally {
+      setTimeout(() => {
+        this._inProgress$.next(false);
+      }, 10_000);
     }
-    this._inProgress$.next(true);
-    const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
-    ];
-    const chain = fromRubicToPrivateChainMap[tokenBlockchain];
-
-    const { gasEstimate } = await this.railgunFacade.gasEstimateForUnshield(
-      chain,
-      erc20AmountRecipients
-    );
-
-    // generate unshield proof
-    await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
-
-    await waitFor(5_000);
-
-    const mnemonic = await this.railgunFacade.getMnemonic();
-    const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);
-
-    const transactionGasDetails = await getGasDetailsForTransaction(
-      chain,
-      gasEstimate,
-      true,
-      wallet
-    );
-
-    const overallBatchMinGasPrice = await calculateGasPrice(transactionGasDetails);
-
-    const { transaction } = await this.railgunFacade.populateUnshield(
-      chain,
-      erc20AmountRecipients,
-      transactionGasDetails,
-      overallBatchMinGasPrice
-    );
-
-    await wallet.sendTransaction(transaction);
-
-    setTimeout(() => {
-      this._inProgress$.next(false);
-    }, 10_000);
   }
 }

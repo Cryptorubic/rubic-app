@@ -12,15 +12,37 @@
   </div>
   <tui-error formControlName="agreement" [error]="['required'] | tuiFieldError | async"></tui-error>
 
-  <tui-input-password
-    formControlName="mnemonic"
-    (keydown)="$event.preventDefault()"
-    (paste)="$event.preventDefault()"
-    (drop)="$event.preventDefault()"
-  >
-    Seed phrase
-    <span class="tui-required"></span>
-  </tui-input-password>
+  <ng-container *ngLet="showWords$ | async as showWord">
+    <div class="phrase">
+      <div class="phrase__word" *ngFor="let word of secretPhrase">{{ showWord ? word : '' }}</div>
+    </div>
+
+    <div class="buttons">
+      <button
+        [tuiHint]="tooltip"
+        [tuiHintManual]="hintShown"
+        appearance="outline"
+        type="button"
+        size="l"
+        tuiButton
+        class="tui-form__button"
+        (click)="copyToClipboard()"
+      >
+        Copy
+        <div class="copy-icon" inlineSVG="assets/images/icons/copy.svg"></div>
+      </button>
+      <button
+        appearance="outline"
+        (click)="toggleVisibility()"
+        type="button"
+        size="l"
+        tuiButton
+        class="tui-form__button"
+      >
+        {{ showWord ? 'Hide' : 'Show' }}
+      </button>
+    </div>
+  </ng-container>
 
   <tui-input-password formControlName="password">
     Password
@@ -32,3 +54,5 @@
     <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
   </div>
 </form>
+
+<ng-template #tooltip> Seed phrase copied! </ng-template>

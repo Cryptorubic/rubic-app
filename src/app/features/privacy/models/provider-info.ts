@@ -1,8 +1,8 @@
-import { PrivateAction } from '../constants/private-mode-tx-types';
+import { PrivateModeTab } from '../constants/private-mode-tab';
 import { PrivateTradeType } from '../constants/private-trade-types';
 import { PrivacyFormValue } from '../services/models/privacy-form';
 import { PrivacyApiService } from '../services/privacy-api.service';
-import { PrivareProviderUrl } from './routes';
+import { PrivateProviderUrl } from './routes';
 
 export interface PrivateProviderInfoUI {
   name: PrivateTradeType;
@@ -10,7 +10,7 @@ export interface PrivateProviderInfoUI {
   privacyType: string;
   security: number;
   icon: `assets/images/private-swaps/common/${string}`;
-  url: PrivareProviderUrl;
+  url: PrivateProviderUrl;
   warning?: { message: string; hint: string };
   minAmountUsd: number;
   feeSize: string;
@@ -22,11 +22,11 @@ export interface PrivateProviderRawInfo {
   privacyType: string;
   security: number;
   icon: `assets/images/private-swaps/common/${string}`;
-  url: PrivareProviderUrl;
+  url: PrivateProviderUrl;
   warning?: { message: string; hint: string };
-  getMinAmountUsd: (action: PrivateAction) => number;
+  getMinAmountUsd: (tab: PrivateModeTab) => number;
   getFeeSize: (
-    action: PrivateAction,
+    tab: PrivateModeTab,
     formValue: Partial<PrivacyFormValue>,
     privacyApiService: PrivacyApiService
   ) => Promise<string>;

@@ -29,7 +29,11 @@ export class ZamaViewComponent {
   public readonly pages = ZAMA_PAGES;
 
   public readonly disabledPages$ = this.zamaSignatureService.signatureInfo$.pipe(
-    map(signature => (signature ? [] : this.pages.filter(page => page.type !== 'login')))
+    map(signature =>
+      signature
+        ? [{ type: 'login', label: 'Login' }]
+        : this.pages.filter(page => page.type !== 'login')
+    )
   );
 
   constructor(
@@ -39,14 +43,22 @@ export class ZamaViewComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaSignatureService: ZamaSignatureService
   ) {
-    this.privatePageTypeService.activePage = this.pages[0];
+    this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
     this.initZama();
   }
 
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe(user => {
+        if (user?.address) {
+          const isUpdated = this.zamaSignatureService.updateSignatureFromStore(user?.address);
+          if (isUpdated) {
+            this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
+            return;
+          }
+        }
+
         this.zamaSignatureService.resetSignature();
         this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
       });
@@ -58,5 +70,9 @@ export class ZamaViewComponent {
 
   public onPageSelect(page: PageType): void {
     this.privatePageTypeService.activePage = page;
+  }
+
+  ngOnDestroy(): void {
+    this.zamaFacadeService.removeSubs();
   }
 }

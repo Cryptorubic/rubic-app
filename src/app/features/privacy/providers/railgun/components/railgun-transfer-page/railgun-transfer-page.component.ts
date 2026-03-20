@@ -155,12 +155,12 @@ export class RailgunTransferPageComponent implements OnInit {
                   [wallet.id],
                   [token.blockchain as RailgunSupportedChain]
                 );
-              }, 70_000);
+              }, 130_000);
             }
           }
         ],
         swapType: 'transfer',
-        dstTokenAmount: token.stringWeiAmount
+        dstTokenAmount: token.tokenAmount.toFixed()
       });
 
       await firstValueFrom(preview$);

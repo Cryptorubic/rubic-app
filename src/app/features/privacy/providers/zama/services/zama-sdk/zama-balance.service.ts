@@ -39,6 +39,10 @@ export class ZamaBalanceService {
 
   public readonly balances$ = this._balances$.asObservable();
 
+  public clearBalances(): void {
+    this._balances$.next({});
+  }
+
   public async refreshBalances(): Promise<void> {
     try {
       const promises = ZAMA_SUPPORTED_CHAINS.map(chain =>

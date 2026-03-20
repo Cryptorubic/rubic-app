@@ -10,11 +10,29 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
-export class ZamaActionButtonService extends PrivateActionButtonService {
+export class HinkalActionButtonService extends PrivateActionButtonService {
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
       filter(Boolean),
       switchMap(page => {
+        if (page.type === 'swap') {
+          return combineLatest([
+            this.walletConnector.networkChange$,
+            this.privateSwapWindowService.swapInfo$,
+            this._receiverAddress$
+          ]).pipe(
+            switchMap(([network, swapInfo, receiver]) => {
+              return this.getButtonState(
+                network,
+                swapInfo.fromAsset,
+                swapInfo.fromAmount,
+                receiver,
+                page
+              );
+            })
+          );
+        }
+
         let asset$: Observable<BalanceToken>;
         let assetAmount$: Observable<SwapAmount>;
 
@@ -69,29 +87,10 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    // if (asset.decimals > 6) {
-    //   const stringAmount = assetAmount.actualValue.toFixed();
-    //   const decimalsLength = stringAmount.split('.')[1]?.length ?? 0;
-
-    //   if (decimalsLength > 6) {
-    //     return {
-    //       type: 'error',
-    //       text: 'Max 6 decimals allowed'
-    //     };
-    //   }
-    // }
-
     if (asset.amount.lt(assetAmount.visibleValue)) {
       return {
         type: 'error',
         text: 'Insufficient balance'
-      };
-    }
-
-    if (currPage.type === 'hide' && assetAmount.actualValue.lt('0.000001')) {
-      return {
-        type: 'error',
-        text: `Min amount is 0.000001 ${asset.symbol}`
       };
     }
 
@@ -110,7 +109,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
       if (!isAddressCorrect) {
         return {
           type: 'error',
-          text: 'Enter correct receiver address'
+          text: 'Incorrect receiver address'
         };
       }
     }

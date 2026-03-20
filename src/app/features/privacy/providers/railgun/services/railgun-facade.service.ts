@@ -648,7 +648,10 @@ export class RailgunFacadeService {
 
   private handleBalanceUpdate(eventData: RailgunBalancesEvent): void {
     try {
-      console.log(eventData);
+      console.log(
+        `Balances for ${eventData.chain.id} for ${eventData.balanceBucket}:`,
+        eventData.erc20Amounts
+      );
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;
@@ -674,7 +677,6 @@ export class RailgunFacadeService {
 
   private handleUtxoScanUpdate(eventData: MerkletreeScanUpdateEvent): void {
     try {
-      console.log(eventData);
       const blockchain = BlockchainsInfo.getBlockchainNameById(
         eventData.chain.id
       ) as RailgunSupportedChain;

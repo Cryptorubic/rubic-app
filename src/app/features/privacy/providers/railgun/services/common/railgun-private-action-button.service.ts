@@ -13,6 +13,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { map } from 'rxjs/operators';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Injectable()
 export class RailgunPrivateActionButtonService extends PrivateActionButtonService {
@@ -64,7 +65,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.errorService.tradeError$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
-            this.hideWindowService.hideAsset$.pipe(
+            this.privateTransferWindowService.transferAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
                 this.fromAssetsService.assetListType$.pipe(
@@ -89,7 +90,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.revealWindowService.revealAmount$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
-            this.hideWindowService.hideAsset$.pipe(
+            this.revealWindowService.revealAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
                 this.fromAssetsService.assetListType$.pipe(
@@ -111,7 +112,11 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     );
 
   private connectWallet(): void {
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService
+      .openWalletModal(this.injector, {
+        providers: [WALLET_NAME.METAMASK, WALLET_NAME.WALLET_CONNECT]
+      })
+      .subscribe();
   }
 
   private async getShieldingState(

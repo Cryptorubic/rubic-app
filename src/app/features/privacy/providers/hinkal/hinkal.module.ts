@@ -21,6 +21,7 @@ import { HinkalWalletInfoComponent } from './components/hinkal-wallet-info/hinka
 import { TuiButtonModule, TuiNotificationModule } from '@taiga-ui/core';
 import { HinkalWorkerService } from './services/hinkal-sdk/hinkal-worker.service';
 import { HinkalLoginPageComponent } from './components/hinkal-login-page/hinkal-login-page.component';
+import { HinkalActionButtonService } from './services/hinkal-action-button.service';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { HinkalLoginPageComponent } from './components/hinkal-login-page/hinkal-
     HinkalFacadeService,
     HinkalQuoteService,
     HinkalSwapTokensFacadeService,
-    HinkalWorkerService
+    HinkalWorkerService,
+    HinkalActionButtonService
   ]
 })
 export class HinkalModule {}

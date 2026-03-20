@@ -65,15 +65,12 @@ export class HinkalFacadeService {
     });
   }
 
-  public async deposit(
-    tokenAmount: TokenAmount<EvmBlockchainName>,
-    receiverPrivateShieldedKey?: string
-  ): Promise<void> {
+  public async deposit(tokenAmount: TokenAmount<EvmBlockchainName>): Promise<void> {
     if (tokenAmount.blockchain !== this.walletConnectorService.network) {
       await this.walletConnectorService.switchChain(tokenAmount.blockchain);
     }
 
-    const isSuccess = await this.hinkalSwapService.deposit(tokenAmount, receiverPrivateShieldedKey);
+    const isSuccess = await this.hinkalSwapService.deposit(tokenAmount);
 
     if (isSuccess) {
       this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');

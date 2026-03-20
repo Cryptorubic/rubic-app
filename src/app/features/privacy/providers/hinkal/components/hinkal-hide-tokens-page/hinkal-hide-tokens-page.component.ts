@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
-import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
-import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
-import { firstValueFrom, map, switchMap } from 'rxjs';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 
 @Component({
   selector: 'app-hinkal-hide-tokens-page',
@@ -17,6 +16,7 @@ import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
   styleUrls: ['./hinkal-hide-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     {
       provide: FromAssetsService,
       useClass: HinkalPrivateAssetsService
@@ -26,19 +26,30 @@ import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 export class HinkalHideTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
 
-  public readonly shieldedTokens$ = this.hinkalFacadeService.activeChain$.pipe(
-    switchMap(chain =>
-      this.hinkalRevealFacade
-        .getTokensList(chain, '', 'from', this.formService.inputValue)
-        .pipe(map(tokens => tokens.filter(token => token.amount.gt(0))))
-    )
-  );
+  public readonly creationConfig = {
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true,
+    withMaxBtn: true
+  };
 
   constructor(
-    private readonly hinkalRevealFacade: HinkalRevealFacadeService,
-    private readonly formService: SwapsFormService,
-    private readonly hinkalFacadeService: HinkalFacadeService
+    private readonly hinkalFacadeService: HinkalFacadeService,
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privateActionButtonService: PrivateActionButtonService
   ) {}
+
+  ngOnInit(): void {
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.privateActionButtonService.setReceiverAddress(address);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
@@ -46,14 +57,9 @@ export class HinkalHideTokensPageComponent {
         steps: [
           {
             label: 'Shield',
-            action: () =>
-              this.hinkalFacadeService.deposit(
-                token as TokenAmount<EvmBlockchainName>,
-                this.receiverCtrl.value
-              )
+            action: () => this.hinkalFacadeService.deposit(token as TokenAmount<EvmBlockchainName>)
           }
-        ],
-        warnings: HINKAL_WARNINGS
+        ]
       });
       await firstValueFrom(preview$);
     } finally {
