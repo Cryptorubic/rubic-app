@@ -4,16 +4,20 @@ import { ZamaSupportedTokens } from '../models/zama-supported-tokens';
 export const ZAMA_SUPPORTED_TOKENS: ZamaSupportedTokens = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     {
+      tokenAddress: '0x0000000000000000000000000000000000000000',
+      shieldedTokenAddress: '0xda9396b82634Ea99243cE51258B6A5Ae512D4893' // ERC7984 WETH
+    },
+    {
+      tokenAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      shieldedTokenAddress: '0xda9396b82634Ea99243cE51258B6A5Ae512D4893'
+    },
+    {
       tokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       shieldedTokenAddress: '0xe978F22157048E5DB8E5d07971376e86671672B2'
     },
     {
       tokenAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       shieldedTokenAddress: '0xAe0207C757Aa2B4019Ad96edD0092ddc63EF0c50'
-    },
-    {
-      tokenAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      shieldedTokenAddress: '0xda9396b82634Ea99243cE51258B6A5Ae512D4893'
     },
     {
       tokenAddress: '0xBA2C598E11eD093079cC324FCa5BbbA99F616E83',

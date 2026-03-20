@@ -9,13 +9,21 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
+import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
 
 @Component({
   selector: 'app-hinkal-view',
   templateUrl: './hinkal-view.component.html',
   styleUrls: ['./hinkal-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [
+    TuiDestroyService,
+    {
+      provide: PrivateActionButtonService,
+      useClass: HinkalActionButtonService
+    }
+  ]
 })
 export class HinkalViewComponent {
   public readonly activePage$ = this.privatePageTypeService.activePage$;

@@ -5,13 +5,16 @@ import { EvmBlockchainName } from '@cryptorubic/core';
 import { ZamaTokensService } from './zama-tokens.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { ZamaInstanceService } from './zama-instance.service';
+import { StoreService } from '@app/core/services/store/store.service';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class ZamaSignatureService {
   constructor(
     private readonly zamaTokensService: ZamaTokensService,
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly zamaInstanceService: ZamaInstanceService
+    private readonly zamaInstanceService: ZamaInstanceService,
+    private readonly storeService: StoreService
   ) {}
 
   private readonly _signatureInfo$ = new BehaviorSubject<SignatureInfo | null>(null);
@@ -35,7 +38,8 @@ export class ZamaSignatureService {
         token => token.shieldedTokenAddress
       );
 
-      const startTimeStamp = Math.floor(Date.now() / 1000);
+      const startDate = Date.now();
+      const startTimeStamp = Math.floor(startDate / 1000);
       const durationDays = 10;
 
       const zamaInstance = this.zamaInstanceService.getInstance(blockchain);
@@ -67,12 +71,42 @@ export class ZamaSignatureService {
         privateKey: keyPair.privateKey,
         publicKey: keyPair.publicKey,
         durationDays,
-        startTimeStamp
+        startTimeStamp,
+        expiredAtMs: new BigNumber(startDate).plus(10 * 86_400_000).toFixed(0)
       });
+
+      this.saveSignatureInfo(this.signatureInfo, userAddress);
+
       return true;
     } catch (err) {
       console.error('FAILED TO UPDATE SIGNATURE', err);
       return false;
     }
+  }
+
+  public updateSignatureFromStore(userAddress: string): boolean {
+    const signatureInfo = this.getSignature(userAddress);
+
+    if (!signatureInfo) return false;
+
+    const expiredAtMs = new BigNumber(signatureInfo.expiredAtMs);
+
+    if (expiredAtMs.lte(Date.now())) return false;
+
+    this._signatureInfo$.next(signatureInfo);
+
+    return true;
+  }
+
+  private getSignature(userAddress: string): SignatureInfo | null {
+    return this.storeService.getItem('ZAMA_SIGNATURES_INFO')?.[userAddress.toLowerCase()] || null;
+  }
+
+  private saveSignatureInfo(info: SignatureInfo, userAddress: string): void {
+    const signatures = this.storeService.getItem('ZAMA_SIGNATURES_INFO') || {};
+
+    signatures[userAddress.toLowerCase()] = info;
+
+    this.storeService.setItem('ZAMA_SIGNATURES_INFO', signatures);
   }
 }
