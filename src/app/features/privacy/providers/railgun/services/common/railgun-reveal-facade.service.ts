@@ -9,7 +9,7 @@ import { inject } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { RailgunERC20Amount } from '@railgun-community/shared-models';
 
 export class RailgunRevealFacadeService extends TokensFacadeService {
   private readonly railgunFacade = inject(RailgunFacadeService);
@@ -34,8 +34,10 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
               map(tokens => {
                 return tokens
                   .filter(token => {
-                    const isAvailable = availableTokensForBlockchains.some(availableToken =>
-                      compareAddresses(availableToken.tokenAddress, token.address)
+                    const isAvailable = availableTokensForBlockchains.some(
+                      availableToken =>
+                        compareAddresses(availableToken.tokenAddress, token.address) &&
+                        availableToken.amount > 0n
                     );
                     return isAvailable;
                   })
@@ -58,7 +60,7 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
               return [];
             }
 
-            return record.Spendable.erc20Amounts.map((token: RubicAny) => ({
+            return record.Spendable.erc20Amounts.map((token: RailgunERC20Amount) => ({
               tokenAddress: token.tokenAddress,
               amount: token.amount,
               blockchain
@@ -71,7 +73,8 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
                   const isAvailable = availableTokens.some(
                     availableToken =>
                       compareAddresses(availableToken.tokenAddress, token.address) &&
-                      availableToken.blockchain === token.blockchain
+                      availableToken.blockchain === token.blockchain &&
+                      availableToken.amount > 0n
                   );
                   return isAvailable;
                 })

@@ -155,7 +155,7 @@ export class RailgunTransferPageComponent implements OnInit {
                   [wallet.id],
                   [token.blockchain as RailgunSupportedChain]
                 );
-              }, 70_000);
+              }, 130_000);
             }
           }
         ],
