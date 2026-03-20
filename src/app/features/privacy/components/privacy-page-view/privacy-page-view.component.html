@@ -10,10 +10,7 @@
   } as state"
 >
   <div class="form-and-activity">
-    <app-tab-bar
-      [tabs]="['Swap', 'Bridge', 'Transfer']"
-      (tabClicked)="handleTabSelected($event)"
-    ></app-tab-bar>
+    <app-tab-bar [tabs]="tabs" (tabClicked)="handleTabSelected($event)"></app-tab-bar>
 
     <app-swap-window
       [quoteAdapter]="quoteAdapter"
@@ -25,10 +22,10 @@
       [receiverCtrl]="receiverCtrl"
     ></app-swap-window>
 
-    <app-last-private-activity
+    <!-- <app-last-private-activity
       [activityList]="state.lastActivity"
       (itemClicked)="handleLastActivityClicked($event)"
-    ></app-last-private-activity>
+    ></app-last-private-activity> -->
   </div>
 
   <app-private-providers-list-general
