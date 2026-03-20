@@ -110,7 +110,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
       if (!isAddressCorrect) {
         return {
           type: 'error',
-          text: 'Incorrect receiver address'
+          text: 'Enter correct receiver address'
         };
       }
     }
