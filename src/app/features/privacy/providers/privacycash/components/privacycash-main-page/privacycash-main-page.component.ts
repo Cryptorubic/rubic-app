@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Self, inject } from '@angular/core';
 import { Observable, combineLatestWith, filter, map, takeUntil } from 'rxjs';
 import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
@@ -22,7 +22,7 @@ import { PrivacycashActionButtonService } from '../../services/common/action-but
     { provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }
   ]
 })
-export class PrivacycashMainPageComponent implements OnInit {
+export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
   private readonly ephemeralWalletTokensService = inject(EphemeralWalletTokensService);
@@ -45,6 +45,8 @@ export class PrivacycashMainPageComponent implements OnInit {
       })
     );
 
+  public readonly privateBalanceLoading$ = this.privacycashTokensService.loading$;
+
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privatePageTypeService: PrivatePageTypeService
@@ -53,11 +55,20 @@ export class PrivacycashMainPageComponent implements OnInit {
       this.pages.find(page => page.type === 'login') || this.pages[0];
   }
 
+  ngOnDestroy(): void {
+    this.privacycashTokensService.abortController.abort();
+  }
+
   ngOnInit(): void {
     this.walletConnectorService.addressChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(userAddr => {
-        if (!userAddr) this.privacycashSignatureService.removeSignature();
+        if (userAddr) {
+          this.privacycashTokensService.resetAbortController();
+        } else {
+          this.privacycashTokensService.abortController.abort();
+          this.privacycashSignatureService.removeSignature();
+        }
       });
 
     this.privacycashSignatureService.signature$
