@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  Self
+  Self,
+  TemplateRef
 } from '@angular/core';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -40,6 +42,9 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   @Output() public handleAssetSelection = new EventEmitter<void>();
+
+  @ContentChild('emptySelector', { read: TemplateRef })
+  emptySelectorTemplate?: TemplateRef<unknown>;
 
   public visibleAsset: AssetSelector | null = null;
 

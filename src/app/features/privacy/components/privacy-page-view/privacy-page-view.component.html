@@ -12,7 +12,7 @@
   <div class="form-and-activity">
     <app-tab-bar [tabs]="tabs" (tabClicked)="handleTabSelected($event)"></app-tab-bar>
 
-    <app-swap-window
+    <app-private-page-swap
       [quoteAdapter]="quoteAdapter"
       [creationConfig]="
         state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
@@ -20,7 +20,7 @@
       [clearOutput]="state.clearOutput"
       (formChanged)="handleSwapWindowChanged($event)"
       [receiverCtrl]="receiverCtrl"
-    ></app-swap-window>
+    ></app-private-page-swap>
 
     <!-- <app-last-private-activity
       [activityList]="state.lastActivity"

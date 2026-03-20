@@ -28,6 +28,15 @@
   </ng-container>
 
   <ng-template #emptySelector>
+    <ng-container
+      *ngTemplateOutlet="
+        emptySelectorTemplate || defaultEmptySelector;
+        context: { emptySelectorText: emptySelectorText, isDisabled: isDisabled }
+      "
+    ></ng-container>
+  </ng-template>
+
+  <ng-template #defaultEmptySelector>
     <div class="selector__empty">
       <div class="selector__empty-container">
         {{ emptySelectorText }}
