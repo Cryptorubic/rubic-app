@@ -65,7 +65,10 @@ export class HinkalSwapService {
     try {
       const resp = await this.hinkalWorker.request({
         type: 'withdraw',
-        token
+        token: {
+          ...token,
+          stringWeiAmount: token.stringWeiAmount
+        }
       });
       console.log(resp);
       // await this.refreshAndUpdateSnapshot(blockchainId[token.blockchain]);
