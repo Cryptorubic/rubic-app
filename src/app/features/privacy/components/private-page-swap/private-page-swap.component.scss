@@ -1,5 +1,43 @@
 @use 'src/scss/core' as *;
 
+.providers-switcher-wrapper {
+  display: flex;
+  justify-content: end;
+  padding: 18px 28px 17px 0;
+
+  background: var(--tui-secondary);
+  border-radius: 20px 20px 0 0;
+}
+
+.providers-switcher-container {
+  display: flex;
+  gap: 8px;
+
+  color: var(--tui-text-02);
+  font-weight: 500;
+
+  tui-toggle {
+    position: relative;
+    top: 2px;
+
+    ::ng-deep {
+      [tuiwrapper] {
+        background: var(--io-background);
+
+        .t-circle {
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+.selectors-wrapper {
+  padding: 0 12px;
+
+  background: var(--tui-secondary);
+}
+
 .selectors-container {
   position: relative;
 
@@ -64,12 +102,18 @@
   font-size: 15px;
 }
 
+.instruction-wrapper {
+  padding: 12px;
+
+  background: var(--tui-secondary);
+  border-radius: 0 0 20px 20px;
+}
+
 .instruction-container {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 12px;
   padding: 11px 0;
 
   font-weight: 500;

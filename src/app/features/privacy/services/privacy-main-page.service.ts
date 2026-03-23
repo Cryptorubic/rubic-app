@@ -9,6 +9,7 @@ import {
   forkJoin,
   map,
   of,
+  startWith,
   switchMap
 } from 'rxjs';
 import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
@@ -38,6 +39,7 @@ export class PrivacyMainPageService {
   }
 
   public readonly swapInfo$ = this.form.valueChanges.pipe(
+    startWith(this.form.value),
     distinctUntilChanged(),
     map(swapInfo => swapInfo as PrivacyFormValue)
   );
