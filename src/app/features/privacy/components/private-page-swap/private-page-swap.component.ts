@@ -82,11 +82,13 @@ export class PrivatePageSwapComponent implements OnInit {
     }
   }
 
-  @Input() set clearOutput(value: object) {
-    this.patchSwapInfo({
-      toAsset: null,
-      toAmount: { actualValue: new BigNumber(0), visibleValue: '0' }
-    });
+  @Input() set clearOutput(needClear: boolean) {
+    if (needClear) {
+      this.patchSwapInfo({
+        toAsset: null,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' }
+      });
+    }
   }
 
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
@@ -242,10 +244,7 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   private patchSwapInfo(partialSwapInfo: Partial<PrivateSwapInfo>): void {
-    this.privateSwapWindowService.swapInfo = {
-      ...this.privateSwapWindowService.swapInfo,
-      ...partialSwapInfo
-    };
+    this.privateSwapWindowService.patchSwapInfo(partialSwapInfo);
   }
 
   public openInputSelector(): void {

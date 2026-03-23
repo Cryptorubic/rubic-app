@@ -12,7 +12,7 @@ import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/
 import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
-import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/models/transfer-info';
+import { PrivateQueryParamsService } from '../../providers/shared-privacy-providers/services/query-params/private-query-params.service';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -79,7 +79,7 @@ export class PrivacyPageViewComponent {
 
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
-  private readonly _clearOutput$ = new BehaviorSubject<object>({});
+  private readonly _clearOutput$ = new BehaviorSubject<boolean>(false);
 
   public readonly clearOutput$ = this._clearOutput$.asObservable();
 
@@ -87,7 +87,8 @@ export class PrivacyPageViewComponent {
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    private readonly privacyMainPageService: PrivacyMainPageService
+    private readonly privacyMainPageService: PrivacyMainPageService,
+    private readonly privateQueryParamsService: PrivateQueryParamsService
   ) {}
 
   public handleTabSelected(tab: PrivateModeTab): void {
@@ -96,7 +97,7 @@ export class PrivacyPageViewComponent {
       this.privacyMainPageService.patchFormValue({
         toAsset: swapInfo.fromAsset
       });
-      this._clearOutput$.next({});
+      this._clearOutput$.next(true);
     }
     this.privacyMainPageService.setSelectedTab(tab);
   }
@@ -106,22 +107,22 @@ export class PrivacyPageViewComponent {
       fromAsset: swapInfo.fromAsset,
       toAsset: swapInfo.toAsset
     });
-  }
-
-  public handleTransferWindowChanged(transferInfo: PrivateTransferInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: transferInfo.fromAsset,
-      toAsset: transferInfo.fromAsset
-    });
+    this.privateQueryParamsService.setQueryParams(swapInfo);
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {
     const url = PRIVATE_MODE_URLS[tradeType];
-    await this.router.navigate([url], { relativeTo: this.activatedRoute });
+    await this.router.navigate([url], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge'
+    });
   }
 
   public async handleLastActivityClicked(activityItem: PrivateActivityItem): Promise<void> {
     const url = PRIVATE_MODE_URLS[activityItem.providerName as PrivateTradeType];
-    await this.router.navigate([url], { relativeTo: this.activatedRoute });
+    await this.router.navigate([url], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge'
+    });
   }
 }

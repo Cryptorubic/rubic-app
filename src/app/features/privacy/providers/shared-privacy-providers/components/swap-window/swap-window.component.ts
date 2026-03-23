@@ -239,10 +239,7 @@ export class SwapWindowComponent implements OnInit {
   }
 
   private patchSwapInfo(partialSwapInfo: Partial<PrivateSwapInfo>): void {
-    this.privateSwapWindowService.swapInfo = {
-      ...this.privateSwapWindowService.swapInfo,
-      ...partialSwapInfo
-    };
+    this.privateSwapWindowService.patchSwapInfo(partialSwapInfo);
   }
 
   public openInputSelector(): void {

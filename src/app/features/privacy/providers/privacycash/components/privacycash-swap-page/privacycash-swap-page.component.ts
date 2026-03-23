@@ -8,7 +8,7 @@ import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceToken, PriceTokenAmount, Token, nativeTokensList } from '@cryptorubic/core';
+import { PriceTokenAmount, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -84,14 +84,18 @@ export class PrivacycashSwapPageComponent {
       );
 
       // if src chain is not SOLANA - preview-swap data can be broken
-      const nativeToken = nativeTokensList[swapInfo.fromAsset.blockchain];
-      const [withdrawalFee, nativePrice] = await Promise.all([
-        this.privacycashSwapService.estimateDirectWithdrawFee(
-          toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
-          swapInfo.fromAmount.actualValue
-        ),
-        this.tokenService.getTokenPrice(nativeToken)
-      ]);
+      // const nativeToken = nativeTokensList[swapInfo.fromAsset.blockchain];
+      // const [withdrawalFee, nativePrice] = await Promise.all([
+      //   this.privacycashSwapService.estimateDirectWithdrawFee(
+      //     toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
+      //     swapInfo.fromAmount.actualValue
+      //   ),
+      //   this.tokenService.getTokenPrice(nativeToken)
+      // ]);
+      const withdrawalFee = await this.privacycashSwapService.estimateDirectWithdrawFee(
+        toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
+        swapInfo.fromAmount.actualValue
+      );
       const srcTokenFeePercent = withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4);
 
       const preview$ = openPreview({
@@ -108,10 +112,6 @@ export class PrivacycashSwapPageComponent {
         ],
         feeInfo: {
           provider: {
-            cryptoFee: {
-              amount: new BigNumber(0.006),
-              token: new PriceToken({ ...nativeToken, price: nativePrice })
-            },
             platformFee: {
               percent: srcTokenFeePercent.toNumber(),
               token: new PriceTokenAmount({

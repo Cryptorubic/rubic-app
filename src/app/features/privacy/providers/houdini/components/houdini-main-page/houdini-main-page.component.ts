@@ -18,6 +18,9 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { houdiniFormConfig } from '../../constants/form-config';
 import { FormControl } from '@angular/forms';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { PrivateSwapInfo } from '../../../shared-privacy-providers/models/swap-info';
+import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -57,6 +60,9 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly houdiniTokensFacade: HoudiniTokensFacadeService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService,
+    private readonly privateQueryParamsService: PrivateQueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.privatePageTypeService.activePage = {
@@ -66,6 +72,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.parseQueryParams();
     this.receiverCtrl.valueChanges
       .pipe(
         startWith(this.receiverCtrl.value),
@@ -101,5 +108,14 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     } finally {
       loadingCallback();
     }
+  }
+
+  private parseQueryParams(): void {
+    this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(
+      this.houdiniTokensFacade.tokens,
+      (swapInfo: PrivateSwapInfo) => {
+        this.privateSwapWindowService.patchSwapInfo(swapInfo);
+      }
+    );
   }
 }

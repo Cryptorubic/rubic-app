@@ -60,7 +60,6 @@ import { PrivateActionButtonComponent } from '@app/features/privacy/providers/sh
 import { SwitchNetworkPageComponent } from './components/switch-network-page/switch-network-page.component';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
-import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { LoginWindowComponent } from './components/login-window/login-window.component';
 import { HideWindowService } from './services/hide-window-service/hide-window.service';
 import { RevealWindowService } from './services/reveal-window/reveal-window.service';
@@ -68,6 +67,7 @@ import { DepositStatusInfoComponent } from './components/deposit-status-info/dep
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { DepositPrivateTradeInfoComponent } from './components/deposit-private-trade-info/deposit-private-trade-info.component';
 import { PrivateRefundWindowService } from './services/private-refund-window/private-refund-window.service';
+import { PrivateQueryParamsService } from './services/query-params/private-query-params.service';
 
 @NgModule({
   declarations: [
@@ -153,10 +153,10 @@ import { PrivateRefundWindowService } from './services/private-refund-window/pri
     PrivateActionButtonService,
     PrivatePageTypeService,
     PrivateTransferWindowService,
-    PrivateSwapWindowService,
     HideWindowService,
     RevealWindowService,
-    PrivateRefundWindowService
+    PrivateRefundWindowService,
+    PrivateQueryParamsService
   ]
 })
 export class SharedPrivacyProvidersModule {}

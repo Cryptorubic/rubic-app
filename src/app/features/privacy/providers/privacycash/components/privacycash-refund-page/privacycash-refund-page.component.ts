@@ -4,7 +4,6 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { firstValueFrom } from 'rxjs';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { EphemeralWalletTokensFacadeService } from '../../services/common/token-facades/ephemeral-wallet-tokens-facade.service';
@@ -14,6 +13,7 @@ import { PrivateTransferWindowService } from '../../../shared-privacy-providers/
 import { PrivateRefundWindowService } from '../../../shared-privacy-providers/services/private-refund-window/private-refund-window.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
   selector: 'app-privacycash-refund-page',
@@ -21,7 +21,7 @@ import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts'
   styleUrls: ['./privacycash-refund-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: EphemeralWalletTokensFacadeService },
     { provide: PrivateTransferWindowService, useExisting: PrivateRefundWindowService }
   ]
