@@ -186,15 +186,7 @@ export class HinkalWorkerSwapService {
         [false, true],
         ops,
         [fromTokenChanges, toTokenChanges],
-        subAccount,
-        undefined,
-        undefined,
-        undefined,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        false
+        subAccount
       )) as RelayerTransaction;
 
       return res.transactionHash;
