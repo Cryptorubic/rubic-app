@@ -22,7 +22,7 @@ export class HinkalBalanceService {
   public readonly balances$ = this._balances$.asObservable();
 
   public initBalancePolling(): Subscription {
-    return timer(0, 20000)
+    return timer(0, 600000)
       .pipe(
         withLatestFrom(this.isPollingActive$),
         filter(([_, isPollingActive]) => isPollingActive),

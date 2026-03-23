@@ -32,7 +32,7 @@ export class HinkalWorkerSnapshotService {
   }
 
   public async switchSnapshot(chainId: number): Promise<void> {
-    await this.updateSnapshot(this.hinkal, chainId);
+    //await this.updateSnapshot(this.hinkal, chainId);
     await this.hinkal.resetMerkleTreesIfNecessary();
     //await this.hinkal.getEventsFromHinkal();
     await this.saveSnapshot(chainId);

@@ -14,9 +14,23 @@ import {
   WorkerParams
 } from './models/worker-params';
 import { Mutex } from 'async-mutex';
+import { EventType } from '@hinkal/common';
 
 const hinkalWorkerLogic = new HinkalWorkerLogic();
 const mutex = new Mutex();
+
+process.on('message', async (event: { type: string }) => {
+  if (event.type === EventType.BalanceChange) {
+    console.log('BALANCE CHANGED EVENT', event);
+
+    await mutex.runExclusive(async () => {
+      try {
+        const balances = await hinkalWorkerLogic.balanceService.getBalances();
+        postMessage({ success: true, result: balances, type: 'updateBalance' });
+      } catch {}
+    });
+  }
+});
 
 addEventListener('message', async ({ data }: { data: WorkerParams }) => {
   await mutex.runExclusive(async () => {

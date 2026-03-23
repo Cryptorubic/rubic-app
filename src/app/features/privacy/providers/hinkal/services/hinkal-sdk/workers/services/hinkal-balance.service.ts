@@ -34,7 +34,7 @@ export class HinkalWorkerBalanceService {
         hinkal: this.hinkal,
         chainId,
         ethAddress: address,
-        resetCacheBefore: true,
+        resetCacheBefore: false,
         allowRemoteDecryption: true
       });
 
