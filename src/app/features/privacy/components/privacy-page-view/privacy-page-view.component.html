@@ -13,13 +13,10 @@
     <app-tab-bar [tabs]="tabs" (tabClicked)="handleTabSelected($event)"></app-tab-bar>
 
     <app-private-page-swap
-      [quoteAdapter]="quoteAdapter"
       [creationConfig]="
         state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
       "
       [clearOutput]="state.clearOutput"
-      (formChanged)="handleSwapWindowChanged($event)"
-      [receiverCtrl]="receiverCtrl"
     ></app-private-page-swap>
 
     <!-- <app-last-private-activity
@@ -29,7 +26,7 @@
   </div>
 
   <app-private-providers-list-general
-    *ngIf="!useLargeIframe"
+    *ngIf="!useLargeIframe && state.providers.length"
     @inOutAnimation
     [states]="state.providers"
     [selectedTradeType]="state.selectedTradeType"

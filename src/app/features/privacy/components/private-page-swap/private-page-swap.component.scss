@@ -1,6 +1,48 @@
 @use 'src/scss/core' as *;
 
-.selectros-container {
+.providers-switcher-wrapper {
+  display: flex;
+  justify-content: end;
+  padding: 18px 28px 17px 0;
+
+  background: var(--tui-secondary);
+  border-radius: 20px 20px 0 0;
+}
+
+.providers-switcher-container {
+  display: flex;
+  gap: 8px;
+
+  color: var(--tui-text-02);
+  font-weight: 500;
+
+  tui-toggle {
+    position: relative;
+    top: 2px;
+
+    ::ng-deep {
+      [tuiWrapper][data-appearance='secondary'] {
+        background: var(--io-background);
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .t-circle {
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+.selectors-wrapper {
+  padding: 0 12px;
+
+  background: var(--tui-secondary);
+}
+
+.selectors-container {
   position: relative;
 
   display: flex;
@@ -12,7 +54,7 @@
     background: var(--io-background);
 
     &:first-child {
-      padding: 12px 10px;
+      padding: 12px 10px !important;
 
       border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
     }
@@ -23,6 +65,18 @@
       padding: 12px 20px 12px 0;
 
       border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+    }
+  }
+
+  &.without-output {
+    app-asset-selector {
+      border-radius: var(--tui-radius-m);
+
+      ::ng-deep {
+        .selector {
+          width: 100%;
+        }
+      }
     }
   }
 
@@ -45,32 +99,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 250px;
+  width: 100%;
 
   color: $text-gray-2;
   font-weight: 500;
   font-size: 15px;
 }
 
-// app-form-switcher {
-//   display: flex;
-//   justify-content: center;
-//   height: 2px;
+.instruction-wrapper {
+  padding: 12px;
 
-//   background: linear-gradient(90deg,
-//   var(--io-background) 0%,
-//   rgba(0, 0, 0, 0) 50%,
-//   var(--io-background) 100%);
-// }
+  background: var(--tui-secondary);
+  border-radius: 0 0 20px 20px;
+}
 
-.buttons-container {
+.instruction-container {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  margin-top: 12px;
+  padding: 11px 0;
 
-  app-private-action-button {
-    display: block;
-    flex-grow: 1;
-  }
+  font-weight: 500;
+  font-size: 15px;
+
+  border: 1px solid var(--io-background);
+  border-radius: 17px;
 }

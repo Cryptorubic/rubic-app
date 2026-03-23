@@ -9,10 +9,8 @@ import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
 import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/models/swap-form-types';
-import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
-import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/models/transfer-info';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -99,20 +97,6 @@ export class PrivacyPageViewComponent {
       this._clearOutput$.next({});
     }
     this.privacyMainPageService.setSelectedTab(tab);
-  }
-
-  public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: swapInfo.fromAsset,
-      toAsset: swapInfo.toAsset
-    });
-  }
-
-  public handleTransferWindowChanged(transferInfo: PrivateTransferInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: transferInfo.fromAsset,
-      toAsset: transferInfo.fromAsset
-    });
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {

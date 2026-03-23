@@ -31,7 +31,7 @@
     <ng-container
       *ngTemplateOutlet="
         emptySelectorTemplate || defaultEmptySelector;
-        context: { emptySelectorText: emptySelectorText, isDisabled: isDisabled }
+        context: { emptySelectorText: emptySelectorText, isDisabled: isDisabled || isQueryDisabled }
       "
     ></ng-container>
   </ng-template>
@@ -41,12 +41,12 @@
       <div class="selector__empty-container">
         {{ emptySelectorText }}
         <img
-          *ngIf="isDisabled"
+          *ngIf="isDisabled || isQueryDisabled"
           src="assets/images/icons/arrow/arrow-down-grey.svg"
           alt="Select token"
         />
         <img
-          *ngIf="!isDisabled"
+          *ngIf="!isDisabled && !isQueryDisabled"
           src="assets/images/icons/arrow/arrow-down-white.svg"
           alt="Select token"
         />
