@@ -68,6 +68,7 @@ import { DepositStatusInfoComponent } from './components/deposit-status-info/dep
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { DepositPrivateTradeInfoComponent } from './components/deposit-private-trade-info/deposit-private-trade-info.component';
 import { PrivateRefundWindowService } from './services/private-refund-window/private-refund-window.service';
+import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @NgModule({
   declarations: [
@@ -156,7 +157,8 @@ import { PrivateRefundWindowService } from './services/private-refund-window/pri
     PrivateSwapWindowService,
     HideWindowService,
     RevealWindowService,
-    PrivateRefundWindowService
+    PrivateRefundWindowService,
+    PrivateStatisticsService
   ]
 })
 export class SharedPrivacyProvidersModule {}

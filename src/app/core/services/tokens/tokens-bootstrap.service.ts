@@ -10,13 +10,13 @@ import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-col
   providedIn: 'root'
 })
 export class TokensBootstrapService {
-  private readonly tokensStore = inject(NewTokensStoreService);
+  protected readonly tokensStore = inject(NewTokensStoreService);
 
-  private readonly apiService = inject(NewTokensApiService);
+  protected readonly apiService = inject(NewTokensApiService);
 
-  private readonly tokensCollectionsFacade = inject(TokensCollectionsFacadeService);
+  protected readonly tokensCollectionsFacade = inject(TokensCollectionsFacadeService);
 
-  private readonly _tier1TokensLoaded$ = new BehaviorSubject<boolean>(false);
+  protected readonly _tier1TokensLoaded$ = new BehaviorSubject<boolean>(false);
 
   public readonly tier1TokensLoaded$ = this._tier1TokensLoaded$.asObservable();
 
@@ -42,7 +42,7 @@ export class TokensBootstrapService {
     });
   }
 
-  private async buildTier1List(): Promise<Token[]> {
+  protected async buildTier1List(): Promise<Token[]> {
     const tokens = await firstValueFrom(this.apiService.getTopTokens());
     Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
       this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);

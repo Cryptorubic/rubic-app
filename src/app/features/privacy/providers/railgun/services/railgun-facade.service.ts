@@ -258,14 +258,10 @@ export class RailgunFacadeService {
       }
     };
 
-    this.sendWorkerRequest<void, null>('init', null)
-      .then(() => {
-        this._railgunInitialised$.next(true);
-        console.log('[RailgunFacade] Worker initialized and services started');
-      })
-      .catch(error => {
-        console.error('[RailgunFacade] Failed to initialize worker:', error);
-      });
+    this.sendWorkerRequest<void, null>('init', null).then(() => {
+      this._railgunInitialised$.next(true);
+      console.log('[RailgunFacade] Worker initialized successfully');
+    });
   }
 
   public async setupFromPassword(password: string): Promise<string> {

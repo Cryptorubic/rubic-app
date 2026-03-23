@@ -12,8 +12,8 @@ import { UserInterface } from '@core/services/auth/models/user.interface';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { map } from 'rxjs/operators';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 
 @Injectable()
 export class RailgunPrivateActionButtonService extends PrivateActionButtonService {
@@ -25,7 +25,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
 
   private readonly tokensFacade = inject(TokensFacadeService);
 
-  private readonly fromAssetsService = inject(FromAssetsService);
+  private readonly toAssetsService = inject(RailgunPrivateAssetsService);
 
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
@@ -41,7 +41,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.hideWindowService.hideAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
-                this.fromAssetsService.assetListType$.pipe(
+                this.toAssetsService.assetListType$.pipe(
                   switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
                   filter(loading => !loading)
                 )
@@ -68,7 +68,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.privateTransferWindowService.transferAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
-                this.fromAssetsService.assetListType$.pipe(
+                this.toAssetsService.assetListType$.pipe(
                   switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
                   filter(loading => !loading)
                 )
@@ -93,7 +93,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.revealWindowService.revealAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
-                this.fromAssetsService.assetListType$.pipe(
+                this.toAssetsService.assetListType$.pipe(
                   switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
                   filter(loading => !loading)
                 )

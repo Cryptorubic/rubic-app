@@ -18,6 +18,9 @@ import { RailgunSupportedChain } from '@features/privacy/providers/railgun/const
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -25,9 +28,12 @@ import { RailgunFacadeService } from '@features/privacy/providers/railgun/servic
   styleUrls: ['./railgun-transfer-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: ToAssetsService, useClass: RailgunPrivateAssetsService },
+    RailgunPrivateAssetsService,
+    { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService
+    TuiDestroyService,
+    RailgunPrivateActionButtonService,
+    { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
 })
 export class RailgunTransferPageComponent implements OnInit {
@@ -81,6 +87,10 @@ export class RailgunTransferPageComponent implements OnInit {
   public readonly loading$ = this._loading$.asObservable();
 
   public railgunFacade = inject(RailgunFacadeService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -142,6 +152,14 @@ export class RailgunTransferPageComponent implements OnInit {
                 icon: '',
                 defaultAutoCloseTime: 0
               });
+              this.privateStatisticsService.saveAction(
+                'TRANSFER',
+                'RAILGUN',
+                this.authService.userAddress,
+                token.address,
+                token.weiAmount.toFixed(),
+                token.blockchain
+              );
               setTimeout(async () => {
                 const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
                 this.railgunFacade.refreshBalances(
