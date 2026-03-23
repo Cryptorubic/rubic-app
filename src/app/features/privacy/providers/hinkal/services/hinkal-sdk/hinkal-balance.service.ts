@@ -28,9 +28,13 @@ export class HinkalBalanceService {
         filter(([_, isPollingActive]) => isPollingActive),
         switchMap(() => {
           console.log('FETCH BALANCE');
-          return this.workerService.request<void>({
-            type: 'updateBalance'
-          });
+          return this.workerService.request<void>(
+            {
+              type: 'updateBalance',
+              params: {}
+            },
+            false
+          );
         })
       )
       .subscribe();
@@ -39,7 +43,8 @@ export class HinkalBalanceService {
   public subscribeOnBalancePolling(): Subscription {
     return this.workerService
       .subscribeOnEvent<HinkalPrivateBalance>({
-        type: 'updateBalance'
+        type: 'updateBalance',
+        params: {}
       })
       .pipe(tap(v => console.log('BALANCE HANDLED', v)))
       .subscribe(balances => {
@@ -49,47 +54,4 @@ export class HinkalBalanceService {
         });
       });
   }
-
-  // public async refreshBalances(chains: EvmBlockchainName[]): Promise<void> {
-  //   try {
-  //     const ethAddress = this.authService.userAddress;
-
-  //     if (!ethAddress) {
-  //       this._balances$.next({});
-  //       return;
-  //     }
-
-  //     const promises = chains.map(chain => {
-  //       return this.fetcPrivateBalances(chain, ethAddress);
-  //     });
-
-  //     const balances = await Promise.all(promises);
-
-  //     this._balances$.next(Object.fromEntries(chains.map((chain, i) => [chain, balances[i]])));
-  //   } catch (err) {
-  //     console.error('FAILED TO REFRESH HINKAL BALANCES', err);
-  //   }
-  // }
-
-  // private async fetcPrivateBalances(
-  //   blockchain: EvmBlockchainName,
-  //   address: string
-  // ): Promise<{ tokenAddress: string; amount: BigNumber }[]> {
-  //   try {
-  //     const workerParams: WorkerParams = {
-  //       chainId: blockchainId[blockchain],
-  //       address,
-  //       type: 'fetchBalance'
-  //     };
-
-  //     const resp = await this.workerService.request<{ tokenAddress: string; amount: BigNumber }[]>(
-  //       workerParams
-  //     );
-
-  //     return resp;
-  //   } catch (err) {
-  //     console.error('FAILED TO FETCH HINKAL BALANCE', err);
-  //     return [];
-  //   }
-  // }
 }

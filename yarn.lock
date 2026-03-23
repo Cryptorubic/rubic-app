@@ -3620,10 +3620,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hinkal/common@0.2.26":
-  version "0.2.26"
-  resolved "https://registry.yarnpkg.com/@hinkal/common/-/common-0.2.26.tgz#fd461fb554e744b23497cb7d5a4a23b2de2fb5b3"
-  integrity sha512-pBLOipqhkbrGdX9tnHPqI6wLJCxzvYNdAFwgRujPMQWv4JhpB/3hBsg8v80CkbJ8PhjJqDfAaQ4HsNEezl9xBw==
+"@hinkal/common@0.2.27":
+  version "0.2.27"
+  resolved "https://registry.yarnpkg.com/@hinkal/common/-/common-0.2.27.tgz#a2936c4d87be35e1f53d69b865f0747d61ede617"
+  integrity sha512-idoG/JNmPKl7NxopRVze/vzlIt1M/JuZfhnQ5qKlkLsZWJ2Q0x3ftXdmn0PM5O0N3aWh9+IpTwNO4pxErnpX4w==
   dependencies:
     "@coral-xyz/anchor" "^0.31.0"
     "@solana/spl-token" "^0.4.14"

@@ -120,7 +120,7 @@
     "socket.io-client": "^4.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "2.7.6",
-    "@hinkal/common": "0.2.26",
+    "@hinkal/common": "0.2.27",
     "walletlink": "^2.1.0",
     "zone.js": "~0.13.1"
   },

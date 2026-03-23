@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
@@ -12,6 +11,7 @@ import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.s
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -20,7 +20,7 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
   ]
 })

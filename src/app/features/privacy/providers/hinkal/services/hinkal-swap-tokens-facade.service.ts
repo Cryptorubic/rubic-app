@@ -3,7 +3,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { HinkalBalanceService } from './hinkal-sdk/hinkal-balance.service';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
-import { map, Observable, switchMap } from 'rxjs';
+import { first, forkJoin, map, Observable } from 'rxjs';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -18,26 +18,25 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    return this.balanceService.balances$.pipe(
-      switchMap(shieldedBalances => {
-        return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
-          map(tokens => {
-            const supportedTokens = tokens.map(token => {
-              const shieldedBalance = shieldedBalances[token.blockchain as EvmBlockchainName]?.find(
-                balance => compareAddresses(balance.tokenAddress, token.address)
-              );
+    return forkJoin([
+      this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(first()),
+      this.balanceService.balances$.pipe(first())
+    ]).pipe(
+      map(([tokens, shieldedBalances]) => {
+        const supportedTokens = tokens.map(token => {
+          const shieldedBalance = shieldedBalances[token.blockchain as EvmBlockchainName]?.find(
+            balance => compareAddresses(balance.tokenAddress, token.address)
+          );
 
-              return {
-                ...token,
-                amount: shieldedBalance
-                  ? Token.fromWei(shieldedBalance.amount, token.decimals)
-                  : new BigNumber(NaN)
-              };
-            });
+          return {
+            ...token,
+            amount: shieldedBalance
+              ? Token.fromWei(shieldedBalance.amount, token.decimals)
+              : new BigNumber(NaN)
+          };
+        });
 
-            return supportedTokens;
-          })
-        );
+        return supportedTokens;
       })
     );
   }

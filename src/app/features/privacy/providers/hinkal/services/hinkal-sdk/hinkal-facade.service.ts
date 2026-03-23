@@ -48,11 +48,10 @@ export class HinkalFacadeService {
   private initSubs(): void {
     //const walletSub = this.subscribeOnAddressChanged().subscribe();
     const activeNetworkSub = this.subscribeOnActiveNetworkChanged().subscribe();
-    const walletNetworkSub = this.subscribeOnWalletNetworkChanged().subscribe();
     const pollSub = this.hinkalBalanceService.initBalancePolling();
     const balanceSub = this.hinkalBalanceService.subscribeOnBalancePolling();
 
-    this.subs.push(activeNetworkSub, walletNetworkSub, pollSub, balanceSub);
+    this.subs.push(activeNetworkSub, pollSub, balanceSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -142,8 +141,7 @@ export class HinkalFacadeService {
 
       const isSuccess = await this.hinkalInstanceService.updateInstance(
         this.walletConnectorService.address,
-        this.walletConnectorService.network as EvmBlockchainName,
-        this.walletConnectorService.provider?.wallet
+        this.walletConnectorService.network as EvmBlockchainName
       );
 
       if (isSuccess) this.hinkalBalanceService.startPolling();
@@ -157,23 +155,17 @@ export class HinkalFacadeService {
       distinctUntilChanged(),
       switchMap(chain => {
         this.hinkalBalanceService.stopPolling();
+
         return this.hinkalWorkerService
           .request<void>({
-            chainId: blockchainId[chain],
-            type: 'switchNetwork',
-            address: this.walletConnectorService.address
+            params: {
+              chainId: blockchainId[chain],
+              address: this.walletConnectorService.address
+            },
+            type: 'switchNetwork'
           })
           .then(() => this.hinkalBalanceService.startPolling());
       })
-    );
-  }
-
-  private subscribeOnWalletNetworkChanged(): Observable<void> {
-    return this.walletConnectorService.networkChange$.pipe(
-      distinctUntilChanged(),
-      switchMap(() =>
-        this.hinkalInstanceService.updateAdapter(this.walletConnectorService.provider?.wallet)
-      )
     );
   }
 
