@@ -76,5 +76,7 @@ export class PrivatePageSwapComponent {
     });
   }
 
-  public switchShowAllProviders(): void {}
+  public switchShowAllProviders(value: boolean): void {
+    this.privacyMainPageService.setShowAllProviders(value);
+  }
 }

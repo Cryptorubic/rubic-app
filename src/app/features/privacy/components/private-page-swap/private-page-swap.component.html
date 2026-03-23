@@ -9,7 +9,7 @@
       <tui-toggle
         size="m"
         [ngModel]="showAllProviders"
-        (ngModelChange.stop)="switchShowAllProviders()"
+        (ngModelChange)="switchShowAllProviders($event)"
       ></tui-toggle>
     </div>
   </div>
