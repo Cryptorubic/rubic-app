@@ -7,43 +7,43 @@
 >
   <div class="selectros-container">
     <app-asset-selector
-      left
       selectorType="from"
       [asset]="state.swapInfo.fromAsset"
       [isDisabled]="state.loading"
       (handleAssetSelection)="openInputSelector()"
     >
-      <ng-template #emptySelector>
-        <ng-container *ngTemplateOutlet="assestSelectorEmpty"></ng-container>
+      <ng-template #emptySelector let-isDisabled="isDisabled">
+        <ng-container
+          *ngTemplateOutlet="assestSelectorEmpty; context: { isDisabled: isDisabled }"
+        ></ng-container>
       </ng-template>
     </app-asset-selector>
 
     <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
 
     <app-asset-selector
-      left
       selectorType="to"
       [asset]="state.swapInfo.toAsset"
+      [isDisabled]="!state.swapInfo.fromAsset || state.loading"
       (handleAssetSelection)="openOutputSelector()"
     >
-      <ng-template #emptySelector>
-        <ng-container *ngTemplateOutlet="assestSelectorEmpty"></ng-container>
+      <ng-template #emptySelector let-isDisabled="isDisabled">
+        <ng-container
+          *ngTemplateOutlet="assestSelectorEmpty; context: { isDisabled: isDisabled }"
+        ></ng-container>
       </ng-template>
     </app-asset-selector>
   </div>
 
-  <!-- <div
-    *ngIf="(creationConfig.withActionButton || creationConfig.withReceiver) && !depositTrade"
-    class="buttons-container"
-  >
-    <app-private-action-button
-      *ngIf="creationConfig.withActionButton"
-      [showLoader]="state.loading"
-      (onClick)="swap()"
-    ></app-private-action-button>
-  </div> -->
+  <div class="instruction-container">
+    {{
+      !state.swapInfo.fromAsset || !state.swapInfo.toAsset
+        ? 'Enter a pair for your swap'
+        : 'Set a provider for the next step'
+    }}
+  </div>
 </app-window-container>
 
-<ng-template #assestSelectorEmpty>
-  <div class="empty-asset-selector">Enter Chain and Token</div>
+<ng-template #assestSelectorEmpty let-isDisabled="isDisabled">
+  <div class="empty-asset-selector">{{ isDisabled ? '' : 'Select a chain and a token' }}</div>
 </ng-template>

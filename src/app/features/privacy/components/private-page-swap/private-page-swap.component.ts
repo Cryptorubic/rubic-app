@@ -278,15 +278,6 @@ export class PrivatePageSwapComponent implements OnInit {
     });
   }
 
-  public async swap(): Promise<void> {
-    this._loading$.next(true);
-    this.swapClicked.emit({
-      swapInfo: this.privateSwapWindowService.swapInfo,
-      loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal()
-    });
-  }
-
   public toggleReceiver(): void {
     this._displayReceiver$.next(!this._displayReceiver$.value);
   }

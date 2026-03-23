@@ -52,25 +52,17 @@
   font-size: 15px;
 }
 
-// app-form-switcher {
-//   display: flex;
-//   justify-content: center;
-//   height: 2px;
-
-//   background: linear-gradient(90deg,
-//   var(--io-background) 0%,
-//   rgba(0, 0, 0, 0) 50%,
-//   var(--io-background) 100%);
-// }
-
-.buttons-container {
+.instruction-container {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   margin-top: 12px;
+  padding: 11px 0;
 
-  app-private-action-button {
-    display: block;
-    flex-grow: 1;
-  }
+  font-weight: 500;
+  font-size: 15px;
+
+  border: 1px solid var(--io-background);
+  border-radius: 17px;
 }
