@@ -94,13 +94,6 @@ export class RailgunRevealPageComponent {
                   [token.blockchain as RailgunSupportedChain]
                 );
               }, 10_000);
-              setTimeout(async () => {
-                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
-                this.railgunFacade.refreshBalances(
-                  [wallet.id],
-                  [token.blockchain as RailgunSupportedChain]
-                );
-              }, 130_000);
             }
           }
         ],

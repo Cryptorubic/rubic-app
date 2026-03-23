@@ -13,12 +13,15 @@ import {
 import { waitFor } from '@cryptorubic/web3';
 import { BehaviorSubject } from 'rxjs';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class RailgunTransferService {
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly _inProgress$ = new BehaviorSubject(false);
+
+  private readonly gasService = inject(GasService);
 
   public async transferTokens(
     tokenAddress: string,
@@ -54,7 +57,7 @@ export class RailgunTransferService {
         chain,
         gasEstimate,
         true,
-        wallet
+        this.gasService
       );
 
       const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);

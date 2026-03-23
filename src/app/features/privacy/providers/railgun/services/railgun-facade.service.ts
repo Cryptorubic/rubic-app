@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { Store } from '@core/services/store/models/store';
 import {
@@ -10,7 +10,10 @@ import {
   map,
   Observable,
   of,
-  shareReplay
+  shareReplay,
+  switchMap,
+  tap,
+  timer
 } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { switchTap } from '@shared/utils/utils';
@@ -30,12 +33,12 @@ import BigNumber from 'bignumber.js';
 import { HDNodeWallet, Wallet, ContractTransaction } from 'ethers';
 import {
   getGasDetailsForTransaction,
-  getProviderWallet,
   getShieldSignature
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import {
   fromPrivateToRubicChainMap,
   fromRubicToPrivateChainMap,
+  RAILGUN_SUPPORTED_CHAINS,
   RailgunSupportedChain
 } from '@features/privacy/providers/railgun/constants/network-map';
 import {
@@ -65,9 +68,19 @@ import {
 } from '@features/privacy/providers/railgun/models/worker-types';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { filter } from 'rxjs/operators';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class RailgunFacadeService {
+  private readonly gasService = inject(GasService);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  private isRefreshing = false;
+
   private readonly _shieldedTokens$ = new BehaviorSubject<ShieldedBalanceToken[]>([]);
 
   public readonly shieldedTokens$ = this._shieldedTokens$.asObservable();
@@ -143,6 +156,25 @@ export class RailgunFacadeService {
     distinctUntilChanged()
   );
 
+  public isFirstScanCompleted$ = this.completedChains$.pipe(
+    map(completedChains => completedChains.length === RAILGUN_SUPPORTED_CHAINS.length),
+    shareReplay(shareReplayConfig)
+  );
+
+  public balanceUpdater$ = this.isFirstScanCompleted$.pipe(
+    filter(completed => completed === true),
+    switchMap(() => timer(60_000, 60_000)),
+    filter(() => !!this._railgunAccount$.value),
+    tap(() => {
+      const account = this._railgunAccount$.value;
+      if (account) {
+        console.log('[RailgunFacade] Periodic balance refresh started');
+        this.refreshBalances([account.id]);
+      }
+    }),
+    takeUntilDestroyed(this.destroyRef)
+  );
+
   public lastUsedPassword = '';
 
   public readonly balances$: Observable<
@@ -196,6 +228,7 @@ export class RailgunFacadeService {
   constructor() {
     const shieldedTokens = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
     this._shieldedTokens$.next(shieldedTokens || []);
+    this.balanceUpdater$.subscribe();
   }
 
   public initWorker(): void {
@@ -295,34 +328,42 @@ export class RailgunFacadeService {
     walletIds: string[],
     chains?: RailgunSupportedChain[]
   ): Promise<void> {
-    const chainRating: Record<RailgunSupportedChain, number> = {
-      [BLOCKCHAIN_NAME.POLYGON]: 1,
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 2,
-      [BLOCKCHAIN_NAME.ARBITRUM]: 3,
-      [BLOCKCHAIN_NAME.ETHEREUM]: 4
-    };
-    const balanceChains = (chains || Object.values(fromPrivateToRubicChainMap))
-      .map(chain => ({
-        type: 0,
-        id: blockchainId[chain],
-        chainRating: chainRating[chain]
-      }))
-      .sort((a, b) => a.chainRating - b.chainRating);
+    if (this.isRefreshing) return;
+    this.isRefreshing = true;
+    try {
+      const chainRating: Record<RailgunSupportedChain, number> = {
+        [BLOCKCHAIN_NAME.POLYGON]: 1,
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 2,
+        [BLOCKCHAIN_NAME.ARBITRUM]: 3,
+        [BLOCKCHAIN_NAME.ETHEREUM]: 4
+      };
+      const balanceChains = (chains || Object.values(fromPrivateToRubicChainMap))
+        .map(chain => ({
+          type: 0,
+          id: blockchainId[chain],
+          chainRating: chainRating[chain]
+        }))
+        .sort((a, b) => a.chainRating - b.chainRating);
 
-    for (const chain of balanceChains) {
-      try {
-        await new Promise<void>(resolve => {
-          this.syncResolvers.set(chain.id, resolve);
+      for (const chain of balanceChains) {
+        try {
+          await new Promise<void>(resolve => {
+            this.syncResolvers.set(chain.id, resolve);
 
-          this.sendWorkerRequest('refreshBalances', { chain, walletIds }).catch(() => {
-            this.syncResolvers.delete(chain.id);
-            resolve();
+            this.sendWorkerRequest('refreshBalances', { chain, walletIds }).catch(() => {
+              this.syncResolvers.delete(chain.id);
+              resolve();
+            });
           });
-        });
-      } catch (error) {
-        console.error(`[RailgunFacade] Error syncing chain ${chain.id}:`, error);
-        this.syncResolvers.delete(chain.id);
+        } catch (error) {
+          console.error(`[RailgunFacade] Error syncing chain ${chain.id}:`, error);
+          this.syncResolvers.delete(chain.id);
+        }
       }
+    } catch (err) {
+      throw err;
+    } finally {
+      this.isRefreshing = false;
     }
   }
 
@@ -451,10 +492,7 @@ export class RailgunFacadeService {
     erc20AmountRecipients: RailgunERC20AmountRecipient[]
   ): Promise<{ gasEstimate: bigint }> {
     const walletId = (await firstValueFrom(this.railgunAccount$)).id;
-    const mnemonic = await this.getMnemonic();
-    const blockchain = fromPrivateToRubicChainMap[network];
-    const { wallet } = getProviderWallet(blockchain, mnemonic);
-    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
+    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, this.gasService);
 
     return this.sendWorkerRequest<GasEstimateResponse, GasEstimateForUnshieldRequest>(
       'gasEstimateForUnshield',
@@ -534,10 +572,7 @@ export class RailgunFacadeService {
     const account = await firstValueFrom(this.railgunAccount$);
     if (!account) throw new Error('Railgun account not found');
 
-    const mnemonic = await this.getMnemonic();
-    const blockchain = fromPrivateToRubicChainMap[network];
-    const { wallet } = getProviderWallet(blockchain, mnemonic);
-    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
+    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, this.gasService);
 
     return this.sendWorkerRequest<GasEstimateResponse, GasEstimateForTransferRequest>(
       'gasEstimateForTransfer',
