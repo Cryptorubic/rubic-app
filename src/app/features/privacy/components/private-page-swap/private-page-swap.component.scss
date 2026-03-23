@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-.selectros-container {
+.selectors-container {
   position: relative;
 
   display: flex;
@@ -12,7 +12,7 @@
     background: var(--io-background);
 
     &:first-child {
-      padding: 12px 10px;
+      padding: 12px 10px !important;
 
       border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
     }
@@ -23,6 +23,18 @@
       padding: 12px 20px 12px 0;
 
       border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+    }
+  }
+
+  &.without-output {
+    app-asset-selector {
+      border-radius: var(--tui-radius-m);
+
+      ::ng-deep {
+        .selector {
+          width: 100%;
+        }
+      }
     }
   }
 
@@ -45,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 250px;
+  width: 100%;
 
   color: $text-gray-2;
   font-weight: 500;

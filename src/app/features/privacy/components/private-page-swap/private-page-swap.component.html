@@ -5,7 +5,7 @@
     displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <div class="selectros-container">
+  <div class="selectors-container" [class.without-output]="!hasOutputContainer">
     <app-asset-selector
       selectorType="from"
       [asset]="state.swapInfo.fromAsset"
@@ -22,6 +22,7 @@
     <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
 
     <app-asset-selector
+      *ngIf="hasOutputContainer"
       selectorType="to"
       [asset]="state.swapInfo.toAsset"
       [isDisabled]="!state.swapInfo.fromAsset || state.loading"
@@ -37,8 +38,10 @@
 
   <div class="instruction-container">
     {{
-      !state.swapInfo.fromAsset || !state.swapInfo.toAsset
-        ? 'Enter a pair for your swap'
+      !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
+        ? hasOutputContainer
+          ? 'Enter a pair for your swap'
+          : 'Enter a token for your transfer'
         : 'Set a provider for the next step'
     }}
   </div>
