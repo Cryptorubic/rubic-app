@@ -38,6 +38,8 @@ export class RailgunLoginPageComponent {
 
   @Input({ required: true }) public readonly railgunAddress: string;
 
+  @Input({ required: true }) public readonly loading: boolean;
+
   // @Input() set exitAccount(value: unknown) {
   //   this.hasAccount = false;
   // }

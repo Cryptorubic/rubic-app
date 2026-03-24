@@ -19,6 +19,7 @@ import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 import { Web3Pure } from '@cryptorubic/web3';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class HideService {
@@ -27,6 +28,8 @@ export class HideService {
   private readonly authService = inject(AuthService);
 
   private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
+
+  private readonly gasService = inject(GasService);
 
   /**
    * Ensures allowances for all ERC-20 transfers in the shield request.
@@ -87,7 +90,7 @@ export class HideService {
       network,
       gasEstimate,
       sendWithPublicWallet,
-      wallet
+      this.gasService
     );
 
     // 4) Populate shield transaction
@@ -125,7 +128,7 @@ export class HideService {
       network,
       gasEstimate,
       sendWithPublicWallet,
-      wallet
+      this.gasService
     );
 
     const shieldPrivateKey = await getShieldSignature(wallet);

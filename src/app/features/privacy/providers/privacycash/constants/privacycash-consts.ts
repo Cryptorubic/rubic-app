@@ -11,7 +11,9 @@ export const addr_to_symbol_map: Record<string, string> = {
   [WRAP_SOL_ADDRESS.toLowerCase()]: 'sol',
   ['Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'.toLowerCase()]: 'usdt',
   ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'.toLowerCase()]: 'usdc',
-  ['FLJYGHpCCcfYUdzhcfHSeSd2peb5SMajNWaCsRnhpump'.toLowerCase()]: 'store'
+  ['sTorERYB6xAZ1SSbwpK3zoK2EEwbBrc7TZAzg1uCGiH'.toLowerCase()]: 'store',
+  ['oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp'.toLowerCase()]: 'ore',
+  ['A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS'.toLowerCase()]: 'zec'
 };
 
 export const PRIVACYCASH_SYMBOL_TO_ADDR_MAP = Object.entries(addr_to_symbol_map).reduce(

@@ -76,7 +76,7 @@ export class TransferTokensWindowComponent implements OnInit {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.privateTransferWindowService.transferAsset = selectedToken;
       });
