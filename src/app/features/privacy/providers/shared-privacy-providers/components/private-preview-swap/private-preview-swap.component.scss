@@ -242,3 +242,28 @@ app-swap-data-element ::ng-deep {
     text-align: center;
   }
 }
+
+.loader {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    margin-top: 6px;
+
+    background-color: #333;
+    border-radius: 50%;
+
+    animation: pulse 1.4s infinite linear;
+    &:nth-child(3) { animation-delay: 0.2s; };
+    &:nth-child(4) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
+}

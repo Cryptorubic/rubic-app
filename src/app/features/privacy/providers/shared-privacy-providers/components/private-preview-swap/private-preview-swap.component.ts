@@ -142,7 +142,7 @@ export class PrivatePreviewSwapComponent {
 
   private setLoadingState(): void {
     this._currentStep$.next({
-      label: 'Transaction in process ...',
+      label: 'Transaction in process',
       action: async () => {},
       disabled: true
     });
