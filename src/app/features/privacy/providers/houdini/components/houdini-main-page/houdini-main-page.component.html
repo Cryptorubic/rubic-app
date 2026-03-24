@@ -4,22 +4,24 @@
     depositTradeStatus: depositTradeStatus$ | async
   } as state"
 >
-  <div class="wrapper">
-    <app-swap-window
-      [quoteAdapter]="quoteAdapter"
-      [receiverAddressRequired]="true"
-      [creationConfig]="formConfig"
-      [receiverCtrl]="receiverCtrl"
-      [depositTrade]="state.depositTradeData?.trade"
-      [depositTradeStatus]="state.depositTradeStatus"
-      [depositPaymentInfo]="state.depositTradeData?.paymentInfo"
-      (swapClicked)="swap($event)"
-    ></app-swap-window>
+  <div class="privacy-wrapper">
+    <div class="privacy-content">
+      <app-swap-window
+        [quoteAdapter]="quoteAdapter"
+        [receiverAddressRequired]="true"
+        [creationConfig]="formConfig"
+        [receiverCtrl]="receiverCtrl"
+        [depositTrade]="state.depositTradeData?.trade"
+        [depositTradeStatus]="state.depositTradeStatus"
+        [depositPaymentInfo]="state.depositTradeData?.paymentInfo"
+        (swapClicked)="swap($event)"
+      ></app-swap-window>
 
-    <app-deposit-private-trade-info
-      *ngIf="state.depositTradeData?.paymentInfo"
-      [inputData]="state.depositTradeData"
-      [receiverCtrl]="receiverCtrl"
-    ></app-deposit-private-trade-info>
+      <app-deposit-private-trade-info
+        *ngIf="state.depositTradeData?.paymentInfo"
+        [inputData]="state.depositTradeData"
+        [receiverCtrl]="receiverCtrl"
+      ></app-deposit-private-trade-info>
+    </div>
   </div>
 </ng-container>

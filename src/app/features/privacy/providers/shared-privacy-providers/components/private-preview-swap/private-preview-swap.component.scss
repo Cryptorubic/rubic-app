@@ -1,11 +1,5 @@
 @use 'src/scss/core' as *;
 
-app-window-container {
-  ::ng-deep .window-container {
-    padding: 0;
-  }
-}
-
 .notification {
   margin-bottom: var(--tui-padding-m);
 

@@ -117,7 +117,7 @@
 @include b($mobile-md) {
   .token-card {
     gap: var(--tui-padding-s);
-    width: 290px;
+    width: 100%;
     padding: var(--tui-padding-s);
 
     background: var(--io-background);

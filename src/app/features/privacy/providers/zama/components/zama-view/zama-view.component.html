@@ -4,7 +4,7 @@
     disabledPages: disabledPages$ | async,
   } as data"
 >
-  <div class="wrapper">
+  <div class="privacy-wrapper">
     <app-page-navigation
       [disabledPages]="data.disabledPages"
       [activePage]="data.activePage"
@@ -12,13 +12,17 @@
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
 
-    <app-zama-login-page *ngIf="data.activePage.type === 'login'"></app-zama-login-page>
-    <app-zama-hide-tokens-page *ngIf="data.activePage.type === 'hide'"></app-zama-hide-tokens-page>
-    <app-zama-reveal-tokens-page
-      *ngIf="data.activePage.type === 'reveal'"
-    ></app-zama-reveal-tokens-page>
-    <app-zama-transfer-tokens-page
-      *ngIf="data.activePage.type === 'transfer'"
-    ></app-zama-transfer-tokens-page>
+    <div class="privacy-content">
+      <app-zama-login-page *ngIf="data.activePage.type === 'login'"></app-zama-login-page>
+      <app-zama-hide-tokens-page
+        *ngIf="data.activePage.type === 'hide'"
+      ></app-zama-hide-tokens-page>
+      <app-zama-reveal-tokens-page
+        *ngIf="data.activePage.type === 'reveal'"
+      ></app-zama-reveal-tokens-page>
+      <app-zama-transfer-tokens-page
+        *ngIf="data.activePage.type === 'transfer'"
+      ></app-zama-transfer-tokens-page>
+    </div>
   </div>
 </ng-container>

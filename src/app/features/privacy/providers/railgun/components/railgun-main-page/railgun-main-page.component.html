@@ -11,17 +11,15 @@
     railgunEngineLoading: railgunEngineLoading$ | async
   } as data"
 >
-  <div class="wrapper">
-    <div class="sidebar">
-      <app-page-navigation
-        [activePage]="data.activePage"
-        [pages]="pages"
-        [disabledPages]="data.disabledPages"
-        (onSelect)="onPageSelect($event)"
-      ></app-page-navigation>
-    </div>
+  <div class="privacy-wrapper">
+    <app-page-navigation
+      [activePage]="data.activePage"
+      [pages]="pages"
+      [disabledPages]="data.disabledPages"
+      (onSelect)="onPageSelect($event)"
+    ></app-page-navigation>
 
-    <div class="content">
+    <div class="privacy-content">
       <app-railgun-wallet-loading
         *ngIf="data.activePage.type !== 'login' && data.showBalanceLoading"
         [@fadeAnimation]
@@ -67,15 +65,6 @@
         [railgunId]="data.railgunAccount?.id"
         [balances]="data.balances"
       ></app-railgun-reveal-page>
-
-      <!--    <ng-container *ngIf="data.railgunAccount">-->
-      <!--      <app-window-container *ngIf="data.balances?.length">-->
-      <!--        <h4>Actual balances:</h4>-->
-      <!--        <div *ngFor="let token of data.balances">-->
-      <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
-      <!--        </div>-->
-      <!--      </app-window-container>-->
-      <!--    </ng-container>-->
     </div>
   </div>
 </ng-container>
