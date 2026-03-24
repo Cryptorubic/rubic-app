@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, Observable, switchMap, tap } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { HinkalWorkerService } from './hinkal-worker.service';
 
@@ -21,6 +21,7 @@ export class HinkalBalanceService {
 
   public initBalanceEvent(): Observable<void> {
     return this.updateBalance$.pipe(
+      debounceTime(200),
       switchMap(() => {
         console.log('FETCH BALANCE');
         return this.workerService.request<void>(
