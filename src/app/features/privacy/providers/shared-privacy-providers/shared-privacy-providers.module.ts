@@ -69,6 +69,7 @@ import { DepositPrivateTradeInfoComponent } from './components/deposit-private-t
 import { PrivateRefundWindowService } from './services/private-refund-window/private-refund-window.service';
 import { PrivateQueryParamsService } from './services/query-params/private-query-params.service';
 import { PrivateLocalStorageService } from '../../services/privacy-local-storage.service';
+import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import { PrivateLocalStorageService } from '../../services/privacy-local-storage
     RevealWindowService,
     PrivateRefundWindowService,
     PrivateQueryParamsService,
-    PrivateLocalStorageService
+    PrivateLocalStorageService,
+    PrivateStatisticsService
   ]
 })
 export class SharedPrivacyProvidersModule {}

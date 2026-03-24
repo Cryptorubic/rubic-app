@@ -21,6 +21,7 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class HideService {
@@ -31,6 +32,8 @@ export class HideService {
   private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
   private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
+
+  private readonly gasService = inject(GasService);
 
   /**
    * Ensures allowances for all ERC-20 transfers in the shield request.
@@ -91,7 +94,7 @@ export class HideService {
       network,
       gasEstimate,
       sendWithPublicWallet,
-      wallet
+      this.gasService
     );
 
     // 4) Populate shield transaction
@@ -129,7 +132,7 @@ export class HideService {
       network,
       gasEstimate,
       sendWithPublicWallet,
-      wallet
+      this.gasService
     );
 
     const shieldPrivateKey = await getShieldSignature(wallet);

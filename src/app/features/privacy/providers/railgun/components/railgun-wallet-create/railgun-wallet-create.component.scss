@@ -2,10 +2,17 @@ form {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 65vh;
+  overflow: auto;
 }
 
 button {
   width: 100%;
+  margin-bottom: 30px;
+}
+
+tui-notification {
+  overflow: initial;
 }
 
 tui-toggle {
@@ -27,6 +34,7 @@ tui-toggle {
 .buttons {
   display: flex;
   gap: var(--tui-padding-m);
+  margin-bottom: 30px;
 
   > button {
     flex: 1;

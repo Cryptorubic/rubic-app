@@ -21,6 +21,7 @@ import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
 import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivateLocalStorageService } from './services/privacy-local-storage.service';
+import { TuiToggleModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { PrivateLocalStorageService } from './services/privacy-local-storage.ser
     TuiButtonModule,
     SharedTradeModule,
     SharedPrivacyProvidersModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiToggleModule
   ],
   providers: [PrivacyMainPageService, PrivacyApiService, PrivateSwapWindowService]
 })

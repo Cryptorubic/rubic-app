@@ -59,7 +59,7 @@ export class RevealWindowComponent {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, 'from')
+      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.revealWindowService.setRevealAsset(selectedToken);
       });

@@ -17,6 +17,8 @@ import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-pr
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { PrivacyFormValue } from '../../services/models/privacy-form';
+import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
+import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
 
 @Component({
   selector: 'app-private-main-page-swap',
@@ -74,6 +76,16 @@ export class PrivatePageSwapComponent implements OnInit {
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
+  public showAllProviders = false;
+
+  public get formValue(): PrivacyFormValue {
+    return this.privacyMainPageService.formValue;
+  }
+
+  public get hasOutputContainer(): boolean {
+    return this.creationConfig.withDstSelector;
+  }
+
   private patchSwapInfo(partialSwapInfo: Partial<PrivacyFormValue>): void {
     this.privacyMainPageService.patchFormValue(partialSwapInfo);
   }
@@ -87,8 +99,18 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   public openOutputSelector(): void {
+    const isOnChain = this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.ON_CHAIN;
+    const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
+    const config: AssetsSelectorConfig = {
+      ...this.creationConfig.assetsSelectorConfig,
+      ...(isOnChain &&
+        fromChain && {
+          showAllChains: false,
+          listType: fromChain
+        })
+    };
     this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', config)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });
@@ -99,5 +121,9 @@ export class PrivatePageSwapComponent implements OnInit {
       fromAsset: this.swapInfo.toAsset,
       toAsset: this.swapInfo.fromAsset
     });
+  }
+
+  public switchShowAllProviders(value: boolean): void {
+    this.privacyMainPageService.setShowAllProviders(value);
   }
 }

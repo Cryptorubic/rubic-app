@@ -14,6 +14,7 @@ import {
 import { waitFor } from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BehaviorSubject } from 'rxjs';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class RevealService {
@@ -22,6 +23,8 @@ export class RevealService {
   private readonly authService = inject(AuthService);
 
   private readonly _inProgress$ = new BehaviorSubject(false);
+
+  private readonly gasService = inject(GasService);
 
   public async unshield(
     tokenAddress: string,
@@ -56,7 +59,7 @@ export class RevealService {
         chain,
         gasEstimate,
         true,
-        wallet
+        this.gasService
       );
 
       const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);

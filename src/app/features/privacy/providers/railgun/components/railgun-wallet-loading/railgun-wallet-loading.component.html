@@ -1,5 +1,5 @@
 <app-window-container>
-  <ng-container header>Balance Loading</ng-container>
+  <ng-container header>Balance Sync</ng-container>
   <div [@fadeAnimation] *ngIf="scanInProgress" class="progress">
     <ng-container *ngFor="let value of utxoChains; trackBy: trackByFn">
       <label tuiProgressLabel>

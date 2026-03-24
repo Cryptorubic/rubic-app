@@ -5,20 +5,20 @@
     disabledPages: disabledPages$ | async
   } as data"
 >
-  <div class="wrapper">
+  <div class="privacy-wrapper">
     <app-page-navigation
       [disabledPages]="data.disabledPages"
       [activePage]="data.activePage"
       [pages]="pages"
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
-    <div>
-      <app-switch-network-page
+    <div class="privacy-content">
+      <!-- <app-switch-network-page
         *ngIf="data.activePage.type !== 'login' && data.activePage.type !== 'walletInfo'"
         [supportedChains]="supportedChains"
         [activeChain]="data.activeChain"
         (onSwitchChain)="onSwitchNetwork($event)"
-      ></app-switch-network-page>
+      ></app-switch-network-page> -->
       <app-hinkal-login-page *ngIf="data.activePage.type === 'login'"></app-hinkal-login-page>
       <app-hinkal-wallet-info
         *ngIf="data.activePage.type === 'walletInfo'"

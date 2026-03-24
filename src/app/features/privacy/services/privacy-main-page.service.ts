@@ -7,7 +7,6 @@ import {
   combineLatestWith,
   defer,
   distinctUntilChanged,
-  forkJoin,
   map,
   of,
   startWith,
@@ -51,23 +50,44 @@ export class PrivacyMainPageService {
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 
+  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(false);
+
+  public readonly showAllProviders$ = this._showAllProviders$.asObservable();
+
   public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(
     PRIVATE_PROVIDERS_UI
   ).pipe(
-    combineLatestWith(this.swapInfo$, this.selectedTab$),
-    switchMap(([privateProvidersRaw, formValue, selectedTab]) => {
-      const privateProviders$ = this.loadDynamicParams(privateProvidersRaw, formValue, selectedTab);
-      return forkJoin([privateProviders$, of(formValue), of(selectedTab)]);
+    combineLatestWith(this.swapInfo$, this.selectedTab$, this.showAllProviders$),
+    map(([privateProviders, formValue, selectedTab, showAllProviders]) => {
+      return [
+        this.filterProviders(privateProviders, formValue, selectedTab, showAllProviders),
+        formValue,
+        selectedTab
+      ];
     }),
-    map(([privateProviders, formValue, selectedTab]) => {
-      return this.filterProviders(privateProviders, formValue, selectedTab);
-    })
+    switchMap(
+      ([privateProviders, formValue, selectedTab]: [
+        PrivateProviderRawInfo[],
+        PrivacyFormValue,
+        PrivateModeTab
+      ]) => {
+        return this.loadDynamicParams(privateProviders, formValue, selectedTab);
+      }
+    )
   );
 
   // @TODO_1712 использовать реальную активность из локал стора
   public readonly lastActivity$: Observable<PrivateActivityItem[]> = of(FAKE_ACTIVITY).pipe(
     map(() => [])
   );
+
+  public get selectedTab(): PrivateModeTab {
+    return this._selectedTab$.getValue();
+  }
+
+  public get swapInfo(): Partial<PrivacyFormValue> {
+    return this.form.value;
+  }
 
   constructor(private readonly privacyApiService: PrivacyApiService) {}
 
@@ -77,6 +97,10 @@ export class PrivacyMainPageService {
 
   public patchFormValue(value: Partial<PrivacyFormValue>): void {
     this.form.patchValue(value);
+  }
+
+  public setShowAllProviders(show: boolean): void {
+    this._showAllProviders$.next(show);
   }
 
   private loadDynamicParams(
@@ -99,32 +123,34 @@ export class PrivacyMainPageService {
   }
 
   private filterProviders(
-    privateProviders: PrivateProviderInfoUI[],
+    privateProviders: PrivateProviderRawInfo[],
     formValue: Partial<PrivacyFormValue>,
-    selectedTab: PrivateModeTab
-  ): PrivateProviderInfoUI[] {
-    if (!formValue.fromAsset && !formValue.toAsset) return privateProviders;
-
+    selectedTab: PrivateModeTab,
+    showAllProviders: boolean
+  ): PrivateProviderRawInfo[] {
     const srcChain = formValue.fromAsset?.blockchain;
     const dstChain = formValue.toAsset?.blockchain;
 
     return privateProviders.filter(provider => {
-      const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
-      if (
-        (srcChain && !supportedChains.includes(srcChain)) ||
-        (dstChain && !supportedChains.includes(dstChain))
-      ) {
+      if (srcChain || dstChain) {
+        const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
+        if (
+          (srcChain && !supportedChains.includes(srcChain)) ||
+          (dstChain && !supportedChains.includes(dstChain))
+        ) {
+          return false;
+        }
+      } else {
+        if (!showAllProviders) {
+          return false;
+        }
+      }
+
+      const supportedTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name];
+      if (!supportedTabs.includes(selectedTab)) {
         return false;
       }
-      const srcChainTabs =
-        PRIVATE_PROVIDERS_TABS_MAP[provider.name][formValue.fromAsset?.blockchain];
-      const dstChainTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name][formValue.toAsset?.blockchain];
-      if (
-        (srcChainTabs && !srcChainTabs.includes(selectedTab)) ||
-        (dstChainTabs && !dstChainTabs.includes(selectedTab))
-      ) {
-        return false;
-      }
+
       return true;
     });
   }

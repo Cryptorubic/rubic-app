@@ -80,6 +80,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public pageLoading$: Observable<boolean>;
 
+  public platformLoading$: Observable<boolean>;
+
   public assetListType$: Observable<AssetListType>;
 
   public customToken$: Observable<AvailableTokenAmount | null>;
@@ -121,6 +123,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
     this.blockchainFilter$ = this.assetsSelectorService.blockchainFilter$;
     this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(shareReplay(1));
+    this.platformLoading$ = this.assetsSelectorConfig.platformLoading$ || of(false);
 
     this.balanceLoading$ = this.assetListType$.pipe(
       switchMap(type => {

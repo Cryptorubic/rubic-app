@@ -203,9 +203,20 @@
           [disabled]="currentStep.disabled"
           (click)="handleStep(currentStep)"
         >
-          {{ currentStep.label }}
+          <ng-container *ngIf="!currentStep.disabled; else loader">
+            {{ currentStep.label }}
+          </ng-container>
         </button>
       </div>
+
+      <ng-template #loader>
+        <div class="loader">
+          <span>{{ currentStep.label }}</span>
+          <span class="loader__dot"></span>
+          <span class="loader__dot"></span>
+          <span class="loader__dot"></span>
+        </div>
+      </ng-template>
     </ng-container>
   </ng-container>
 </app-window-container>

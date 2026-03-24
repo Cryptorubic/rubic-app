@@ -4,24 +4,31 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: center;
+  margin-top: 12px;
 
   &__text {
     padding: var(--tui-padding-m);
 
-    background: var(--io-background);
     border-radius: 12px;
+    cursor: pointer;
 
-    span {
-      word-break: break-all; 
+    span { 
+      font-size: 15px;
+      text-decoration: underline;
+      word-break: break-all;
     }
   }
 
   button {
-    width: 210px;
+    width: 100%;
   }
 
   tui-notification {
     font-size: 15px;
   }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
 }

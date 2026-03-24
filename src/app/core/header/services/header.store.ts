@@ -24,6 +24,11 @@ export class HeaderStore {
   private readonly isMobile$: BehaviorSubject<boolean>;
 
   /**
+   * Determines if current window width is similar to tablet.
+   */
+  private readonly isTablet$: BehaviorSubject<boolean>;
+
+  /**
    * Should wallets buttons be disabled or not.
    */
   private walletsLoadingStatusSubject$: BehaviorSubject<boolean>;
@@ -34,10 +39,22 @@ export class HeaderStore {
   public readonly mobileWidth: number;
 
   /**
+   * Maximum size of tablet device.
+   */
+  public readonly tabletWidth: number;
+
+  /**
    * Returns true if current window width is similar to mobile synchronously.
    */
   public get isMobile(): boolean {
     return this.isMobile$.getValue();
+  }
+
+  /**
+   * Returns true if current window width is similar to tablet synchronously.
+   */
+  public get isTablet(): boolean {
+    return this.isTablet$.getValue();
   }
 
   private _forceDesktopResolution: boolean;
@@ -45,9 +62,11 @@ export class HeaderStore {
   constructor() {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
     this.mobileWidth = 651;
+    this.tabletWidth = 1023;
     this.isConfirmModalOpened$ = new BehaviorSubject<boolean>(false);
     this.isMobileMenuOpened$ = new BehaviorSubject<boolean>(false);
     this.isMobile$ = new BehaviorSubject<boolean>(false);
+    this.isTablet$ = new BehaviorSubject<boolean>(false);
   }
 
   public getConfirmModalOpeningStatus(): Observable<boolean> {
@@ -88,11 +107,19 @@ export class HeaderStore {
     return this.isMobile$.asObservable();
   }
 
+  public getTabletDisplayStatus(): Observable<boolean> {
+    return this.isTablet$.asObservable();
+  }
+
   public set forceDesktopResolution(isDesktop: string) {
     this._forceDesktopResolution = isDesktop === 'true';
   }
 
   public setMobileDisplayStatus(status: boolean): void {
     this.isMobile$.next(this._forceDesktopResolution ? false : status);
+  }
+
+  public setTabletDisplayStatus(status: boolean): void {
+    this.isTablet$.next(this._forceDesktopResolution ? false : status);
   }
 }

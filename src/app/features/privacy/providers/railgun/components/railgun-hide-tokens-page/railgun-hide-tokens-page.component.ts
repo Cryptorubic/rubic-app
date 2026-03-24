@@ -15,6 +15,10 @@ import { HideWindowService } from '@features/privacy/providers/shared-privacy-pr
 import { Web3Pure } from '@cryptorubic/web3';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '@core/services/auth/auth.service';
+import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -22,8 +26,10 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./railgun-hide-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: FromAssetsService, useClass: RailgunPublicAssetsService },
-    TuiDestroyService
+    RailgunPublicAssetsService,
+    { provide: FromAssetsService, useExisting: RailgunPublicAssetsService },
+    TuiDestroyService,
+    { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService }
   ]
 })
 export class RailgunHideTokensPageComponent {
@@ -44,6 +50,10 @@ export class RailgunHideTokensPageComponent {
   private readonly hideWindowService = inject(HideWindowService);
 
   private readonly destroy$ = inject(TuiDestroyService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
   constructor() {
     this.hideWindowService.hideAsset$
@@ -89,6 +99,14 @@ export class RailgunHideTokensPageComponent {
                 }
               );
               this.setShieldedToken({ ...balanceToken, amount: token.tokenAmount });
+              this.privateStatisticsService.saveAction(
+                'SHIELD',
+                'RAILGUN',
+                this.authService.userAddress,
+                token.address,
+                token.weiAmount.toFixed(),
+                token.blockchain
+              );
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
                 {

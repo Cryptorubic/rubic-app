@@ -1,15 +1,44 @@
-<div class="nav">
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    appearance="secondary"
-    *ngFor="let page of pages; index as i"
-    class="nav__item"
-    [class.nav__item-active]="i === activePageIndex"
-    (click)="onPageSelect(page)"
-    [disabled]="isPageDisabled(page)"
-  >
-    {{ page.label }}
-  </button>
-</div>
+<ng-container *ngIf="!isMobile; else mobile">
+  <div class="nav">
+    <button
+      *ngFor="let page of pages; index as i"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="secondary"
+      class="nav__item"
+      [class.nav__item-active]="i === activePageIndex"
+      (click)="onPageSelect(page)"
+      [disabled]="isPageDisabled(page)"
+    >
+      <div class="nav__wrapper">
+        <img
+          class="nav__image"
+          *ngIf="isMobile"
+          [src]="PAGE_TYPE_IMAGE[page.type]"
+          [alt]="page.label"
+        />
+        {{ page.label }}
+      </div>
+    </button>
+  </div>
+</ng-container>
+<ng-template #mobile>
+  <div class="mobile-nav">
+    <div
+      *ngFor="let page of pages; index as i"
+      class="mobile-nav__item"
+      [class.mobile-nav__item-active]="i === activePageIndex"
+      [class.mobile-nav__item-disabled]="isPageDisabled(page)"
+      (click)="onPageSelect(page)"
+    >
+      <img
+        class="mobile-nav__image"
+        *ngIf="isMobile"
+        [src]="PAGE_TYPE_IMAGE[page.type]"
+        [alt]="page.label"
+      />
+      <span class="mobile-nav__text">{{ page.label }}</span>
+    </div>
+  </div>
+</ng-template>

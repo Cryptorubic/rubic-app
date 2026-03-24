@@ -12,6 +12,10 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -19,9 +23,12 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   styleUrls: ['./railgun-reveal-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: ToAssetsService, useClass: RailgunPrivateAssetsService },
+    RailgunPrivateAssetsService,
+    { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService
+    TuiDestroyService,
+    RailgunPrivateActionButtonService,
+    { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
 })
 export class RailgunRevealPageComponent {
@@ -37,6 +44,8 @@ export class RailgunRevealPageComponent {
     | null
   >;
 
+  private readonly privateStatisticsService = inject(PrivateStatisticsService);
+
   public readonly receiverCtrl = new FormControl<string>('');
 
   private readonly revealService = inject(RevealService);
@@ -46,6 +55,8 @@ export class RailgunRevealPageComponent {
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
+
+  private readonly authService = inject(AuthService);
 
   private readonly destroy$ = inject(TuiDestroyService);
 
@@ -87,6 +98,14 @@ export class RailgunRevealPageComponent {
                   defaultAutoCloseTime: 0
                 }
               );
+              this.privateStatisticsService.saveAction(
+                'UNSHIELD',
+                'RAILGUN',
+                this.authService.userAddress,
+                token.address,
+                token.weiAmount.toFixed(),
+                token.blockchain
+              );
               setTimeout(async () => {
                 const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
                 this.railgunFacade.refreshBalances(
@@ -94,13 +113,6 @@ export class RailgunRevealPageComponent {
                   [token.blockchain as RailgunSupportedChain]
                 );
               }, 10_000);
-              setTimeout(async () => {
-                const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
-                this.railgunFacade.refreshBalances(
-                  [wallet.id],
-                  [token.blockchain as RailgunSupportedChain]
-                );
-              }, 130_000);
             }
           }
         ],

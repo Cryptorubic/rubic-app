@@ -1,4 +1,5 @@
 import { AssetListType } from '@app/features/trade/models/asset';
+import { Observable } from 'rxjs';
 
 export type AssetsSelectorConfig = {
   withChainsFilter: boolean;
@@ -6,4 +7,5 @@ export type AssetsSelectorConfig = {
   withFavoriteTokens: boolean;
   showAllChains: boolean;
   listType?: AssetListType;
+  platformLoading$?: Observable<boolean>;
 };

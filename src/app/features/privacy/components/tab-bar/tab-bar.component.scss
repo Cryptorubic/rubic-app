@@ -1,6 +1,23 @@
 @use 'src/scss/core' as *;
 
 :host {
+
+  @include b($mobile-sm-middle) {
+    .tab-bar {
+      font-size: 12px;
+
+      .tab-item {
+        &:first-child {
+          border-radius: 20px 0 0;
+        }
+    
+        &:last-child {
+          border-radius: 0 20px 0 0;
+        }
+      }
+    }
+  }
+
   .tab-bar {
     @include flex(row, center, center);
     gap: 2px;
@@ -23,11 +40,11 @@
     transition: all 0.1s;
 
     &:first-child {
-      border-radius: 25px 0 0 25px;
+      border-radius: 20px 0 0 20px;
     }
 
     &:last-child {
-      border-radius: 0 25px 25px 0;
+      border-radius: 0 20px 20px 0;
     }
 
     &:hover {

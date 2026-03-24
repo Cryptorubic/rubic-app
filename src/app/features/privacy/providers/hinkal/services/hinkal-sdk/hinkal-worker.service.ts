@@ -6,10 +6,18 @@ import { filter, fromEvent, map, Observable } from 'rxjs';
 export class HinkalWorkerService {
   private readonly worker = new Worker(new URL('./workers/hinkal.worker', import.meta.url));
 
-  public async request<T>(params: WorkerParams): Promise<T> {
-    return new Promise(resolve => {
+  public async request<T>(params: WorkerParams, useHandler: boolean = true): Promise<T> {
+    if (!useHandler) {
+      this.worker.postMessage(params);
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
       const handler = (event: MessageEvent<WorkerResponse<T>>) => {
         if (event.data.type === params.type) {
+          if (!event.data.success && event.data.error) {
+            reject(event.data.error);
+          }
           this.worker.removeEventListener('message', handler);
           resolve(event.data.result);
         }

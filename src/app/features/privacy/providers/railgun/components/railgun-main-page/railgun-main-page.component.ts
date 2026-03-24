@@ -64,6 +64,8 @@ export class RailgunMainPageComponent {
 
   public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$;
 
+  public railgunEngineLoading$ = this.railgunFacade.railgunInitialised$.pipe(map(el => !el));
+
   public showBalanceLoading$ = this.utxoScan$.pipe(
     map(scan => Object.values(scan).some(el => el < 100))
   );

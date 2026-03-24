@@ -1,37 +1,67 @@
-<app-window-container
+<div
+  class="swap-container"
   *ngLet="{
-    swapInfo: swapInfo$ | async,
-    loading: loading$ | async,
+    swapInfo: swapInfo$ | async
   } as state"
 >
-  <div class="selectros-container">
-    <app-asset-selector
-      left
-      selectorType="from"
-      [asset]="state.swapInfo.fromAsset"
-      [isDisabled]="state.loading"
-      (handleAssetSelection)="openInputSelector()"
-    >
-      <ng-template #emptySelector>
-        <ng-container *ngTemplateOutlet="assestSelectorEmpty"></ng-container>
-      </ng-template>
-    </app-asset-selector>
-
-    <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-
-    <app-asset-selector
-      left
-      selectorType="to"
-      [asset]="state.swapInfo.toAsset"
-      (handleAssetSelection)="openOutputSelector()"
-    >
-      <ng-template #emptySelector>
-        <ng-container *ngTemplateOutlet="assestSelectorEmpty"></ng-container>
-      </ng-template>
-    </app-asset-selector>
+  <div class="providers-switcher-wrapper">
+    <div class="providers-switcher-container">
+      Show all providers
+      <tui-toggle
+        size="m"
+        [ngModel]="showAllProviders"
+        (ngModelChange)="switchShowAllProviders($event)"
+      ></tui-toggle>
+    </div>
   </div>
-</app-window-container>
 
-<ng-template #assestSelectorEmpty>
-  <div class="empty-asset-selector">Enter Chain and Token</div>
+  <div class="selectors-wrapper">
+    <div class="selectors-container" [class.without-output]="!hasOutputContainer">
+      <app-asset-selector
+        [class.empty]="!state.swapInfo.fromAsset"
+        selectorType="from"
+        [asset]="state.swapInfo.fromAsset"
+        (handleAssetSelection)="openInputSelector()"
+      >
+        <ng-template #emptySelector let-isDisabled="isDisabled">
+          <ng-container
+            *ngTemplateOutlet="assestSelectorEmpty; context: { isDisabled: isDisabled }"
+          ></ng-container>
+        </ng-template>
+      </app-asset-selector>
+
+      <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
+
+      <app-asset-selector
+        *ngIf="hasOutputContainer"
+        [class.empty]="!state.swapInfo.toAsset"
+        selectorType="to"
+        [asset]="state.swapInfo.toAsset"
+        [isDisabled]="!state.swapInfo.fromAsset"
+        (handleAssetSelection)="openOutputSelector()"
+      >
+        <ng-template #emptySelector let-isDisabled="isDisabled">
+          <ng-container
+            *ngTemplateOutlet="assestSelectorEmpty; context: { isDisabled: isDisabled }"
+          ></ng-container>
+        </ng-template>
+      </app-asset-selector>
+    </div>
+  </div>
+
+  <div class="instruction-wrapper">
+    <div class="instruction-container">
+      {{
+        !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
+          ? hasOutputContainer
+            ? 'Enter a pair for your swap'
+            : 'Enter a token for your transfer'
+          : 'Set a provider for the next step'
+      }}
+    </div>
+  </div>
+</div>
+
+<ng-template #assestSelectorEmpty let-isDisabled="isDisabled">
+  <div class="empty-asset-selector">{{ isDisabled ? '' : 'Select a chain and a token' }}</div>
 </ng-template>

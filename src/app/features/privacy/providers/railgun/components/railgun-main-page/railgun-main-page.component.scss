@@ -1,29 +1,4 @@
-//:host {
-//  position: relative;
-//
-//  ::ng-deep app-window-container {
-//    display: block;
-//    margin-bottom: 12px;
-//  }
-//}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--tui-padding-m);
-}
-
-.wrapper {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin: 0 auto;
-}
-
-.sidebar {
-  width: 134px;
-}
-
+@use 'src/scss/core' as *;
 
 .progress {
   display: flex;

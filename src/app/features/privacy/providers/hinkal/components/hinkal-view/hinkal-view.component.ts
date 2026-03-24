@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { HINKAL_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
-import { BlockchainName } from '@cryptorubic/core';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
@@ -15,6 +13,8 @@ import { PrivateQueryParamsService } from '../../../shared-privacy-providers/ser
 import { List } from 'immutable';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -39,17 +39,21 @@ export class HinkalViewComponent {
   public readonly pages = HINKAL_PAGES;
 
   public readonly disabledPages$ = this.hinkalInstanceService.currSignature$.pipe(
-    map(signature => (signature ? [] : this.pages.filter(page => page.type !== 'login')))
+    map(signature =>
+      signature
+        ? [{ type: 'login', label: 'Login' }]
+        : this.pages.filter(page => page.type !== 'login')
+    )
   );
 
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly privatePageTypeService: PrivatePageTypeService,
-    private readonly authService: AuthService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly hinkalRevealFacade: HinkalRevealFacadeService,
-    private readonly privateQueryParamsService: PrivateQueryParamsService
+    private readonly privateQueryParamsService: PrivateQueryParamsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];
@@ -57,7 +61,7 @@ export class HinkalViewComponent {
 
   ngOnInit(): void {
     this.parseQueryParams();
-    this.authService.currentUser$
+    this.walletConnectorService.addressChange$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.hinkalFacadeService.logout();

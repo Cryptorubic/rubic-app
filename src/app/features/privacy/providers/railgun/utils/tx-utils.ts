@@ -3,18 +3,19 @@
 import {
   EVMGasType,
   getEVMGasTypeForTransaction,
-  NetworkName,
   type RailgunERC20AmountRecipient,
   type RailgunERC20Amount,
-  type RailgunNFTAmount,
-  type RailgunNFTAmountRecipient,
   type TransactionGasDetails
 } from '@railgun-community/shared-models';
-import { getShieldPrivateKeySignatureMessage, NFTTokenType } from '@railgun-community/wallet';
+import { getShieldPrivateKeySignatureMessage } from '@railgun-community/wallet';
 import { HDNodeWallet, keccak256, Wallet } from 'ethers';
-import { EvmBlockchainName } from '@cryptorubic/core';
+import { EvmBlockchainName, nativeTokensList, Token } from '@cryptorubic/core';
 import { JsonRpcProvider } from 'ethers';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
+import { GasService } from '@core/services/gas-service/gas.service';
+import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
+import { EIP1559Gas, SingleGasPrice } from '@cryptorubic/web3';
 
 /**
  * Generates a shield private key signature by signing a predefined message with the provided wallet
@@ -47,29 +48,6 @@ export const serializeERC20RelayAdaptUnshield = (
 };
 
 /**
- * Serializes an ERC721 token for relay adaptation to unshield.ts it.
- *
- * This function creates a RailgunNFTAmount object that represents an ERC721 token
- * with the specified address and token ID. The amount is always set to 1 since
- * ERC721 tokens are non-fungible and can only be transferred as whole units.
- *
- * @param tokenAddress - The contract address of the ERC721 token.
- * @param tokenSubID - The unique identifier of the specific ERC721 token.
- * @returns A RailgunNFTAmount object configured for ERC721 unshielding.
- */
-export const serializeERC721RelayAdaptUnshield = (
-  tokenAddress: string,
-  tokenSubID: string
-): RailgunNFTAmount => {
-  return {
-    nftAddress: tokenAddress,
-    amount: 1n,
-    tokenSubID,
-    nftTokenType: NFTTokenType.ERC721
-  };
-};
-
-/**
  * Serializes ERC20 transfer data into a RailgunERC20AmountRecipient object.
  *
  * @param tokenAddress - The address of the ERC20 token contract
@@ -85,28 +63,6 @@ export const serializeERC20Transfer = (
   return {
     tokenAddress,
     amount,
-    recipientAddress: recipient
-  };
-};
-
-/**
- * Serializes an ERC721 NFT transfer into a RailgunNFTAmountRecipient object.
- *
- * @param nftAddress - The contract address of the ERC721 NFT
- * @param tokenSubID - The token ID of the ERC721 NFT
- * @param recipient - The address of the recipient who will receive the NFT
- * @returns A RailgunNFTAmountRecipient object representing the ERC721 transfer with amount always set to 1n
- */
-export const serializeERC721Transfer = (
-  nftAddress: string,
-  tokenSubID: string,
-  recipient: string
-): RailgunNFTAmountRecipient => {
-  return {
-    nftAddress,
-    amount: 1n, // shield amount - always 1n for ERC-721
-    tokenSubID,
-    nftTokenType: NFTTokenType.ERC721,
     recipientAddress: recipient
   };
 };
@@ -136,53 +92,58 @@ export const serializeERC721Transfer = (
  * );
  */
 export const getGasDetailsForTransaction = async (
-  network: NetworkName,
+  network: PrivacySupportedNetworks,
   gasEstimate: bigint,
   sendWithPublicWallet: boolean,
-  wallet: Wallet | HDNodeWallet
+  gasService: GasService
 ) => {
   const evmGasType: EVMGasType = getEVMGasTypeForTransaction(network, sendWithPublicWallet);
-
+  const blockchain = fromPrivateToRubicChainMap[network];
   let gasDetails: TransactionGasDetails;
-
-  // populate tx
-  // send 1 wei to self. get gas details
-  // THIS IS AN INSECURE WAY TO GET GAS ESTIMATE
-  // DO NOT USE IN PRODUCTION
-  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.populateTransaction({
-    to: wallet.address,
-    value: 1n
-  });
+  const generalGas = await gasService.getGasPriceInEthUnits(blockchain);
+  const nativeToken = nativeTokensList[blockchain];
 
   switch (evmGasType) {
     case EVMGasType.Type0:
-    case EVMGasType.Type1:
-      gasDetails = {
-        evmGasType,
-        gasEstimate,
-        gasPrice: BigInt(maxFeePerGas?.valueOf() ?? 0) // Proper calculation of network gasPrice is not covered in this guide
-      };
-      break;
-    case EVMGasType.Type2:
-      // Proper calculation of gas Max Fee and gas Max Priority Fee is not covered in this guide. See: https://docs.alchemy.com/docs/how-to-build-a-gas-fee-estimator-using-eip-1559
+    case EVMGasType.Type1: {
+      const gas = generalGas as SingleGasPrice;
+      const weiGas = Token.toWei(gas.gasPrice, nativeToken.decimals);
 
       gasDetails = {
         evmGasType,
         gasEstimate,
-        maxFeePerGas: BigInt(maxFeePerGas?.valueOf() ?? 0),
-        maxPriorityFeePerGas: BigInt(maxPriorityFeePerGas?.valueOf() ?? 0)
+        gasPrice: BigInt(weiGas)
       };
       break;
+    }
+    case EVMGasType.Type2: {
+      const gas = generalGas as EIP1559Gas;
+      const weiMaxFeePerGas = Token.toWei(gas.maxFeePerGas, 9);
+      const weiMaxPriorityFeePerGas = Token.toWei(gas.maxPriorityFeePerGas, 9);
+
+      gasDetails = {
+        evmGasType,
+        gasEstimate,
+        maxFeePerGas: BigInt(weiMaxFeePerGas),
+        maxPriorityFeePerGas: BigInt(weiMaxPriorityFeePerGas)
+      };
+      break;
+    }
   }
   return gasDetails;
 };
 
 export const getOriginalGasDetailsForTransaction = async (
-  wallet: Wallet | HDNodeWallet,
-  network: NetworkName,
-  sendWithPublicWallet: boolean
+  network: PrivacySupportedNetworks,
+  sendWithPublicWallet: boolean,
+  gasService: GasService
 ): Promise<TransactionGasDetails> => {
-  const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
+  const gasDetails = await getGasDetailsForTransaction(
+    network,
+    0n,
+    sendWithPublicWallet,
+    gasService
+  );
   return gasDetails;
 };
 
