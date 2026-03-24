@@ -5,10 +5,14 @@ import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ZamaActionButtonService } from '../../services/zama-action-button.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { List } from 'immutable';
+import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
 
 @Component({
   selector: 'app-zama-view',
@@ -41,13 +45,16 @@ export class ZamaViewComponent {
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly authService: AuthService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly zamaSignatureService: ZamaSignatureService
+    private readonly zamaSignatureService: ZamaSignatureService,
+    private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
+    private readonly privateQueryParamsService: PrivateQueryParamsService
   ) {
     this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
     this.initZama();
   }
 
   ngOnInit(): void {
+    this.parseQueryParams();
     this.authService.currentUser$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(user => {
@@ -64,6 +71,10 @@ export class ZamaViewComponent {
       });
   }
 
+  ngOnDestroy(): void {
+    this.zamaFacadeService.removeSubs();
+  }
+
   private async initZama(): Promise<void> {
     await this.zamaFacadeService.initServices();
   }
@@ -72,7 +83,15 @@ export class ZamaViewComponent {
     this.privatePageTypeService.activePage = page;
   }
 
-  ngOnDestroy(): void {
-    this.zamaFacadeService.removeSubs();
+  private parseQueryParams(): void {
+    this.zamaHideTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }

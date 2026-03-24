@@ -5,10 +5,12 @@ import {
   BehaviorSubject,
   Observable,
   combineLatestWith,
+  defer,
   distinctUntilChanged,
   forkJoin,
   map,
   of,
+  startWith,
   switchMap
 } from 'rxjs';
 import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
@@ -37,9 +39,12 @@ export class PrivacyMainPageService {
     return this.form.value as PrivacyFormValue;
   }
 
-  public readonly swapInfo$ = this.form.valueChanges.pipe(
-    distinctUntilChanged(),
-    map(swapInfo => swapInfo as PrivacyFormValue)
+  public readonly swapInfo$ = defer(() =>
+    this.form.valueChanges.pipe(
+      distinctUntilChanged(),
+      map(swapInfo => swapInfo as PrivacyFormValue),
+      startWith(this.form.value as PrivacyFormValue)
+    )
   );
 
   private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
@@ -49,7 +54,7 @@ export class PrivacyMainPageService {
   public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(
     PRIVATE_PROVIDERS_UI
   ).pipe(
-    combineLatestWith(this.form.valueChanges, this.selectedTab$),
+    combineLatestWith(this.swapInfo$, this.selectedTab$),
     switchMap(([privateProvidersRaw, formValue, selectedTab]) => {
       const privateProviders$ = this.loadDynamicParams(privateProvidersRaw, formValue, selectedTab);
       return forkJoin([privateProviders$, of(formValue), of(selectedTab)]);

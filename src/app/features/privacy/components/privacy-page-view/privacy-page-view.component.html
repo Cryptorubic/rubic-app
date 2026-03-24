@@ -5,22 +5,22 @@
     providers: privateProviders$ | async,
     selectedTradeType: selectedTradeType$ | async,
     lastActivity: lastActivity$ | async,
-    selectedTab: selectedTab$ | async,
-    clearOutput: clearOutput$ | async
+    selectedTab: selectedTab$ | async
   } as state"
 >
   <div class="form-and-activity">
-    <app-tab-bar [tabs]="tabs" (tabClicked)="handleTabSelected($event)"></app-tab-bar>
+    <app-tab-bar
+      [tabs]="tabs"
+      [selectedTab]="state.selectedTab"
+      (tabClicked)="handleTabSelected($event)"
+    ></app-tab-bar>
 
-    <app-private-page-swap
-      [quoteAdapter]="quoteAdapter"
+    <app-private-main-page-swap
       [creationConfig]="
         state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
       "
-      [clearOutput]="state.clearOutput"
       (formChanged)="handleSwapWindowChanged($event)"
-      [receiverCtrl]="receiverCtrl"
-    ></app-private-page-swap>
+    ></app-private-main-page-swap>
 
     <!-- <app-last-private-activity
       [activityList]="state.lastActivity"

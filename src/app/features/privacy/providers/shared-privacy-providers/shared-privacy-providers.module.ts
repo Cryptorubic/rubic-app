@@ -68,6 +68,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { DepositPrivateTradeInfoComponent } from './components/deposit-private-trade-info/deposit-private-trade-info.component';
 import { PrivateRefundWindowService } from './services/private-refund-window/private-refund-window.service';
 import { PrivateQueryParamsService } from './services/query-params/private-query-params.service';
+import { PrivateLocalStorageService } from '../../services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [
@@ -156,7 +157,8 @@ import { PrivateQueryParamsService } from './services/query-params/private-query
     HideWindowService,
     RevealWindowService,
     PrivateRefundWindowService,
-    PrivateQueryParamsService
+    PrivateQueryParamsService,
+    PrivateLocalStorageService
   ]
 })
 export class SharedPrivacyProvidersModule {}

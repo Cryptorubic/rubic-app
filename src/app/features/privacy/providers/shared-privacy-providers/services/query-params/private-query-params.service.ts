@@ -7,13 +7,25 @@ import { PrivateSwapWindowService } from '../private-swap-window/private-swap-wi
 import { SwapFormQueryService } from '@app/features/trade/services/swap-form-query/swap-form-query.service';
 import { List } from 'immutable';
 import { BlockchainName } from '@cryptorubic/core';
-import BigNumber from 'bignumber.js';
 import { compareTokens } from '@app/shared/utils/utils';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { HideWindowService } from '../hide-window-service/hide-window.service';
+import { RevealWindowService } from '../reveal-window/reveal-window.service';
+import { PrivateTransferWindowService } from '../private-transfer-window/private-transfer-window.service';
+import { PrivacyMainPageService } from '@app/features/privacy/services/privacy-main-page.service';
+import { PrivacyFormValue } from '@app/features/privacy/services/models/privacy-form';
 
 @Injectable()
 export class PrivateQueryParamsService {
+  private readonly hideTokensWindowService = inject(HideWindowService);
+
+  private readonly revealTokensWindowService = inject(RevealWindowService);
+
+  private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
+
   private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
+
+  private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
   private readonly swapFormQueryService = inject(SwapFormQueryService);
 
@@ -21,18 +33,9 @@ export class PrivateQueryParamsService {
 
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  /**
-   * @param tokensFacade tokensFacade.tokens used to find tokens:
-   * 1) when form selector makes swap from private balance - pass here private tokens
-   * 2) when form selector makes swap from public balance - pass here public tokens
-   * @param applySwapInfo callback to put swapInfo in form
-   */
-  public parseMainSwapInfoAndQueryParams(
-    supportedTokens: List<BalanceToken>,
-    applySwapInfo: (swapInfo: PrivateSwapInfo) => void
-  ): void {
+  public parseMainSwapInfoAndQueryParams(supportedTokens: List<BalanceToken>): void {
     forkJoin([
-      firstValueFrom(this.privateSwapWindowService.swapInfo$),
+      firstValueFrom(this.privacyMainPageService.swapInfo$),
       firstValueFrom(this.activatedRoute.queryParams)
     ])
       .pipe(
@@ -53,22 +56,21 @@ export class PrivateQueryParamsService {
                 queryParams.toChain,
                 true
               );
-          const fromAmount: SwapAmount = !isNaN(Number(queryParams.amount))
-            ? {
-                actualValue: new BigNumber(queryParams.amount),
-                visibleValue: queryParams.amount
-              }
-            : null;
+          const fromAmount: SwapAmount | null = null;
           const toAmount: SwapAmount | null = null;
 
           return forkJoin([
             fromToken$.pipe(
-              map(fromToken => supportedTokens.find(t => compareTokens(fromToken, t))),
-              map(fromToken => (fromToken.address ? fromToken : null))
+              map(fromToken =>
+                supportedTokens.find(t => compareTokens(fromToken, t)) ? fromToken : null
+              ),
+              map(fromToken => (fromToken?.address ? fromToken : null))
             ),
             toToken$.pipe(
-              map(toToken => supportedTokens.find(t => compareTokens(toToken, t))),
-              map(toToken => (toToken.address ? toToken : null))
+              map(toToken =>
+                supportedTokens.find(t => compareTokens(toToken, t)) ? toToken : null
+              ),
+              map(toToken => (toToken?.address ? toToken : null))
             ),
             of(fromAmount),
             of(toAmount)
@@ -77,13 +79,22 @@ export class PrivateQueryParamsService {
       )
       .subscribe(([fromAsset, toAsset, fromAmount, toAmount]) => {
         const swapInfo: PrivateSwapInfo = { fromAsset, toAsset, fromAmount, toAmount };
+
+        this.hideTokensWindowService.setHideAsset(swapInfo.fromAsset);
+        this.hideTokensWindowService.setHideAmount(swapInfo.fromAmount);
+
+        this.revealTokensWindowService.setRevealAsset(swapInfo.fromAsset);
+        this.revealTokensWindowService.setRevealAmount(swapInfo.fromAmount);
+
+        this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
+        this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
+
         this.privateSwapWindowService.patchSwapInfo(swapInfo);
-        applySwapInfo(swapInfo);
       });
   }
 
-  public setQueryParams(partialSwapInfo: Partial<PrivateSwapInfo>): void {
-    const queryParams = this.convertSwapInfoToQueryParams(partialSwapInfo);
+  public setQueryParams(swapInfo: PrivacyFormValue): void {
+    const queryParams = this.convertSwapInfoToQueryParams(swapInfo);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams,
@@ -91,20 +102,15 @@ export class PrivateQueryParamsService {
     });
   }
 
-  private convertSwapInfoToQueryParams(
-    partialSwapInfo: Partial<PrivateSwapInfo>
-  ): Partial<QueryParams> {
+  private convertSwapInfoToQueryParams(swapInfo: PrivacyFormValue): Partial<QueryParams> {
     const queryParams: QueryParams = {};
-    if (partialSwapInfo.fromAmount) {
-      queryParams.amount = partialSwapInfo.fromAmount.actualValue.toFixed();
+    if (swapInfo.fromAsset) {
+      queryParams.from = swapInfo.fromAsset.symbol;
+      queryParams.fromChain = swapInfo.fromAsset.blockchain;
     }
-    if (partialSwapInfo.fromAsset) {
-      queryParams.from = partialSwapInfo.fromAsset.symbol;
-      queryParams.fromChain = partialSwapInfo.fromAsset.blockchain;
-    }
-    if (partialSwapInfo.toAsset) {
-      queryParams.to = partialSwapInfo.toAsset.symbol;
-      queryParams.toChain = partialSwapInfo.toAsset.blockchain;
+    if (swapInfo.toAsset) {
+      queryParams.to = swapInfo.toAsset.symbol;
+      queryParams.toChain = swapInfo.toAsset.blockchain;
     }
 
     return queryParams;

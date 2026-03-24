@@ -9,7 +9,7 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
+import { filter, first, firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -17,10 +17,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { houdiniFormConfig } from '../../constants/form-config';
 import { FormControl } from '@angular/forms';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { PrivateSwapInfo } from '../../../shared-privacy-providers/models/swap-info';
-import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { List } from 'immutable';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -59,9 +58,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly houdiniErrorService: HoudiniErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly houdiniTokensFacade: HoudiniTokensFacadeService,
-    private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
@@ -111,11 +108,14 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
   }
 
   private parseQueryParams(): void {
-    this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(
-      this.houdiniTokensFacade.tokens,
-      (swapInfo: PrivateSwapInfo) => {
-        this.privateSwapWindowService.patchSwapInfo(swapInfo);
-      }
-    );
+    this.houdiniTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }

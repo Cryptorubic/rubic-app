@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Self, inject } from '@angular/core';
-import { Observable, combineLatestWith, filter, map, takeUntil } from 'rxjs';
+import { Observable, combineLatestWith, filter, first, map, takeUntil } from 'rxjs';
 import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
@@ -11,20 +11,12 @@ import { isNil } from '@app/shared/utils/utils';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivacycashActionButtonService } from '../../services/common/action-button/privacycash-action-button.service';
-import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
-import { PrivateSwapInfo } from '../../../shared-privacy-providers/models/swap-info';
-import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
-import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
-import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
-import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
-import { PrivateRefundWindowService } from '../../../shared-privacy-providers/services/private-refund-window/private-refund-window.service';
-import {
-  getKey,
-  getMinimalTokensByChain
-} from '../../services/common/token-facades/utils/get-minimal-tokens-by-chain';
-import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { List } from 'immutable';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -45,21 +37,11 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
 
   private readonly privacycashSignatureService = inject(PrivacycashSignatureService);
 
-  private readonly hideTokensWindowService = inject(HideWindowService);
-
-  private readonly revealTokensWindowService = inject(RevealWindowService);
-
-  private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
-
-  private readonly privateRefundWindowService = inject(PrivateRefundWindowService);
-
-  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
-
   private readonly privateQueryParamsService = inject(PrivateQueryParamsService);
 
-  private readonly privateTokensFacade = inject(PrivacycashPrivateTokensFacadeService);
+  private readonly privacycashPublicTokensFacade = inject(PrivacycashPublicTokensFacadeService);
 
-  private readonly publicTokensFacade = inject(PrivacycashPublicTokensFacadeService);
+  private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
 
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
@@ -67,11 +49,17 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
 
   public readonly disabledPages$: Observable<PageType[]> =
     this.privacycashSignatureService.signature$.pipe(
-      map(signature => {
-        if (!isNil(signature) && signature.length) {
-          return this.pages.filter(page => page.type === 'login');
+      combineLatestWith(
+        this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.PRIVACY_CASH)
+      ),
+      map(([signature, alreadyMadeShielding]) => {
+        if (isNil(signature) || !signature.length) {
+          return this.pages.filter(page => page.type !== 'login');
         }
-        return this.pages.filter(page => page.type !== 'login');
+        if (!alreadyMadeShielding) {
+          return this.pages.filter(page => page.type !== 'hide');
+        }
+        return this.pages.filter(page => page.type === 'login');
       })
     );
 
@@ -138,37 +126,15 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   }
 
   private parseQueryParams(): void {
-    this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(
-      this.publicTokensFacade.tokens,
-      (swapInfo: PrivateSwapInfo) => {
-        this.hideTokensWindowService.setHideAsset(swapInfo.fromAsset);
-        this.hideTokensWindowService.setHideAmount(swapInfo.fromAmount);
-      }
-    );
-
-    const pcSupportedMap = getMinimalTokensByChain('allChains').reduce(
-      (acc, token) => ({ ...acc, [getKey(token)]: token }),
-      {} as Record<string, MinimalToken>
-    );
-    const pcPrivateTokens = this.privateTokensFacade.tokens.filter(
-      t => !!pcSupportedMap[getKey(t)]
-    );
-    console.log('pcPrivateTokens ==>', pcPrivateTokens);
-    this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(
-      pcPrivateTokens,
-      (swapInfo: PrivateSwapInfo) => {
-        this.revealTokensWindowService.setRevealAsset(swapInfo.fromAsset);
-        this.revealTokensWindowService.setRevealAmount(swapInfo.fromAmount);
-
-        this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
-        this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
-
-        this.privateRefundWindowService.setTransferAsset(swapInfo.fromAsset);
-        this.privateRefundWindowService.setTransferAmount(swapInfo.fromAmount);
-
-        this.privateSwapWindowService.patchSwapInfo(swapInfo);
-      }
-    );
+    this.privacycashPublicTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 
   public onPageSelect(page: PageType): void {

@@ -2,7 +2,6 @@
   *ngLet="{
     swapInfo: swapInfo$ | async,
     loading: loading$ | async,
-    displayReceiver: displayReceiver$ | async
   } as state"
 >
   <div class="selectros-container">
@@ -18,7 +17,7 @@
       </ng-template>
     </app-asset-selector>
 
-    <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
+    <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
 
     <app-asset-selector
       left
@@ -31,17 +30,6 @@
       </ng-template>
     </app-asset-selector>
   </div>
-
-  <!-- <div
-    *ngIf="(creationConfig.withActionButton || creationConfig.withReceiver) && !depositTrade"
-    class="buttons-container"
-  >
-    <app-private-action-button
-      *ngIf="creationConfig.withActionButton"
-      [showLoader]="state.loading"
-      (onClick)="swap()"
-    ></app-private-action-button>
-  </div> -->
 </app-window-container>
 
 <ng-template #assestSelectorEmpty>

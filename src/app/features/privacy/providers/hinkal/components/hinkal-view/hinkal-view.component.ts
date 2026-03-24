@@ -7,10 +7,14 @@ import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { List } from 'immutable';
+import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -43,19 +47,26 @@ export class HinkalViewComponent {
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly authService: AuthService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly hinkalRevealFacade: HinkalRevealFacadeService,
+    private readonly privateQueryParamsService: PrivateQueryParamsService
   ) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];
   }
 
   ngOnInit(): void {
+    this.parseQueryParams();
     this.authService.currentUser$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.hinkalFacadeService.logout();
         this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
       });
+  }
+
+  ngOnDestroy() {
+    this.hinkalFacadeService.removeSubs();
   }
 
   public onPageSelect(page: PageType): void {
@@ -66,7 +77,15 @@ export class HinkalViewComponent {
     this.hinkalFacadeService.switchChain(chain);
   }
 
-  ngOnDestroy() {
-    this.hinkalFacadeService.removeSubs();
+  private parseQueryParams(): void {
+    this.hinkalRevealFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }

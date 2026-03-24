@@ -2,23 +2,26 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { PRIVATE_MODE_TAB, PrivateModeTab } from '../../constants/private-mode-tab';
-import { BehaviorSubject, map } from 'rxjs';
+import { map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
 import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/models/swap-form-types';
-import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
 import { PrivateQueryParamsService } from '../../providers/shared-privacy-providers/services/query-params/private-query-params.service';
+import { PrivacyFormValue } from '../../services/models/privacy-form';
+import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-privacy-page-view',
   templateUrl: './privacy-page-view.component.html',
   styleUrls: ['./privacy-page-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{ provide: SwapsFormService, useClass: SwapsFormService }],
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [
@@ -79,10 +82,6 @@ export class PrivacyPageViewComponent {
 
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
-  private readonly _clearOutput$ = new BehaviorSubject<boolean>(false);
-
-  public readonly clearOutput$ = this._clearOutput$.asObservable();
-
   public readonly tabs = Object.values(PRIVATE_MODE_TAB);
 
   constructor(
@@ -97,16 +96,22 @@ export class PrivacyPageViewComponent {
       this.privacyMainPageService.patchFormValue({
         toAsset: swapInfo.fromAsset
       });
-      this._clearOutput$.next(true);
     }
     this.privacyMainPageService.setSelectedTab(tab);
   }
 
-  public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: swapInfo.fromAsset,
-      toAsset: swapInfo.toAsset
-    });
+  public handleSwapWindowChanged(swapInfo: PrivacyFormValue): void {
+    if (!swapInfo.fromAsset || !swapInfo.toAsset) {
+      this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.ON_CHAIN);
+    } else if (compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
+      this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.TRANSFER);
+    } else {
+      if (swapInfo.fromAsset?.blockchain === swapInfo.toAsset?.blockchain) {
+        this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.ON_CHAIN);
+      } else {
+        this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.CROSS_CHAIN);
+      }
+    }
     this.privateQueryParamsService.setQueryParams(swapInfo);
   }
 

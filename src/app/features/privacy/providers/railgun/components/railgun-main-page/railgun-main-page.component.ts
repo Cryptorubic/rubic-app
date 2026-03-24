@@ -5,10 +5,14 @@ import { StepType } from '@features/privacy/providers/railgun/models/step';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { PageType } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type';
 import { RAILGUN_PAGES } from '@features/privacy/providers/railgun/constants/railgun-pages';
-import { combineLatestWith } from 'rxjs/operators';
+import { combineLatestWith, filter, first } from 'rxjs/operators';
 import { fadeAnimation } from '@shared/utils/utils';
 import { PrivatePageTypeService } from '@features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { TokenService } from '@core/services/sdk/sdk-legacy/token-service/token.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { RailgunRevealFacadeService } from '../../services/common/railgun-reveal-facade.service';
+import { List } from 'immutable';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -54,6 +58,10 @@ export class RailgunMainPageComponent {
 
   private readonly tokensService = inject(TokenService);
 
+  private readonly privateQueryParamsService = inject(PrivateQueryParamsService);
+
+  private readonly revealTokensFacade = inject(RailgunRevealFacadeService);
+
   public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$;
 
   public showBalanceLoading$ = this.utxoScan$.pipe(
@@ -66,6 +74,7 @@ export class RailgunMainPageComponent {
   }
 
   ngOnInit() {
+    this.parseQueryParams();
     this.railgunAccount$.subscribe(el => {
       if (el?.id) {
         this.handleLogin();
@@ -99,5 +108,17 @@ export class RailgunMainPageComponent {
 
   public onPageSelect(page: PageType): void {
     this.privacyService.activePage = page;
+  }
+
+  private parseQueryParams(): void {
+    this.revealTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }

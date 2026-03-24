@@ -21,6 +21,8 @@ import {
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -40,7 +42,8 @@ export class HinkalFacadeService {
     private readonly hinkalSwapService: HinkalSwapService,
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly hinkalWorkerService: HinkalWorkerService,
-    private readonly notificationService: NotificationsService
+    private readonly notificationService: NotificationsService,
+    private readonly privateLocalStorageService: PrivateLocalStorageService
   ) {
     this.initSubs();
   }
@@ -74,6 +77,7 @@ export class HinkalFacadeService {
 
     if (isSuccess) {
       this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+      this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
     }
   }
 

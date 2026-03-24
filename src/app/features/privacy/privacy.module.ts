@@ -20,6 +20,7 @@ import { SharedPrivacyProvidersModule } from './providers/shared-privacy-provide
 import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
 import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { PrivateLocalStorageService } from './services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [
@@ -49,4 +50,8 @@ import { PrivateSwapWindowService } from './providers/shared-privacy-providers/s
   ],
   providers: [PrivacyMainPageService, PrivacyApiService, PrivateSwapWindowService]
 })
-export class PrivacyModule {}
+export class PrivacyModule {
+  constructor(private readonly privateLocalStorageService: PrivateLocalStorageService) {
+    this.privateLocalStorageService.initStorage();
+  }
+}

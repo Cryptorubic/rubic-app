@@ -33,6 +33,6 @@ export function convertAddressesConfigToMinimalTokenMap(): Record<
   }, {} as Record<PrivacycashSupportedChain, MinimalToken[]>);
 }
 
-export function getKey(token: MinimalToken): string {
+export function getTokenKey(token: MinimalToken): string {
   return `${token.blockchain}::${token.address.toLowerCase()}`;
 }

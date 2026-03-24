@@ -21,6 +21,8 @@ import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { PrivacycashTokensService } from './common/token-facades/privacycash-tokens.service';
 import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-wallet-tokens.service';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -37,6 +39,8 @@ export class PrivacycashSwapService {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
   private readonly ephemeralWalletTokensService = inject(EphemeralWalletTokensService);
+
+  private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
 
   /**
    * @param srcToken token with PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
@@ -131,6 +135,7 @@ export class PrivacycashSwapService {
     );
     this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
     this.privacycashTokensService.updatePrivateBalances();
+    this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
   }
 
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
