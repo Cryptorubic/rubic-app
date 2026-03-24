@@ -76,7 +76,7 @@ $mobile-width: 360px;
 @include b($mobile-sm-middle) {
   .swap-container {
     .form-and-activity {
-      gap: 0;
+      gap: 2px;
     }
   }
 }

@@ -21,7 +21,6 @@
         [class.empty]="!state.swapInfo.fromAsset"
         selectorType="from"
         [asset]="state.swapInfo.fromAsset"
-        [isDisabled]="state.loading"
         (handleAssetSelection)="openInputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">
@@ -38,7 +37,7 @@
         [class.empty]="!state.swapInfo.toAsset"
         selectorType="to"
         [asset]="state.swapInfo.toAsset"
-        [isDisabled]="!state.swapInfo.fromAsset || state.loading"
+        [isDisabled]="!state.swapInfo.fromAsset"
         (handleAssetSelection)="openOutputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">

@@ -81,7 +81,8 @@
           padding: 32px 16px 16px;
         }
 
-        &.empty {
+        &.empty,
+        &.empty:first-child {
           padding: 24px 20px !important;
         }
       }
