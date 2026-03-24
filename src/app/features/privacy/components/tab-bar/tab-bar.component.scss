@@ -1,6 +1,23 @@
 @use 'src/scss/core' as *;
 
 :host {
+
+  @include b($mobile-sm-middle) {
+    .tab-bar {
+      font-size: 12px;
+
+      .tab-item {
+        &:first-child {
+          border-radius: 20px 0 0;
+        }
+    
+        &:last-child {
+          border-radius: 0 20px 0 0;
+        }
+      }
+    }
+  }
+
   .tab-bar {
     @include flex(row, center, center);
     gap: 2px;

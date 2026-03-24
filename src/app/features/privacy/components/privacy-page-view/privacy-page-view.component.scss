@@ -57,6 +57,10 @@ $mobile-width: 360px;
     gap: var(--tui-padding-l);
     align-items: center;
     width: 600px;
+
+    .form-and-activity {
+      width: 100%;
+    }
     
     app-private-providers-list-general {
       width: 100%;
@@ -69,11 +73,10 @@ $mobile-width: 360px;
   }
 }
 
-@include b($mobile-md) {
+@include b($mobile-sm-middle) {
   .swap-container {
     .form-and-activity {
-      width: $mobile-width;
-      overflow: hidden;
+      gap: 0;
     }
   }
 }
