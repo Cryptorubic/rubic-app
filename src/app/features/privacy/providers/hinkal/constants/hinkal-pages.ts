@@ -7,7 +7,7 @@ export const HINKAL_PAGES: PageType[] = [
   },
   {
     type: 'walletInfo',
-    label: 'Wallet Info'
+    label: 'Wallet'
   },
   {
     type: 'hide',

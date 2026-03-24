@@ -88,3 +88,12 @@
     }
   }
 }
+
+@include b($laptop) {
+  .provider-element {
+    .top,
+    .bottom {
+      background: var(--tui-secondary) !important;
+    }
+  }
+}

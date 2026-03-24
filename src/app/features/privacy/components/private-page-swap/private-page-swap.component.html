@@ -1,4 +1,5 @@
-<ng-container
+<div
+  class="swap-container"
   *ngLet="{
     swapInfo: swapInfo$ | async
   } as state"
@@ -17,9 +18,9 @@
   <div class="selectors-wrapper">
     <div class="selectors-container" [class.without-output]="!hasOutputContainer">
       <app-asset-selector
+        [class.empty]="!state.swapInfo.fromAsset"
         selectorType="from"
         [asset]="state.swapInfo.fromAsset"
-        [isDisabled]="state.loading"
         (handleAssetSelection)="openInputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">
@@ -33,9 +34,10 @@
 
       <app-asset-selector
         *ngIf="hasOutputContainer"
+        [class.empty]="!state.swapInfo.toAsset"
         selectorType="to"
         [asset]="state.swapInfo.toAsset"
-        [isDisabled]="!state.swapInfo.fromAsset || state.loading"
+        [isDisabled]="!state.swapInfo.fromAsset"
         (handleAssetSelection)="openOutputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">
@@ -58,7 +60,7 @@
       }}
     </div>
   </div>
-</ng-container>
+</div>
 
 <ng-template #assestSelectorEmpty let-isDisabled="isDisabled">
   <div class="empty-asset-selector">{{ isDisabled ? '' : 'Select a chain and a token' }}</div>

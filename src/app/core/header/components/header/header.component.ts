@@ -87,6 +87,10 @@ export class HeaderComponent {
     return this.headerStore.isMobile;
   }
 
+  public get isTablet(): boolean {
+    return this.headerStore.isTablet;
+  }
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
@@ -109,6 +113,7 @@ export class HeaderComponent {
     this.advertisementType = 'default';
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
     if (isPlatformBrowser(platformId)) {
       this.zone.runOutsideAngular(() => {
         this.setNotificationPosition();
@@ -132,6 +137,7 @@ export class HeaderComponent {
   @HostListener('window:resize')
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
   }
 
   public navigateToSwaps(): void {
