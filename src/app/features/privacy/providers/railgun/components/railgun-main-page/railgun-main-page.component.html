@@ -7,7 +7,8 @@
     activePage: activePage$ | async,
     disabledPages: disabledPages$ | async,
     utxoScan: utxoScan$ | async,
-    showBalanceLoading: showBalanceLoading$ | async
+    showBalanceLoading: showBalanceLoading$ | async,
+    railgunEngineLoading: railgunEngineLoading$ | async
   } as data"
 >
   <div class="wrapper">
@@ -32,6 +33,7 @@
         [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
         [railgunId]="data?.railgunAccount?.id"
         (formSubmit)="onSubmit($event)"
+        [loading]="data.railgunEngineLoading"
       ></app-railgun-login-page>
 
       <app-railgun-account-info

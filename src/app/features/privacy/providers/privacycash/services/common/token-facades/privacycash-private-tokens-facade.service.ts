@@ -34,7 +34,11 @@ export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
           {} as Record<string, AvailableTokenAmount>
         );
         return privacycashTokens
-          .filter(pcToken => this.filterToken(pcToken, direction, swapInfo))
+          .filter(
+            pcToken =>
+              !!rubicTokensMap[this.getKey(pcToken)] &&
+              this.filterToken(pcToken, direction, swapInfo)
+          )
           .map(pcTokenWithBalance => {
             const rubicToken = rubicTokensMap[this.getKey(pcTokenWithBalance)];
             const amount = SdkToken.fromWei(pcTokenWithBalance.balanceWei, rubicToken.decimals);

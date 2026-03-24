@@ -104,7 +104,7 @@ export class PrivacycashSwapService {
 
     if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
       this.notificationsService.showWarning(
-        `The transfer amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
+        `Minimum transfer is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
       );
       return;
     }
@@ -144,7 +144,7 @@ export class PrivacycashSwapService {
 
     if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
       this.notificationsService.showWarning(
-        `The transfer amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
+        `Minimum unshield is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
       );
       return;
     }
@@ -183,9 +183,7 @@ export class PrivacycashSwapService {
       const srcTokenUsdAmount = srcAmountNonWei.multipliedBy(srcTokenUsdPricePerOne);
 
       if (srcTokenUsdAmount.lt(10)) {
-        this.notificationsService.showWarning(
-          `The swap amount is below the minimum allowed value. Please enter an amount that meets the required minimum and try again.`
-        );
+        this.notificationsService.showWarning(`Minimum swap is $10.5.`);
         return;
       }
 

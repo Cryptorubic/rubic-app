@@ -7,12 +7,15 @@ import { PrivacycashPrivateTokensFacadeService } from '../../services/common/tok
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -32,9 +35,19 @@ export class PrivacycashRevealPageComponent {
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
+  private readonly revealWindowService = inject(RevealWindowService);
+
   private readonly tokenService = inject(TokenService);
 
   public readonly receiverCtrl = new FormControl<string>('');
+
+  public readonly revealFormCreationConfig: PrivateShieldFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true,
+    withMaxBtn: true,
+    receiverPlaceholder: 'Enter SOLANA receiver address'
+  };
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
@@ -48,6 +61,19 @@ export class PrivacycashRevealPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.revealWindowService.revealAsset$
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .subscribe(token => {
+        this.receiverCtrl.clearAsyncValidators();
+        this.receiverCtrl.setAsyncValidators(
+          getCorrectAddressValidator({
+            fromAssetType: token.blockchain,
+            validatedChain: token.blockchain
+          })
+        );
+        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
   }
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { PrivateAction } from '../../constants/private-mode-tx-types';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from '../../constants/private-mode-tab';
 import { BehaviorSubject, map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
@@ -9,10 +9,8 @@ import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
 import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/models/swap-form-types';
-import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
-import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/models/transfer-info';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -83,35 +81,22 @@ export class PrivacyPageViewComponent {
 
   public readonly clearOutput$ = this._clearOutput$.asObservable();
 
+  public readonly tabs = Object.values(PRIVATE_MODE_TAB);
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService
   ) {}
 
-  public handleTabSelected(selectedTab: string): void {
-    const action = selectedTab as PrivateAction;
-    if (action === 'Transfer') {
+  public handleTabSelected(tab: PrivateModeTab): void {
+    if (tab === PRIVATE_MODE_TAB.TRANSFER) {
       const swapInfo = this.privacyMainPageService.formValue;
       this.privacyMainPageService.patchFormValue({
         toAsset: swapInfo.fromAsset
       });
       this._clearOutput$.next({});
     }
-    this.privacyMainPageService.setSelectedTab(action);
-  }
-
-  public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: swapInfo.fromAsset,
-      toAsset: swapInfo.toAsset
-    });
-  }
-
-  public handleTransferWindowChanged(transferInfo: PrivateTransferInfo): void {
-    this.privacyMainPageService.patchFormValue({
-      fromAsset: transferInfo.fromAsset,
-      toAsset: transferInfo.fromAsset
-    });
+    this.privacyMainPageService.setSelectedTab(tab);
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {

@@ -4,7 +4,7 @@ import { addr_to_symbol_map } from '../providers/privacycash/constants/privacyca
 import { toPrivacyCashTokenAddr } from '../providers/privacycash/utils/converter';
 import { PrivateSwapInfo } from '../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyApiService } from '../services/privacy-api.service';
-import { PrivateAction } from './private-mode-tx-types';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from './private-mode-tab';
 import { PRIVATE_PROVIDERS_ICONS } from './private-providers-icons';
 import { PRIVATE_TRADE_TYPE, PrivateTradeType } from './private-trade-types';
 
@@ -35,7 +35,8 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
   },
   HINKAL: {
     getMinAmountUsd: () => 0,
-    getFeeSize: (action: PrivateAction) => Promise.resolve(action === 'Transfer' ? '0%' : '0.3%'),
+    getFeeSize: (tab: PrivateModeTab) =>
+      Promise.resolve(tab === PRIVATE_MODE_TAB.TRANSFER ? '0%' : '0.3%'),
     url: PRIVATE_MODE_URLS.HINKAL,
     icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HINKAL],
     name: PRIVATE_TRADE_TYPE.HINKAL,
@@ -44,9 +45,9 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     security: 4
   },
   PRIVACY_CASH: {
-    getMinAmountUsd: (action: PrivateAction) => (action === 'Swap' ? 10 : 0),
+    getMinAmountUsd: (tab: PrivateModeTab) => (tab === PRIVATE_MODE_TAB.TRANSFER ? 0 : 10),
     getFeeSize: async (
-      _action: PrivateAction,
+      _tab: PrivateModeTab,
       formValue: PrivateSwapInfo,
       privacyApiService: PrivacyApiService
     ) => {

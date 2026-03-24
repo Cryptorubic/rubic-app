@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  Self
+  Self,
+  TemplateRef
 } from '@angular/core';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -41,11 +43,16 @@ export class AssetSelectorComponent implements OnInit {
 
   @Output() public handleAssetSelection = new EventEmitter<void>();
 
+  @ContentChild('emptySelector', { read: TemplateRef })
+  emptySelectorTemplate?: TemplateRef<unknown>;
+
   public visibleAsset: AssetSelector | null = null;
 
   public emptySelectorText: string = '';
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
+
+  public isQueryDisabled = false;
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -62,9 +69,9 @@ export class AssetSelectorComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
         if (this.selectorType === 'from') {
-          this.isDisabled = hideSelectionFrom;
+          this.isQueryDisabled = hideSelectionFrom;
         } else {
-          this.isDisabled = hideSelectionTo;
+          this.isQueryDisabled = hideSelectionTo;
         }
         this.cdr.markForCheck();
       });
@@ -84,7 +91,7 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   public handleSelection(): void {
-    if (this.isDisabled) return;
+    if (this.isDisabled || this.isQueryDisabled) return;
     this.handleAssetSelection.emit();
   }
 

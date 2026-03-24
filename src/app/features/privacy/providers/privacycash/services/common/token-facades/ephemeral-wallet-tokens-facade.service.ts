@@ -27,11 +27,13 @@ export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
           (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
           {} as Record<string, AvailableTokenAmount>
         );
-        return ethemeralWalletTokens.map(ephemeralWalletToken => {
-          const rubicToken = rubicTokensMap[this.getKey(ephemeralWalletToken)];
-          const amount = SdkToken.fromWei(ephemeralWalletToken.balanceWei, rubicToken.decimals);
-          return { ...rubicToken, amount };
-        });
+        return ethemeralWalletTokens
+          .filter(pcToken => !!rubicTokensMap[this.getKey(pcToken)])
+          .map(ephemeralWalletToken => {
+            const rubicToken = rubicTokensMap[this.getKey(ephemeralWalletToken)];
+            const amount = SdkToken.fromWei(ephemeralWalletToken.balanceWei, rubicToken.decimals);
+            return { ...rubicToken, amount };
+          });
       })
     );
   }

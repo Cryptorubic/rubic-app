@@ -10,29 +10,23 @@
   } as state"
 >
   <div class="form-and-activity">
-    <app-tab-bar
-      [tabs]="['Swap', 'Bridge', 'Transfer']"
-      (tabClicked)="handleTabSelected($event)"
-    ></app-tab-bar>
+    <app-tab-bar [tabs]="tabs" (tabClicked)="handleTabSelected($event)"></app-tab-bar>
 
-    <app-swap-window
-      [quoteAdapter]="quoteAdapter"
+    <app-private-page-swap
       [creationConfig]="
         state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
       "
       [clearOutput]="state.clearOutput"
-      (formChanged)="handleSwapWindowChanged($event)"
-      [receiverCtrl]="receiverCtrl"
-    ></app-swap-window>
+    ></app-private-page-swap>
 
-    <app-last-private-activity
+    <!-- <app-last-private-activity
       [activityList]="state.lastActivity"
       (itemClicked)="handleLastActivityClicked($event)"
-    ></app-last-private-activity>
+    ></app-last-private-activity> -->
   </div>
 
   <app-private-providers-list-general
-    *ngIf="!useLargeIframe"
+    *ngIf="!useLargeIframe && state.providers.length"
     @inOutAnimation
     [states]="state.providers"
     [selectedTradeType]="state.selectedTradeType"

@@ -1,0 +1,128 @@
+@use 'src/scss/core' as *;
+
+.providers-switcher-wrapper {
+  display: flex;
+  justify-content: end;
+  padding: 18px 28px 17px 0;
+
+  background: var(--tui-secondary);
+  border-radius: 20px 20px 0 0;
+}
+
+.providers-switcher-container {
+  display: flex;
+  gap: 8px;
+
+  color: var(--tui-text-02);
+  font-weight: 500;
+
+  tui-toggle {
+    position: relative;
+    top: 2px;
+
+    ::ng-deep {
+      [tuiWrapper][data-appearance='secondary'] {
+        background: var(--io-background);
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .t-circle {
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+.selectors-wrapper {
+  padding: 0 12px;
+
+  background: var(--tui-secondary);
+}
+
+.selectors-container {
+  position: relative;
+
+  display: flex;
+  gap: 2px;
+
+  app-asset-selector {
+    flex: 1;
+
+    background: var(--io-background);
+
+    &:first-child {
+      padding: 12px 10px !important;
+
+      border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+    }
+
+    &:last-child {
+      display: flex;
+      justify-content: end;
+      padding: 12px 20px 12px 0;
+
+      border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+    }
+  }
+
+  &.without-output {
+    app-asset-selector {
+      border-radius: var(--tui-radius-m);
+
+      ::ng-deep {
+        .selector {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  app-form-switcher {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: rotate(90deg);
+
+    ::ng-deep {
+      .switcher {
+        transform: translate(-50%, 50%);
+      }
+    }
+  }
+}
+
+.empty-asset-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  color: $text-gray-2;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.instruction-wrapper {
+  padding: 12px;
+
+  background: var(--tui-secondary);
+  border-radius: 0 0 20px 20px;
+}
+
+.instruction-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 11px 0;
+
+  font-weight: 500;
+  font-size: 15px;
+
+  border: 1px solid var(--io-background);
+  border-radius: 17px;
+}

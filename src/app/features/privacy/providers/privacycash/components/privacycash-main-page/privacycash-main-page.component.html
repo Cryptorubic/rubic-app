@@ -2,6 +2,7 @@
   *ngLet="{
     disabledPages: disabledPages$ | async,
     step: activePage$ | async,
+    privateBalanceLoading: privateBalanceLoading$ | async
   } as data"
   class="container"
 >
@@ -13,6 +14,10 @@
   ></app-page-navigation>
 
   <div class="main">
+    <div *ngIf="data.privateBalanceLoading" class="loading-banner">
+      Private balances are loading. Temporary interface freezing is possible.
+    </div>
+
     <app-privacycash-signature-window
       *ngIf="data.step.type === 'login'"
     ></app-privacycash-signature-window>

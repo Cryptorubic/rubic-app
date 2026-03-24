@@ -6,16 +6,16 @@ import {
   Observable,
   combineLatestWith,
   distinctUntilChanged,
-  forkJoin,
   map,
   of,
+  startWith,
   switchMap
 } from 'rxjs';
 import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../models/activity-item';
 import { PRIVATE_PROVIDERS_CHAINS_MAP } from '../constants/private-providers-chains-map';
-import { PrivateAction } from '../constants/private-mode-tx-types';
-import { PRIVATE_PROVIDERS_ACTIONS_MAP } from '../constants/private-providers-actions-map';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from '../constants/private-mode-tab';
+import { PRIVATE_PROVIDERS_TABS_MAP } from '../constants/private-providers-tabs-map';
 import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
 import { PrivacyApiService } from './privacy-api.service';
 
@@ -38,25 +38,39 @@ export class PrivacyMainPageService {
   }
 
   public readonly swapInfo$ = this.form.valueChanges.pipe(
+    startWith(this.form.value),
     distinctUntilChanged(),
     map(swapInfo => swapInfo as PrivacyFormValue)
   );
 
-  private readonly _selectedTab$ = new BehaviorSubject<PrivateAction>('Swap');
+  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
+
+  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(false);
+
+  public readonly showAllProviders$ = this._showAllProviders$.asObservable();
 
   public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(
     PRIVATE_PROVIDERS_UI
   ).pipe(
-    combineLatestWith(this.form.valueChanges, this.selectedTab$),
-    switchMap(([privateProvidersRaw, formValue, selectedTab]) => {
-      const privateProviders$ = this.loadDynamicParams(privateProvidersRaw, formValue, selectedTab);
-      return forkJoin([privateProviders$, of(formValue), of(selectedTab)]);
+    combineLatestWith(this.form.valueChanges, this.selectedTab$, this.showAllProviders$),
+    map(([privateProviders, formValue, selectedTab, showAllProviders]) => {
+      return [
+        this.filterProviders(privateProviders, formValue, selectedTab, showAllProviders),
+        formValue,
+        selectedTab
+      ];
     }),
-    map(([privateProviders, formValue, selectedTab]) => {
-      return this.filterProviders(privateProviders, formValue, selectedTab);
-    })
+    switchMap(
+      ([privateProviders, formValue, selectedTab]: [
+        PrivateProviderRawInfo[],
+        Partial<PrivacyFormValue>,
+        PrivateModeTab
+      ]) => {
+        return this.loadDynamicParams(privateProviders, formValue, selectedTab);
+      }
+    )
   );
 
   // @TODO_1712 использовать реальную активность из локал стора
@@ -66,7 +80,7 @@ export class PrivacyMainPageService {
 
   constructor(private readonly privacyApiService: PrivacyApiService) {}
 
-  public setSelectedTab(tab: PrivateAction): void {
+  public setSelectedTab(tab: PrivateModeTab): void {
     this._selectedTab$.next(tab);
   }
 
@@ -74,10 +88,14 @@ export class PrivacyMainPageService {
     this.form.patchValue(value);
   }
 
+  public setShowAllProviders(show: boolean): void {
+    this._showAllProviders$.next(show);
+  }
+
   private loadDynamicParams(
     privateProvidersRaw: PrivateProviderRawInfo[],
     formValue: Partial<PrivacyFormValue>,
-    selectedTab: PrivateAction
+    selectedTab: PrivateModeTab
   ): Promise<PrivateProviderInfoUI[]> {
     return Promise.all(
       privateProvidersRaw.map(providerInfo => {
@@ -94,11 +112,18 @@ export class PrivacyMainPageService {
   }
 
   private filterProviders(
-    privateProviders: PrivateProviderInfoUI[],
+    privateProviders: PrivateProviderRawInfo[],
     formValue: Partial<PrivacyFormValue>,
-    selectedTab: PrivateAction
-  ): PrivateProviderInfoUI[] {
-    if (!formValue.fromAsset && !formValue.toAsset) return privateProviders;
+    selectedTab: PrivateModeTab,
+    showAllProviders: boolean
+  ): PrivateProviderRawInfo[] {
+    if (showAllProviders)
+      return privateProviders.filter(provider =>
+        PRIVATE_PROVIDERS_TABS_MAP[provider.name].includes(selectedTab)
+      );
+
+    if (!formValue.fromAsset || (selectedTab !== PRIVATE_MODE_TAB.TRANSFER && !formValue.toAsset))
+      return [];
 
     const srcChain = formValue.fromAsset?.blockchain;
     const dstChain = formValue.toAsset?.blockchain;
@@ -111,16 +136,12 @@ export class PrivacyMainPageService {
       ) {
         return false;
       }
-      const srcChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.fromAsset?.blockchain];
-      const dstChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.toAsset?.blockchain];
-      if (
-        (srcChainActions && !srcChainActions.includes(selectedTab)) ||
-        (dstChainActions && !dstChainActions.includes(selectedTab))
-      ) {
+
+      const supportedTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name];
+      if (!supportedTabs.includes(selectedTab)) {
         return false;
       }
+
       return true;
     });
   }

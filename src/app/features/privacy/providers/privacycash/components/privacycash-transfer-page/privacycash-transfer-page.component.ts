@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angul
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
@@ -13,6 +13,9 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
+import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -32,9 +35,19 @@ export class PrivacycashTransferPageComponent implements OnInit {
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
 
+  private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
+
   private readonly tokenService = inject(TokenService);
 
   public readonly receiverCtrl = new FormControl<string>('');
+
+  public readonly transferFormCreationConfig: PrivateTransferFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true,
+    withMaxBtn: true,
+    receiverPlaceholder: 'Enter SOLANA receiver address'
+  };
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -46,6 +59,22 @@ export class PrivacycashTransferPageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.privateTransferWindowService.transferAsset$
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .subscribe(token => {
+        this.receiverCtrl.clearAsyncValidators();
+        this.receiverCtrl.setAsyncValidators(
+          getCorrectAddressValidator(
+            {
+              fromAssetType: token.blockchain,
+              validatedChain: token.blockchain
+            },
+            { requiredReceiver: true }
+          )
+        );
+        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
   }
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}
