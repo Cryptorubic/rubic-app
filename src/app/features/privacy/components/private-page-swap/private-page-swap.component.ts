@@ -7,6 +7,8 @@ import { PrivateModalsService } from '@app/features/privacy/providers/shared-pri
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { PrivacyFormValue } from '../../services/models/privacy-form';
+import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
+import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
 
 @Component({
   selector: 'app-private-page-swap',
@@ -62,8 +64,18 @@ export class PrivatePageSwapComponent {
   }
 
   public openOutputSelector(): void {
+    const isOnChain = this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.ON_CHAIN;
+    const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
+    const config: AssetsSelectorConfig = {
+      ...this.creationConfig.assetsSelectorConfig,
+      ...(isOnChain &&
+        fromChain && {
+          showAllChains: false,
+          listType: fromChain
+        })
+    };
     this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', config)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });

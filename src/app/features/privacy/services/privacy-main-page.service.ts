@@ -78,6 +78,14 @@ export class PrivacyMainPageService {
     map(() => [])
   );
 
+  public get selectedTab(): PrivateModeTab {
+    return this._selectedTab$.getValue();
+  }
+
+  public get swapInfo(): Partial<PrivacyFormValue> {
+    return this.form.value;
+  }
+
   constructor(private readonly privacyApiService: PrivacyApiService) {}
 
   public setSelectedTab(tab: PrivateModeTab): void {
@@ -117,24 +125,22 @@ export class PrivacyMainPageService {
     selectedTab: PrivateModeTab,
     showAllProviders: boolean
   ): PrivateProviderRawInfo[] {
-    if (showAllProviders)
-      return privateProviders.filter(provider =>
-        PRIVATE_PROVIDERS_TABS_MAP[provider.name].includes(selectedTab)
-      );
-
-    if (!formValue.fromAsset || (selectedTab !== PRIVATE_MODE_TAB.TRANSFER && !formValue.toAsset))
-      return [];
-
     const srcChain = formValue.fromAsset?.blockchain;
     const dstChain = formValue.toAsset?.blockchain;
 
     return privateProviders.filter(provider => {
-      const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
-      if (
-        (srcChain && !supportedChains.includes(srcChain)) ||
-        (dstChain && !supportedChains.includes(dstChain))
-      ) {
-        return false;
+      if (srcChain || dstChain) {
+        const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
+        if (
+          (srcChain && !supportedChains.includes(srcChain)) ||
+          (dstChain && !supportedChains.includes(dstChain))
+        ) {
+          return false;
+        }
+      } else {
+        if (!showAllProviders) {
+          return false;
+        }
       }
 
       const supportedTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name];
