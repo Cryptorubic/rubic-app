@@ -4,7 +4,7 @@ import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/priva
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
 import { EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -14,6 +14,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
+import { HinkalToPrivateAssetsService } from '../../services/hinkal-to-assets.service';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -23,11 +26,24 @@ import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.ser
   providers: [
     TuiDestroyService,
     { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: ToAssetsService, useClass: HinkalToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalSwapTokensFacadeService }
   ]
 })
 export class HinkalSwapTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
+
+  public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(
+    map(chain => {
+      return {
+        ...HINKAL_DEFAULT_CREATION_CONFIG,
+        assetsSelectorConfig: {
+          ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
+          listType: chain
+        }
+      };
+    })
+  );
 
   constructor(
     private readonly workerService: HinkalWorkerService,

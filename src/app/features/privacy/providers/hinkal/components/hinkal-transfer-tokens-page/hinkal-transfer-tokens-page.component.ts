@@ -5,13 +5,14 @@ import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.ser
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -26,6 +27,20 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 })
 export class HinkalTransferTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
+
+  public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(
+    map(chain => {
+      return {
+        ...HINKAL_DEFAULT_CREATION_CONFIG,
+        withReceiver: true,
+        receiverPlaceholder: 'Enter receiver’s stealth address ',
+        assetsSelectorConfig: {
+          ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
+          listType: chain
+        }
+      };
+    })
+  );
 
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,

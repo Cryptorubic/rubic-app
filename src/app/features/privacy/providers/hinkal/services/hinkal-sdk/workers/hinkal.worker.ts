@@ -39,7 +39,7 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
 
       if (type === 'init') {
         const { address, chainId, signature } = params as InitParams;
-        await hinkalWorkerLogic.init(address, chainId, signature);
+        await hinkalWorkerLogic.snapshotService.updateInstance(address, chainId, signature);
         postMessage({ result: null, type, success: true });
       }
 

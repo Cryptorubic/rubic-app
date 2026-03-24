@@ -1,4 +1,6 @@
 <app-transfer-tokens-window
   (handleTransfer)="transfer($event)"
   [receiverCtrl]="receiverCtrl"
+  ,
+  [creationConfig]="creationConfig$ | async"
 ></app-transfer-tokens-window>

@@ -8,6 +8,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PageType } from '../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { Web3Pure } from '@cryptorubic/web3';
+import { isValidPrivateAddress } from '@hinkal/common';
 
 @Injectable()
 export class HinkalActionButtonService extends PrivateActionButtonService {
@@ -102,9 +103,10 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
     }
 
     if (receiver) {
-      const isAddressCorrect = await Web3Pure.getInstance(asset.blockchain).isAddressCorrect(
-        receiver
-      );
+      const isAddressCorrect =
+        currPage.type === 'transfer'
+          ? isValidPrivateAddress(receiver)
+          : await Web3Pure.getInstance(asset.blockchain).isAddressCorrect(receiver);
 
       if (!isAddressCorrect) {
         return {

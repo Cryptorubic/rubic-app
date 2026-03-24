@@ -1,10 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Self } from '@angular/core';
 import { PrivateAssetsService } from '../../shared-privacy-providers/services/private-assets/private-assets.service';
 import { HINKAL_SUPPORTED_CHAINS } from '../constants/hinkal-supported-chains';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { HinkalFacadeService } from './hinkal-sdk/hinkal-facade.service';
+import { skip, takeUntil } from 'rxjs';
 
 @Injectable()
 export class HinkalPrivateAssetsService extends PrivateAssetsService {
-  constructor() {
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly hinkalFacade: HinkalFacadeService
+  ) {
     super('from', HINKAL_SUPPORTED_CHAINS);
+
+    this.assetListType$
+      .pipe(skip(1), takeUntil(this.destroy$))
+      .subscribe(asset => this.hinkalFacade.switchChain(asset));
   }
 }

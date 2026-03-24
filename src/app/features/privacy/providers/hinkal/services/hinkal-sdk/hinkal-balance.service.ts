@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, Subscription, switchMap, tap, timer, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { HinkalWorkerService } from './hinkal-worker.service';
 
@@ -7,51 +7,47 @@ import { HinkalWorkerService } from './hinkal-worker.service';
 export class HinkalBalanceService {
   constructor(private readonly workerService: HinkalWorkerService) {}
 
-  private isPollingActive$ = new BehaviorSubject<boolean>(false);
-
   private readonly _balances$ = new BehaviorSubject<HinkalPrivateBalance>({});
 
-  public stopPolling(): void {
-    this.isPollingActive$.next(false);
-  }
+  private readonly _updateBalance$ = new BehaviorSubject<void>(null);
 
-  public startPolling(): void {
-    this.isPollingActive$.next(true);
+  private readonly updateBalance$ = this._updateBalance$.asObservable();
+
+  public updateBalance(): void {
+    this._updateBalance$.next();
   }
 
   public readonly balances$ = this._balances$.asObservable();
 
-  public initBalancePolling(): Subscription {
-    return timer(0, 600000)
-      .pipe(
-        withLatestFrom(this.isPollingActive$),
-        filter(([_, isPollingActive]) => isPollingActive),
-        switchMap(() => {
-          console.log('FETCH BALANCE');
-          return this.workerService.request<void>(
-            {
-              type: 'updateBalance',
-              params: {}
-            },
-            false
-          );
-        })
-      )
-      .subscribe();
+  public initBalanceEvent(): Observable<void> {
+    return this.updateBalance$.pipe(
+      switchMap(() => {
+        console.log('FETCH BALANCE');
+        return this.workerService.request<void>(
+          {
+            type: 'updateBalance',
+            params: {}
+          },
+          false
+        );
+      })
+    );
   }
 
-  public subscribeOnBalancePolling(): Subscription {
+  public subscribeOnBalanceEvent(): Observable<HinkalPrivateBalance> {
     return this.workerService
       .subscribeOnEvent<HinkalPrivateBalance>({
         type: 'updateBalance',
         params: {}
       })
-      .pipe(tap(v => console.log('BALANCE HANDLED', v)))
-      .subscribe(balances => {
-        this._balances$.next({
-          ...this._balances$.value,
-          ...balances
-        });
-      });
+      .pipe(
+        tap(balances => () => {
+          console.log('BALANCE HANDLED', balances);
+          this._balances$.next({
+            ...this._balances$.value,
+            ...balances
+          });
+        })
+      );
   }
 }

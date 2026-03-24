@@ -25,13 +25,4 @@ export class HinkalWorkerLogic {
     this.quoteService = new HinkalWorkerQuoteService();
     this.swapService = new HinkalWorkerSwapService(this.hinkal, this.quoteService);
   }
-
-  public async init(address: string, chainId: number, signature: string): Promise<void> {
-    try {
-      await this.snapshotService.updateInstance(address, chainId, signature);
-      await this.snapshotService.switchSnapshot(chainId);
-    } catch (err) {
-      console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
-    }
-  }
 }

@@ -11,6 +11,7 @@ import {
   WithdrawParams
 } from './workers/models/worker-params';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
 
 @Injectable()
 export class HinkalSwapService {
@@ -19,6 +20,32 @@ export class HinkalSwapService {
     private readonly errorService: ErrorsService,
     private readonly hinkalWorker: HinkalWorkerService
   ) {}
+
+  public async needApproveBeforeShield(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+    if (token.isNative) return false;
+
+    const adapter = this.adapterFactory.getAdapter(token.blockchain);
+
+    return adapter.needApprove(
+      token,
+      HINKAL_CONTRACT_ADDRESS,
+      adapter.signer.walletAddress,
+      token.stringWeiAmount
+    );
+  }
+
+  public async approveBeforeShield(token: TokenAmount<EvmBlockchainName>): Promise<void> {
+    try {
+      if (token.isNative) return;
+
+      const adapter = this.adapterFactory.getAdapter(token.blockchain);
+
+      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount);
+    } catch (err) {
+      console.error('APPROVE FAILED: ', err);
+      throw err;
+    }
+  }
 
   public async deposit(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     try {
