@@ -15,13 +15,13 @@ import { HinkalFacadeService } from './services/hinkal-sdk/hinkal-facade.service
 import { SharedModule } from '@app/shared/shared.module';
 import { HinkalTransferTokensPageComponent } from './components/hinkal-transfer-tokens-page/hinkal-transfer-tokens-page.component';
 import { HinkalSwapTokensPageComponent } from './components/hinkal-swap-tokens-page/hinkal-swap-tokens-page.component';
-import { HinkalQuoteService } from './services/hinkal-quote.service';
 import { HinkalSwapTokensFacadeService } from './services/hinkal-swap-tokens-facade.service';
 import { HinkalWalletInfoComponent } from './components/hinkal-wallet-info/hinkal-wallet-info.component';
 import { TuiButtonModule, TuiNotificationModule } from '@taiga-ui/core';
 import { HinkalWorkerService } from './services/hinkal-sdk/hinkal-worker.service';
 import { HinkalLoginPageComponent } from './components/hinkal-login-page/hinkal-login-page.component';
 import { HinkalActionButtonService } from './services/hinkal-action-button.service';
+import { HinkalToPrivateAssetsService } from './services/hinkal-to-assets.service';
 
 @NgModule({
   declarations: [
@@ -48,10 +48,10 @@ import { HinkalActionButtonService } from './services/hinkal-action-button.servi
     HinkalRevealFacadeService,
     HinkalPrivateAssetsService,
     HinkalFacadeService,
-    HinkalQuoteService,
     HinkalSwapTokensFacadeService,
     HinkalWorkerService,
-    HinkalActionButtonService
+    HinkalActionButtonService,
+    HinkalToPrivateAssetsService
   ]
 })
 export class HinkalModule {}

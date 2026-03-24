@@ -3,33 +3,35 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  Observable,
-  skip,
-  Subscription,
-  switchMap,
-  tap
-} from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, skip, Subscription, switchMap, tap } from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
   BlockchainName,
+  BlockchainsInfo,
   EvmBlockchainName,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { AssetListType } from '@app/features/trade/models/asset';
+import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Injectable()
 export class HinkalFacadeService {
   private readonly subs: Subscription[] = [];
 
-  private readonly _activeChain$ = new BehaviorSubject<BlockchainName>(BLOCKCHAIN_NAME.BASE);
+  private readonly _activeChain$ = new BehaviorSubject<BlockchainName>(BLOCKCHAIN_NAME.ETHEREUM);
 
-  public switchChain(chain: BlockchainName): void {
-    this._activeChain$.next(chain);
+  private readonly _balanceLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly balanceLoading$ = this._balanceLoading$.asObservable();
+
+  public switchChain(asset: AssetListType): void {
+    const isChain = BlockchainsInfo.isBlockchainName(asset);
+
+    this._activeChain$.next(isChain ? asset : BLOCKCHAIN_NAME.ETHEREUM);
   }
 
   public readonly activeChain$ = this._activeChain$.asObservable();
@@ -40,19 +42,20 @@ export class HinkalFacadeService {
     private readonly hinkalSwapService: HinkalSwapService,
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly hinkalWorkerService: HinkalWorkerService,
-    private readonly notificationService: NotificationsService
+    private readonly notificationService: NotificationsService,
+    private readonly privatePageTypeService: PrivatePageTypeService
   ) {
     this.initSubs();
   }
 
   private initSubs(): void {
-    //const walletSub = this.subscribeOnAddressChanged().subscribe();
-    const activeNetworkSub = this.subscribeOnActiveNetworkChanged().subscribe();
-    const walletNetworkSub = this.subscribeOnWalletNetworkChanged().subscribe();
-    const pollSub = this.hinkalBalanceService.initBalancePolling();
-    const balanceSub = this.hinkalBalanceService.subscribeOnBalancePolling();
+    const activeNetworkSub = this.subscribeOnActiveNetworkChanged();
+    const pollSub = this.hinkalBalanceService.initBalanceEvent().subscribe();
+    const balanceSub = this.hinkalBalanceService
+      .subscribeOnBalanceEvent()
+      .subscribe(() => this._balanceLoading$.next(false));
 
-    this.subs.push(activeNetworkSub, walletNetworkSub, pollSub, balanceSub);
+    this.subs.push(activeNetworkSub, pollSub, balanceSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -65,16 +68,40 @@ export class HinkalFacadeService {
     });
   }
 
-  public async deposit(tokenAmount: TokenAmount<EvmBlockchainName>): Promise<void> {
+  public async prepareDepositSteps(
+    tokenAmount: TokenAmount<EvmBlockchainName>
+  ): Promise<PrivateStep[]> {
+    const steps: PrivateStep[] = [];
+
     if (tokenAmount.blockchain !== this.walletConnectorService.network) {
-      await this.walletConnectorService.switchChain(tokenAmount.blockchain);
+      steps.push({
+        label: 'Switch network',
+        action: () => this.walletConnectorService.switchChain(tokenAmount.blockchain)
+      });
     }
 
-    const isSuccess = await this.hinkalSwapService.deposit(tokenAmount);
+    const needApprove = await this.hinkalSwapService.needApproveBeforeShield(tokenAmount);
 
-    if (isSuccess) {
-      this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+    if (needApprove) {
+      steps.push({
+        label: 'Approve',
+        action: () => this.hinkalSwapService.approveBeforeShield(tokenAmount)
+      });
     }
+
+    steps.push({
+      label: 'Shield',
+      action: () =>
+        this.hinkalSwapService
+          .deposit(tokenAmount)
+          .then(
+            isSuccess =>
+              isSuccess &&
+              this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance')
+          )
+    });
+
+    return steps;
   }
 
   public async withdraw(token: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
@@ -130,7 +157,6 @@ export class HinkalFacadeService {
 
   public logout(): void {
     this.hinkalInstanceService.resetInstance();
-    this.hinkalBalanceService.stopPolling();
   }
 
   public async updateInstance(): Promise<void> {
@@ -142,36 +168,37 @@ export class HinkalFacadeService {
 
       const isSuccess = await this.hinkalInstanceService.updateInstance(
         this.walletConnectorService.address,
-        this.walletConnectorService.network as EvmBlockchainName,
-        this.walletConnectorService.provider?.wallet
+        this._activeChain$.value as EvmBlockchainName
       );
 
-      if (isSuccess) this.hinkalBalanceService.startPolling();
+      if (isSuccess) {
+        this._balanceLoading$.next(true);
+        this.hinkalBalanceService.updateBalance();
+        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet Info' };
+      }
     } catch {}
   }
 
-  private subscribeOnActiveNetworkChanged(): Observable<void> {
-    return this.activeChain$.pipe(
-      tap(chain => console.log('CHAIN SWITCHED', chain)),
-      skip(1),
-      distinctUntilChanged(),
-      switchMap(chain =>
-        this.hinkalWorkerService.request<void>({
-          chainId: blockchainId[chain],
-          type: 'switchNetwork',
-          address: this.walletConnectorService.address
+  private subscribeOnActiveNetworkChanged(): Subscription {
+    return this.activeChain$
+      .pipe(
+        tap(chain => console.log('CHAIN SWITCHED', chain)),
+        skip(1),
+        distinctUntilChanged(),
+        switchMap(chain => {
+          this._balanceLoading$.next(true);
+          return this.hinkalWorkerService
+            .request<void>({
+              params: {
+                chainId: blockchainId[chain],
+                address: this.walletConnectorService.address
+              },
+              type: 'switchNetwork'
+            })
+            .then(() => this.hinkalBalanceService.updateBalance());
         })
       )
-    );
-  }
-
-  private subscribeOnWalletNetworkChanged(): Observable<void> {
-    return this.walletConnectorService.networkChange$.pipe(
-      distinctUntilChanged(),
-      switchMap(() =>
-        this.hinkalInstanceService.updateAdapter(this.walletConnectorService.provider?.wallet)
-      )
-    );
+      .subscribe();
   }
 
   public removeSubs(): void {

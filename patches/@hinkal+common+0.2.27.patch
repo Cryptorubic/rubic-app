@@ -1,0 +1,230 @@
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientAccessTokenSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientAccessTokenSnapshotService.mjs
+index c34039c..981e8eb 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientAccessTokenSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientAccessTokenSnapshotService.mjs
+@@ -16,6 +16,7 @@ import "@solana/web3.js";
+ import "../../crypto-keys/keys.mjs";
+ import { SnapshotFetcherService as c } from "../SnapshotFetcherService.mjs";
+ import { getContractAddress as o } from "../../../functions/utils/getContractAddress.mjs";
++import { get, set } from "idb-keyval";
+ class N extends i {
+   snapshotsService;
+   constructor(e, r) {
+@@ -24,9 +25,23 @@ class N extends i {
+   async fetchSnapshot() {
+     const { contract: e } = this.blockchainEventEmitter, { chainId: r } = await n(e).getNetwork(), s = Number(r);
+     this.snapshotsService || (this.snapshotsService = new c(s, o(e)));
++
++    const storedSnapshot = await get(`access_tokens_${r}`);
++    if(storedSnapshot) return storedSnapshot
++
+     const t = await this.snapshotsService.getAccessTokens();
+     if (t.accessTokenContractAddress !== o(e) || t.chainId !== s)
+       throw Error("Commitment Snapshot: incorrect contract or chain id");
++
++    try{
++      await set(`access_tokens_${r}`,{
++        latestBlockNumber: t.latestBlockNumber,
++        merkleTree: t.merkleTree,
++        senderAddresses: t.senderAddresses,
++        senderAddressIndexMap: t.senderAddressIndexMap
++      })
++    }catch{}
++
+     return {
+       latestBlockNumber: t.latestBlockNumber,
+       merkleTree: t.merkleTree,
+@@ -34,8 +49,10 @@ class N extends i {
+       senderAddressIndexMap: t.senderAddressIndexMap
+     };
+   }
+-  persistSnapshot(e) {
+-    return Promise.resolve();
++  async persistSnapshot(e) {
++    try{
++      await set(`access_tokens_${this.snapshotsService.chainId}`,e)
++    }catch{}
+   }
+ }
+ export {
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientApprovalsSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientApprovalsSnapshotService.mjs
+index 712aa5e..0990703 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientApprovalsSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientApprovalsSnapshotService.mjs
+@@ -15,13 +15,26 @@ import "@coral-xyz/anchor";
+ import "../../../constants/chains.constants.mjs";
+ import "@solana/web3.js";
+ import "../../crypto-keys/keys.mjs";
++import { get, set } from "idb-keyval";
+ class B extends p {
+   snapshotsService;
+   constructor(r, o) {
+     super(r), this.snapshotsService = o;
+   }
+   async fetchSnapshot() {
+-    const { contract: r } = this.blockchainEventEmitter, { chainId: o } = await e(r).getNetwork(), s = Number(o), t = await this.snapshotsService.getApprovals();
++    const { contract: r } = this.blockchainEventEmitter
++    const { chainId: o } = await e(r).getNetwork();
++    const storedSnapshot = await get(`approvals_${o}`);
++
++    if(storedSnapshot){
++      return {
++        latestBlockNumber: storedSnapshot.latestBlockNumber,
++        approvals: storedSnapshot.approvals,
++        events: storedSnapshot.events
++      }
++    }
++
++   const s = Number(o), t = await this.snapshotsService.getApprovals();
+     if (!t)
+       return {
+         latestBlockNumber: 0,
+@@ -30,14 +43,25 @@ class B extends p {
+       };
+     if (t.hinkalAddress !== a(r) || t.chainId !== s)
+       throw Error("approvalsSnapshotData Snapshot: incorrect contract or chain id");
++
++    try{
++      await set(`approvals_${o}`,{
++        latestBlockNumber: t.latestBlockNumber,
++        approvals: t.approvals,
++        events: t.events
++      })
++    }catch{}
++
+     return {
+       latestBlockNumber: t.latestBlockNumber,
+       approvals: t.approvals,
+       events: t.events
+     };
+   }
+-  persistSnapshot(r) {
+-    return Promise.resolve();
++ async persistSnapshot(r) {
++   try{
++   await set(`approvals_${this.snapshotsService.chainId}`,r)
++   }catch{}
+   }
+ }
+ export {
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
+index c8c13e3..0d6a3ee 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
+@@ -13,21 +13,37 @@ import "@coral-xyz/anchor";
+ import "../../../constants/chains.constants.mjs";
+ import "@solana/web3.js";
+ import "../../crypto-keys/keys.mjs";
++import { get, set } from "idb-keyval";
+ class b extends r {
+   snapshotsService;
+   constructor(t, e) {
+     super(t), this.snapshotsService = e;
+   }
+   async fetchSnapshot() {
++    const storedSnapshot = await get(`commitments_${this.snapshotsService.chainId}`);
++
++    if(storedSnapshot) return storedSnapshot;
++
+     const t = await this.snapshotsService.getCommitments();
++
++    try{
++      await set(`commitments_${this.snapshotsService.chainId}`,{
++        latestBlockNumber: t.latestBlockNumber,
++        merkleTree: t.merkleTree,
++        encryptedOutputs: t.encryptedOutputs
++      });
++    }catch{}
++
+     return {
+       latestBlockNumber: t.latestBlockNumber,
+       merkleTree: t.merkleTree,
+       encryptedOutputs: t.encryptedOutputs
+     };
+   }
+-  persistSnapshot(t) {
+-    return Promise.resolve();
++  async persistSnapshot(t) {
++   try{
++    await set(`commitments_${this.snapshotsService.chainId}`,t)
++   }catch{}
+   }
+ }
+ export {
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
+index 8b9d8dd..ddee868 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
+@@ -13,20 +13,41 @@ import "@coral-xyz/anchor";
+ import "../../../constants/chains.constants.mjs";
+ import "@solana/web3.js";
+ import "../../crypto-keys/keys.mjs";
++import { get, set } from "idb-keyval";
+ class d extends i {
+   snapshotsService;
+   constructor(t, r) {
+     super(t), this.snapshotsService = r;
+   }
+   async fetchSnapshot() {
++    const storedSnapshot = await get(`nullifiers_${this.snapshotsService.chainId}`);
++
++    if(storedSnapshot){
++      return {
++        latestBlockNumber: storedSnapshot.latestBlockNumber,
++        nullifiers: storedSnapshot.nullifiers
++      }
++    }
++
+     const t = await this.snapshotsService.getNullifiers();
++
++    try{
++      await set(`nullifiers_${this.snapshotsService.chainId}`,{
++        latestBlockNumber: t.latestBlockNumber,
++        nullifiers: t.nullifiers
++      })
++    }catch{}
++
++    
+     return {
+       latestBlockNumber: t.latestBlockNumber,
+       nullifiers: t.nullifiers
+     };
+   }
+-  persistSnapshot(t) {
+-    return Promise.resolve();
++  async persistSnapshot(t) {
++    try{
++     await set(`nullifiers_${this.snapshotsService.chainId}`,t)
++    }catch{}
+   }
+ }
+ export {
+diff --git a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
+index ec5bc33..6d6451c 100644
+--- a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
++++ b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
+@@ -1,21 +1,9 @@
+ 
+-  const domain = 'https://d13x2m0ev3hbsi.cloudfront.net';
+-
+-  // Returns a blob:// URL which points
+-  // to a javascript file which will call
+-  // importScripts with the given URL
+-  async function getWorkerURL(url) {
+-    const contentRes = await fetch(url);
+-    const content = await contentRes.text()
+-
+-    return URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
+-  }
+-
+   var e = /* @__PURE__ */ ((r) => (r.ZKProof = "ZKProof", r.SnarkJS = "SnarkJS", r.UTXO = "UTXO", r))(e || {});
+ 
+   const n = async () => ({
+-    [e.ZKProof]: await getWorkerURL(domain + '/0.2.19/' + 'zkProofWorkerLauncher.js'),
+-    [e.SnarkJS]: await getWorkerURL(domain + '/0.2.19/' + 'snarkjsWorkerLauncher.js'),
+-    [e.UTXO]: await getWorkerURL(domain + '/0.2.19/' + 'utxoWorkerLauncher.js'),
++    [e.ZKProof]: '/assets/hinkal/zkProofWorkerLauncher.js',
++    [e.SnarkJS]: '/assets/hinkal/snarkjsWorkerLauncher.js',
++    [e.UTXO]:'/assets/hinkal/utxoWorkerLauncher.js',
+   });
+   export { n as getWorkerViteURL };

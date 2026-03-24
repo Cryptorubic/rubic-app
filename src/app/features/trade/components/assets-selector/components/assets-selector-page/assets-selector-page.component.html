@@ -10,7 +10,8 @@
     balanceLoading: balanceLoading$ | async,
     customToken: customToken$ | async,
     blockchainFilter: blockchainFilter$ | async,
-    blockchainsToShow: blockchainsToShow$ | async
+    blockchainsToShow: blockchainsToShow$ | async,
+    platformLoading: platformLoading$ | async
   } as state"
 >
   <section class="assets-selector">
@@ -56,7 +57,7 @@
                 [balanceLoading]="state.balanceLoading"
                 [customToken]="state.customToken"
                 [listType]="state.assetListType"
-                [loading]="state.pageLoading"
+                [loading]="state.pageLoading || state.platformLoading"
                 [tokensSearchQuery]="state.tokensSearchQuery"
                 [tokensToShow]="state.tokensToShow"
                 [totalBlockchains]="totalBlockchains"

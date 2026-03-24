@@ -60,7 +60,7 @@ export class HideTokensWindowComponent {
 
   public openSelector(): void {
     this.modalService
-      .openPublicTokensModal(this.injector)
+      .openPublicTokensModal(this.injector, this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
         this.hideTokensWindowService.setHideAsset(selectedToken);
       });

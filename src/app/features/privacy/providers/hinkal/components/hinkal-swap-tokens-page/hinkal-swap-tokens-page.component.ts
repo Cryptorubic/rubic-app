@@ -1,19 +1,22 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
-import { HinkalQuoteService } from '../../services/hinkal-quote.service';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
 import { EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
+import { HinkalToPrivateAssetsService } from '../../services/hinkal-to-assets.service';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -22,15 +25,29 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: ToAssetsService, useClass: HinkalToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalSwapTokensFacadeService }
   ]
 })
 export class HinkalSwapTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
 
+  public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(
+    map(chain => {
+      return {
+        ...HINKAL_DEFAULT_CREATION_CONFIG,
+        assetsSelectorConfig: {
+          ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
+          listType: chain,
+          platformLoading$: this.hinkalFacadeService.balanceLoading$
+        }
+      };
+    })
+  );
+
   constructor(
-    private readonly hinkalQuoteService: HinkalQuoteService,
+    private readonly workerService: HinkalWorkerService,
     private readonly hinkalFacadeService: HinkalFacadeService,
     private readonly notificationsService: NotificationsService,
     @Self() private readonly destroy$: TuiDestroyService,
@@ -50,7 +67,7 @@ export class HinkalSwapTokensPageComponent {
   }
 
   public readonly quoteAdapter = new HinkalQuoteAdapter(
-    this.hinkalQuoteService,
+    this.workerService,
     this.notificationsService
   );
 

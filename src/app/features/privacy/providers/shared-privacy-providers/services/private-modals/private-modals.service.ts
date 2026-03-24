@@ -14,9 +14,17 @@ import { AssetsSelectorConfig } from '@app/features/trade/components/assets-sele
 export class PrivateModalsService {
   private readonly modalService = inject(ModalService);
 
-  constructor() {}
+  private readonly defaultSelectorConfig: AssetsSelectorConfig = {
+    withChainsFilter: false,
+    withTokensFilter: false,
+    withFavoriteTokens: true,
+    showAllChains: false
+  };
 
-  public openPublicTokensModal(injector: Injector): Observable<BalanceToken> {
+  public openPublicTokensModal(
+    injector: Injector,
+    assetsSelectorConfig: AssetsSelectorConfig = this.defaultSelectorConfig
+  ): Observable<BalanceToken> {
     return this.modalService.showDialog(
       PublicTokensSelectorComponent,
       {
@@ -24,7 +32,8 @@ export class PrivateModalsService {
         size: 'l',
         showMobileMenu: true,
         data: {
-          formType: 'from'
+          formType: 'from',
+          assetsSelectorConfig
         },
         fitContent: true
       },
@@ -35,12 +44,7 @@ export class PrivateModalsService {
   public openPrivateTokensModal(
     injector: Injector,
     direction: 'from' | 'to',
-    assetsSelectorConfig: AssetsSelectorConfig = {
-      withChainsFilter: true,
-      withTokensFilter: true,
-      withFavoriteTokens: true,
-      showAllChains: true
-    }
+    assetsSelectorConfig: AssetsSelectorConfig = this.defaultSelectorConfig
   ): Observable<BalanceToken> {
     return this.modalService.showDialog(
       PrivateTokensSelectorComponent,

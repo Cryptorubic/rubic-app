@@ -1,4 +1,6 @@
 <app-reveal-window
   (handleReveal)="reveal($event)"
   [receiverCtrl]="receiverCtrl"
+  ,
+  [creationConfig]="creationConfig$ | async"
 ></app-reveal-window>

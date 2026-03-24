@@ -1,0 +1,1 @@
+export const HINKAL_CONTRACT_ADDRESS = '0x25e5e82f5702a27c3466fe68f14abdbbadfca826';
