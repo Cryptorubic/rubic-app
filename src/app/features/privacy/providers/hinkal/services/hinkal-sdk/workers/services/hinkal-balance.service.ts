@@ -1,7 +1,6 @@
-import { getInputUtxoAndBalance, Hinkal } from '@hinkal/common';
+import { getApprovedUtxos, getInputUtxoAndBalance, Hinkal } from '@hinkal/common';
 import { HinkalPrivateBalance } from '../../../../models/hinkal-private-balances';
 import { BlockchainsInfo } from '@cryptorubic/core';
-import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerBalanceService {
   private readonly hinkal: Hinkal<unknown>;
@@ -32,8 +31,7 @@ export class HinkalWorkerBalanceService {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      const totalBalances = await this.hinkal.getTotalBalance().catch(() => []);
-      console.log('TOTAL BALANCE', totalBalances);
+      const approvedUtxos = await getApprovedUtxos(this.hinkal, false);
 
       const { inputUtxos } = await getInputUtxoAndBalance({
         hinkal: this.hinkal,
@@ -43,17 +41,20 @@ export class HinkalWorkerBalanceService {
         allowRemoteDecryption: true
       });
 
-      console.log('UTXO', inputUtxos);
+      const allUtxoAddresses = [
+        ...inputUtxos.map(utxo => ({ tokenAddress: utxo.erc20TokenAddress, amount: utxo.amount })),
+        ...approvedUtxos.map(utxo => ({ tokenAddress: utxo.tokenAddress, amount: utxo.amount }))
+      ];
 
-      const fetchedBalances = inputUtxos.reduce((acc, val) => {
-        const balance = acc[val.erc20TokenAddress.toLowerCase()];
-        const currAmount = new BigNumber(val.amount.toString());
+      console.log('UTXO', allUtxoAddresses);
 
-        return {
-          ...acc,
-          [val.erc20TokenAddress.toLowerCase()]: balance ? balance.plus(currAmount) : currAmount
-        };
-      }, {} as Record<string, BigNumber>);
+      const fetchedBalances = allUtxoAddresses.reduce((acc, val) => {
+        const balance = acc[val.tokenAddress.toLowerCase()];
+        const currAmount = val.amount;
+        acc[val.tokenAddress.toLowerCase()] = balance ? balance + currAmount : currAmount;
+
+        return acc;
+      }, {} as Record<string, bigint>);
 
       return Object.entries(fetchedBalances).map(([token, amount]) => ({
         tokenAddress: token,

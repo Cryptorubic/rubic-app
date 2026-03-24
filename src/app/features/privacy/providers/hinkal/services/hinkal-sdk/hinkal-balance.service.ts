@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, map, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, filter, map, Observable, switchMap, tap } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { HinkalWorkerService } from './hinkal-worker.service';
 
@@ -37,11 +37,12 @@ export class HinkalBalanceService {
 
   public subscribeOnBalanceEvent(): Observable<number> {
     return this.workerService
-      .subscribeOnEvent<{ balances: HinkalPrivateBalance; chainId: number }>({
+      .subscribeOnEvent<{ balances: HinkalPrivateBalance; chainId: number } | null>({
         type: 'updateBalance',
         params: {}
       })
       .pipe(
+        filter(Boolean),
         tap(resp => {
           console.log('BALANCE HANDLED', resp.balances);
           this._balances$.next({
