@@ -35,7 +35,8 @@ export class HinkalRevealTokensPageComponent {
         receiverPlaceholder: 'Enter receiver’s EVM wallet address',
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
-          listType: chain
+          listType: chain,
+          platformLoading$: this.hinkalFacadeService.balanceLoading$
         }
       };
     })

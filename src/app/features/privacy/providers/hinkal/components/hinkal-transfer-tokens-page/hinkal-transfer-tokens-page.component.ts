@@ -36,7 +36,8 @@ export class HinkalTransferTokensPageComponent {
         receiverPlaceholder: 'Enter receiver’s stealth address ',
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
-          listType: chain
+          listType: chain,
+          platformLoading$: this.hinkalFacadeService.balanceLoading$
         }
       };
     })

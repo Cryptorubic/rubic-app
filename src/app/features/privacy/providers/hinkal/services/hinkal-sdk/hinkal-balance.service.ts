@@ -41,7 +41,7 @@ export class HinkalBalanceService {
         params: {}
       })
       .pipe(
-        tap(balances => () => {
+        tap(balances => {
           console.log('BALANCE HANDLED', balances);
           this._balances$.next({
             ...this._balances$.value,

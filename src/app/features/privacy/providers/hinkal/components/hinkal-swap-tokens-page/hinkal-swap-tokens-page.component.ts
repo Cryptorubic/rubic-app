@@ -39,7 +39,8 @@ export class HinkalSwapTokensPageComponent {
         ...HINKAL_DEFAULT_CREATION_CONFIG,
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
-          listType: chain
+          listType: chain,
+          platformLoading$: this.hinkalFacadeService.balanceLoading$
         }
       };
     })
