@@ -18,6 +18,7 @@ export class HinkalWorkerSnapshotService {
     try {
       await prepareHinkalWithSignature(this.hinkal, address, chainId, signature);
       await this.hinkal.resetMerkleTreesIfNecessary();
+      await this.hinkal.getEventsFromHinkal();
       this._currSignature$.next(signature);
     } catch (err) {
       console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
