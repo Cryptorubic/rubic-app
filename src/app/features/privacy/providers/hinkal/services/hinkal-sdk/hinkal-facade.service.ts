@@ -3,7 +3,15 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import { BehaviorSubject, distinctUntilChanged, skip, Subscription, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  filter,
+  skip,
+  Subscription,
+  switchMap,
+  tap
+} from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -53,6 +61,7 @@ export class HinkalFacadeService {
     const pollSub = this.hinkalBalanceService.initBalanceEvent().subscribe();
     const balanceSub = this.hinkalBalanceService
       .subscribeOnBalanceEvent()
+      .pipe(filter(chain => chain === blockchainId[this._activeChain$.value]))
       .subscribe(() => this._balanceLoading$.next(false));
 
     this.subs.push(activeNetworkSub, pollSub, balanceSub);
@@ -172,9 +181,7 @@ export class HinkalFacadeService {
       );
 
       if (isSuccess) {
-        this._balanceLoading$.next(true);
-        this.hinkalBalanceService.updateBalance();
-        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet Info' };
+        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet' };
       }
     } catch {}
   }
@@ -182,9 +189,9 @@ export class HinkalFacadeService {
   private subscribeOnActiveNetworkChanged(): Subscription {
     return this.activeChain$
       .pipe(
-        tap(chain => console.log('CHAIN SWITCHED', chain)),
         skip(1),
         distinctUntilChanged(),
+        tap(chain => console.log('CHAIN SWITCHED', chain)),
         switchMap(chain => {
           this._balanceLoading$.next(true);
           return this.hinkalWorkerService

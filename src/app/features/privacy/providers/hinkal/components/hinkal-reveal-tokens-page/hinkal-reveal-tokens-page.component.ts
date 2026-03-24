@@ -10,8 +10,8 @@ import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-hinkal-reveal-tokens-page',
@@ -20,7 +20,7 @@ import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-c
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
   ]
 })
