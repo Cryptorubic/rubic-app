@@ -10,18 +10,20 @@ export class HinkalWorkerBalanceService {
     this.hinkal = hinkal;
   }
 
-  public async getBalances(): Promise<HinkalPrivateBalance> {
+  public async getBalances(): Promise<{ balances: HinkalPrivateBalance; chainId: number }> {
+    const chainId = this.hinkal.getCurrentChainId();
+
     try {
       await this.hinkal.getEventsFromHinkal();
       const ethAddress = await this.hinkal.getEthereumAddress();
-      const chainId = this.hinkal.getCurrentChainId();
       const balances = await this.fetchBalances(chainId, ethAddress);
       const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
       return {
-        [blockchain]: balances
+        balances: { [blockchain]: balances },
+        chainId
       };
     } catch {
-      return {};
+      return { chainId, balances: {} };
     }
   }
 
@@ -30,6 +32,9 @@ export class HinkalWorkerBalanceService {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
+      const totalBalances = await this.hinkal.getTotalBalance().catch(() => []);
+      console.log('TOTAL BALANCE', totalBalances);
+
       const { inputUtxos } = await getInputUtxoAndBalance({
         hinkal: this.hinkal,
         chainId,
@@ -37,6 +42,8 @@ export class HinkalWorkerBalanceService {
         resetCacheBefore: false,
         allowRemoteDecryption: true
       });
+
+      console.log('UTXO', inputUtxos);
 
       const fetchedBalances = inputUtxos.reduce((acc, val) => {
         const balance = acc[val.erc20TokenAddress.toLowerCase()];
