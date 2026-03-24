@@ -181,7 +181,7 @@ export class HinkalFacadeService {
       );
 
       if (isSuccess) {
-        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet Info' };
+        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet' };
       }
     } catch {}
   }
