@@ -66,9 +66,26 @@
   height: 100%;
 }
 
+@include b($laptop) {
+  .testnets-button {
+    display: none;
+  }
+}
+
 @include b($tablet) {
   .rubic-header {
     padding: var(--tui-radius-m) var(--tui-radius-l);
+  }
+  
+  .swap-button,
+  .private-mode-button {
+    height: 40px !important;
+
+    ::ng-deep {
+      .t-wrapper {
+        padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
+      }
+    }
   }
 
   app-rubic-menu-toggler,
@@ -79,7 +96,6 @@
 
   button {
     &.theme-switcher,
-    &.swap-button,
     &.staking-button {
       display: none;
     }
@@ -88,4 +104,22 @@
 
 .large-iframe-header {
   justify-content: space-between;
+}
+
+@include b($mobile-sm-middle) {
+  .swap-button,
+  .private-mode-button {
+    font-size: 12px !important;
+
+    .icon {
+      position: relative;
+      top: 2px;
+
+      ::ng-deep {
+        svg {
+          height: 20px;
+        }
+      }
+    }
+  }
 }
