@@ -11,7 +11,7 @@ import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
-import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-zama-reveal-tokens-page',
@@ -20,7 +20,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: FromAssetsService, useClass: ZamaPrivateAssetsService },
+    { provide: ToAssetsService, useClass: ZamaPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ZamaRevealFacadeService }
   ]
 })

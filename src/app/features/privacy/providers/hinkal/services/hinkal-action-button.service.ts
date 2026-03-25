@@ -28,7 +28,8 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
                 swapInfo.fromAsset,
                 swapInfo.fromAmount,
                 receiver,
-                page
+                page,
+                swapInfo.toAsset
               );
             })
           );
@@ -63,20 +64,38 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
 
   private async getButtonState(
     _network: BlockchainName | null,
-    asset: BalanceToken | null,
+    fromAsset: BalanceToken | null,
     assetAmount: {
       visibleValue: string;
       actualValue: BigNumber;
     } | null,
     receiver: string,
-    currPage: PageType
+    currPage: PageType,
+    toAsset?: BalanceToken | null
   ): Promise<PrivateActionButtonState> {
-    if (!asset) {
+    if (!fromAsset) {
       return {
         type: 'error',
         text: 'Select token'
       };
     }
+
+    if (currPage.type === 'swap') {
+      if (!toAsset) {
+        return {
+          type: 'error',
+          text: 'Select token'
+        };
+      }
+
+      if (fromAsset.blockchain !== toAsset.blockchain) {
+        return {
+          type: 'error',
+          text: 'Trade is not available'
+        };
+      }
+    }
+
     if (
       !assetAmount ||
       isNaN(assetAmount.actualValue.toNumber()) ||
@@ -88,7 +107,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    if (asset.amount.lt(assetAmount.visibleValue)) {
+    if (!fromAsset.amount.isFinite() || fromAsset.amount.lt(assetAmount.visibleValue)) {
       return {
         type: 'error',
         text: 'Insufficient balance'
@@ -106,7 +125,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       const isAddressCorrect =
         currPage.type === 'transfer'
           ? isValidPrivateAddress(receiver)
-          : await Web3Pure.getInstance(asset.blockchain).isAddressCorrect(receiver);
+          : await Web3Pure.getInstance(fromAsset.blockchain).isAddressCorrect(receiver);
 
       if (!isAddressCorrect) {
         return {
