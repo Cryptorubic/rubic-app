@@ -60,7 +60,7 @@ export class ZamaTransferTokensPageComponent {
         this.receiverCtrl.value
       );
 
-      const preview$ = openPreview({ steps });
+      const preview$ = openPreview({ steps, dstTokenAmount: token.tokenAmount.toFixed() });
 
       await firstValueFrom(preview$);
     } finally {
