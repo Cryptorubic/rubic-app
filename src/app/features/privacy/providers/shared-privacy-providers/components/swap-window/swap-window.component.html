@@ -39,6 +39,7 @@
       left
       selectorType="to"
       [asset]="state.swapInfo.toAsset"
+      [isDisabled]="state.loading"
       (handleAssetSelection)="openOutputSelector()"
     ></app-asset-selector>
     <div right class="input-container">
