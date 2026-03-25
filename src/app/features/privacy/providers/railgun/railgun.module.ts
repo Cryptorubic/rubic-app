@@ -43,6 +43,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { RailgunWalletLoadingComponent } from './components/railgun-wallet-loading/railgun-wallet-loading.component';
 import { RailgunTokensBootstrapService } from '@features/privacy/providers/railgun/services/common/railgun-tokens-bootstrap.service';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
+import { RailgunRevealFacadeService } from './services/common/railgun-reveal-facade.service';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.s
     TargetNetworkAddressService,
     TuiDestroyService,
     RailgunErrorService,
+    RailgunRevealFacadeService,
     { provide: TokensBootstrapService, useClass: RailgunTokensBootstrapService }
   ]
 })

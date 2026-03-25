@@ -226,6 +226,7 @@ export class RailgunFacadeService {
   );
 
   constructor() {
+    console.log('RAILGUN_WORKER_CREATED');
     const shieldedTokens = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
     this._shieldedTokens$.next(shieldedTokens || []);
     this.balanceUpdater$.subscribe();
