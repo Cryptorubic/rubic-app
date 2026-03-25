@@ -12,8 +12,12 @@ import { UserInterface } from '@core/services/auth/models/user.interface';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { map } from 'rxjs/operators';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
+import {
+  PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP,
+  PRIVATE_PROVIDERS_WALLETS_MAP
+} from '@features/privacy/constants/private-providers-wallets-map';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class RailgunPublicActionButtonService extends PrivateActionButtonService {
@@ -26,6 +30,8 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
   private readonly tokensFacade = inject(TokensFacadeService);
 
   private readonly toAssetsService = inject(RailgunPublicAssetsService);
+
+  private readonly headerStore = inject(HeaderStore);
 
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
@@ -60,9 +66,12 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
     );
 
   private connectWallet(): void {
+    const walletsMap = this.headerStore.isMobile
+      ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
+      : PRIVATE_PROVIDERS_WALLETS_MAP;
     this.modalService
       .openWalletModal(this.injector, {
-        providers: [WALLET_NAME.METAMASK, WALLET_NAME.WALLET_CONNECT]
+        providers: walletsMap['railgun']
       })
       .subscribe();
   }
@@ -112,7 +121,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
     }
     return {
       type: 'parent',
-      text: 'Shield token'
+      text: 'Shield'
     };
   }
 }

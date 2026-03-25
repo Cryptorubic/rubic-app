@@ -1,9 +1,17 @@
 @use 'src/scss/core' as *;
 
+:host:not(:last-child) {
+  border-bottom: 1px solid var(--secondary-background);
+}
+
 .token-card-container {
   @include flex(row, center, flex-start);
   gap: var(--tui-padding-m);
   height: 45px;
+
+  @include b($mobile-md) {
+    height: auto;
+  }
 }
 
 .token-card {
@@ -49,6 +57,11 @@
     margin-right: 40px;
 
     white-space: nowrap;
+
+    @include b($mobile-md) {
+      width: calc(100% - 60px);
+      margin-right: 40px;
+    }
   }
 
   &__symbol-container {
@@ -62,6 +75,12 @@
     margin-left: auto;
 
     text-align: right;
+
+    @include b($mobile-md) {
+      margin-left: 0;
+
+      text-align: left;
+    }
   }
 
   &__description {
@@ -116,12 +135,18 @@
 
 @include b($mobile-md) {
   .token-card {
+    flex-wrap: wrap;
     gap: var(--tui-padding-s);
     width: 100%;
     padding: var(--tui-padding-s);
 
+
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
+
+    &:not(:last-child) {
+      border-radius: 0;
+    }
 
     &:hover {
       background: var(--tui-base-01);
