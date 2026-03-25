@@ -5,7 +5,7 @@ import { PageType } from '../../../shared-privacy-providers/components/page-navi
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
@@ -15,6 +15,8 @@ import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.s
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainName } from '@cryptorubic/core';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -39,11 +41,18 @@ export class HinkalViewComponent {
   public readonly pages = HINKAL_PAGES;
 
   public readonly disabledPages$ = this.hinkalInstanceService.currSignature$.pipe(
-    map(signature =>
-      signature
-        ? [{ type: 'login', label: 'Login' }]
-        : this.pages.filter(page => page.type !== 'login')
-    )
+    combineLatestWith(
+      this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.HINKAL)
+    ),
+    map(([signature, alreadyMadeShielding]) => {
+      if (!signature) {
+        return this.pages.filter(page => page.type !== 'login');
+      }
+      if (!alreadyMadeShielding) {
+        return this.pages.filter(page => page.type !== 'hide');
+      }
+      return this.pages.filter(page => page.type === 'login');
+    })
   );
 
   constructor(
@@ -53,7 +62,8 @@ export class HinkalViewComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly hinkalRevealFacade: HinkalRevealFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly privateLocalStorageService: PrivateLocalStorageService
   ) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];

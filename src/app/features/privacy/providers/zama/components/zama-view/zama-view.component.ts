@@ -5,7 +5,7 @@ import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ZamaActionButtonService } from '../../services/zama-action-button.service';
@@ -13,6 +13,8 @@ import { PrivateQueryParamsService } from '../../../shared-privacy-providers/ser
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { List } from 'immutable';
 import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 
 @Component({
   selector: 'app-zama-view',
@@ -33,11 +35,18 @@ export class ZamaViewComponent {
   public readonly pages = ZAMA_PAGES;
 
   public readonly disabledPages$ = this.zamaSignatureService.signatureInfo$.pipe(
-    map(signature =>
-      signature
-        ? [{ type: 'login', label: 'Login' }]
-        : this.pages.filter(page => page.type !== 'login')
-    )
+    combineLatestWith(
+      this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.ZAMA)
+    ),
+    map(([signature, alreadyMadeShielding]) => {
+      if (!signature) {
+        return this.pages.filter(page => page.type !== 'login');
+      }
+      if (!alreadyMadeShielding) {
+        return this.pages.filter(page => page.type !== 'hide');
+      }
+      return this.pages.filter(page => page.type === 'login');
+    })
   );
 
   constructor(
@@ -47,7 +56,8 @@ export class ZamaViewComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaSignatureService: ZamaSignatureService,
     private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
-    private readonly privateQueryParamsService: PrivateQueryParamsService
+    private readonly privateQueryParamsService: PrivateQueryParamsService,
+    private readonly privateLocalStorageService: PrivateLocalStorageService
   ) {
     this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
     this.initZama();

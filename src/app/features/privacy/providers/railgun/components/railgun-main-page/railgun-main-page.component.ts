@@ -13,6 +13,8 @@ import { PrivateQueryParamsService } from '../../../shared-privacy-providers/ser
 import { RailgunRevealFacadeService } from '../../services/common/railgun-reveal-facade.service';
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -26,13 +28,23 @@ export class RailgunMainPageComponent {
 
   private readonly railgunFacade = inject(RailgunFacadeService);
 
+  private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
+
   public readonly utxoScan$ = this.railgunFacade.utxoScan$;
 
   private readonly _disabledPages$ = new BehaviorSubject(RAILGUN_PAGES.slice(1));
 
   public readonly disabledPages$ = this._disabledPages$.asObservable().pipe(
-    combineLatestWith(this.utxoScan$),
-    map(([disabledPages, utxoScan]) => {
+    combineLatestWith(
+      this.utxoScan$,
+      this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.RAILGUN)
+    ),
+    map(([disabledPages, utxoScan, alreadyMadeShielding]) => {
+      if (!alreadyMadeShielding) {
+        if (!disabledPages.some(p => p.type === 'login')) {
+          return this.pages.filter(page => page.type !== 'hide');
+        }
+      }
       const chains = Object.values(utxoScan);
       const sum = chains.reduce((acc, curr) => acc + curr, 0);
       if (sum === chains.length * 100 || sum === 0) {

@@ -112,5 +112,5 @@ export const storeRecord: Record<keyof Store, null> = {
   RAILGUN_ENCRYPTION_CREDS_V1: null,
   RAILGUN_SHIELDED_TOKENS: null,
   ZAMA_SIGNATURES_INFO: null,
-  SHIELDING_STATUS: null
+  ALREADY_SHIELDED: null
 };

@@ -9,16 +9,16 @@ import { RubicWindow } from '@app/shared/utils/rubic-window';
 @Injectable()
 export class PrivateLocalStorageService {
   private readonly _storage$ = new BehaviorSubject<PrivacyLocalStorage>({
-    SHIELDING_STATUS: Object.values(PRIVATE_TRADE_TYPE).reduce(
+    ALREADY_SHIELDED: Object.values(PRIVATE_TRADE_TYPE).reduce(
       (acc, privateTradeType) => ({ ...acc, [privateTradeType]: false }),
-      {} as PrivacyLocalStorage['SHIELDING_STATUS']
+      {} as PrivacyLocalStorage['ALREADY_SHIELDED']
     )
   });
 
   public readonly storage$ = this._storage$.pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
   public alreadyMadeShielding$(providerType: PrivateTradeType): Observable<boolean> {
-    return this.storage$.pipe(map(storage => storage.SHIELDING_STATUS[providerType]));
+    return this.storage$.pipe(map(storage => storage.ALREADY_SHIELDED[providerType]));
   }
 
   constructor(
@@ -28,21 +28,21 @@ export class PrivateLocalStorageService {
 
   public initStorage(): void {
     this.window.addEventListener('beforeunload', () => {
-      this.storeService.setItem('SHIELDING_STATUS', { ...this._storage$.value.SHIELDING_STATUS });
+      this.storeService.setItem('ALREADY_SHIELDED', { ...this._storage$.value.ALREADY_SHIELDED });
     });
 
-    const info = this.storeService.getItem('SHIELDING_STATUS');
+    const info = this.storeService.getItem('ALREADY_SHIELDED');
     if (!info) return;
-    this._storage$.next({ ...this._storage$.value, SHIELDING_STATUS: { ...info } });
+    this._storage$.next({ ...this._storage$.value, ALREADY_SHIELDED: { ...info } });
   }
 
   public markProviderAsShielded(providerType: PrivateTradeType): void {
-    const alreadyMarked = this._storage$.value.SHIELDING_STATUS[providerType];
+    const alreadyMarked = this._storage$.value.ALREADY_SHIELDED[providerType];
     if (alreadyMarked) return;
     this._storage$.next({
       ...this._storage$.value,
-      SHIELDING_STATUS: {
-        ...this._storage$.value.SHIELDING_STATUS,
+      ALREADY_SHIELDED: {
+        ...this._storage$.value.ALREADY_SHIELDED,
         [providerType]: true
       }
     });

@@ -50,7 +50,12 @@ import { TuiToggleModule } from '@taiga-ui/kit';
     TuiHintModule,
     TuiToggleModule
   ],
-  providers: [PrivacyMainPageService, PrivacyApiService, PrivateSwapWindowService]
+  providers: [
+    PrivacyMainPageService,
+    PrivacyApiService,
+    PrivateSwapWindowService,
+    PrivateLocalStorageService
+  ]
 })
 export class PrivacyModule {
   constructor(private readonly privateLocalStorageService: PrivateLocalStorageService) {
