@@ -55,6 +55,8 @@ export class PrivacycashTokensService {
    */
   private _abortController: AbortController = new AbortController();
 
+  private readonly worker = new Worker(new URL('./worker/privacycash.worker.ts', import.meta.url));
+
   public get abortController(): AbortController {
     return this._abortController;
   }
