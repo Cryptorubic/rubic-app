@@ -1,25 +1,8 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
-
-export const PRIVATE_MODE_SUPPORTED_CHAINS = [
-  BLOCKCHAIN_NAME.ETHEREUM,
-  BLOCKCHAIN_NAME.ARBITRUM,
-  BLOCKCHAIN_NAME.POLYGON,
-  BLOCKCHAIN_NAME.BASE,
-  BLOCKCHAIN_NAME.OPTIMISM,
-  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.SOLANA,
-  BLOCKCHAIN_NAME.TRON
-] as const;
-
-type SupportedChain = (typeof PRIVATE_MODE_SUPPORTED_CHAINS)[number];
-
-export const isPrivateModeSupportedChain = (
-  blockchain: BlockchainName
-): blockchain is SupportedChain =>
-  (PRIVATE_MODE_SUPPORTED_CHAINS as readonly BlockchainName[]).includes(blockchain);
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { PrivateModeSupportedChain } from './private-mode-supported-chains';
 
 export const PRIVATE_MODE_SUPPORTED_TOKENS: {
-  [chain in SupportedChain]: string[];
+  [chain in PrivateModeSupportedChain]: string[];
 } = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     '0x0000000000000000000000000000000000000000', // ETH

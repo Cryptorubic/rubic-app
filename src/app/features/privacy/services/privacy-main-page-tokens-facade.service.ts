@@ -14,10 +14,8 @@ import { BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
 import { PrivacyMainPageService } from './privacy-main-page.service';
-import {
-  isPrivateModeSupportedChain,
-  PRIVATE_MODE_SUPPORTED_TOKENS
-} from '../constants/private-mode-supported-chains-and-tokens';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../constants/private-mode-supported-tokens';
+import { isPrivateModeSupportedChain } from '../constants/private-mode-supported-chains';
 
 @Injectable()
 export class PrivacyMainPageTokensFacadeService extends TokensFacadeService {

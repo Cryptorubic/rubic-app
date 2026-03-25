@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { CLEARSWAP_SUPPORTED_TOKENS } from '@app/features/privacy/providers/clearswap/constants/clearswap-supported-chains-and-tokens';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import {
   sorterByChain,
@@ -15,6 +14,7 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
+import { CLEARSWAP_SUPPORTED_TOKENS } from '../constants/clearswap-supported-tokens';
 
 @Injectable()
 export class ClearswapTokensFacadeService extends TokensFacadeService {
