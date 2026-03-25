@@ -19,6 +19,7 @@ import { PRIVATE_MODE_TAB, PrivateModeTab } from '../constants/private-mode-tab'
 import { PRIVATE_PROVIDERS_TABS_MAP } from '../constants/private-providers-tabs-map';
 import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
 import { PrivacyApiService } from './privacy-api.service';
+import { StoreService } from '@app/core/services/store/store.service';
 
 const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   { providerName: 'HINKAL', type: 'swap' },
@@ -50,7 +51,9 @@ export class PrivacyMainPageService {
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 
-  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(false);
+  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(
+    this.storeService.getItem('SHOW_ALL_PROVIDERS_KEY')
+  );
 
   public readonly showAllProviders$ = this._showAllProviders$.asObservable();
 
@@ -89,7 +92,10 @@ export class PrivacyMainPageService {
     return this.form.value;
   }
 
-  constructor(private readonly privacyApiService: PrivacyApiService) {}
+  constructor(
+    private readonly privacyApiService: PrivacyApiService,
+    private readonly storeService: StoreService
+  ) {}
 
   public setSelectedTab(tab: PrivateModeTab): void {
     this._selectedTab$.next(tab);
@@ -100,6 +106,7 @@ export class PrivacyMainPageService {
   }
 
   public setShowAllProviders(show: boolean): void {
+    this.storeService.setItem('SHOW_ALL_PROVIDERS_KEY', show);
     this._showAllProviders$.next(show);
   }
 
@@ -128,22 +135,24 @@ export class PrivacyMainPageService {
     selectedTab: PrivateModeTab,
     showAllProviders: boolean
   ): PrivateProviderRawInfo[] {
+    if (showAllProviders)
+      return privateProviders.filter(provider =>
+        PRIVATE_PROVIDERS_TABS_MAP[provider.name].includes(selectedTab)
+      );
+
+    if (!formValue.fromAsset || (selectedTab !== PRIVATE_MODE_TAB.TRANSFER && !formValue.toAsset))
+      return [];
+
     const srcChain = formValue.fromAsset?.blockchain;
     const dstChain = formValue.toAsset?.blockchain;
 
     return privateProviders.filter(provider => {
-      if (srcChain || dstChain) {
-        const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
-        if (
-          (srcChain && !supportedChains.includes(srcChain)) ||
-          (dstChain && !supportedChains.includes(dstChain))
-        ) {
-          return false;
-        }
-      } else {
-        if (!showAllProviders) {
-          return false;
-        }
+      const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
+      if (
+        (srcChain && !supportedChains.includes(srcChain)) ||
+        (dstChain && !supportedChains.includes(dstChain))
+      ) {
+        return false;
       }
 
       const supportedTabs = PRIVATE_PROVIDERS_TABS_MAP[provider.name];

@@ -53,6 +53,10 @@ export class PrivatePageSwapComponent implements OnInit {
 
   public readonly swapInfo$ = this.privacyMainPageService.swapInfo$;
 
+  public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
+
+  public readonly showAllProviders$ = this.privacyMainPageService.showAllProviders$;
+
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
@@ -75,8 +79,6 @@ export class PrivatePageSwapComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
-
-  public showAllProviders = false;
 
   public get formValue(): PrivacyFormValue {
     return this.privacyMainPageService.formValue;
