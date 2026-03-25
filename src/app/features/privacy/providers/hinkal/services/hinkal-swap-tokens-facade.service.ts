@@ -5,12 +5,17 @@ import { AssetListType } from '@app/features/trade/models/asset';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { map, Observable, switchMap } from 'rxjs';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
-import { compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
+import { BlockchainsInfo, compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
+import { PrivateSwapWindowService } from '../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { compareTokens } from '@app/shared/utils/utils';
+import { sorterByChain } from '@app/features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
 
 @Injectable()
 export class HinkalSwapTokensFacadeService extends TokensFacadeService {
   private readonly balanceService = inject(HinkalBalanceService);
+
+  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
 
   public override getTokensList(
     type: AssetListType,
@@ -27,15 +32,48 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
                 balance => compareAddresses(balance.tokenAddress, token.address)
               );
 
+              const oppositeToken =
+                direction === 'from'
+                  ? this.privateSwapWindowService.swapInfo.toAsset
+                  : this.privateSwapWindowService.swapInfo.fromAsset;
+              const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+
               return {
                 ...token,
+                available: isAvailable,
                 amount: shieldedBalance
                   ? Token.fromWei(shieldedBalance.amount, token.decimals)
                   : new BigNumber(NaN)
               };
             });
 
-            return supportedTokens;
+            const sortedByOpposite = supportedTokens.sort((a, b) => {
+              const oppositeToken =
+                direction === 'from'
+                  ? this.privateSwapWindowService.swapInfo.toAsset
+                  : this.privateSwapWindowService.swapInfo.fromAsset;
+              if (oppositeToken) {
+                if (
+                  a.address === oppositeToken.address &&
+                  a.blockchain === oppositeToken.blockchain
+                ) {
+                  return 1;
+                }
+                if (
+                  b.address === oppositeToken.address &&
+                  b.blockchain === oppositeToken.blockchain
+                ) {
+                  return -1;
+                }
+              }
+
+              return 0;
+            });
+            if (BlockchainsInfo.isBlockchainName(type)) {
+              return sortedByOpposite.sort(sorterByChain);
+            }
+
+            return sortedByOpposite;
           })
         );
       })

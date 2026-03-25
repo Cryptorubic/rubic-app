@@ -18,7 +18,7 @@
     <ng-container header *ngIf="!isMobile">
       <div class="assets-selector__header">
         <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-        <span class="back-button__text">{{ headerText$ | async }}</span>
+        <span class="back-button__text">{{ customHeaderText || state.headerText }}</span>
       </div>
     </ng-container>
 

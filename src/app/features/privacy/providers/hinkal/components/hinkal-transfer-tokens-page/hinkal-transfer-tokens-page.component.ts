@@ -63,18 +63,14 @@ export class HinkalTransferTokensPageComponent {
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const steps = this.hinkalFacadeService.prepareTransferSteps(
+        token as TokenAmount<EvmBlockchainName>,
+        this.receiverCtrl.value
+      );
       const preview$ = openPreview({
-        steps: [
-          {
-            label: 'Transfer tokens',
-            action: () =>
-              this.hinkalFacadeService.transfer(
-                token as TokenAmount<EvmBlockchainName>,
-                this.receiverCtrl.value
-              )
-          }
-        ],
-        warnings: HINKAL_WARNINGS
+        steps,
+        warnings: HINKAL_WARNINGS,
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed()
       });
 
       await firstValueFrom(preview$);

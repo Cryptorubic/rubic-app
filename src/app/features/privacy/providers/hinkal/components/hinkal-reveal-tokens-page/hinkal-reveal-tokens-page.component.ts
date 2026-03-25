@@ -62,17 +62,13 @@ export class HinkalRevealTokensPageComponent {
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const steps = this.hinkalFacadeService.prepareWithdrawSteps(
+        token as TokenAmount<EvmBlockchainName>,
+        this.receiverCtrl.value
+      );
+
       const preview$ = openPreview({
-        steps: [
-          {
-            label: 'Unshield',
-            action: () =>
-              this.hinkalFacadeService.withdraw(
-                token as TokenAmount<EvmBlockchainName>,
-                this.receiverCtrl.value
-              )
-          }
-        ],
+        steps,
         warnings: HINKAL_WARNINGS
       });
       await firstValueFrom(preview$);

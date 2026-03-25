@@ -25,6 +25,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { AssetListType } from '@app/features/trade/models/asset';
 import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -51,7 +52,8 @@ export class HinkalFacadeService {
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly hinkalWorkerService: HinkalWorkerService,
     private readonly notificationService: NotificationsService,
-    private readonly privatePageTypeService: PrivatePageTypeService
+    private readonly privatePageTypeService: PrivatePageTypeService,
+    private readonly privateStatisticsService: PrivateStatisticsService
   ) {
     this.initSubs();
   }
@@ -61,7 +63,7 @@ export class HinkalFacadeService {
     const pollSub = this.hinkalBalanceService.initBalanceEvent().subscribe();
     const balanceSub = this.hinkalBalanceService
       .subscribeOnBalanceEvent()
-      .pipe(filter(chain => chain === blockchainId[this._activeChain$.value]))
+      .pipe(filter(chainId => chainId === blockchainId[this._activeChain$.value]))
       .subscribe(() => this._balanceLoading$.next(false));
 
     this.subs.push(activeNetworkSub, pollSub, balanceSub);
@@ -77,91 +79,142 @@ export class HinkalFacadeService {
     });
   }
 
-  public async prepareDepositSteps(
-    tokenAmount: TokenAmount<EvmBlockchainName>
-  ): Promise<PrivateStep[]> {
-    const steps: PrivateStep[] = [];
-
-    if (tokenAmount.blockchain !== this.walletConnectorService.network) {
+  private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
+    if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
-        action: () => this.walletConnectorService.switchChain(tokenAmount.blockchain)
+        action: () => this.walletConnectorService.switchChain(fromBlockchain)
       });
     }
+  }
 
-    const needApprove = await this.hinkalSwapService.needApproveBeforeShield(tokenAmount);
+  public async prepareDepositSteps(token: TokenAmount<EvmBlockchainName>): Promise<PrivateStep[]> {
+    const steps: PrivateStep[] = [];
+
+    this.addSwitchNetworkStep(token.blockchain, steps);
+
+    const needApprove = await this.hinkalSwapService.needApproveBeforeShield(token);
 
     if (needApprove) {
       steps.push({
         label: 'Approve',
-        action: () => this.hinkalSwapService.approveBeforeShield(tokenAmount)
+        action: () => this.hinkalSwapService.approveBeforeShield(token)
       });
     }
 
     steps.push({
       label: 'Shield',
       action: () =>
-        this.hinkalSwapService
-          .deposit(tokenAmount)
-          .then(
-            isSuccess =>
-              isSuccess &&
-              this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance')
-          )
+        this.hinkalSwapService.deposit(token).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'SHIELD',
+            'HINKAL',
+            this.walletConnectorService.address,
+            token.address,
+            token.weiAmount.toFixed(),
+            token.blockchain
+          );
+          if (isSuccess)
+            this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+        })
     });
 
     return steps;
   }
 
-  public async withdraw(token: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
-    if (token.blockchain !== this.walletConnectorService.network) {
-      await this.walletConnectorService.switchChain(token.blockchain);
-    }
+  public prepareWithdrawSteps(
+    token: TokenAmount<EvmBlockchainName>,
+    receiver?: string
+  ): PrivateStep[] {
+    const steps: PrivateStep[] = [];
 
-    const isSuccess = await this.hinkalSwapService.withdraw(token, receiver);
+    this.addSwitchNetworkStep(token.blockchain, steps);
 
-    if (isSuccess) {
-      this.showSuccessNotification(
-        'Transaction sent. This may take a moment. Please keep Rubic App open'
-      );
-    }
+    steps.push({
+      label: 'Unshield',
+      action: () => {
+        return this.hinkalSwapService.withdraw(token, receiver).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'UNSHIELD',
+            'HINKAL',
+            this.walletConnectorService.address,
+            token.address,
+            token.weiAmount.toFixed(),
+            token.blockchain
+          );
+          if (isSuccess)
+            this.showSuccessNotification(
+              'Transaction sent. This may take a moment. Please keep Rubic App open'
+            );
+        });
+      }
+    });
+
+    return steps;
   }
 
-  public async transfer(
+  public prepareTransferSteps(
     token: TokenAmount<EvmBlockchainName>,
     receiverPrivateShieldedKey: string
-  ): Promise<void> {
-    if (token.blockchain !== this.walletConnectorService.network) {
-      await this.walletConnectorService.switchChain(token.blockchain);
-    }
+  ): PrivateStep[] {
+    const steps: PrivateStep[] = [];
 
-    const isSuccess = await this.hinkalSwapService.privateTransfer(
-      token,
-      receiverPrivateShieldedKey
-    );
+    this.addSwitchNetworkStep(token.blockchain, steps);
 
-    if (isSuccess) {
-      this.showSuccessNotification(
-        'Transaction sent. This may take a moment. Please keep Rubic App open'
-      );
-    }
+    steps.push({
+      label: 'Transfer tokens',
+      action: () => {
+        return this.hinkalSwapService
+          .privateTransfer(token, receiverPrivateShieldedKey)
+          .then(isSuccess => {
+            this.privateStatisticsService.saveAction(
+              'TRANSFER',
+              'HINKAL',
+              this.walletConnectorService.address,
+              token.address,
+              token.weiAmount.toFixed(),
+              token.blockchain
+            );
+            if (isSuccess)
+              this.showSuccessNotification(
+                'Transaction sent. This may take a moment. Please keep Rubic App open'
+              );
+          });
+      }
+    });
+
+    return steps;
   }
 
-  public async swap(
+  public prepareSwapSteps(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>
-  ): Promise<void> {
-    if (fromToken.blockchain !== this.walletConnectorService.network) {
-      await this.walletConnectorService.switchChain(fromToken.blockchain);
-    }
+  ): PrivateStep[] {
+    const steps: PrivateStep[] = [];
 
-    const isSuccess = await this.hinkalSwapService.privateSwap(fromToken, toToken);
+    this.addSwitchNetworkStep(fromToken.blockchain, steps);
 
-    if (isSuccess) {
-      this.showSuccessNotification(
-        'Transaction sent. This may take a moment. Please keep Rubic App open'
-      );
-    }
+    steps.push({
+      label: 'Swap',
+      action: () => {
+        return this.hinkalSwapService.privateSwap(fromToken, toToken).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'PRIVATE_ONCHAIN_SWAP',
+            'HINKAL',
+            this.walletConnectorService.address,
+            fromToken.address,
+            fromToken.weiAmount.toFixed(),
+            fromToken.blockchain
+          );
+          if (isSuccess)
+            this.showSuccessNotification(
+              'Transaction sent. This may take a moment. Please keep Rubic App open'
+            );
+        });
+      }
+    });
+
+    return steps;
   }
 
   public logout(): void {

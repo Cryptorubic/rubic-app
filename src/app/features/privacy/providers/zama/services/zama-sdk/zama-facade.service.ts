@@ -73,11 +73,22 @@ export class ZamaFacadeService {
     });
   }
 
+  private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
+    if (fromBlockchain !== this.walletConnectorService.network) {
+      steps.push({
+        label: 'Switch network',
+        action: () => this.walletConnectorService.switchChain(fromBlockchain)
+      });
+    }
+  }
+
   public async prepareTransferSteps(
     token: TokenAmount<EvmBlockchainName>,
     receiver: string
   ): Promise<PrivateStep[]> {
     const steps: PrivateStep[] = [];
+
+    this.addSwitchNetworkStep(token.blockchain, steps);
 
     steps.push({
       label: 'Transfer',
@@ -96,6 +107,8 @@ export class ZamaFacadeService {
 
   public async prepareWrapSteps(wrapToken: TokenAmount<EvmBlockchainName>): Promise<PrivateStep[]> {
     const steps: PrivateStep[] = [];
+
+    this.addSwitchNetworkStep(wrapToken.blockchain, steps);
 
     const pureTokenAmount = await this.zamaSwapService.getPureTokenAmount(wrapToken);
     const needApprove = await this.zamaSwapService.needApprove(pureTokenAmount);
@@ -126,6 +139,8 @@ export class ZamaFacadeService {
     receiver?: string
   ): Promise<PrivateStep[]> {
     const steps: PrivateStep[] = [];
+
+    this.addSwitchNetworkStep(unwrapToken.blockchain, steps);
 
     let unwrapReceipt: TransactionReceipt;
 

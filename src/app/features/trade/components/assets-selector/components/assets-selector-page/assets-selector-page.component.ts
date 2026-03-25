@@ -50,6 +50,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     showAllChains: true
   };
 
+  @Input() customHeaderText: string | null = null;
+
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
   @Output() public readonly handleBack = new EventEmitter<void>();

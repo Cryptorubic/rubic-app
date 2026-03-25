@@ -16,6 +16,8 @@ export class PublicTokensSelectorComponent {
 
   public readonly direction: 'from' | 'to';
 
+  public readonly headerText = 'Select chain and token from public balance';
+
   constructor() {
     this.direction = this.context.data.formType ?? 'from';
     this.assetsSelectorConfig = this.context.data.assetsSelectorConfig;
