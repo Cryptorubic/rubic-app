@@ -1,7 +1,7 @@
 <div class="wrapper">
   <app-window-container *ngIf="!railgunId && !railgunAddress">
+    <ng-container header>Log In</ng-container>
     <tui-loader class="loader" [inheritColor]="true" [overlay]="true" [showLoader]="loading">
-      <ng-container header>Log In</ng-container>
       <ng-container *ngIf="hasAccount; else actions">
         <p>Welcome back! Please enter your password to access your wallet.</p>
         <form [formGroup]="secretForm" (ngSubmit)="onSubmit()">

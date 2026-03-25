@@ -22,6 +22,8 @@ import {
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
@@ -52,6 +54,7 @@ export class HinkalFacadeService {
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly hinkalWorkerService: HinkalWorkerService,
     private readonly notificationService: NotificationsService,
+    private readonly privateLocalStorageService: PrivateLocalStorageService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly privateStatisticsService: PrivateStatisticsService
   ) {
@@ -116,6 +119,7 @@ export class HinkalFacadeService {
           );
           if (isSuccess)
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
+          this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
         })
     });
 

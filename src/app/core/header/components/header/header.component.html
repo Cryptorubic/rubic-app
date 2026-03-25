@@ -34,7 +34,7 @@
       type="button"
       size="m"
     >
-      Regular Mode
+      {{ !isTablet ? 'Regular Mode' : 'Regular' }}
     </button>
 
     <button
@@ -47,7 +47,7 @@
       size="m"
     >
       <div class="private-mode-button__content">
-        <span>Private Mode</span>
+        <span>{{ !isTablet ? 'Private Mode' : 'Private' }}</span>
         <span class="icon" inlineSVG="assets/images/private-swaps/common/lock-white.svg"></span>
       </div>
     </button>

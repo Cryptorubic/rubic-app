@@ -1,22 +1,34 @@
-import { ChangeDetectionStrategy, Component, Injector, Input, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  OnInit,
+  Output,
+  Self,
+  inject
+} from '@angular/core';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
-import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { PrivacyFormValue } from '../../services/models/privacy-form';
+import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
+import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
 
 @Component({
-  selector: 'app-private-page-swap',
+  selector: 'app-private-main-page-swap',
   templateUrl: './private-page-swap.component.html',
   styleUrls: ['./private-page-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
   animations: [receiverAnimation()]
 })
-export class PrivatePageSwapComponent {
+export class PrivatePageSwapComponent implements OnInit {
   @Input() creationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
     withDstSelector: true,
@@ -25,11 +37,15 @@ export class PrivatePageSwapComponent {
     withSrcAmount: true
   };
 
-  @Input() set clearOutput(value: object) {
-    this.patchSwapInfo({
-      toAsset: null
-    });
+  @Input() set clearOutput(needClear: boolean) {
+    if (needClear) {
+      this.patchSwapInfo({
+        toAsset: null
+      });
+    }
   }
+
+  @Output() formChanged = new EventEmitter<PrivacyFormValue>();
 
   private readonly modalService = inject(PrivateModalsService);
 
@@ -37,7 +53,32 @@ export class PrivatePageSwapComponent {
 
   public readonly swapInfo$ = this.privacyMainPageService.swapInfo$;
 
-  public showAllProviders = false;
+  public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
+
+  public readonly showAllProviders$ = this.privacyMainPageService.showAllProviders$;
+
+  private readonly _loading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly loading$ = this._loading$.asObservable();
+
+  public get swapInfo(): PrivacyFormValue {
+    return this.privacyMainPageService.formValue;
+  }
+
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privacyMainPageService: PrivacyMainPageService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscribeOnFormInputChanged();
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this.swapInfo$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(swapInfo => this.formChanged.emit(swapInfo));
+  }
 
   public get formValue(): PrivacyFormValue {
     return this.privacyMainPageService.formValue;
@@ -47,9 +88,7 @@ export class PrivatePageSwapComponent {
     return this.creationConfig.withDstSelector;
   }
 
-  constructor(private readonly privacyMainPageService: PrivacyMainPageService) {}
-
-  private patchSwapInfo(partialSwapInfo: Partial<PrivateSwapInfo>): void {
+  private patchSwapInfo(partialSwapInfo: Partial<PrivacyFormValue>): void {
     this.privacyMainPageService.patchFormValue(partialSwapInfo);
   }
 
@@ -62,8 +101,18 @@ export class PrivatePageSwapComponent {
   }
 
   public openOutputSelector(): void {
+    const isOnChain = this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.ON_CHAIN;
+    const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
+    const config: AssetsSelectorConfig = {
+      ...this.creationConfig.assetsSelectorConfig,
+      ...(isOnChain &&
+        fromChain && {
+          showAllChains: false,
+          listType: fromChain
+        })
+    };
     this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'to', config)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
       });
@@ -71,8 +120,8 @@ export class PrivatePageSwapComponent {
 
   public async revert(): Promise<void> {
     this.patchSwapInfo({
-      fromAsset: this.formValue.toAsset,
-      toAsset: this.formValue.fromAsset
+      fromAsset: this.swapInfo.toAsset,
+      toAsset: this.swapInfo.fromAsset
     });
   }
 

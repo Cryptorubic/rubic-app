@@ -78,20 +78,20 @@ export class TransferTokensWindowComponent implements OnInit {
     this.modalService
       .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
-        this.privateTransferWindowService.transferAsset = selectedToken;
+        this.privateTransferWindowService.setTransferAsset(selectedToken);
       });
   }
 
   public updateInputValue(value: SwapAmount): void {
-    this.privateTransferWindowService.transferAmount = value;
+    this.privateTransferWindowService.setTransferAmount(value);
   }
 
   public handleMaxButton(): void {
     const token = this.privateTransferWindowService.transferAsset;
-    this.privateTransferWindowService.transferAmount = {
+    this.privateTransferWindowService.setTransferAmount({
       visibleValue: token.amount.toString(),
       actualValue: token.amount
-    };
+    });
   }
 
   private createPreviewModal(transferAsset: BalanceToken): PreviewSwapModalFactory {

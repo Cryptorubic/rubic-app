@@ -5,7 +5,7 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 import { Observable, map } from 'rxjs';
 import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { getMinimalTokensByChain } from './utils/get-minimal-tokens-by-chain';
+import { getMinimalTokensByChain, getTokenKey } from './utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
@@ -15,18 +15,15 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    const getKey = (token: MinimalToken): string => {
-      return `${token.blockchain}::${token.address.toLowerCase()}`;
-    };
     const pcSupportedTokensByChain: MinimalToken[] = getMinimalTokensByChain(type);
     const addrToTokenMap = pcSupportedTokensByChain.reduce(
-      (acc, token) => ({ ...acc, [getKey(token)]: token }),
+      (acc, token) => ({ ...acc, [getTokenKey(token)]: token }),
       {} as Record<string, MinimalToken>
     );
 
     return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
       map(tokens => {
-        return tokens.filter(token => !!addrToTokenMap[getKey(token)]);
+        return tokens.filter(token => !!addrToTokenMap[getTokenKey(token)]);
       })
     );
   }

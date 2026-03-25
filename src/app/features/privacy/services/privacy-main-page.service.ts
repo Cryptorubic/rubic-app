@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   Observable,
   combineLatestWith,
+  defer,
   distinctUntilChanged,
   map,
   of,
@@ -18,6 +19,7 @@ import { PRIVATE_MODE_TAB, PrivateModeTab } from '../constants/private-mode-tab'
 import { PRIVATE_PROVIDERS_TABS_MAP } from '../constants/private-providers-tabs-map';
 import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
 import { PrivacyApiService } from './privacy-api.service';
+import { StoreService } from '@app/core/services/store/store.service';
 
 const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   { providerName: 'HINKAL', type: 'swap' },
@@ -37,24 +39,28 @@ export class PrivacyMainPageService {
     return this.form.value as PrivacyFormValue;
   }
 
-  public readonly swapInfo$ = this.form.valueChanges.pipe(
-    startWith(this.form.value),
-    distinctUntilChanged(),
-    map(swapInfo => swapInfo as PrivacyFormValue)
+  public readonly swapInfo$ = defer(() =>
+    this.form.valueChanges.pipe(
+      distinctUntilChanged(),
+      map(swapInfo => swapInfo as PrivacyFormValue),
+      startWith(this.form.value as PrivacyFormValue)
+    )
   );
 
   private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 
-  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(false);
+  private readonly _showAllProviders$ = new BehaviorSubject<boolean>(
+    this.storeService.getItem('SHOW_ALL_PROVIDERS_KEY')
+  );
 
   public readonly showAllProviders$ = this._showAllProviders$.asObservable();
 
   public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(
     PRIVATE_PROVIDERS_UI
   ).pipe(
-    combineLatestWith(this.form.valueChanges, this.selectedTab$, this.showAllProviders$),
+    combineLatestWith(this.swapInfo$, this.selectedTab$, this.showAllProviders$),
     map(([privateProviders, formValue, selectedTab, showAllProviders]) => {
       return [
         this.filterProviders(privateProviders, formValue, selectedTab, showAllProviders),
@@ -65,7 +71,7 @@ export class PrivacyMainPageService {
     switchMap(
       ([privateProviders, formValue, selectedTab]: [
         PrivateProviderRawInfo[],
-        Partial<PrivacyFormValue>,
+        PrivacyFormValue,
         PrivateModeTab
       ]) => {
         return this.loadDynamicParams(privateProviders, formValue, selectedTab);
@@ -78,7 +84,18 @@ export class PrivacyMainPageService {
     map(() => [])
   );
 
-  constructor(private readonly privacyApiService: PrivacyApiService) {}
+  public get selectedTab(): PrivateModeTab {
+    return this._selectedTab$.getValue();
+  }
+
+  public get swapInfo(): Partial<PrivacyFormValue> {
+    return this.form.value;
+  }
+
+  constructor(
+    private readonly privacyApiService: PrivacyApiService,
+    private readonly storeService: StoreService
+  ) {}
 
   public setSelectedTab(tab: PrivateModeTab): void {
     this._selectedTab$.next(tab);
@@ -89,6 +106,7 @@ export class PrivacyMainPageService {
   }
 
   public setShowAllProviders(show: boolean): void {
+    this.storeService.setItem('SHOW_ALL_PROVIDERS_KEY', show);
     this._showAllProviders$.next(show);
   }
 

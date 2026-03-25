@@ -13,6 +13,7 @@ import { compareAddresses } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../constants/privacycash-consts';
 import BigNumber from 'bignumber.js';
+import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-wallet-tokens.service';
 
 @Injectable()
 export class PrivacycashRefundService {
@@ -20,17 +21,22 @@ export class PrivacycashRefundService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly privacycashSignatureService: PrivacycashSignatureService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly ephemeralWalletTokensService: EphemeralWalletTokensService
   ) {}
 
   /**
    * @param tokenAddr rubic compatible addr (native is So11111111111111111111111111111111111111111)
    */
   public async refundTokens(tokenAddr: string, receiverAddr: string): Promise<void> {
-    if (compareAddresses(tokenAddr, nativeTokensList.SOLANA.address)) {
-      return this.revertNative(receiverAddr);
+    try {
+      if (compareAddresses(tokenAddr, nativeTokensList.SOLANA.address)) {
+        return await this.revertNative(receiverAddr);
+      }
+      return await this.revertSPL(tokenAddr, receiverAddr);
+    } finally {
+      this.ephemeralWalletTokensService.updateBalances();
     }
-    return this.revertSPL(tokenAddr, receiverAddr);
   }
 
   /**

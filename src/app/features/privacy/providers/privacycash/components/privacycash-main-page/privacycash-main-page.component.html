@@ -4,34 +4,39 @@
     step: activePage$ | async,
     privateBalanceLoading: privateBalanceLoading$ | async
   } as data"
-  class="container"
 >
-  <app-page-navigation
-    [pages]="pages"
-    [activePage]="data.step"
-    [disabledPages]="data.disabledPages"
-    (onSelect)="onPageSelect($event)"
-  ></app-page-navigation>
+  <div class="privacy-wrapper">
+    <app-page-navigation
+      [pages]="pages"
+      [activePage]="data.step"
+      [disabledPages]="data.disabledPages"
+      (onSelect)="onPageSelect($event)"
+    ></app-page-navigation>
 
-  <div class="main">
-    <div *ngIf="data.privateBalanceLoading" class="loading-banner">
-      Private balances are loading. Temporary interface freezing is possible.
+    <div class="privacy-content">
+      <div *ngIf="data.privateBalanceLoading" class="loading-banner">
+        Private balances are loading. Temporary interface freezing is possible.
+      </div>
+
+      <app-privacycash-signature-window
+        *ngIf="data.step.type === 'login'"
+      ></app-privacycash-signature-window>
+
+      <app-privacycash-hide-page *ngIf="data.step.type === 'hide'"></app-privacycash-hide-page>
+
+      <app-privacycash-swap-page *ngIf="data.step.type === 'swap'"></app-privacycash-swap-page>
+
+      <app-privacycash-reveal-page
+        *ngIf="data.step.type === 'reveal'"
+      ></app-privacycash-reveal-page>
+
+      <app-privacycash-transfer-page
+        *ngIf="data.step.type === 'transfer'"
+      ></app-privacycash-transfer-page>
+
+      <app-privacycash-refund-page
+        *ngIf="data.step.type === 'refund'"
+      ></app-privacycash-refund-page>
     </div>
-
-    <app-privacycash-signature-window
-      *ngIf="data.step.type === 'login'"
-    ></app-privacycash-signature-window>
-
-    <app-privacycash-hide-page *ngIf="data.step.type === 'hide'"></app-privacycash-hide-page>
-
-    <app-privacycash-swap-page *ngIf="data.step.type === 'swap'"></app-privacycash-swap-page>
-
-    <app-privacycash-reveal-page *ngIf="data.step.type === 'reveal'"></app-privacycash-reveal-page>
-
-    <app-privacycash-transfer-page
-      *ngIf="data.step.type === 'transfer'"
-    ></app-privacycash-transfer-page>
-
-    <app-privacycash-refund-page *ngIf="data.step.type === 'refund'"></app-privacycash-refund-page>
   </div>
 </div>

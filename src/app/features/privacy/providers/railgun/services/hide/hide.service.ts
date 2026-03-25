@@ -19,6 +19,8 @@ import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 import { Web3Pure } from '@cryptorubic/web3';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
@@ -28,6 +30,8 @@ export class HideService {
   private readonly authService = inject(AuthService);
 
   private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
+
+  private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
 
   private readonly gasService = inject(GasService);
 
@@ -196,6 +200,8 @@ export class HideService {
 
     const sentTx = await wallet.sendTransaction(transaction);
     await sentTx.wait();
+
+    this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.RAILGUN);
 
     return {
       txHash: sentTx.hash,

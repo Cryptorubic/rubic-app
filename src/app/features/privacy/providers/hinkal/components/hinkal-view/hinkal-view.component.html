@@ -5,14 +5,14 @@
     disabledPages: disabledPages$ | async
   } as data"
 >
-  <div class="wrapper">
+  <div class="privacy-wrapper">
     <app-page-navigation
       [disabledPages]="data.disabledPages"
       [activePage]="data.activePage"
       [pages]="pages"
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
-    <div>
+    <div class="privacy-content">
       <!-- <app-switch-network-page
         *ngIf="data.activePage.type !== 'login' && data.activePage.type !== 'walletInfo'"
         [supportedChains]="supportedChains"

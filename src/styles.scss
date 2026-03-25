@@ -239,3 +239,38 @@ html.dark {
 .text-nowrap {
   white-space: nowrap;
 }
+
+.privacy-wrapper {
+  display: flex;
+  gap: var(--tui-padding-m);
+  justify-content: center;
+  margin: 0 auto;
+
+  @include b($mobile-md) {
+    gap: 0;
+  }
+
+  .window-container {
+    padding-top: var(--tui-padding-m) !important;
+  }
+
+
+}
+
+.privacy-content {
+  display: flex;
+  gap: var(--tui-padding-m);
+  flex-direction: column;
+  width: 600px;
+  padding-bottom: 54px;
+
+  @include b($mobile-md) {
+    width: calc(100vw - (2 * var(--tui-padding-l)));
+  }
+
+  > * {
+    width: 100%;
+  }
+
+
+}

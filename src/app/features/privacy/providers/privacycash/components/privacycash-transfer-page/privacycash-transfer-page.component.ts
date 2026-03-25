@@ -4,7 +4,6 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
@@ -16,6 +15,7 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -24,7 +24,7 @@ import { getCorrectAddressValidator } from '@app/features/trade/components/targe
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
   ]
 })

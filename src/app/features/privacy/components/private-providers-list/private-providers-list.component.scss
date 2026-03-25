@@ -26,7 +26,7 @@
   }
 } */
 
-@include b($mobile-md) {
+@include b($laptop) {
   :host ::ng-deep {
     app-private-provider-element {
       margin-right: 0;

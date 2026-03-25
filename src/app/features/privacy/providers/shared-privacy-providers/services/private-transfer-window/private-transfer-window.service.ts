@@ -13,7 +13,7 @@ export class PrivateTransferWindowService {
     return this._transferAsset$.getValue();
   }
 
-  public set transferAsset(value: BalanceToken | null) {
+  public setTransferAsset(value: BalanceToken | null): void {
     this._transferAsset$.next(value);
   }
 
@@ -25,7 +25,7 @@ export class PrivateTransferWindowService {
     return this._transferAmount$.getValue();
   }
 
-  public set transferAmount(value: SwapAmount | null) {
+  public setTransferAmount(value: SwapAmount | null): void {
     this._transferAmount$.next(value);
   }
 }

@@ -17,7 +17,7 @@ export class PrivateSwapWindowService {
     return this._swapInfo$.value;
   }
 
-  public set swapInfo(value: PrivateSwapInfo) {
-    this._swapInfo$.next(value);
+  public patchSwapInfo(value: Partial<PrivateSwapInfo>): void {
+    this._swapInfo$.next({ ...this.swapInfo, ...value });
   }
 }

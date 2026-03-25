@@ -44,11 +44,18 @@ export class TokensBuilderService {
     return store;
   }
 
+  /**
+   * @param type
+   * @param _query
+   * @param direction
+   * @param inputValue in PrivateMode inputValue is empty object or object with nullable fields
+   * @returns
+   */
   public getTokensList(
     type: AssetListType,
     _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    inputValue: Partial<SwapFormInput>
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),

@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PrivateModeTab } from '@app/features/privacy/constants/private-mode-tab';
 
 @Component({
@@ -14,19 +7,14 @@ import { PrivateModeTab } from '@app/features/privacy/constants/private-mode-tab
   styleUrls: ['./tab-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TabBarComponent implements OnInit {
+export class TabBarComponent {
   @Input({ required: true }) tabs: PrivateModeTab[] = [];
+
+  @Input() selectedTab: PrivateModeTab;
 
   @Output() tabClicked: EventEmitter<PrivateModeTab> = new EventEmitter();
 
-  public selectedTab: PrivateModeTab;
-
-  ngOnInit(): void {
-    this.selectedTab = this.tabs[0];
-  }
-
   public handleTabClick(tabValue: PrivateModeTab): void {
     this.tabClicked.emit(tabValue);
-    this.selectedTab = tabValue;
   }
 }

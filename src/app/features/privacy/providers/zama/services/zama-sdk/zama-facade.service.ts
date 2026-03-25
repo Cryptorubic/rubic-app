@@ -15,6 +15,8 @@ import { PrivateStep } from '../../../shared-privacy-providers/components/privat
 import { TransactionReceipt } from 'viem';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Injectable()
 export class ZamaFacadeService {
@@ -32,7 +34,8 @@ export class ZamaFacadeService {
     private readonly zamaTokensService: ZamaTokensService,
     private readonly zamaSignatureService: ZamaSignatureService,
     private readonly notificationService: NotificationsService,
-    private readonly privatePageTypeService: PrivatePageTypeService
+    private readonly privatePageTypeService: PrivatePageTypeService,
+    private readonly privateLocalStorageService: PrivateLocalStorageService
   ) {}
 
   public async initServices(): Promise<void> {
@@ -127,6 +130,7 @@ export class ZamaFacadeService {
           if (isSuccess) {
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
             this.refreshBalancesAfterAction();
+            this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
           }
         })
     });

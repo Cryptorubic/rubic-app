@@ -21,7 +21,6 @@ import {
 } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
-import { RailgunPageNavigationComponent } from '@features/privacy/providers/railgun/components/railgun-page-navigation/railgun-page-navigation.component';
 import { RailgunHideTokensPageComponent } from '@features/privacy/providers/railgun/components/railgun-hide-tokens-page/railgun-hide-tokens-page.component';
 import { RailgunSwapPageComponent } from '@features/privacy/providers/railgun/components/railgun-swap-page/railgun-swap-page.component';
 import { RailgunRevealPageComponent } from '@features/privacy/providers/railgun/components/railgun-reveal-page/railgun-reveal-page.component';
@@ -50,7 +49,6 @@ import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.s
     RailgunMainPageComponent,
     RailgunAccountInfoComponent,
     RailgunFormComponent,
-    RailgunPageNavigationComponent,
     RailgunHideTokensPageComponent,
     RailgunSwapPageComponent,
     RailgunRevealPageComponent,

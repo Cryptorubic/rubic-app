@@ -1,9 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CLEARSWAP_PAGES } from '@app/features/privacy/providers/clearswap/constants/clearswap-pages';
 import { ClearswapPrivateActionButtonService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-action-button.service';
 import { PageType } from '@app/features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { ClearswapTokensFacadeService } from '../../services/clearswap-tokens-facade.service';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { filter, first } from 'rxjs';
+import { List } from 'immutable';
 
 @Component({
   selector: 'app-clearswap-view',
@@ -14,7 +19,11 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
     { provide: PrivateActionButtonService, useClass: ClearswapPrivateActionButtonService }
   ]
 })
-export class ClearswapViewComponent {
+export class ClearswapViewComponent implements OnInit {
+  private readonly privateQueryParamsService = inject(PrivateQueryParamsService);
+
+  private readonly clearswapTokensFacade = inject(ClearswapTokensFacadeService);
+
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = CLEARSWAP_PAGES;
@@ -23,7 +32,23 @@ export class ClearswapViewComponent {
     this.privatePageTypeService.activePage = this.pages[0];
   }
 
+  ngOnInit(): void {
+    this.parseQueryParams();
+  }
+
   public onPageSelect(page: PageType): void {
     this.privatePageTypeService.activePage = page;
+  }
+
+  private parseQueryParams(): void {
+    this.clearswapTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }

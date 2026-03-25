@@ -29,7 +29,7 @@ export class PrivateProvidersListGeneralComponent {
 
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
 
-  public readonly isMobile = this.headerStore.isMobile;
+  public readonly isTablet$ = this.headerStore.getTabletDisplayStatus();
 
   constructor(
     private readonly headerStore: HeaderStore,

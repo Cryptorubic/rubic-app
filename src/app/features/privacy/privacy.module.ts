@@ -19,6 +19,8 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SharedPrivacyProvidersModule } from './providers/shared-privacy-providers/shared-privacy-providers.module';
 import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
+import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { PrivateLocalStorageService } from './services/privacy-local-storage.service';
 import { TuiToggleModule } from '@taiga-ui/kit';
 
 @NgModule({
@@ -48,6 +50,15 @@ import { TuiToggleModule } from '@taiga-ui/kit';
     TuiHintModule,
     TuiToggleModule
   ],
-  providers: [PrivacyMainPageService, PrivacyApiService]
+  providers: [
+    PrivacyMainPageService,
+    PrivacyApiService,
+    PrivateSwapWindowService,
+    PrivateLocalStorageService
+  ]
 })
-export class PrivacyModule {}
+export class PrivacyModule {
+  constructor(private readonly privateLocalStorageService: PrivateLocalStorageService) {
+    this.privateLocalStorageService.initStorage();
+  }
+}

@@ -39,7 +39,6 @@ export class HinkalWorkerSwapService {
       const resp = (await hinkalInstance.deposit(
         [depositToken],
         [BigInt(token.stringWeiAmount)],
-        true,
         true
       )) as ContractTransaction;
 

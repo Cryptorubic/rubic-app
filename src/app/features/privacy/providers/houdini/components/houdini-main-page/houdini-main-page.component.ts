@@ -9,7 +9,7 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
+import { filter, first, firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -17,7 +17,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { houdiniFormConfig } from '../../constants/form-config';
 import { FormControl } from '@angular/forms';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
+import { List } from 'immutable';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -56,7 +58,8 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly houdiniErrorService: HoudiniErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly walletConnectorService: WalletConnectorService,
+    private readonly houdiniTokensFacade: HoudiniTokensFacadeService,
+    private readonly privateQueryParamsService: PrivateQueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.privatePageTypeService.activePage = {
@@ -66,6 +69,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.parseQueryParams();
     this.receiverCtrl.valueChanges
       .pipe(
         startWith(this.receiverCtrl.value),
@@ -101,5 +105,17 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     } finally {
       loadingCallback();
     }
+  }
+
+  private parseQueryParams(): void {
+    this.houdiniTokensFacade
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
   }
 }
