@@ -97,7 +97,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         steps: [
           {
             label: 'Swap',
-            action: () => this.houdiniSwapService.swap(fromToken)
+            action: () => this.houdiniSwapService.swap(fromToken, this.receiverCtrl.value)
           }
         ]
       });

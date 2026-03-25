@@ -138,7 +138,10 @@ export class HoudiniSwapService {
     }
   }
 
-  public async swap(fromToken: TokenAmount<BlockchainName>): Promise<void> {
+  public async swap(
+    fromToken: TokenAmount<BlockchainName>,
+    receiverAddress: string
+  ): Promise<void> {
     try {
       const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
       const isTransferTrade =
@@ -168,7 +171,7 @@ export class HoudiniSwapService {
         };
 
         await this.handleApprove(this.currentTrade, approveCallback);
-        await this.handleSwap(this.currentTrade, true, swapCallback);
+        await this.handleSwap(this.currentTrade, receiverAddress, true, swapCallback);
       }
     } catch (err) {
       this.showSwapError(err);
@@ -204,6 +207,7 @@ export class HoudiniSwapService {
 
   public async handleSwap(
     trade: CrossChainTrade,
+    receiverAddress: string,
     checkSlippageAndPI?: boolean,
     callback?: {
       onHash?: (hash: string) => void;
@@ -236,7 +240,12 @@ export class HoudiniSwapService {
       txHash = await this.crossChainService.swapTrade(
         trade,
         callback.onHash,
-        callback.onSimulationSuccess
+        callback.onSimulationSuccess,
+        {
+          skipAmountCheck: false,
+          useCacheData: false,
+          receiverAddress
+        }
       );
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
@@ -256,7 +265,8 @@ export class HoudiniSwapService {
               callback.onSimulationSuccess,
               {
                 skipAmountCheck: true,
-                useCacheData: true
+                useCacheData: true,
+                receiverAddress
               }
             );
           } catch (innerErr) {
