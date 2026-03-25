@@ -106,7 +106,11 @@ export class PrivatePageSwapComponent implements OnInit {
     this.modalService
       .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
-        this.patchSwapInfo({ fromAsset: selectedToken });
+        if (this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.TRANSFER) {
+          this.patchSwapInfo({ fromAsset: selectedToken, toAsset: selectedToken });
+        } else {
+          this.patchSwapInfo({ fromAsset: selectedToken });
+        }
       });
   }
 
