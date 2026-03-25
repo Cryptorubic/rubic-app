@@ -1,7 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { CLEARSWAP_SUPPORTED_TOKENS } from '@app/features/privacy/providers/clearswap/constants/clearswap-supported-chains-and-tokens';
-import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import {
   sorterByChain,
   sorterByBalance
@@ -15,10 +13,15 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
+import { PrivacyMainPageService } from './privacy-main-page.service';
+import {
+  isPrivateModeSupportedChain,
+  PRIVATE_MODE_SUPPORTED_TOKENS
+} from '../constants/private-mode-supported-chains-and-tokens';
 
 @Injectable()
-export class ClearswapTokensFacadeService extends TokensFacadeService {
-  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
+export class PrivacyMainPageTokensFacadeService extends TokensFacadeService {
+  private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
   public getTokensList(
     type: AssetListType,
@@ -29,14 +32,18 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       map((tokens: BalanceToken[]) => {
-        return tokens.filter(token => CLEARSWAP_SUPPORTED_TOKENS.includes(token.address));
+        return tokens.filter(
+          token =>
+            isPrivateModeSupportedChain(token.blockchain) &&
+            PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain].includes(token.address)
+        );
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {
           const oppositeToken =
             direction === 'from'
-              ? this.privateSwapWindowService.swapInfo.toAsset
-              : this.privateSwapWindowService.swapInfo.fromAsset;
+              ? this.privacyMainPageService.swapInfo.toAsset
+              : this.privacyMainPageService.swapInfo.fromAsset;
           const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
           return {
             ...token,
@@ -48,8 +55,8 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
         const sortedByOpposite = mappedTokens.sort((a, b) => {
           const oppositeToken =
             direction === 'from'
-              ? this.privateSwapWindowService.swapInfo.toAsset
-              : this.privateSwapWindowService.swapInfo.fromAsset;
+              ? this.privacyMainPageService.swapInfo.toAsset
+              : this.privacyMainPageService.swapInfo.fromAsset;
           if (oppositeToken) {
             if (a.address === oppositeToken.address && a.blockchain === oppositeToken.blockchain) {
               return 1;
