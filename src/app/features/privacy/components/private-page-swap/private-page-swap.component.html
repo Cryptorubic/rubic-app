@@ -6,10 +6,10 @@
 >
   <div class="providers-switcher-wrapper">
     <div class="providers-switcher-container">
-      Show all providers
+      Show all {{ selectedTab$ | async | lowercase }} providers
       <tui-toggle
         size="m"
-        [ngModel]="showAllProviders"
+        [ngModel]="showAllProviders$ | async"
         (ngModelChange)="switchShowAllProviders($event)"
       ></tui-toggle>
     </div>
