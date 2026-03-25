@@ -3,7 +3,7 @@ import { PrivateAssetsService } from '../providers/shared-privacy-providers/serv
 import { PRIVATE_MODE_SUPPORTED_CHAINS } from '../constants/private-mode-supported-chains';
 
 @Injectable()
-export class PrivacyMainPagePrivateAssetsService extends PrivateAssetsService {
+export class PrivacyMainPageFromPrivateAssetsService extends PrivateAssetsService {
   constructor() {
     super('from', PRIVATE_MODE_SUPPORTED_CHAINS);
   }

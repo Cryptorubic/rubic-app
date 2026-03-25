@@ -20,10 +20,11 @@ import { PrivacyFormValue } from '../../services/models/privacy-form';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { PrivacyMainPagePrivateAssetsService } from '../../services/privacy-main-page-private-assets.service';
+import { PrivacyMainPageFromPrivateAssetsService } from '../../services/privacy-main-page-from-private-assets.service';
 import { PrivacyMainPageTokensFacadeService } from '../../services/privacy-main-page-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
 
 @Component({
   selector: 'app-private-main-page-swap',
@@ -32,8 +33,8 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: FromAssetsService, useClass: PrivacyMainPagePrivateAssetsService },
-    { provide: ToAssetsService, useClass: PrivacyMainPagePrivateAssetsService },
+    { provide: FromAssetsService, useClass: PrivacyMainPageFromPrivateAssetsService },
+    { provide: ToAssetsService, useClass: PrivacyMainPageToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacyMainPageTokensFacadeService }
   ],
   animations: [receiverAnimation()]

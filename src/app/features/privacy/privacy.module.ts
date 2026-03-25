@@ -23,7 +23,8 @@ import { PrivateSwapWindowService } from './providers/shared-privacy-providers/s
 import { PrivateLocalStorageService } from './services/privacy-local-storage.service';
 import { TuiToggleModule } from '@taiga-ui/kit';
 import { PrivacyMainPageTokensFacadeService } from './services/privacy-main-page-tokens-facade.service';
-import { PrivacyMainPagePrivateAssetsService } from './services/privacy-main-page-private-assets.service';
+import { PrivacyMainPageFromPrivateAssetsService } from './services/privacy-main-page-from-private-assets.service';
+import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-page-to-private-assets.service';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { PrivacyMainPagePrivateAssetsService } from './services/privacy-main-pag
     PrivateSwapWindowService,
     PrivateLocalStorageService,
     PrivacyMainPageTokensFacadeService,
-    PrivacyMainPagePrivateAssetsService
+    PrivacyMainPageFromPrivateAssetsService,
+    PrivacyMainPageToPrivateAssetsService
   ]
 })
 export class PrivacyModule {
