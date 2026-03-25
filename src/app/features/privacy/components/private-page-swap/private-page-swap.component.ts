@@ -19,13 +19,24 @@ import { PrivacyMainPageService } from '../../services/privacy-main-page.service
 import { PrivacyFormValue } from '../../services/models/privacy-form';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { PrivacyMainPageFromPrivateAssetsService } from '../../services/privacy-main-page-from-private-assets.service';
+import { PrivacyMainPageTokensFacadeService } from '../../services/privacy-main-page-tokens-facade.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
 
 @Component({
   selector: 'app-private-main-page-swap',
   templateUrl: './private-page-swap.component.html',
   styleUrls: ['./private-page-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
+  providers: [
+    TuiDestroyService,
+    { provide: FromAssetsService, useClass: PrivacyMainPageFromPrivateAssetsService },
+    { provide: ToAssetsService, useClass: PrivacyMainPageToPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: PrivacyMainPageTokensFacadeService }
+  ],
   animations: [receiverAnimation()]
 })
 export class PrivatePageSwapComponent implements OnInit {
@@ -96,7 +107,11 @@ export class PrivatePageSwapComponent implements OnInit {
     this.modalService
       .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
       .subscribe((selectedToken: BalanceToken) => {
-        this.patchSwapInfo({ fromAsset: selectedToken });
+        if (this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.TRANSFER) {
+          this.patchSwapInfo({ fromAsset: selectedToken, toAsset: selectedToken });
+        } else {
+          this.patchSwapInfo({ fromAsset: selectedToken });
+        }
       });
   }
 

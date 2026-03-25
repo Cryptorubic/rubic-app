@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { PRIVATE_MODE_TAB, PrivateModeTab } from '../../constants/private-mode-tab';
-import { map } from 'rxjs';
+import { filter, first, map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem } from '../../models/activity-item';
@@ -15,6 +15,9 @@ import { PrivateQueryParamsService } from '../../providers/shared-privacy-provid
 import { PrivacyFormValue } from '../../services/models/privacy-form';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { PrivacyMainPageTokensFacadeService } from '../../services/privacy-main-page-tokens-facade.service';
+import { getEmptySwapFormInput } from '../../utils/empty-swap-form-input';
+import { List } from 'immutable';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -35,7 +38,7 @@ import { compareTokens } from '@app/shared/utils/utils';
     ])
   ]
 })
-export class PrivacyPageViewComponent {
+export class PrivacyPageViewComponent implements OnInit {
   public readonly swapWindowCreationConfig: PrivateSwapFormConfig = {
     withActionButton: false,
     withDstSelector: true,
@@ -46,7 +49,7 @@ export class PrivacyPageViewComponent {
       withChainsFilter: false,
       withTokensFilter: false,
       withFavoriteTokens: false,
-      showAllChains: true
+      showAllChains: false
     }
   };
 
@@ -60,7 +63,7 @@ export class PrivacyPageViewComponent {
       withChainsFilter: false,
       withTokensFilter: false,
       withFavoriteTokens: false,
-      showAllChains: true
+      showAllChains: false
     }
   };
 
@@ -87,14 +90,39 @@ export class PrivacyPageViewComponent {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService,
-    private readonly privateQueryParamsService: PrivateQueryParamsService
+    private readonly privateQueryParamsService: PrivateQueryParamsService,
+    private readonly privacyMainPageTokensFacadeService: PrivacyMainPageTokensFacadeService
   ) {}
 
+  ngOnInit(): void {
+    this.parseQueryParams();
+  }
+
+  private parseQueryParams(): void {
+    this.privacyMainPageTokensFacadeService
+      .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
+      .pipe(
+        filter(tokens => tokens.length > 0),
+        first()
+      )
+      .subscribe(supportedTokens => {
+        this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
+      });
+  }
+
   public handleTabSelected(tab: PrivateModeTab): void {
-    if (tab === PRIVATE_MODE_TAB.TRANSFER) {
-      const swapInfo = this.privacyMainPageService.formValue;
+    const swapInfo = this.privacyMainPageService.formValue;
+    if (tab === PRIVATE_MODE_TAB.TRANSFER && !compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
       this.privacyMainPageService.patchFormValue({
         toAsset: swapInfo.fromAsset
+      });
+    }
+    if (
+      (tab === PRIVATE_MODE_TAB.CROSS_CHAIN || tab === PRIVATE_MODE_TAB.ON_CHAIN) &&
+      compareTokens(swapInfo.fromAsset, swapInfo.toAsset)
+    ) {
+      this.privacyMainPageService.patchFormValue({
+        toAsset: null
       });
     }
     this.privacyMainPageService.setSelectedTab(tab);

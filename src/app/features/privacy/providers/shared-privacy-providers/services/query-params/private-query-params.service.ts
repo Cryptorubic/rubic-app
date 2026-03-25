@@ -90,6 +90,8 @@ export class PrivateQueryParamsService {
         this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
 
         this.privateSwapWindowService.patchSwapInfo(swapInfo);
+
+        this.privacyMainPageService.patchFormValue(swapInfo);
       });
   }
 
@@ -97,8 +99,7 @@ export class PrivateQueryParamsService {
     const queryParams = this.convertSwapInfoToQueryParams(swapInfo);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge'
+      queryParams
     });
   }
 
