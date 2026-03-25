@@ -87,17 +87,13 @@ export class HinkalSwapTokensPageComponent {
         weiAmount: Token.toWei(swapInfo.toAmount.actualValue, swapInfo.toAsset.decimals)
       });
 
+      const steps = this.hinkalFacadeService.prepareSwapSteps(
+        fromToken as TokenAmount<EvmBlockchainName>,
+        toToken as TokenAmount<EvmBlockchainName>
+      );
+
       const preview$ = openPreview({
-        steps: [
-          {
-            label: 'Swap',
-            action: () =>
-              this.hinkalFacadeService.swap(
-                fromToken as TokenAmount<EvmBlockchainName>,
-                toToken as TokenAmount<EvmBlockchainName>
-              )
-          }
-        ],
+        steps,
         warnings: HINKAL_WARNINGS
       });
 

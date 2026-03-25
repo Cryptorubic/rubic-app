@@ -3,7 +3,7 @@ import { PrivateAssetsService } from '../../shared-privacy-providers/services/pr
 import { HINKAL_SUPPORTED_CHAINS } from '../constants/hinkal-supported-chains';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HinkalFacadeService } from './hinkal-sdk/hinkal-facade.service';
-import { skip, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 @Injectable()
 export class HinkalPrivateAssetsService extends PrivateAssetsService {
@@ -14,7 +14,7 @@ export class HinkalPrivateAssetsService extends PrivateAssetsService {
     super('from', HINKAL_SUPPORTED_CHAINS);
 
     this.assetListType$
-      .pipe(skip(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(asset => this.hinkalFacade.switchChain(asset));
   }
 }

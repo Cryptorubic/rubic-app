@@ -5,7 +5,7 @@
       to access your private balance
     </b>
     <button
-      *ngIf="currUser$ | async; else connectWallet"
+      *ngIf="(showConnectWallet$ | async) === false; else connectWallet"
       tuiButton
       type="button"
       size="m"

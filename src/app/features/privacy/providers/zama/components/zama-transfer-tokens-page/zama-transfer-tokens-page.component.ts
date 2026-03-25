@@ -10,8 +10,8 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-zama-transfer-tokens-page',
@@ -20,7 +20,7 @@ import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/mod
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: FromAssetsService, useClass: ZamaPrivateAssetsService },
+    { provide: ToAssetsService, useClass: ZamaPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ZamaRevealFacadeService }
   ]
 })
@@ -60,7 +60,7 @@ export class ZamaTransferTokensPageComponent {
         this.receiverCtrl.value
       );
 
-      const preview$ = openPreview({ steps });
+      const preview$ = openPreview({ steps, dstTokenAmount: token.tokenAmount.toFixed() });
 
       await firstValueFrom(preview$);
     } finally {

@@ -1,9 +1,3 @@
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-
-export const CLEARSWAP_SUPPORTED_CHAINS = [BLOCKCHAIN_NAME.TRON] as const;
-
-export type ClearswapSupportedChain = (typeof CLEARSWAP_SUPPORTED_CHAINS)[number];
-
 export const CLEARSWAP_SUPPORTED_TOKENS = [
   '0x0000000000000000000000000000000000000000', // TRX
   'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' // USDT

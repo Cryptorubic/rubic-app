@@ -16,6 +16,8 @@ export class PrivateTokensSelectorComponent {
 
   public readonly direction: 'from' | 'to';
 
+  public readonly headerText = 'Select chain and token from private balance';
+
   constructor() {
     this.assetsSelectorConfig = this.context.data.assetsSelectorConfig;
     this.direction = this.context.data.formType ?? 'to';

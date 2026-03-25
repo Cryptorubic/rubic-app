@@ -3,7 +3,7 @@ import { SwapAmount } from '@app/features/privacy/providers/shared-privacy-provi
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, throwError } from 'rxjs';
 import { HinkalWorkerService } from '../hinkal-worker.service';
 import { QuoteParams } from '../workers/models/worker-params';
 
@@ -18,6 +18,10 @@ export class HinkalQuoteAdapter implements PrivateQuoteAdapter {
     toAsset: BalanceToken,
     fromAmount: SwapAmount
   ): Observable<{ toAmountWei: BigNumber }> {
+    if (fromAsset.blockchain !== toAsset.blockchain) {
+      return throwError(() => new Error('Cross-chain swaps not supported'));
+    }
+
     const params: QuoteParams = {
       fromAsset,
       toAsset,
