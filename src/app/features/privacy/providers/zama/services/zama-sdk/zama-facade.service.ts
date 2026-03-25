@@ -17,6 +17,7 @@ import { PrivatePageTypeService } from '../../../shared-privacy-providers/servic
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @Injectable()
 export class ZamaFacadeService {
@@ -35,7 +36,8 @@ export class ZamaFacadeService {
     private readonly zamaSignatureService: ZamaSignatureService,
     private readonly notificationService: NotificationsService,
     private readonly privatePageTypeService: PrivatePageTypeService,
-    private readonly privateLocalStorageService: PrivateLocalStorageService
+    private readonly privateLocalStorageService: PrivateLocalStorageService,
+    private readonly privateStatisticsService: PrivateStatisticsService
   ) {}
 
   public async initServices(): Promise<void> {
@@ -97,6 +99,15 @@ export class ZamaFacadeService {
       label: 'Transfer',
       action: () =>
         this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'TRANSFER',
+            'ZAMA',
+            this.walletConnectorService.address,
+            token.address,
+            token.weiAmount.toFixed(),
+            token.blockchain
+          );
+
           if (isSuccess) {
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
@@ -127,6 +138,14 @@ export class ZamaFacadeService {
       label: 'Shield',
       action: () =>
         this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'SHIELD',
+            'ZAMA',
+            this.walletConnectorService.address,
+            wrapToken.address,
+            wrapToken.weiAmount.toFixed(),
+            wrapToken.blockchain
+          );
           if (isSuccess) {
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
             this.refreshBalancesAfterAction();
@@ -161,6 +180,15 @@ export class ZamaFacadeService {
       label: 'Finalize unshield',
       action: () =>
         this.zamaSwapService.finalizeUnwrap(unwrapToken, unwrapReceipt).then(isSuccess => {
+          this.privateStatisticsService.saveAction(
+            'UNSHIELD',
+            'ZAMA',
+            this.walletConnectorService.address,
+            unwrapToken.address,
+            unwrapToken.weiAmount.toFixed(),
+            unwrapToken.blockchain
+          );
+
           if (isSuccess) {
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
