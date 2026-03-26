@@ -7,6 +7,7 @@ import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { Observable, first, forkJoin, map } from 'rxjs';
 import { Token as SdkToken } from '@cryptorubic/core';
 import { EphemeralWalletTokensService } from './ephemeral-wallet-tokens.service';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
@@ -23,10 +24,12 @@ export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
       this.ephemeralWalletTokensService.tokens$.pipe(first())
     ]).pipe(
       map(([rubicTokens, ethemeralWalletTokens]) => {
-        const rubicTokensMap = rubicTokens.reduce(
-          (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
-          {} as Record<string, AvailableTokenAmount>
-        );
+        const rubicTokensMap = rubicTokens
+          .filter(token => PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address))
+          .reduce(
+            (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
+            {} as Record<string, AvailableTokenAmount>
+          );
         return ethemeralWalletTokens
           .filter(pcToken => !!rubicTokensMap[this.getKey(pcToken)])
           .map(ephemeralWalletToken => {

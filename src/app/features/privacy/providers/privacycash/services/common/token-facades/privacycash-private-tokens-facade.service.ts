@@ -10,6 +10,7 @@ import { PrivacycashTokensService } from './privacycash-tokens.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
@@ -29,10 +30,12 @@ export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
       this.privateSwapWindowService.swapInfo$.pipe(first())
     ]).pipe(
       map(([rubicTokens, privacycashTokens, swapInfo]) => {
-        const rubicTokensMap = rubicTokens.reduce(
-          (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
-          {} as Record<string, AvailableTokenAmount>
-        );
+        const rubicTokensMap = rubicTokens
+          .filter(token => PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address))
+          .reduce(
+            (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
+            {} as Record<string, AvailableTokenAmount>
+          );
         return privacycashTokens
           .filter(
             pcToken =>

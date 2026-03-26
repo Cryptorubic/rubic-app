@@ -10,6 +10,7 @@ import { switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class RailgunTokensFacadeService extends TokensFacadeService {
@@ -33,18 +34,22 @@ export class RailgunTokensFacadeService extends TokensFacadeService {
               .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue)
               .pipe(
                 map(tokens => {
-                  return tokens.map(token => {
-                    const balance = availableTokensForBlockchains.find(availableToken =>
-                      compareAddresses(availableToken.tokenAddress, token.address)
-                    )?.amount;
+                  return tokens
+                    .filter(token =>
+                      PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                    )
+                    .map(token => {
+                      const balance = availableTokensForBlockchains.find(availableToken =>
+                        compareAddresses(availableToken.tokenAddress, token.address)
+                      )?.amount;
 
-                    return {
-                      ...token,
-                      amount: balance
-                        ? Token.fromWei(balance.toString(), token.decimals)
-                        : new BigNumber(0)
-                    };
-                  });
+                      return {
+                        ...token,
+                        amount: balance
+                          ? Token.fromWei(balance.toString(), token.decimals)
+                          : new BigNumber(0)
+                      };
+                    });
                 })
               );
           }
@@ -54,6 +59,9 @@ export class RailgunTokensFacadeService extends TokensFacadeService {
             .pipe(
               map(tokens => {
                 return tokens
+                  .filter(token =>
+                    PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                  )
                   .filter(token => {
                     const blockchain = token.blockchain as BlockchainName;
                     const isAvailable =

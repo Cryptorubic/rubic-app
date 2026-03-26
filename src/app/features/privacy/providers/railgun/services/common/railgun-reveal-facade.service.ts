@@ -10,6 +10,7 @@ import { switchMap } from 'rxjs/operators';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunERC20Amount } from '@railgun-community/shared-models';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 export class RailgunRevealFacadeService extends TokensFacadeService {
   private readonly railgunFacade = inject(RailgunFacadeService);
@@ -33,6 +34,9 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
             .pipe(
               map(tokens => {
                 return tokens
+                  .filter(token =>
+                    PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                  )
                   .filter(token => {
                     const isAvailable = availableTokensForBlockchains.some(
                       availableToken =>
@@ -69,6 +73,9 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
           return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
             map(tokens => {
               return tokens
+                .filter(token =>
+                  PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                )
                 .filter(token => {
                   const isAvailable = availableTokens.some(
                     availableToken =>

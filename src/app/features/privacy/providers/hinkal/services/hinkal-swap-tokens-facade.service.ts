@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { PrivateSwapWindowService } from '../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { sorterByChain } from '@app/features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class HinkalSwapTokensFacadeService extends TokensFacadeService {
@@ -27,25 +28,29 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
       switchMap(shieldedBalances => {
         return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
           map(tokens => {
-            const supportedTokens = tokens.map(token => {
-              const shieldedBalance = shieldedBalances[token.blockchain as EvmBlockchainName]?.find(
-                balance => compareAddresses(balance.tokenAddress, token.address)
-              );
+            const supportedTokens = tokens
+              .filter(token =>
+                PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+              )
+              .map(token => {
+                const shieldedBalance = shieldedBalances[
+                  token.blockchain as EvmBlockchainName
+                ]?.find(balance => compareAddresses(balance.tokenAddress, token.address));
 
-              const oppositeToken =
-                direction === 'from'
-                  ? this.privateSwapWindowService.swapInfo.toAsset
-                  : this.privateSwapWindowService.swapInfo.fromAsset;
-              const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+                const oppositeToken =
+                  direction === 'from'
+                    ? this.privateSwapWindowService.swapInfo.toAsset
+                    : this.privateSwapWindowService.swapInfo.fromAsset;
+                const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
 
-              return {
-                ...token,
-                available: isAvailable,
-                amount: shieldedBalance
-                  ? Token.fromWei(shieldedBalance.amount, token.decimals)
-                  : new BigNumber(NaN)
-              };
-            });
+                return {
+                  ...token,
+                  available: isAvailable,
+                  amount: shieldedBalance
+                    ? Token.fromWei(shieldedBalance.amount, token.decimals)
+                    : new BigNumber(NaN)
+                };
+              });
 
             const sortedByOpposite = supportedTokens.sort((a, b) => {
               const oppositeToken =
