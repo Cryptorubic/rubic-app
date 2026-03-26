@@ -16,6 +16,8 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
+import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
+import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -60,6 +62,10 @@ export class RailgunRevealPageComponent {
 
   private readonly destroy$ = inject(TuiDestroyService);
 
+  private readonly windowService = inject(RevealWindowService);
+
+  private readonly tokensBalanceService = inject(TokensBalanceService);
+
   ngOnInit() {
     this.railgunFacade.completedChains$
       .pipe(takeUntil(this.destroy$))
@@ -67,7 +73,7 @@ export class RailgunRevealPageComponent {
   }
 
   public async reveal(params: PrivateEvent): Promise<void> {
-    const { token, loadingCallback, openPreview } = params;
+    const { balanceToken, token, loadingCallback, openPreview } = params;
     try {
       const preview$ = openPreview({
         steps: [
@@ -106,6 +112,10 @@ export class RailgunRevealPageComponent {
                 token.weiAmount.toFixed(),
                 token.blockchain
               );
+              this.windowService.setRevealAsset({
+                ...balanceToken,
+                amount: balanceToken.amount.minus(token.tokenAmount)
+              });
               setTimeout(async () => {
                 const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
                 this.railgunFacade.refreshBalances(

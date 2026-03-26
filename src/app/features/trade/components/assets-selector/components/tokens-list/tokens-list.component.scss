@@ -52,7 +52,7 @@
     height: 100%;
 
     @include b($mobile-md-minus) {
-      height: calc(100% - 10px);
+      height: calc(100% - 50px);
     }
   }
 }

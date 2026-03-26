@@ -21,6 +21,8 @@ import { RailgunFacadeService } from '@features/privacy/providers/railgun/servic
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
+import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
+import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -52,6 +54,8 @@ export class RailgunTransferPageComponent implements OnInit {
   private readonly actionButtonService = inject(PrivateActionButtonService);
 
   private readonly destroy$ = inject(TuiDestroyService);
+
+  private readonly windowService = inject(PrivateTransferWindowService);
 
   @Input({ required: true }) public readonly railgunId: string;
 
@@ -92,6 +96,8 @@ export class RailgunTransferPageComponent implements OnInit {
 
   private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
+  private readonly tokensBalanceService = inject(TokensBalanceService);
+
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
       .pipe(
@@ -121,7 +127,12 @@ export class RailgunTransferPageComponent implements OnInit {
 
   public handleMaxButton(): void {}
 
-  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async transfer({
+    balanceToken,
+    token,
+    loadingCallback,
+    openPreview
+  }: PrivateEvent): Promise<void> {
     try {
       const preview$ = openPreview({
         steps: [
@@ -160,6 +171,10 @@ export class RailgunTransferPageComponent implements OnInit {
                 token.weiAmount.toFixed(),
                 token.blockchain
               );
+              this.windowService.setTransferAsset({
+                ...balanceToken,
+                amount: balanceToken.amount.minus(token.tokenAmount)
+              });
               setTimeout(async () => {
                 const wallet = await firstValueFrom(this.railgunFacade.railgunAccount$);
                 this.railgunFacade.refreshBalances(
