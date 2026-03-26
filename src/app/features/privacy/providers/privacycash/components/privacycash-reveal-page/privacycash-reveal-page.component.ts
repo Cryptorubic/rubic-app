@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, Self, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -16,6 +14,8 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
+import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -24,8 +24,8 @@ import { RevealWindowService } from '../../../shared-privacy-providers/services/
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
+    { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: PrivacycashPrivateUnshieldTokensFacadeService }
   ]
 })
 export class PrivacycashRevealPageComponent {
@@ -46,7 +46,8 @@ export class PrivacycashRevealPageComponent {
     withReceiver: true,
     withSrcAmount: true,
     withMaxBtn: true,
-    receiverPlaceholder: 'Enter SOLANA receiver address'
+    receiverPlaceholder: 'Enter SOLANA receiver address',
+    direction: 'from'
   };
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}

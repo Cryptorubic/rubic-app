@@ -7,6 +7,7 @@ import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { Observable, first, forkJoin, map } from 'rxjs';
 import { Token as SdkToken } from '@cryptorubic/core';
 import { EphemeralWalletTokensService } from './ephemeral-wallet-tokens.service';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Injectable()
 export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
@@ -16,10 +17,12 @@ export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
     type: AssetListType,
     _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return forkJoin([
-      this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(first()),
+      this.tokensBuilderService
+        .getTokensList(type, _query, direction, getEmptySwapFormInput())
+        .pipe(first()),
       this.ephemeralWalletTokensService.tokens$.pipe(first())
     ]).pipe(
       map(([rubicTokens, ethemeralWalletTokens]) => {

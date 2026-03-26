@@ -17,12 +17,14 @@ import { PrivacycashPrivateAssetsService } from './services/common/assets-servic
 import { PrivacycashSignatureWindowComponent } from './components/privacycash-signature-window/privacycash-signature-window.component';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
-import { PrivacycashPrivateTokensFacadeService } from './services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashTokensService } from './services/common/token-facades/privacycash-tokens.service';
 import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
 import { EphemeralWalletTokensService } from './services/common/token-facades/ephemeral-wallet-tokens.service';
 import { PrivacycashSignatureService } from './services/privacy-cash-signature.service';
 import { PrivacycashActionButtonService } from './services/common/action-button/privacycash-action-button.service';
+import { PrivacycashPrivateSwapTokensFacadeService } from './services/common/token-facades/privacycash-private-swap-tokens-facade.service';
+import { PrivacycashPrivateTransferTokensFacadeService } from './services/common/token-facades/privacycash-private-transfer-tokens-facade.service';
+import { PrivacycashPrivateUnshieldTokensFacadeService } from './services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { PrivacycashActionButtonService } from './services/common/action-button/
     PrivacycashPublicAssetsService,
     PrivacycashPrivateAssetsService,
     PrivacycashPublicTokensFacadeService,
-    PrivacycashPrivateTokensFacadeService,
+    PrivacycashPrivateSwapTokensFacadeService,
+    PrivacycashPrivateTransferTokensFacadeService,
+    PrivacycashPrivateUnshieldTokensFacadeService,
     PrivacycashTokensService,
     EphemeralWalletTokensFacadeService,
     EphemeralWalletTokensService,
