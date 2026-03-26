@@ -74,20 +74,20 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.privacycashTokensService.abortController.abort();
+    this.privacycashTokensService.stopWorker();
   }
 
   ngOnInit(): void {
     this.parseQueryParams();
 
+    this.privacycashTokensService.workerOutMsg$(this.destroy$).subscribe();
+
     this.walletConnectorService.addressChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(userAddr => {
-        if (userAddr) {
-          this.privacycashTokensService.resetAbortController();
-        } else {
-          this.privacycashTokensService.abortController.abort();
+        if (!userAddr) {
           this.privacycashSignatureService.removeSignature();
+          this.privacycashTokensService.stopWorker();
         }
       });
 
@@ -95,6 +95,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(signature => {
         if (!!signature && signature.length) {
+          this.privacycashTokensService.initWorker();
           this.privacycashTokensService.updatePrivateBalances();
           this.privatePageTypeService.activePage =
             this.pages.find(page => page.type === 'hide') || this.pages[0];

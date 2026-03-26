@@ -12,7 +12,7 @@
     <div class="token-card__symbol-name-container">
       <div class="token-card__symbol-container">
         <span class="token-card__symbol"
-          >{{ token.amount | bigNumberFormat }} {{ token.symbol | shortenText : 10 }}</span
+          >{{ token.amount | bigNumberFormat }} {{ token.symbol | shortenAmount : 6 : 4 }}</span
         >
       </div>
 

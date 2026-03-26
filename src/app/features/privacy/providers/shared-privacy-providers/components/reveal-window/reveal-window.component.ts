@@ -34,7 +34,8 @@ export class RevealWindowComponent {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: true,
-    withMaxBtn: true
+    withMaxBtn: true,
+    direction: 'to'
   };
 
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
@@ -59,7 +60,11 @@ export class RevealWindowComponent {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(
+        this.injector,
+        this.creationConfig.direction || 'to',
+        this.creationConfig.assetsSelectorConfig
+      )
       .subscribe((selectedToken: BalanceToken) => {
         this.revealWindowService.setRevealAsset(selectedToken);
       });
@@ -111,6 +116,7 @@ export class RevealWindowComponent {
     });
     this.handleReveal.emit({
       token,
+      balanceToken: revealAsset,
       loadingCallback: () => this._loading$.next(false),
       openPreview: this.createPreviewModal(revealAsset)
     });

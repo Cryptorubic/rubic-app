@@ -14,7 +14,8 @@ import { RailgunRevealFacadeService } from '../../services/common/railgun-reveal
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
-import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -35,22 +36,12 @@ export class RailgunMainPageComponent {
   private readonly _disabledPages$ = new BehaviorSubject(RAILGUN_PAGES.slice(1));
 
   public readonly disabledPages$ = this._disabledPages$.asObservable().pipe(
-    combineLatestWith(
-      this.utxoScan$,
-      this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.RAILGUN)
-    ),
-    map(([disabledPages, utxoScan, alreadyMadeShielding]) => {
-      if (!alreadyMadeShielding) {
-        if (!disabledPages.some(p => p.type === 'login')) {
-          return this.pages.filter(page => page.type !== 'hide');
-        }
-      }
-      const chains = Object.values(utxoScan);
-      const sum = chains.reduce((acc, curr) => acc + curr, 0);
-      if (sum === chains.length * 100 || sum === 0) {
+    combineLatestWith(this.railgunFacade.allowPrivateAction$),
+    map(([disabledPages, allowPrivateAction]) => {
+      if (allowPrivateAction) {
         return disabledPages;
       }
-      return [...new Set([...disabledPages, RAILGUN_PAGES[4]])];
+      return [...new Set([...disabledPages, RAILGUN_PAGES[3], RAILGUN_PAGES[4]])];
     })
   );
 
@@ -82,9 +73,25 @@ export class RailgunMainPageComponent {
     map(scan => Object.values(scan).some(el => el < 100))
   );
 
+  private readonly notificationService = inject(NotificationsService);
+
+  private readonly headerStore = inject(HeaderStore);
+
   constructor() {
     this.initializeRailgun();
     this.privacyService.activePage = RAILGUN_PAGES[0];
+    if (this.headerStore.isMobile) {
+      this.notificationService.show(
+        'The mobile version of this site may experience slow performance. For the best experience, please use a desktop browser.',
+        {
+          status: 'warning',
+          autoClose: false,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        }
+      );
+    }
   }
 
   ngOnInit() {
@@ -106,7 +113,7 @@ export class RailgunMainPageComponent {
   }
 
   private handleLogin(): void {
-    this._disabledPages$.next([RAILGUN_PAGES[0], RAILGUN_PAGES[4]]);
+    this._disabledPages$.next([RAILGUN_PAGES[0]]);
     this.privacyService.activePage = RAILGUN_PAGES[1];
   }
 

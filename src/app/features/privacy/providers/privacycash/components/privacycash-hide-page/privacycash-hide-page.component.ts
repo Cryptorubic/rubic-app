@@ -21,7 +21,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: FromAssetsService, useClass: PrivacycashPublicAssetsService },
+    { provide: FromAssetsService, useExisting: PrivacycashPublicAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
   ]
 })

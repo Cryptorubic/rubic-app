@@ -1,6 +1,11 @@
-import { PageType } from '../../shared-privacy-providers/components/page-navigation/models/page-type';
+import {
+  PageStatus,
+  PageType
+} from '../../shared-privacy-providers/components/page-navigation/models/page-type';
 
-export const RAILGUN_PAGES: PageType[] = [
+export type RailgunPageStatus = Exclude<PageStatus, 'refund' | 'walletInfo'>;
+
+export const RAILGUN_PAGES: PageType<RailgunPageStatus>[] = [
   {
     type: 'login',
     label: 'Login'
@@ -17,10 +22,10 @@ export const RAILGUN_PAGES: PageType[] = [
     type: 'transfer',
     label: 'Transfer'
   },
-  {
-    type: 'swap',
-    label: 'Swap'
-  },
+  // {
+  //   type: 'swap',
+  //   label: 'Swap'
+  // },
   {
     type: 'reveal',
     label: 'Unshield'

@@ -38,7 +38,8 @@ export class TransferTokensWindowComponent implements OnInit {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: true,
-    withMaxBtn: true
+    withMaxBtn: true,
+    direction: 'to'
   };
 
   @Output() public handleTransfer = new EventEmitter<PrivateEvent>();
@@ -76,7 +77,11 @@ export class TransferTokensWindowComponent implements OnInit {
 
   public openSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(
+        this.injector,
+        this.creationConfig.direction || 'to',
+        this.creationConfig.assetsSelectorConfig
+      )
       .subscribe((selectedToken: BalanceToken) => {
         this.privateTransferWindowService.setTransferAsset(selectedToken);
       });
@@ -129,6 +134,7 @@ export class TransferTokensWindowComponent implements OnInit {
     });
     this.handleTransfer.emit({
       token,
+      balanceToken: this.privateTransferWindowService.transferAsset,
       loadingCallback: () => this._loading$.next(false),
       openPreview: this.createPreviewModal(this.privateTransferWindowService.transferAsset)
     });

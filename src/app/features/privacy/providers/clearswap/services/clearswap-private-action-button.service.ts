@@ -129,7 +129,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
         text: 'Select token'
       };
     }
-    if (isNaN(transferAmount.actualValue.toNumber()) || transferAmount.actualValue.isZero()) {
+    if (isNaN(transferAmount?.actualValue.toNumber()) || transferAmount?.actualValue.isZero()) {
       return {
         type: 'error',
         text: 'Enter amount'

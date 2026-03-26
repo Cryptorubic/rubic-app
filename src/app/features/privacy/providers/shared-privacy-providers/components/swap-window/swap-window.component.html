@@ -58,6 +58,7 @@
   <app-target-network-address
     *ngIf="creationConfig.withReceiver && state.displayReceiver && !state.showDepositStatus"
     [addressCtrl]="receiverCtrl"
+    [placeholderText]="creationConfig?.receiverPlaceholder"
     @receiverAnimation
   ></app-target-network-address>
 

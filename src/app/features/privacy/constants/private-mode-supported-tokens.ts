@@ -1,9 +1,8 @@
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { PrivateModeSupportedChain } from './private-mode-supported-chains';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
-export const PRIVATE_MODE_SUPPORTED_TOKENS: {
-  [chain in PrivateModeSupportedChain]: string[];
-} = {
+export const PRIVATE_MODE_SUPPORTED_TOKENS: Partial<{
+  [chain in BlockchainName]: string[];
+}> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     '0x0000000000000000000000000000000000000000', // ETH
     '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT

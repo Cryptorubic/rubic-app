@@ -15,7 +15,7 @@ import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
 import { PrivacyMainPageService } from './privacy-main-page.service';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../constants/private-mode-supported-tokens';
-import { isPrivateModeSupportedChain } from '../constants/private-mode-supported-chains';
+import { PRIVATE_MODE_TAB } from '../constants/private-mode-tab';
 
 @Injectable()
 export class PrivacyMainPageTokensFacadeService extends TokensFacadeService {
@@ -30,11 +30,11 @@ export class PrivacyMainPageTokensFacadeService extends TokensFacadeService {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       map((tokens: BalanceToken[]) => {
-        return tokens.filter(
-          token =>
-            isPrivateModeSupportedChain(token.blockchain) &&
-            PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain].includes(token.address)
-        );
+        return this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.CROSS_CHAIN
+          ? tokens
+          : tokens.filter(token =>
+              PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+            );
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {

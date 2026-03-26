@@ -176,11 +176,11 @@ export class SwapsControllerService {
     /**
      * @TODO
      * this.plarformConfigSrv.useCF$.subscribe((useCloudflare) => {
-     *    this.socketManager.close()
+     *    this.socketManager.removeSubs()
      *    this.socketManager = useCloudflare
      *        ? new CloudflareSocketManager(this.rubicApiService)
      *        : new DefaultSocketManager(this.rubicApiService)
-     *    this.socketManager.initialize();
+     *    this.socketManager.initSubs();
      * })
      */
   }
@@ -195,7 +195,7 @@ export class SwapsControllerService {
             !this.swapFormService.isFilled ||
             !this.socketManager.allowCalculation()
           ) {
-            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled;
+            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled && !calculateData.stop;
             SENTRY_CF_STATUS.wasAllowedCalculate = this.socketManager.allowCalculation();
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };

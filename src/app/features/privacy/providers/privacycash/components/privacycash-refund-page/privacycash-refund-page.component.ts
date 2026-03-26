@@ -40,7 +40,8 @@ export class PrivacycashRefundPageComponent {
     withReceiver: false,
     withSrcAmount: false,
     buttonText: 'Refund Tokens',
-    withMaxBtn: false
+    withMaxBtn: false,
+    direction: 'from'
   };
 
   public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

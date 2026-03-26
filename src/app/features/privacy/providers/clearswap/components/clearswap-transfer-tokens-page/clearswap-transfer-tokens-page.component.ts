@@ -36,6 +36,8 @@ import InsufficientFundsError from '@app/core/errors/models/instant-trade/insuff
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicSdkError } from '@cryptorubic/web3';
 import { ErrorsService } from '@app/core/errors/errors.service';
+import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -67,6 +69,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly authService: AuthService,
     private readonly errorService: ErrorsService,
+    private readonly privateStatisticsService: PrivateStatisticsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -90,8 +93,9 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
   }
 
   private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {
+    const userAddress = this.authService.userAddress;
     return defer(() =>
-      this.clearswapSwapService.chainAdapter.checkEnoughBalance(token, this.authService.userAddress)
+      this.clearswapSwapService.chainAdapter.checkEnoughBalance(token, userAddress)
     )
       .pipe(
         retry({
@@ -143,12 +147,23 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                 {
                   label: 'Transfer tokens',
                   action: () =>
-                    this.clearswapSwapService.transfer(
-                      tradeId,
-                      token as TokenAmount<BlockchainName>,
-                      { ...token } as Token,
-                      this.receiverCtrl.value
-                    )
+                    this.clearswapSwapService
+                      .transfer(
+                        tradeId,
+                        token as TokenAmount<BlockchainName>,
+                        { ...token } as Token,
+                        this.receiverCtrl.value
+                      )
+                      .then(() => {
+                        this.privateStatisticsService.saveAction(
+                          'TRANSFER',
+                          PRIVATE_TRADE_TYPE.CLEARSWAP,
+                          userAddress,
+                          token.address,
+                          token.stringWeiAmount,
+                          token.blockchain
+                        );
+                      })
                 }
               ]
             });
