@@ -20,6 +20,12 @@ export class PrivacyMainPageToPrivateAssetsService extends PrivateAssetsService 
         tap(([swapInfo, tab]) => {
           if (tab === PRIVATE_MODE_TAB.ON_CHAIN && swapInfo.fromAsset) {
             this.setBlockchainList([swapInfo.fromAsset.blockchain]);
+          } else if (tab === PRIVATE_MODE_TAB.CROSS_CHAIN && swapInfo.fromAsset) {
+            this.setBlockchainList(
+              PRIVATE_MODE_SUPPORTED_CHAINS[tab].filter(
+                supportedChain => supportedChain !== swapInfo.fromAsset.blockchain
+              )
+            );
           } else {
             this.setBlockchainList(PRIVATE_MODE_SUPPORTED_CHAINS[tab]);
           }

@@ -129,15 +129,15 @@ export class PrivacyPageViewComponent implements OnInit {
   }
 
   public handleSwapWindowChanged(swapInfo: PrivacyFormValue): void {
-    if (!swapInfo.fromAsset || !swapInfo.toAsset) {
-      this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.ON_CHAIN);
-    } else if (compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
-      this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.TRANSFER);
-    } else {
-      if (swapInfo.fromAsset?.blockchain === swapInfo.toAsset?.blockchain) {
-        this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.ON_CHAIN);
+    if (swapInfo.fromAsset && swapInfo.toAsset) {
+      if (compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
+        this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.TRANSFER);
       } else {
-        this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.CROSS_CHAIN);
+        if (swapInfo.fromAsset?.blockchain === swapInfo.toAsset?.blockchain) {
+          this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.ON_CHAIN);
+        } else {
+          this.privacyMainPageService.setSelectedTab(PRIVATE_MODE_TAB.CROSS_CHAIN);
+        }
       }
     }
     this.privateQueryParamsService.setQueryParams(swapInfo);

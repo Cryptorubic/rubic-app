@@ -108,7 +108,6 @@ export class PrivatePageSwapComponent implements OnInit {
     const config: AssetsSelectorConfig = {
       ...this.creationConfig.assetsSelectorConfig,
       ...(fromChain && {
-        showAllChains: false,
         listType: fromChain
       })
     };
@@ -130,7 +129,6 @@ export class PrivatePageSwapComponent implements OnInit {
       ...this.creationConfig.assetsSelectorConfig,
       ...(isOnChain &&
         fromChain && {
-          showAllChains: false,
           listType: fromChain
         })
     };

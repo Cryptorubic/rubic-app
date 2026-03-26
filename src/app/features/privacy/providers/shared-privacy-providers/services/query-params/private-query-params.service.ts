@@ -41,8 +41,8 @@ export class PrivateQueryParamsService {
             ? of(swapInfo.fromAsset)
             : this.swapFormQueryService.getTokenBySymbolOrAddress(
                 supportedTokens,
-                queryParams.from || 'ETH',
-                (queryParams.fromChain as BlockchainName) || BLOCKCHAIN_NAME.ETHEREUM,
+                queryParams.from,
+                queryParams.fromChain as BlockchainName,
                 true
               );
           const toToken$ = swapInfo.toAsset
@@ -73,7 +73,7 @@ export class PrivateQueryParamsService {
             of(toAmount)
           ]);
         }),
-        tap(([fromAsset, toAsset, fromAmount, toAmount]) => {
+        switchMap(([fromAsset, toAsset, fromAmount, toAmount]) => {
           const swapInfo: PrivateSwapInfo = { fromAsset, toAsset, fromAmount, toAmount };
 
           this.hideTokensWindowService.setHideAsset(swapInfo.fromAsset);
@@ -85,7 +85,18 @@ export class PrivateQueryParamsService {
           this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
           this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
 
-          this.privacyMainPageService.patchFormValue(swapInfo);
+          if (!swapInfo.fromAsset && !swapInfo.toAsset) {
+            return this.swapFormQueryService
+              .getTokenBySymbolOrAddress(supportedTokens, 'ETH', BLOCKCHAIN_NAME.ETHEREUM, true)
+              .pipe(
+                tap(mainFormFromAsset => {
+                  this.privacyMainPageService.patchFormValue({ fromAsset: mainFormFromAsset });
+                })
+              );
+          } else {
+            this.privacyMainPageService.patchFormValue(swapInfo);
+            return of(null);
+          }
         })
       )
       .subscribe();
