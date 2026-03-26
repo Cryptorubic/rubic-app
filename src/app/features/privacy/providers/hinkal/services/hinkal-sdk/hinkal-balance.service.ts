@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, filter, map, Observable, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  filter,
+  map,
+  Observable,
+  Subject,
+  switchMap,
+  tap
+} from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { HinkalWorkerService } from './hinkal-worker.service';
 
@@ -9,7 +18,7 @@ export class HinkalBalanceService {
 
   private readonly _balances$ = new BehaviorSubject<HinkalPrivateBalance>({});
 
-  private readonly _updateBalance$ = new BehaviorSubject<void>(null);
+  private readonly _updateBalance$ = new Subject<void>();
 
   private readonly updateBalance$ = this._updateBalance$.asObservable();
 
