@@ -134,6 +134,7 @@ export class TransferTokensWindowComponent implements OnInit {
     });
     this.handleTransfer.emit({
       token,
+      balanceToken: this.privateTransferWindowService.transferAsset,
       loadingCallback: () => this._loading$.next(false),
       openPreview: this.createPreviewModal(this.privateTransferWindowService.transferAsset)
     });

@@ -147,6 +147,14 @@ export class RailgunFacadeService {
 
   public readonly utxoScan$ = this._utxoScan$.asObservable().pipe(debounceTime(5));
 
+  public readonly allowPrivateAction$ = this.balancesSnapshot$.pipe(
+    map(snapshot => {
+      return Object.values(snapshot).some(chain =>
+        chain?.Spendable?.erc20Amounts.some(token => token.amount > 0)
+      );
+    })
+  );
+
   public readonly completedChains$ = this.utxoScan$.pipe(
     map(scan => {
       return Object.entries(scan)

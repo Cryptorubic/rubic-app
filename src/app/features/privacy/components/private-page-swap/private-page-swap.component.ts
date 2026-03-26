@@ -104,8 +104,15 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   public openInputSelector(): void {
+    const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
+    const config: AssetsSelectorConfig = {
+      ...this.creationConfig.assetsSelectorConfig,
+      ...(fromChain && {
+        listType: fromChain
+      })
+    };
     this.modalService
-      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
+      .openPrivateTokensModal(this.injector, 'from', config)
       .subscribe((selectedToken: BalanceToken) => {
         if (this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.TRANSFER) {
           this.patchSwapInfo({ fromAsset: selectedToken, toAsset: selectedToken });
@@ -122,7 +129,6 @@ export class PrivatePageSwapComponent implements OnInit {
       ...this.creationConfig.assetsSelectorConfig,
       ...(isOnChain &&
         fromChain && {
-          showAllChains: false,
           listType: fromChain
         })
     };

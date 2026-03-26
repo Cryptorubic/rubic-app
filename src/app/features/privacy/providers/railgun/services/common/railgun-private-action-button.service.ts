@@ -212,7 +212,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     }
     return {
       type: 'parent',
-      text: 'Unshield token'
+      text: 'Unshield'
     };
   }
 
@@ -282,7 +282,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     }
     return {
       type: 'parent',
-      text: 'Transfer token'
+      text: 'Transfer'
     };
   }
 }

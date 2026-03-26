@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Inject, Injector, Input } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -6,7 +6,11 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { Router } from '@angular/router';
 import { PROVIDERS_LIST } from '@app/core/wallets-modal/components/wallets-modal/models/providers';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { PRIVATE_PROVIDERS_WALLETS_MAP } from '@app/features/privacy/constants/private-providers-wallets-map';
+import {
+  PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP,
+  PRIVATE_PROVIDERS_WALLETS_MAP
+} from '@app/features/privacy/constants/private-providers-wallets-map';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-login-button',
@@ -18,6 +22,8 @@ export class LoginButtonComponent {
   public currentUser$ = this.authService.currentUser$;
 
   @Input() appearance: TuiAppearance | string = 'primary';
+
+  private readonly headerStore = inject(HeaderStore);
 
   constructor(
     private readonly authService: AuthService,
@@ -34,10 +40,11 @@ export class LoginButtonComponent {
   }
 
   private filterWallets(): WALLET_NAME[] {
+    const walletsMap = this.headerStore.isMobile
+      ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
+      : PRIVATE_PROVIDERS_WALLETS_MAP;
     const [_, wallets] =
-      Object.entries(PRIVATE_PROVIDERS_WALLETS_MAP).find(([provider]) =>
-        this.router.url.includes(provider)
-      ) || [];
+      Object.entries(walletsMap).find(([provider]) => this.router.url.includes(provider)) || [];
 
     return wallets || PROVIDERS_LIST.map(provider => provider.value);
   }

@@ -1,19 +1,22 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
+import { PRIVATE_TRADE_TYPE } from './private-trade-types';
+import { PRIVATE_PROVIDERS_TABS_MAP } from './private-providers-tabs-map';
+import { PRIVATE_MODE_TAB, PrivateModeTab } from './private-mode-tab';
+import { PRIVATE_PROVIDERS_CHAINS_MAP } from './private-providers-chains-map';
+import { BlockchainName } from '@cryptorubic/core';
 
-export const PRIVATE_MODE_SUPPORTED_CHAINS = [
-  BLOCKCHAIN_NAME.ETHEREUM,
-  BLOCKCHAIN_NAME.ARBITRUM,
-  BLOCKCHAIN_NAME.POLYGON,
-  BLOCKCHAIN_NAME.BASE,
-  BLOCKCHAIN_NAME.OPTIMISM,
-  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.SOLANA,
-  BLOCKCHAIN_NAME.TRON
-] as const;
+function getBlockchainsByTab(tab: PrivateModeTab): BlockchainName[] {
+  return [
+    ...new Set(
+      Object.values(PRIVATE_TRADE_TYPE)
+        .filter(privateTradeType => PRIVATE_PROVIDERS_TABS_MAP[privateTradeType].includes(tab))
+        .map(privateTradeType => PRIVATE_PROVIDERS_CHAINS_MAP[privateTradeType])
+        .flat()
+    )
+  ];
+}
 
-export type PrivateModeSupportedChain = (typeof PRIVATE_MODE_SUPPORTED_CHAINS)[number];
-
-export const isPrivateModeSupportedChain = (
-  blockchain: BlockchainName
-): blockchain is PrivateModeSupportedChain =>
-  (PRIVATE_MODE_SUPPORTED_CHAINS as readonly BlockchainName[]).includes(blockchain);
+export const PRIVATE_MODE_SUPPORTED_CHAINS: Record<PrivateModeTab, BlockchainName[]> = {
+  [PRIVATE_MODE_TAB.ON_CHAIN]: getBlockchainsByTab(PRIVATE_MODE_TAB.ON_CHAIN),
+  [PRIVATE_MODE_TAB.CROSS_CHAIN]: getBlockchainsByTab(PRIVATE_MODE_TAB.CROSS_CHAIN),
+  [PRIVATE_MODE_TAB.TRANSFER]: getBlockchainsByTab(PRIVATE_MODE_TAB.TRANSFER)
+};
