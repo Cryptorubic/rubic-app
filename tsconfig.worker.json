@@ -6,7 +6,8 @@
     "lib": [
       "es2018",
       "esnext",
-      "webworker"
+      "webworker",
+      "DOM"
     ],
     "types": []
   },

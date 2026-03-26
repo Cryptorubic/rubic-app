@@ -9,3 +9,7 @@ export interface TokenAddrWithBalance {
 export interface MinimalTokenWithBalance extends MinimalToken {
   balanceWei: BigNumber;
 }
+
+export interface MinimalTokenWithBalanceWorker extends MinimalToken {
+  balanceWei: number;
+}

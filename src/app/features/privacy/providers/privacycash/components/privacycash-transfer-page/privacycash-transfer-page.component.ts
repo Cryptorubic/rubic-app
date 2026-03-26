@@ -16,6 +16,7 @@ import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/mod
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -24,6 +25,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
+    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
   ]
