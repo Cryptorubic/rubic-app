@@ -11,12 +11,13 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
 import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
 import { List } from 'immutable';
-import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainName } from '@cryptorubic/core';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -49,7 +50,7 @@ export class HinkalViewComponent {
         return this.pages.filter(page => page.type !== 'login');
       }
       if (!alreadyMadeShielding) {
-        return this.pages.filter(page => page.type !== 'hide');
+        return this.pages.filter(page => page.type !== 'hide' && page.type !== 'walletInfo');
       }
       return this.pages.filter(page => page.type === 'login');
     })
@@ -60,10 +61,11 @@ export class HinkalViewComponent {
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly hinkalRevealFacade: HinkalRevealFacadeService,
+    private readonly hinkalRevealFacade: HinkalSwapTokensFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly privateLocalStorageService: PrivateLocalStorageService
+    private readonly privateLocalStorageService: PrivateLocalStorageService,
+    private readonly activatedRoute: ActivatedRoute
   ) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];
@@ -76,6 +78,15 @@ export class HinkalViewComponent {
       .subscribe(() => {
         this.hinkalFacadeService.logout();
         this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
+      });
+
+    this.activatedRoute.queryParams
+      .pipe(
+        filter(params => params.fromChain),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(params => {
+        this.hinkalFacadeService.switchChain(params.fromChain);
       });
   }
 

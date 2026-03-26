@@ -1,0 +1,10 @@
+@use 'src/scss/core' as *;
+@use 'src/scss/light-theme' as *;
+
+.privacy-content {
+  flex-direction: row;
+
+  @include b($mobile-md) {
+    flex-direction: column;
+  }
+}

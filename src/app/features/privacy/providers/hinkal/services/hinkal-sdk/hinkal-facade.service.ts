@@ -33,7 +33,7 @@ import { PrivateStatisticsService } from '../../../shared-privacy-providers/serv
 export class HinkalFacadeService {
   private readonly subs: Subscription[] = [];
 
-  private readonly _activeChain$ = new BehaviorSubject<BlockchainName>(BLOCKCHAIN_NAME.ETHEREUM);
+  private readonly _activeChain$ = new BehaviorSubject<BlockchainName | null>(null);
 
   private readonly _balanceLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -246,6 +246,7 @@ export class HinkalFacadeService {
   private subscribeOnActiveNetworkChanged(): Subscription {
     return this.activeChain$
       .pipe(
+        filter(Boolean),
         skip(1),
         distinctUntilChanged(),
         tap(chain => console.log('CHAIN SWITCHED', chain)),

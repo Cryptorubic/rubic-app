@@ -3,7 +3,6 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { of } from 'rxjs';
 import { switchIif } from '@shared/utils/utils';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { depositInfoText } from './constants/cn-info-text';
 import { TradeInfo } from './models/trade-info';
 import { DepositTradeData } from '../../models/deposit-trade-data';
@@ -35,10 +34,7 @@ export class DepositPrivateTradeInfoComponent implements OnChanges {
     )
   );
 
-  constructor(
-    private readonly walletConnector: WalletConnectorService,
-    private readonly targetAddressService: TargetNetworkAddressService
-  ) {}
+  constructor(private readonly walletConnector: WalletConnectorService) {}
 
   ngOnChanges(): void {
     if (this.inputData) {

@@ -206,7 +206,7 @@ export class CrossChainService {
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+    params: { useCacheData: boolean; skipAmountCheck: boolean; receiverAddress?: string } = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -254,7 +254,7 @@ export class CrossChainService {
 
     const referrer = this.sessionStorage.getItem('referral');
 
-    const receiverAddress = this.receiverAddress;
+    const receiverAddress = this.receiverAddress || params?.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
