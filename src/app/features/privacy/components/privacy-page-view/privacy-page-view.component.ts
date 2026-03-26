@@ -18,6 +18,8 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacyMainPageTokensFacadeService } from '../../services/privacy-main-page-tokens-facade.service';
 import { getEmptySwapFormInput } from '../../utils/empty-swap-form-input';
 import { List } from 'immutable';
+import { PRIVATE_MODE_SUPPORTED_CHAINS } from '../../constants/private-mode-supported-chains';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../../constants/private-mode-supported-tokens';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -112,18 +114,69 @@ export class PrivacyPageViewComponent implements OnInit {
 
   public handleTabSelected(tab: PrivateModeTab): void {
     const swapInfo = this.privacyMainPageService.formValue;
-    if (tab === PRIVATE_MODE_TAB.TRANSFER && !compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
-      this.privacyMainPageService.patchFormValue({
-        toAsset: swapInfo.fromAsset
-      });
-    }
-    if (
-      (tab === PRIVATE_MODE_TAB.CROSS_CHAIN || tab === PRIVATE_MODE_TAB.ON_CHAIN) &&
-      compareTokens(swapInfo.fromAsset, swapInfo.toAsset)
-    ) {
-      this.privacyMainPageService.patchFormValue({
-        toAsset: null
-      });
+    if (tab === PRIVATE_MODE_TAB.ON_CHAIN) {
+      if (
+        swapInfo.fromAsset &&
+        (!PRIVATE_MODE_SUPPORTED_CHAINS[PRIVATE_MODE_TAB.ON_CHAIN].includes(
+          swapInfo.fromAsset.blockchain
+        ) ||
+          !PRIVATE_MODE_SUPPORTED_TOKENS[swapInfo.fromAsset.blockchain].includes(
+            swapInfo.fromAsset.address
+          ))
+      ) {
+        this.privacyMainPageService.patchFormValue({
+          fromAsset: null,
+
+          toAsset: null
+        });
+      } else if (
+        (swapInfo.toAsset &&
+          (!PRIVATE_MODE_SUPPORTED_CHAINS[PRIVATE_MODE_TAB.ON_CHAIN].includes(
+            swapInfo.toAsset.blockchain
+          ) ||
+            !PRIVATE_MODE_SUPPORTED_TOKENS[swapInfo.toAsset.blockchain].includes(
+              swapInfo.toAsset.address
+            ))) ||
+        (swapInfo.fromAsset &&
+          swapInfo.toAsset &&
+          (swapInfo.fromAsset.blockchain !== swapInfo.toAsset.blockchain ||
+            compareTokens(swapInfo.fromAsset, swapInfo.toAsset)))
+      ) {
+        this.privacyMainPageService.patchFormValue({
+          toAsset: null
+        });
+      }
+    } else if (tab === PRIVATE_MODE_TAB.CROSS_CHAIN) {
+      if (
+        swapInfo.fromAsset &&
+        !PRIVATE_MODE_SUPPORTED_CHAINS[PRIVATE_MODE_TAB.CROSS_CHAIN].includes(
+          swapInfo.fromAsset.blockchain
+        )
+      ) {
+        this.privacyMainPageService.patchFormValue({
+          fromAsset: null,
+          toAsset: null
+        });
+      } else if (
+        (swapInfo.toAsset &&
+          !PRIVATE_MODE_SUPPORTED_CHAINS[PRIVATE_MODE_TAB.CROSS_CHAIN].includes(
+            swapInfo.toAsset.blockchain
+          )) ||
+        (swapInfo.fromAsset &&
+          swapInfo.toAsset &&
+          (swapInfo.fromAsset.blockchain === swapInfo.toAsset.blockchain ||
+            compareTokens(swapInfo.fromAsset, swapInfo.toAsset)))
+      ) {
+        this.privacyMainPageService.patchFormValue({
+          toAsset: null
+        });
+      }
+    } else if (tab === PRIVATE_MODE_TAB.TRANSFER) {
+      if (swapInfo.fromAsset && !compareTokens(swapInfo.fromAsset, swapInfo.toAsset)) {
+        this.privacyMainPageService.patchFormValue({
+          toAsset: swapInfo.fromAsset
+        });
+      }
     }
     this.privacyMainPageService.setSelectedTab(tab);
   }
