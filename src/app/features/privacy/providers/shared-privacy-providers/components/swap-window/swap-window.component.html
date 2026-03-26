@@ -2,7 +2,8 @@
   *ngLet="{
     swapInfo: swapInfo$ | async,
     loading: loading$ | async,
-    displayReceiver: displayReceiver$ | async
+    displayReceiver: displayReceiver$ | async,
+    showDepositStatus: creationConfig.withStatus && depositTrade
   } as state"
 >
   <app-input-output-container [round]="inputContainerRounding" [marginTop]="true">
@@ -33,7 +34,7 @@
 
   <app-input-output-container
     *ngIf="hasOutputContainer"
-    [round]="state.displayReceiver ? 'none' : 'bottom'"
+    [round]="state.displayReceiver && !state.showDepositStatus ? 'none' : 'bottom'"
   >
     <app-asset-selector
       left
@@ -55,7 +56,7 @@
   </app-input-output-container>
 
   <app-target-network-address
-    *ngIf="creationConfig.withReceiver && state.displayReceiver"
+    *ngIf="creationConfig.withReceiver && state.displayReceiver && !state.showDepositStatus"
     [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
@@ -75,7 +76,7 @@
       (handleClick)="toggleReceiver()"
     ></app-receiver-address-button>
   </div>
-  <ng-container *ngIf="creationConfig.withStatus && depositTrade">
+  <ng-container *ngIf="state.showDepositStatus">
     <app-deposit-status-info
       [paymentInfo]="depositPaymentInfo"
       [status]="depositTradeStatus"
