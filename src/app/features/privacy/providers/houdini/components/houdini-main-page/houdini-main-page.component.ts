@@ -9,7 +9,20 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokenAmount } from '@cryptorubic/core';
-import { filter, first, firstValueFrom, startWith, Subscription, takeUntil, tap } from 'rxjs';
+import { InsufficientFundsError, RubicSdkError } from '@cryptorubic/web3';
+import {
+  defer,
+  filter,
+  first,
+  firstValueFrom,
+  lastValueFrom,
+  retry,
+  startWith,
+  takeUntil,
+  tap,
+  throwError,
+  timer
+} from 'rxjs';
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -20,6 +33,11 @@ import { FormControl } from '@angular/forms';
 import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -50,8 +68,6 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
 
   public readonly depositTradeStatus$ = this.houdiniSwapService.depositTradeStatus$;
 
-  private _walletSubscription: Subscription;
-
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
     private readonly privatePageTypeService: PrivatePageTypeService,
@@ -60,6 +76,9 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly houdiniTokensFacade: HoudiniTokensFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly authService: AuthService,
+    private readonly errorService: ErrorsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.privatePageTypeService.activePage = {
@@ -83,7 +102,6 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
-    this._walletSubscription?.unsubscribe();
   }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
@@ -93,15 +111,43 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         tokenAmount: swapInfo.fromAmount.actualValue
       });
 
+      const chainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+
+      const isEnoughBalance = await lastValueFrom(
+        defer(() => chainAdapter.checkEnoughBalance(fromToken, this.authService.userAddress)).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('check balance error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('Request failed with status code 429')) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      );
+      if (!isEnoughBalance) {
+        throw new InsufficientFundsError(fromToken.symbol);
+      }
+
       const preview$ = openPreview({
         steps: [
           {
             label: 'Swap',
-            action: () => this.houdiniSwapService.swap(fromToken)
+            action: () => this.houdiniSwapService.swap(fromToken, this.receiverCtrl.value)
           }
         ]
       });
       await firstValueFrom(preview$);
+    } catch (error) {
+      if (error instanceof RubicError || error instanceof RubicSdkError) {
+        this.errorService.catch(error);
+      } else {
+        this.notificationsService.showError('Something went wrong. Please, try again later.');
+      }
     } finally {
       loadingCallback();
     }

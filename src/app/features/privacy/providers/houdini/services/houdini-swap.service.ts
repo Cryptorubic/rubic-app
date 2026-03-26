@@ -25,7 +25,9 @@ import {
   takeWhile,
   map,
   tap,
-  Subscription
+  Subscription,
+  combineLatest,
+  of
 } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
@@ -54,6 +56,7 @@ import {
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { DepositTradeData } from '../../shared-privacy-providers/models/deposit-trade-data';
+import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -89,9 +92,10 @@ export class HoudiniSwapService {
     private readonly crossChainService: CrossChainService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly settingsService: SettingsService,
-    private readonly houdiniErrorService: HoudiniErrorService
+    private readonly houdiniErrorService: HoudiniErrorService,
+    private readonly privateStatisticsService: PrivateStatisticsService
   ) {
-    this.subscribeOnStatusReset();
+    this.subscribeOnStatusPending();
   }
 
   public async quote(
@@ -138,7 +142,10 @@ export class HoudiniSwapService {
     }
   }
 
-  public async swap(fromToken: TokenAmount<BlockchainName>): Promise<void> {
+  public async swap(
+    fromToken: TokenAmount<BlockchainName>,
+    receiverAddress: string
+  ): Promise<void> {
     try {
       const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
       const isTransferTrade =
@@ -168,7 +175,16 @@ export class HoudiniSwapService {
         };
 
         await this.handleApprove(this.currentTrade, approveCallback);
-        await this.handleSwap(this.currentTrade, true, swapCallback);
+        await this.handleSwap(this.currentTrade, receiverAddress, true, swapCallback);
+
+        this.privateStatisticsService.saveAction(
+          'PRIVATE_CROSSCHAIN_SWAP',
+          'HOUDINI',
+          this.walletConnectorService.address,
+          fromToken.address,
+          fromToken.weiAmount.toFixed(),
+          fromToken.blockchain
+        );
       }
     } catch (err) {
       this.showSwapError(err);
@@ -204,6 +220,7 @@ export class HoudiniSwapService {
 
   public async handleSwap(
     trade: CrossChainTrade,
+    receiverAddress: string,
     checkSlippageAndPI?: boolean,
     callback?: {
       onHash?: (hash: string) => void;
@@ -236,7 +253,12 @@ export class HoudiniSwapService {
       txHash = await this.crossChainService.swapTrade(
         trade,
         callback.onHash,
-        callback.onSimulationSuccess
+        callback.onSimulationSuccess,
+        {
+          skipAmountCheck: false,
+          useCacheData: false,
+          receiverAddress
+        }
       );
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
@@ -256,7 +278,8 @@ export class HoudiniSwapService {
               callback.onSimulationSuccess,
               {
                 skipAmountCheck: true,
-                useCacheData: true
+                useCacheData: true,
+                receiverAddress
               }
             );
           } catch (innerErr) {
@@ -358,16 +381,34 @@ export class HoudiniSwapService {
     this._currentTradeData$.next(tradeData);
   }
 
-  private subscribeOnStatusReset(): void {
+  private subscribeOnStatusPending(): void {
     const sub = this.depositTradeData$
       .pipe(
         filter(tradeData => !!tradeData?.trade),
         switchMap(tradeData =>
           interval(30_000).pipe(
             startWith(-1),
-            switchMap(() => this.getDepositSwapStatus(tradeData.trade.rubicId)),
-            tap(status => this._depositTradeStatus$.next(status)),
-            takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
+            switchMap(() =>
+              combineLatest([
+                of(tradeData.trade),
+                this.getDepositSwapStatus(tradeData.trade.rubicId)
+              ])
+            ),
+            tap(([trade, status]) => {
+              if (status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED) {
+                this.privateStatisticsService.saveAction(
+                  'PRIVATE_CROSSCHAIN_SWAP',
+                  'HOUDINI',
+                  this.walletConnectorService.address,
+                  trade.from.address,
+                  trade.from.weiAmount.toFixed(),
+                  trade.from.blockchain
+                );
+              }
+
+              this._depositTradeStatus$.next(status);
+            }),
+            takeWhile(([_trade, status]) => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
           )
         )
       )

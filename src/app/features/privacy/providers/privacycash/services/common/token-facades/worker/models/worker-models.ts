@@ -1,4 +1,4 @@
-import { MinimalTokenWithBalance } from '@app/features/privacy/providers/privacycash/models/privacycash-tokens-facade-models';
+import { MinimalTokenWithBalanceWorker } from '@app/features/privacy/providers/privacycash/models/privacycash-tokens-facade-models';
 import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 
 export type PrivacycashInWorkerMsg =
@@ -6,28 +6,31 @@ export type PrivacycashInWorkerMsg =
       type: 'init';
       data: {
         signature: Uint8Array;
+        localStorageData: Record<string, string>;
       };
     }
   | {
       type: 'getBalances';
       useCache: boolean;
+      walletAddr: string;
       tokens: MinimalToken[];
     }
   | {
       type: 'stop';
     };
 
-export type PrivacycashOurWorkerMsg =
+export type PrivacycashOutWorkerMsg =
   | {
       type: 'init';
-      success: boolean;
     }
   | {
       type: 'getBalances';
-      success: boolean;
-      tokens: MinimalTokenWithBalance[];
+      tokens: MinimalTokenWithBalanceWorker[];
     }
   | {
       type: 'stop';
-      success: boolean;
+    }
+  | {
+      type: 'localStorageData';
+      localStorageData: Record<string, string>;
     };

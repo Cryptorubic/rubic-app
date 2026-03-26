@@ -404,41 +404,41 @@ export class PrivacycashSwapService {
     }
   }
 
-  private async makeFullWithdraw(
-    tokenAddr: string,
-    senderPK: PublicKey,
-    recipientPK: PublicKey
-  ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
-    const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
-      tokenAddr,
-      senderPK,
-      true
-    );
-    return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, senderPK, recipientPK);
-  }
+  // private async makeFullWithdraw(
+  //   tokenAddr: string,
+  //   senderPK: PublicKey,
+  //   recipientPK: PublicKey
+  // ): Promise<void> {
+  //   await this.privacycashSignatureService.checkRequirements();
+  //   const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
+  //     tokenAddr,
+  //     senderPK,
+  //     true
+  //   );
+  //   return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, senderPK, recipientPK);
+  // }
 
-  /**
-   * @description Starts swap for full amount stored on user's PrivacyCash balance
-   * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   * @param receiverAddr
-   */
-  private async swapFullPrivateBalance(
-    srcToken: BlockchainToken,
-    dstToken: BlockchainToken
-  ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
+  // /**
+  //  * @description Starts swap for full amount stored on user's PrivacyCash balance
+  //  * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+  //  * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+  //  * @param receiverAddr
+  //  */
+  // private async swapFullPrivateBalance(
+  //   srcToken: BlockchainToken,
+  //   dstToken: BlockchainToken
+  // ): Promise<void> {
+  //   await this.privacycashSignatureService.checkRequirements();
 
-    const senderPK = new PublicKey(this.walletConnectorService.address);
-    const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
-      srcToken.address,
-      senderPK,
-      true
-    );
+  //   const senderPK = new PublicKey(this.walletConnectorService.address);
+  //   const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
+  //     srcToken.address,
+  //     senderPK,
+  //     true
+  //   );
 
-    return this.swapPartialPrivateBalance(srcToken, dstToken, new BigNumber(fullPrivateBalanceWei));
-  }
+  //   return this.swapPartialPrivateBalance(srcToken, dstToken, new BigNumber(fullPrivateBalanceWei));
+  // }
 
   /**
    * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)

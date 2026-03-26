@@ -10,7 +10,7 @@ import { RubicWindow } from '@app/shared/utils/rubic-window';
 export class PrivateLocalStorageService {
   private readonly _storage$ = new BehaviorSubject<PrivacyLocalStorage>({
     ALREADY_SHIELDED: Object.values(PRIVATE_TRADE_TYPE).reduce(
-      (acc, privateTradeType) => ({ ...acc, [privateTradeType]: false }),
+      (acc, privateTradeType) => ({ ...acc, [privateTradeType]: true }),
       {} as PrivacyLocalStorage['ALREADY_SHIELDED']
     )
   });
@@ -27,13 +27,12 @@ export class PrivateLocalStorageService {
   ) {}
 
   public initStorage(): void {
-    this.window.addEventListener('beforeunload', () => {
-      this.storeService.setItem('ALREADY_SHIELDED', { ...this._storage$.value.ALREADY_SHIELDED });
-    });
-
-    const info = this.storeService.getItem('ALREADY_SHIELDED');
-    if (!info) return;
-    this._storage$.next({ ...this._storage$.value, ALREADY_SHIELDED: { ...info } });
+    // this.window.addEventListener('beforeunload', () => {
+    //   this.storeService.setItem('ALREADY_SHIELDED', { ...this._storage$.value.ALREADY_SHIELDED });
+    // });
+    // const info = this.storeService.getItem('ALREADY_SHIELDED');
+    // if (!info) return;
+    // this._storage$.next({ ...this._storage$.value, ALREADY_SHIELDED: { ...info } });
   }
 
   public markProviderAsShielded(providerType: PrivateTradeType): void {
