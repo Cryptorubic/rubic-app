@@ -126,7 +126,6 @@ export class PrivacyPageViewComponent implements OnInit {
       ) {
         this.privacyMainPageService.patchFormValue({
           fromAsset: null,
-
           toAsset: null
         });
       } else if (
