@@ -10,6 +10,8 @@ import BigNumber from 'bignumber.js';
 import { PrivateSwapWindowService } from '../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { sorterByChain } from '@app/features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { HINKAL_SUPPORTED_CHAINS } from '../constants/hinkal-supported-chains';
 
 @Injectable()
 export class HinkalSwapTokensFacadeService extends TokensFacadeService {
@@ -26,6 +28,11 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
     return this.balanceService.balances$.pipe(
       switchMap(shieldedBalances => {
         return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
+          map((tokens: BalanceToken[]) => {
+            return tokens.filter(token =>
+              HINKAL_SUPPORTED_CHAINS.includes(token.blockchain as EvmBlockchainName)
+            );
+          }),
           map(tokens => {
             const supportedTokens = tokens.map(token => {
               const shieldedBalance = shieldedBalances[token.blockchain as EvmBlockchainName]?.find(
@@ -54,13 +61,13 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
                   : this.privateSwapWindowService.swapInfo.fromAsset;
               if (oppositeToken) {
                 if (
-                  a.address === oppositeToken.address &&
+                  compareAddresses(a.address, oppositeToken.address) &&
                   a.blockchain === oppositeToken.blockchain
                 ) {
                   return 1;
                 }
                 if (
-                  b.address === oppositeToken.address &&
+                  compareAddresses(b.address, oppositeToken.address) &&
                   b.blockchain === oppositeToken.blockchain
                 ) {
                   return -1;
