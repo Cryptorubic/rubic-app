@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { QueryParams } from '@app/core/services/query-params/models/query-params';
 import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
-import { PrivateSwapWindowService } from '../private-swap-window/private-swap-window.service';
 import { SwapFormQueryService } from '@app/features/trade/services/swap-form-query/swap-form-query.service';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
@@ -22,8 +21,6 @@ export class PrivateQueryParamsService {
   private readonly revealTokensWindowService = inject(RevealWindowService);
 
   private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
-
-  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
 
   private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
@@ -44,8 +41,8 @@ export class PrivateQueryParamsService {
             ? of(swapInfo.fromAsset)
             : this.swapFormQueryService.getTokenBySymbolOrAddress(
                 supportedTokens,
-                queryParams.from,
-                queryParams.fromChain as BlockchainName,
+                queryParams.from || 'ETH',
+                (queryParams.fromChain as BlockchainName) || BLOCKCHAIN_NAME.ETHEREUM,
                 true
               );
           const toToken$ = swapInfo.toAsset
@@ -76,7 +73,7 @@ export class PrivateQueryParamsService {
             of(toAmount)
           ]);
         }),
-        switchMap(([fromAsset, toAsset, fromAmount, toAmount]) => {
+        tap(([fromAsset, toAsset, fromAmount, toAmount]) => {
           const swapInfo: PrivateSwapInfo = { fromAsset, toAsset, fromAmount, toAmount };
 
           this.hideTokensWindowService.setHideAsset(swapInfo.fromAsset);
@@ -88,18 +85,7 @@ export class PrivateQueryParamsService {
           this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
           this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
 
-          if (!swapInfo.fromAsset && !swapInfo.toAsset) {
-            return this.swapFormQueryService
-              .getTokenBySymbolOrAddress(supportedTokens, 'ETH', BLOCKCHAIN_NAME.ETHEREUM, true)
-              .pipe(
-                tap(mainFormFromAsset => {
-                  this.privacyMainPageService.patchFormValue({ fromAsset: mainFormFromAsset });
-                })
-              );
-          } else {
-            this.privacyMainPageService.patchFormValue(swapInfo);
-            return of(null);
-          }
+          this.privacyMainPageService.patchFormValue(swapInfo);
         })
       )
       .subscribe();
