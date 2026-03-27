@@ -13,6 +13,7 @@ import { ClearswapPrivateAssetsService } from '../../services/clearswap-private-
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { ClearswapBalancesService } from '../../services/clearswap-balances.service';
 
 @Component({
   selector: 'app-clearswap-view',
@@ -31,6 +32,8 @@ export class ClearswapViewComponent implements OnInit {
 
   private readonly clearswapTokensFacade = inject(ClearswapTokensFacadeService);
 
+  private readonly сlearswapBalancesService = inject(ClearswapBalancesService);
+
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = CLEARSWAP_PAGES;
@@ -41,6 +44,8 @@ export class ClearswapViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.parseQueryParams();
+
+    this.сlearswapBalancesService.subscribeOnWallet();
   }
 
   public onPageSelect(page: PageType): void {
