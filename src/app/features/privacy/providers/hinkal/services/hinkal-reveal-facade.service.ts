@@ -7,6 +7,7 @@ import { map, Observable, switchMap } from 'rxjs';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class HinkalRevealFacadeService extends TokensFacadeService {
@@ -23,6 +24,9 @@ export class HinkalRevealFacadeService extends TokensFacadeService {
         return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
           map(tokens => {
             const supportedTokens = tokens
+              .filter(token =>
+                PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+              )
               .filter(({ blockchain, address }) => {
                 const shieldedTokens = shieldedBalances[blockchain as EvmBlockchainName];
                 return (

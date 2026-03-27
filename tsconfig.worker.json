@@ -1,17 +1,9 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/worker",
-    "lib": [
-      "es2018",
-      "esnext",
-      "webworker",
-      "DOM"
-    ],
+    "lib": ["es2018", "esnext", "webworker", "DOM"],
     "types": []
   },
-  "include": [
-    "src/**/*.worker.ts"
-  ]
+  "include": ["src/**/*.worker.ts"]
 }

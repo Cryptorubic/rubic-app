@@ -11,10 +11,11 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
 import { compareTokens } from '@app/shared/utils/utils';
-import { BLOCKCHAIN_NAME, BlockchainsInfo } from '@cryptorubic/core';
+import { BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
-import { CLEARSWAP_SUPPORTED_TOKENS } from '../constants/clearswap-supported-tokens';
+import { isClearswapSupportedChain } from '../constants/clearswap-supported-chains';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class ClearswapTokensFacadeService extends TokensFacadeService {
@@ -31,8 +32,8 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
       map((tokens: BalanceToken[]) => {
         return tokens.filter(
           token =>
-            token.blockchain === BLOCKCHAIN_NAME.TRON &&
-            CLEARSWAP_SUPPORTED_TOKENS.includes(token.address)
+            isClearswapSupportedChain(token.blockchain) &&
+            PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain].includes(token.address)
         );
       }),
       map((tokens: BalanceToken[]) => {
