@@ -164,7 +164,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     }
     return {
       type: 'parent',
-      text: 'Shield token'
+      text: 'Shield'
     };
   }
 

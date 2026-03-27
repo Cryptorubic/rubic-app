@@ -1,10 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  Input
+} from '@angular/core';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { BlockchainName } from '@cryptorubic/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { fadeAnimation } from '@shared/utils/utils';
+import { BehaviorSubject, of, scan, shareReplay, switchMap, timer } from 'rxjs';
 
 interface UtxoChain {
   progress: number;
@@ -26,6 +33,29 @@ export class RailgunWalletLoadingComponent {
   public completedChains: { chain: RailgunSupportedChain; progress: number }[] = [];
 
   public scanInProgress = true;
+
+  private readonly _poiLoading$ = new BehaviorSubject(false);
+
+  public readonly poiLoading$ = this._poiLoading$.asObservable();
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  public readonly poiProgress$ = this.poiLoading$.pipe(
+    switchMap(isLoading => {
+      if (isLoading) {
+        return timer(0, 250).pipe(scan(acc => acc + 1, 0));
+      } else {
+        return of(0);
+      }
+    }),
+    shareReplay(1)
+  );
+
+  @Input({ required: true }) set poiLoading(value: boolean) {
+    console.log('set poi loading', value);
+    this._poiLoading$.next(value);
+    this.cdr.markForCheck();
+  }
 
   @Input({ required: true }) set utxoScan(value: Record<RailgunSupportedChain, number>) {
     const chains = Object.entries(value).map(

@@ -112,3 +112,5 @@ export type RefreshBalancesRequest = {
   chain: { type: number; id: number };
   walletIds: string[];
 };
+
+export type GeneratePOIRequest = { network: PrivacySupportedNetworks; walletId: string };
