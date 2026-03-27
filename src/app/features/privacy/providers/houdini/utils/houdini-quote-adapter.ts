@@ -3,7 +3,7 @@ import { PrivateQuoteAdapter } from '../../shared-privacy-providers/models/quote
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import BigNumber from 'bignumber.js';
 import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/services/houdini-swap.service';
-import { BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { TokenAmount } from '@cryptorubic/core';
 import {
   catchError,
   defer,
@@ -18,13 +18,10 @@ import {
 } from 'rxjs';
 import { HoudiniErrorService } from '@app/features/privacy/providers/houdini/services/houdini-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { AsyncValidatorFn, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Web3Pure } from '@cryptorubic/web3';
-import { isReceiverCorrect } from '../constants/receiver-validator';
 
 export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
-  private _currentValidator: AsyncValidatorFn;
-
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
     private readonly receiverCtrl: FormControl<string>,
@@ -45,7 +42,7 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
       return throwError(() => new Error('Receiver address must not be empty'));
     }
 
-    this.updateReceiverCtrlValidator(toAsset?.blockchain);
+    // this.updateReceiverCtrlValidator(toAsset?.blockchain);
 
     return from(Web3Pure.getInstance(toAsset.blockchain).isAddressCorrect(receiver)).pipe(
       tap(isCorrect => {
@@ -103,15 +100,15 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
     return new BigNumber(0);
   }
 
-  private updateReceiverCtrlValidator(blockchain?: BlockchainName): void {
-    if (!blockchain) return;
+  // private updateReceiverCtrlValidator(blockchain?: BlockchainName): void {
+  //   if (!blockchain) return;
 
-    if (this._currentValidator) {
-      this.receiverCtrl.removeAsyncValidators(this._currentValidator);
-    }
-    this._currentValidator = isReceiverCorrect(blockchain);
+  //   if (this._currentValidator) {
+  //     this.receiverCtrl.removeAsyncValidators(this._currentValidator);
+  //   }
+  //   this._currentValidator = isReceiverCorrect(blockchain);
 
-    this.receiverCtrl.addAsyncValidators(this._currentValidator);
-    this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
-  }
+  //   this.receiverCtrl.addAsyncValidators(this._currentValidator);
+  //   this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+  // }
 }
