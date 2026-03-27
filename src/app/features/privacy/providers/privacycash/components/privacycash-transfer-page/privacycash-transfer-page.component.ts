@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angul
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
-import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
+import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
@@ -16,6 +16,8 @@ import { PrivateTransferWindowService } from '../../../shared-privacy-providers/
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { PrivacycashPrivateTransferTokensFacadeService } from '../../services/common/token-facades/privacycash-private-transfer-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { compareTokens } from '@app/shared/utils/utils';
+import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -37,6 +39,8 @@ export class PrivacycashTransferPageComponent implements OnInit {
 
   private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
 
+  private readonly privacycashTokensService = inject(PrivacycashTokensService);
+
   private readonly tokenService = inject(TokenService);
 
   public readonly receiverCtrl = new FormControl<string>('');
@@ -49,6 +53,8 @@ export class PrivacycashTransferPageComponent implements OnInit {
     receiverPlaceholder: 'Enter SOLANA receiver address',
     direction: 'from'
   };
+
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -76,9 +82,28 @@ export class PrivacycashTransferPageComponent implements OnInit {
         );
         this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
       });
+
+    this.subscribeOnPrivateBalanceChanges();
   }
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.privacycashTokensService.tokens$
+      .pipe(
+        filter(() => !!this.privateTransferWindowService.transferAsset?.address),
+        map(pcTokens =>
+          pcTokens.find(pcToken =>
+            compareTokens(pcToken, this.privateTransferWindowService.transferAsset)
+          )
+        ),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(pcToken => {
+        const transferAsset = this.privateTransferWindowService.transferAsset;
+        const balance = Token.fromWei(pcToken.balanceWei, transferAsset.decimals);
+        this.privateTransferWindowService.setTransferAsset({ ...transferAsset, amount: balance });
+      });
+  }
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {

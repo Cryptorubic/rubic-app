@@ -5,8 +5,8 @@ import { PrivacycashPrivateAssetsService } from '../../services/common/assets-se
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
-import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -16,6 +16,8 @@ import { getCorrectAddressValidator } from '@app/features/trade/components/targe
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -38,6 +40,8 @@ export class PrivacycashRevealPageComponent {
   private readonly revealWindowService = inject(RevealWindowService);
 
   private readonly tokenService = inject(TokenService);
+
+  private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
   public readonly receiverCtrl = new FormControl<string>('');
 
@@ -74,6 +78,25 @@ export class PrivacycashRevealPageComponent {
           })
         );
         this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
+
+    this.subscribeOnPrivateBalanceChanges();
+  }
+
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.privacycashTokensService.tokens$
+      .pipe(
+        filter(() => !!this.revealWindowService.revealAsset?.address),
+        map(pcTokens =>
+          pcTokens.find(pcToken => compareTokens(pcToken, this.revealWindowService.revealAsset))
+        ),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(pcToken => {
+        const revealAsset = this.revealWindowService.revealAsset;
+        const balance = Token.fromWei(pcToken.balanceWei, revealAsset.decimals);
+        this.revealWindowService.setRevealAsset({ ...revealAsset, amount: balance });
       });
   }
 
