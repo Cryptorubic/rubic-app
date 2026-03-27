@@ -11,7 +11,7 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
 import { compareTokens } from '@app/shared/utils/utils';
-import { BlockchainsInfo } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainsInfo } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { Observable, map } from 'rxjs';
 import { CLEARSWAP_SUPPORTED_TOKENS } from '../constants/clearswap-supported-tokens';
@@ -29,7 +29,11 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       map((tokens: BalanceToken[]) => {
-        return tokens.filter(token => CLEARSWAP_SUPPORTED_TOKENS.includes(token.address));
+        return tokens.filter(
+          token =>
+            token.blockchain === BLOCKCHAIN_NAME.TRON &&
+            CLEARSWAP_SUPPORTED_TOKENS.includes(token.address)
+        );
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {

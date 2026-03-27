@@ -7,32 +7,36 @@ import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashTokensService } from './privacycash-tokens.service';
-import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Injectable()
-export class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
+export abstract class PrivacycashPrivateTokensFacadeService extends TokensFacadeService {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
-  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
+  protected abstract swapInfo$: Observable<PrivateSwapInfo>;
 
   public override getTokensList(
     type: AssetListType,
     _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return forkJoin([
-      this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(first()),
+      this.tokensBuilderService
+        .getTokensList(type, _query, direction, getEmptySwapFormInput())
+        .pipe(first()),
       this.privacycashTokensService.tokens$.pipe(first()),
-      this.privateSwapWindowService.swapInfo$.pipe(first())
+      this.swapInfo$.pipe(first())
     ]).pipe(
       map(([rubicTokens, privacycashTokens, swapInfo]) => {
+        console.log('privacycashTokens', privacycashTokens);
         const rubicTokensMap = rubicTokens.reduce(
           (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
           {} as Record<string, AvailableTokenAmount>
         );
+        console.log('rubicTokensMap', rubicTokensMap);
         return privacycashTokens
           .filter(
             pcToken =>

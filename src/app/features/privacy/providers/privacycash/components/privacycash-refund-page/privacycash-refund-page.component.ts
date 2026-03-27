@@ -14,7 +14,6 @@ import { PrivateRefundWindowService } from '../../../shared-privacy-providers/se
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-privacycash-refund-page',
@@ -22,7 +21,6 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
   styleUrls: ['./privacycash-refund-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: EphemeralWalletTokensFacadeService },
     { provide: PrivateTransferWindowService, useExisting: PrivateRefundWindowService }
@@ -42,7 +40,8 @@ export class PrivacycashRefundPageComponent {
     withReceiver: false,
     withSrcAmount: false,
     buttonText: 'Refund Tokens',
-    withMaxBtn: false
+    withMaxBtn: false,
+    direction: 'from'
   };
 
   public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

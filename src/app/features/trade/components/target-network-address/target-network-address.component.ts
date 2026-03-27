@@ -19,7 +19,18 @@ import { FormControl } from '@angular/forms';
 export class TargetNetworkAddressComponent {
   @Input({ required: true }) addressCtrl: FormControl<string>;
 
-  @Input() placeholderText: string = 'You must have access to this address';
+  @Input()
+  public set placeholderText(value: string | null | undefined) {
+    this._placeholderText = value ?? TargetNetworkAddressComponent.defaultPlaceholderText;
+  }
+
+  public get placeholderText(): string {
+    return this._placeholderText;
+  }
+
+  private static readonly defaultPlaceholderText = 'You must have access to this address';
+
+  private _placeholderText = TargetNetworkAddressComponent.defaultPlaceholderText;
 
   public isActiveInput: boolean = false;
 

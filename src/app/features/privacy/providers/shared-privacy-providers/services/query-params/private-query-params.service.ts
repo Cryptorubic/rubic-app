@@ -74,6 +74,9 @@ export class PrivateQueryParamsService {
           ]);
         }),
         switchMap(([fromAsset, toAsset, fromAmount, toAmount]) => {
+          if (toAsset && !fromAsset) {
+            toAsset = null;
+          }
           const swapInfo: PrivateSwapInfo = { fromAsset, toAsset, fromAmount, toAmount };
 
           this.hideTokensWindowService.setHideAsset(swapInfo.fromAsset);
@@ -89,6 +92,12 @@ export class PrivateQueryParamsService {
             return this.swapFormQueryService
               .getTokenBySymbolOrAddress(supportedTokens, 'ETH', BLOCKCHAIN_NAME.ETHEREUM, true)
               .pipe(
+                map(mainFormFromAsset =>
+                  supportedTokens.find(t => compareTokens(mainFormFromAsset, t))
+                    ? mainFormFromAsset
+                    : null
+                ),
+                map(mainFormFromAsset => (mainFormFromAsset?.address ? mainFormFromAsset : null)),
                 tap(mainFormFromAsset => {
                   this.privacyMainPageService.patchFormValue({ fromAsset: mainFormFromAsset });
                 })
