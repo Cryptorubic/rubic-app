@@ -50,7 +50,7 @@ export class RevealService {
       // generate unshield proof
       await this.railgunFacade.generateUnshieldProof(chain, erc20AmountRecipients, proofProgress);
 
-      await waitFor(5_000);
+      await waitFor(1_000);
 
       const mnemonic = await this.railgunFacade.getMnemonic();
       const { wallet } = getProviderWallet(tokenBlockchain, mnemonic);

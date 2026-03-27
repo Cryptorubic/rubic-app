@@ -170,7 +170,7 @@
           </div>
         </ng-template>
       </div>
-      <div class="preview__swap-info">
+      <div *ngIf="!hideFeeInfo" class="preview__swap-info">
         <app-swap-data-element
           [creationConfig]="swapDataCreationConfig"
           [gasInfo]="gasInfo"

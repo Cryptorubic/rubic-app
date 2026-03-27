@@ -7,6 +7,7 @@ export interface PrivateSwapFormConfig {
   withReceiver: boolean;
   withActionButton: boolean;
   withStatus?: boolean;
+  selectorType?: 'public' | 'private';
   assetsSelectorConfig?: AssetsSelectorConfig;
   buttonText?: string;
   receiverPlaceholder?: string;

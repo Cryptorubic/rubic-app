@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 form {
   display: flex;
   flex-direction: column;
@@ -9,6 +11,10 @@ button {
   margin-bottom: 30px;
 }
 
-.window-container {
-  padding: 0;
+:host ::ng-deep .window-container {
+  padding: 0 !important;
+
+  @include b($mobile-md) {
+    padding: var(--tui-padding-m) !important;
+  }
 }

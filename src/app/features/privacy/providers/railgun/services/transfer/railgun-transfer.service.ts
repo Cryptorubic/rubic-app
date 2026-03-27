@@ -48,7 +48,7 @@ export class RailgunTransferService {
       // generate proof
       await this.railgunFacade.generateTransferProof(chain, erc20AmountRecipients, proofProgress);
 
-      await waitFor(5_000);
+      await waitFor(1_000);
 
       const mnemonic = await this.railgunFacade.getMnemonic();
       const { wallet } = getProviderWallet(blockchain, mnemonic);

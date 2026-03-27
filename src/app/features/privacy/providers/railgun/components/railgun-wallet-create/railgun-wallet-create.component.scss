@@ -1,9 +1,15 @@
+@use 'src/scss/core' as *;
+
 form {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 65vh;
-  overflow: auto;
+
+  @include b($mobile-md) {
+    max-height: 65vh;
+    overflow: auto;
+  }
+
 }
 
 button {
@@ -61,6 +67,10 @@ tui-toggle {
   }
 }
 
-.window-container {
-  padding: 0;
+:host ::ng-deep .window-container {
+  padding: 0 !important;
+
+  @include b($mobile-md) {
+    padding: var(--tui-padding-m) !important;
+  }
 }
