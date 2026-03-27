@@ -148,6 +148,19 @@ export class HoudiniSwapService {
         }
 
         const failed = quoteResponse.failed[0];
+
+        //TODO: refactor later
+        if ('minAmount' in failed.data.data) {
+          const errorData = failed.data.data as { minAmount: BigNumber; tokenSymbol: string };
+          failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
+            errorData.tokenSymbol
+          }`;
+
+          return {
+            tradeError: failed.data
+          };
+        }
+
         return {
           tradeError: failed.data
         };
@@ -179,7 +192,8 @@ export class HoudiniSwapService {
           onError: () => {}
         };
 
-        const estimatedSwapDuration = this.currentTrade.lastSwapResponse.estimate.durationInMinutes;
+        const tradeInfo = this.currentTrade.getTradeInfo();
+        const estimatedSwapDuration = tradeInfo.durationInMinutes;
         const swapCallback = {
           onHash: (_: string) => {},
           onSwap: () => {
