@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
@@ -9,6 +8,7 @@ import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface } from '@cryptorubic/co
 import { Web3Pure } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
+import { CLEARSWAP_SUPPORTED_WALLETS } from '../constants/clearswap-supported-wallerts';
 
 @Injectable()
 export class ClearswapPrivateActionButtonService extends PrivateActionButtonService {
@@ -37,7 +37,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
 
   private connectWallet(): void {
     this.modalService
-      .openWalletModal(this.injector, { providers: [WALLET_NAME.TRON_LINK] })
+      .openWalletModal(this.injector, { providers: CLEARSWAP_SUPPORTED_WALLETS })
       .subscribe();
   }
 
