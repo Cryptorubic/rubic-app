@@ -13,6 +13,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { ClearswapPrivateActionButtonService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-action-button.service';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ClearswapBalancesService } from './services/clearswap-balances.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
     ClearswapTokensFacadeService,
     ClearswapSwapService,
     ClearswapPrivateActionButtonService,
-    ClearswapErrorService
+    ClearswapErrorService,
+    ClearswapBalancesService
   ]
 })
 export class ClearswapModule {}

@@ -13,6 +13,8 @@ import { RevealWindowService } from '../reveal-window/reveal-window.service';
 import { PrivateTransferWindowService } from '../private-transfer-window/private-transfer-window.service';
 import { PrivacyMainPageService } from '@app/features/privacy/services/privacy-main-page.service';
 import { PrivacyFormValue } from '@app/features/privacy/services/models/privacy-form';
+import { PrivateSwapWindowService } from '../private-swap-window/private-swap-window.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
 export class PrivateQueryParamsService {
@@ -21,6 +23,8 @@ export class PrivateQueryParamsService {
   private readonly revealTokensWindowService = inject(RevealWindowService);
 
   private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
+
+  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
 
   private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
@@ -73,7 +77,7 @@ export class PrivateQueryParamsService {
             of(toAmount)
           ]);
         }),
-        switchMap(([fromAsset, toAsset, fromAmount, toAmount]) => {
+        tap(([fromAsset, toAsset, fromAmount, toAmount]) => {
           if (toAsset && !fromAsset) {
             toAsset = null;
           }
@@ -88,23 +92,18 @@ export class PrivateQueryParamsService {
           this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
           this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
 
+          this.privateSwapWindowService.patchSwapInfo(swapInfo);
+
           if (!swapInfo.fromAsset && !swapInfo.toAsset) {
-            return this.swapFormQueryService
-              .getTokenBySymbolOrAddress(supportedTokens, 'ETH', BLOCKCHAIN_NAME.ETHEREUM, true)
-              .pipe(
-                map(mainFormFromAsset =>
-                  supportedTokens.find(t => compareTokens(mainFormFromAsset, t))
-                    ? mainFormFromAsset
-                    : null
-                ),
-                map(mainFormFromAsset => (mainFormFromAsset?.address ? mainFormFromAsset : null)),
-                tap(mainFormFromAsset => {
-                  this.privacyMainPageService.patchFormValue({ fromAsset: mainFormFromAsset });
-                })
-              );
+            fromAsset =
+              supportedTokens.find(
+                token =>
+                  token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+                  Web3Pure.isNativeAddress(BLOCKCHAIN_NAME.ETHEREUM, token.address)
+              ) || null;
+            this.privacyMainPageService.patchFormValue({ fromAsset });
           } else {
             this.privacyMainPageService.patchFormValue(swapInfo);
-            return of(null);
           }
         })
       )
