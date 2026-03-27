@@ -13,6 +13,7 @@ import { RevealWindowService } from '../reveal-window/reveal-window.service';
 import { PrivateTransferWindowService } from '../private-transfer-window/private-transfer-window.service';
 import { PrivacyMainPageService } from '@app/features/privacy/services/privacy-main-page.service';
 import { PrivacyFormValue } from '@app/features/privacy/services/models/privacy-form';
+import { PrivateSwapWindowService } from '../private-swap-window/private-swap-window.service';
 
 @Injectable()
 export class PrivateQueryParamsService {
@@ -21,6 +22,8 @@ export class PrivateQueryParamsService {
   private readonly revealTokensWindowService = inject(RevealWindowService);
 
   private readonly privateTransferWindowService = inject(PrivateTransferWindowService);
+
+  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
 
   private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
@@ -87,6 +90,8 @@ export class PrivateQueryParamsService {
 
           this.privateTransferWindowService.setTransferAsset(swapInfo.fromAsset);
           this.privateTransferWindowService.setTransferAmount(swapInfo.fromAmount);
+
+          this.privateSwapWindowService.patchSwapInfo(swapInfo);
 
           if (!swapInfo.fromAsset && !swapInfo.toAsset) {
             return this.swapFormQueryService
