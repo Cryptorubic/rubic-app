@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { QueryParams } from '@app/core/services/query-params/models/query-params';
-import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, of, switchMap } from 'rxjs';
 import { SwapFormQueryService } from '@app/features/trade/services/swap-form-query/swap-form-query.service';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
@@ -14,6 +14,7 @@ import { PrivateTransferWindowService } from '../private-transfer-window/private
 import { PrivacyMainPageService } from '@app/features/privacy/services/privacy-main-page.service';
 import { PrivacyFormValue } from '@app/features/privacy/services/models/privacy-form';
 import { PrivateSwapWindowService } from '../private-swap-window/private-swap-window.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
 export class PrivateQueryParamsService {
@@ -94,19 +95,13 @@ export class PrivateQueryParamsService {
           this.privateSwapWindowService.patchSwapInfo(swapInfo);
 
           if (!swapInfo.fromAsset && !swapInfo.toAsset) {
-            return this.swapFormQueryService
-              .getTokenBySymbolOrAddress(supportedTokens, 'ETH', BLOCKCHAIN_NAME.ETHEREUM, true)
-              .pipe(
-                map(mainFormFromAsset =>
-                  supportedTokens.find(t => compareTokens(mainFormFromAsset, t))
-                    ? mainFormFromAsset
-                    : null
-                ),
-                map(mainFormFromAsset => (mainFormFromAsset?.address ? mainFormFromAsset : null)),
-                tap(mainFormFromAsset => {
-                  this.privacyMainPageService.patchFormValue({ fromAsset: mainFormFromAsset });
-                })
-              );
+            fromAsset =
+              supportedTokens.find(
+                token =>
+                  token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+                  Web3Pure.isNativeAddress(BLOCKCHAIN_NAME.ETHEREUM, token.address)
+              ) || null;
+            this.privacyMainPageService.patchFormValue({ fromAsset });
           } else {
             this.privacyMainPageService.patchFormValue(swapInfo);
             return of(null);
