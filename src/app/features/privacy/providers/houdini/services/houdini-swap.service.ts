@@ -382,7 +382,10 @@ export class HoudiniSwapService {
 
   private parseQuoteError(error: RubicSdkError): { tradeError: ErrorInterface } {
     //TODO: refactor this later maybe
-    if (error.message.includes('No routes found.')) {
+    if (
+      error.message.includes('No routes found.') ||
+      error.message.includes('Request failed with status code 500')
+    ) {
       return {
         tradeError: {
           code: 2001,

@@ -299,7 +299,7 @@ export class SwapWindowComponent implements OnInit {
     this.patchSwapInfo({
       fromAsset: this.swapInfo.toAsset,
       toAsset: this.swapInfo.fromAsset,
-      fromAmount: this.swapInfo.toAmount,
+      fromAmount: this.swapInfo.toAmount ?? this.swapInfo.fromAmount,
       toAmount: null
     });
   }
