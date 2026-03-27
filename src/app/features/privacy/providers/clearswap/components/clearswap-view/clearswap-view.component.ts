@@ -9,6 +9,10 @@ import { ClearswapTokensFacadeService } from '../../services/clearswap-tokens-fa
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { filter, first } from 'rxjs';
 import { List } from 'immutable';
+import { ClearswapPrivateAssetsService } from '../../services/clearswap-private-assets.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-clearswap-view',
@@ -16,6 +20,9 @@ import { List } from 'immutable';
   styleUrls: ['./clearswap-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    { provide: FromAssetsService, useClass: ClearswapPrivateAssetsService },
+    { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService },
     { provide: PrivateActionButtonService, useClass: ClearswapPrivateActionButtonService }
   ]
 })

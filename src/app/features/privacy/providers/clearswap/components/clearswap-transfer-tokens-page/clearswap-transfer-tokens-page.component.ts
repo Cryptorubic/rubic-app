@@ -1,18 +1,15 @@
 /* eslint-disable rxjs/no-exposed-subjects */
 import { FormControl } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
-import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
-import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { PrivateEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import {
   catchError,
   defer,
   finalize,
+  from,
   Observable,
   of,
   retry,
@@ -38,17 +35,15 @@ import { RubicSdkError } from '@cryptorubic/web3';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
+import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
   templateUrl: './clearswap-transfer-tokens-page.component.html',
   styleUrls: ['./clearswap-transfer-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    TuiDestroyService,
-    { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService }
-  ]
+  providers: [TuiDestroyService]
 })
 export class ClearswapTransferTokensPageComponent implements OnInit {
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
@@ -70,6 +65,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly errorService: ErrorsService,
     private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly tokensBalanceService: TokensBalanceService,
+    private readonly privateTransferWindowService: PrivateTransferWindowService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -94,95 +91,84 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
 
   private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {
     const userAddress = this.authService.userAddress;
-    return defer(() =>
-      this.clearswapSwapService.chainAdapter.checkEnoughBalance(token, userAddress)
-    )
-      .pipe(
-        retry({
-          count: 5,
-          delay: (error, retryCount) => {
-            console.error('check balance error:', error, 'retry #', retryCount);
-            if (error?.message?.includes('Request failed with status code 429')) {
-              return timer(5000);
-            }
-            return throwError(() => error);
-          }
-        }),
-        tap(isEnoughBalance => {
-          if (!isEnoughBalance) {
-            throw new InsufficientFundsError(token.symbol);
-          }
-        })
-      )
-      .pipe(
-        switchMap(() =>
-          defer(() =>
-            this.clearswapSwapService.quote(
-              token as TokenAmount<BlockchainName>,
-              { ...token } as Token,
-              this.receiverCtrl.value
-            )
-          ).pipe(
-            retry({
-              count: 5,
-              delay: (error, retryCount) => {
-                console.error('quote error:', error, 'retry #', retryCount);
-                if (error?.message?.includes('Cannot retrieve information about')) {
-                  return timer(5000);
-                }
-                return throwError(() => error);
-              }
-            })
+    return from(this.tokensBalanceService.getAndUpdateTokenBalance(token, 5)).pipe(
+      tap(balance => {
+        this.privateTransferWindowService.setTransferAsset({
+          ...this.privateTransferWindowService.transferAsset,
+          amount: balance
+        });
+        if (!balance.gte(token.tokenAmount)) {
+          throw new InsufficientFundsError(token.symbol);
+        }
+      }),
+      switchMap(() =>
+        defer(() =>
+          this.clearswapSwapService.quote(
+            token as TokenAmount<BlockchainName>,
+            { ...token } as Token,
+            this.receiverCtrl.value
           )
-        ),
-        switchMap(quoteResponse => {
-          if ('tradeId' in quoteResponse) {
-            const { tradeId, tokenAmount: dstTokenAmount } = quoteResponse;
-            const displayAmount =
-              token.tokenAmount.minus(dstTokenAmount).toString() + ' ' + token.symbol;
-            return openPreview({
-              dstTokenAmount,
-              displayAmount,
-              steps: [
-                {
-                  label: 'Transfer tokens',
-                  action: () =>
-                    this.clearswapSwapService
-                      .transfer(
-                        tradeId,
-                        token as TokenAmount<BlockchainName>,
-                        { ...token } as Token,
-                        this.receiverCtrl.value
-                      )
-                      .then(() => {
-                        this.privateStatisticsService.saveAction(
-                          'TRANSFER',
-                          PRIVATE_TRADE_TYPE.CLEARSWAP,
-                          userAddress,
-                          token.address,
-                          token.stringWeiAmount,
-                          token.blockchain
-                        );
-                      })
-                }
-              ]
-            });
-          }
+        ).pipe(
+          retry({
+            count: 5,
+            delay: (error, retryCount) => {
+              console.error('quote error:', error, 'retry #', retryCount);
+              if (error?.message?.includes('Cannot retrieve information about')) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      ),
+      switchMap(quoteResponse => {
+        if ('tradeId' in quoteResponse) {
+          const { tradeId, tokenAmount: dstTokenAmount } = quoteResponse;
+          const displayAmount =
+            token.tokenAmount.minus(dstTokenAmount).toString() + ' ' + token.symbol;
+          return openPreview({
+            dstTokenAmount,
+            displayAmount,
+            steps: [
+              {
+                label: 'Transfer tokens',
+                action: () =>
+                  this.clearswapSwapService
+                    .transfer(
+                      tradeId,
+                      token as TokenAmount<BlockchainName>,
+                      { ...token } as Token,
+                      this.receiverCtrl.value
+                    )
+                    .then(() => {
+                      this.privateStatisticsService.saveAction(
+                        'TRANSFER',
+                        PRIVATE_TRADE_TYPE.CLEARSWAP,
+                        userAddress,
+                        token.address,
+                        token.stringWeiAmount,
+                        token.blockchain
+                      );
+                    })
+              }
+            ]
+          });
+        }
 
-          this.clearswapErrorService.setTradeError(quoteResponse.tradeError);
-          return of(null);
-        }),
-        catchError(error => {
-          if (error instanceof RubicError || error instanceof RubicSdkError) {
-            this.errorService.catch(error);
-          } else {
-            this.notificationsService.showError('Something went wrong. Please, try again later.');
-          }
-          return of(null);
-        }),
-        finalize(() => {
-          loadingCallback();
-        })
-      );
+        this.clearswapErrorService.setTradeError(quoteResponse.tradeError);
+        return of(null);
+      }),
+      catchError(error => {
+        if (error instanceof RubicError || error instanceof RubicSdkError) {
+          this.errorService.catch(error);
+        } else {
+          this.notificationsService.showError('Something went wrong. Please, try again later.');
+        }
+        return of(null);
+      }),
+      finalize(() => {
+        loadingCallback();
+      })
+    );
   }
 }

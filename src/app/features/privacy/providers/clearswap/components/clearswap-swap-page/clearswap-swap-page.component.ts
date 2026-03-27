@@ -1,31 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
-import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
-import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap/utils/clearswap-quote-adapter';
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import {
-  defer,
-  firstValueFrom,
-  lastValueFrom,
-  retry,
-  startWith,
-  takeUntil,
-  tap,
-  throwError,
-  timer
-} from 'rxjs';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicSdkError } from '@cryptorubic/web3';
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
@@ -33,18 +18,15 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
+import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 
 @Component({
   selector: 'app-clearswap-swap-page',
   templateUrl: './clearswap-swap-page.component.html',
   styleUrls: ['./clearswap-swap-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    TuiDestroyService,
-    { provide: FromAssetsService, useClass: ClearswapPrivateAssetsService },
-    { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService }
-  ]
+  providers: [TuiDestroyService]
 })
 export class ClearswapSwapPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('', {
@@ -68,6 +50,8 @@ export class ClearswapSwapPageComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly errorService: ErrorsService,
     private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly tokensBalanceService: TokensBalanceService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -91,23 +75,14 @@ export class ClearswapSwapPageComponent implements OnInit {
       });
       const userAddress = this.authService.userAddress;
 
-      const isEnoughBalance = await lastValueFrom(
-        defer(() =>
-          this.clearswapSwapService.chainAdapter.checkEnoughBalance(fromToken, userAddress)
-        ).pipe(
-          retry({
-            count: 5,
-            delay: (error, retryCount) => {
-              console.error('check balance error:', error, 'retry #', retryCount);
-              if (error?.message?.includes('Request failed with status code 429')) {
-                return timer(5000);
-              }
-              return throwError(() => error);
-            }
-          })
-        )
-      );
-      if (!isEnoughBalance) {
+      const balance = await this.tokensBalanceService.getAndUpdateTokenBalance(fromToken, 5);
+      this.privateSwapWindowService.patchSwapInfo({
+        fromAsset: {
+          ...this.privateSwapWindowService.swapInfo.fromAsset,
+          amount: balance
+        }
+      });
+      if (!balance.gte(fromToken.tokenAmount)) {
         throw new InsufficientFundsError(fromToken.symbol);
       }
 

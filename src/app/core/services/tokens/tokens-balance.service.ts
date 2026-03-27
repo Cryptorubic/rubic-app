@@ -12,8 +12,23 @@ import {
 import BigNumber from 'bignumber.js';
 import { AbstractAdapter, waitFor, Web3Pure } from '@cryptorubic/web3';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { catchError, debounceTime, distinctUntilChanged, first, switchMap } from 'rxjs/operators';
-import { combineLatestWith, firstValueFrom, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  retry,
+  switchMap
+} from 'rxjs/operators';
+import {
+  combineLatestWith,
+  defer,
+  firstValueFrom,
+  lastValueFrom,
+  of,
+  throwError,
+  timer
+} from 'rxjs';
 import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -104,10 +119,13 @@ export class TokensBalanceService {
     }
   }
 
-  public async getAndUpdateTokenBalance(token: {
-    address: string;
-    blockchain: BlockchainName;
-  }): Promise<BigNumber> {
+  public async getAndUpdateTokenBalance(
+    token: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    maxRetries: number = 0
+  ): Promise<BigNumber> {
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
     const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
       token.blockchain,
@@ -132,7 +150,24 @@ export class TokensBalanceService {
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
-      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
+      const balanceInWei = await lastValueFrom(
+        defer(() => blockchainAdapter.getBalance(this.userAddress, token.address)).pipe(
+          retry({
+            count: maxRetries,
+            delay: (error, retryCount) => {
+              console.error('check balance error:', error, 'retry #', retryCount);
+              // Tron Api too many requests error
+              if (
+                token.blockchain === BLOCKCHAIN_NAME.TRON &&
+                error?.message?.includes('Request failed with status code 429')
+              ) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      );
 
       const storedToken = this.findTokenSync(token);
       if (!storedToken) return new BigNumber(NaN);
