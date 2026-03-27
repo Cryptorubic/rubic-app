@@ -78,7 +78,7 @@ export class RailgunRevealPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Unshield tokens',
+            label: 'Unshield',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
