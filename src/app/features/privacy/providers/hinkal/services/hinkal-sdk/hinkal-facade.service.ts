@@ -28,6 +28,7 @@ import { AssetListType } from '@app/features/trade/models/asset';
 import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -42,7 +43,11 @@ export class HinkalFacadeService {
   public switchChain(asset: AssetListType): void {
     const isChain = BlockchainsInfo.isBlockchainName(asset);
 
-    this._activeChain$.next(isChain ? asset : BLOCKCHAIN_NAME.ETHEREUM);
+    this._activeChain$.next(
+      isChain && HINKAL_SUPPORTED_CHAINS.includes(asset as EvmBlockchainName)
+        ? asset
+        : BLOCKCHAIN_NAME.ETHEREUM
+    );
   }
 
   public readonly activeChain$ = this._activeChain$.asObservable();
@@ -117,9 +122,10 @@ export class HinkalFacadeService {
             token.weiAmount.toFixed(),
             token.blockchain
           );
-          if (isSuccess)
+          if (isSuccess) {
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
-          this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
+            this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
+          }
         })
     });
 
@@ -234,7 +240,7 @@ export class HinkalFacadeService {
 
       const isSuccess = await this.hinkalInstanceService.updateInstance(
         this.walletConnectorService.address,
-        this._activeChain$.value as EvmBlockchainName
+        (this._activeChain$.value || BLOCKCHAIN_NAME.ETHEREUM) as EvmBlockchainName
       );
 
       if (isSuccess) {
