@@ -10,18 +10,16 @@
     Close
   </button>
 
-  <div *ngIf="(validationSuccess$ | async) !== true" class="form" [@inOutAnimation]>
-    <b class="first-row">EXPLORE RUBIC’S PRIVATE MODE</b>
-    <b class="second-row">
-      Get early access to the
-      <span class="green">market’s first privacy-focused aggregator</span>
-    </b>
-    <b class="third-row">Check Rubic's Socials To Get The Code</b>
-    <input #inputRef class="fourth-row" [formControl]="refCodeCtrl" maxlength="20" type="text" />
-    <button tuiButton appearance="primary" type="button" size="m" (click)="sendCode()">OK</button>
-  </div>
-
-  <div class="overlay">
-    <img src="assets/images/private-swaps/modals/david.svg" />
+  <div class="wrapper">
+    <div *ngIf="(validationSuccess$ | async) !== true" class="form" [@inOutAnimation]>
+      <b class="first-row">EXPLORE RUBIC’S PRIVATE MODE</b>
+      <b class="second-row">
+        Get early access to the
+        <span class="green">market’s first privacy-focused aggregator</span>
+      </b>
+      <b class="third-row">Check Rubic's Socials To Get The Code</b>
+      <input #inputRef class="fourth-row" [formControl]="refCodeCtrl" maxlength="20" type="text" />
+      <button tuiButton appearance="primary" type="button" size="m" (click)="sendCode()">OK</button>
+    </div>
   </div>
 </div>

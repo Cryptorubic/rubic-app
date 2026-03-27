@@ -1,6 +1,70 @@
 @use 'src/scss/core' as *;
 
 :host {
+  .wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    @include b($mobile-md) {
+      &::before {
+        position: absolute;
+        top: 0 !important;
+        z-index: -1 !important;
+
+        height: 377px;
+
+        background-image: url('/assets/images/private-swaps/overlay.svg');
+        background-repeat: repeat-x;
+        transform: none;
+
+        animation: infiniteScrollRight 20s linear infinite;
+
+        content: '';
+        pointer-events: none;
+      }
+
+      &::after {
+        position: absolute;
+        bottom: 0;
+        z-index: -1;
+
+        width: 100%;
+        height: 377px;
+
+        background-image: url('/assets/images/private-swaps/overlay.svg');
+        background-repeat: repeat-x;
+
+        animation: infiniteScrollRight 20s linear infinite;
+
+        content: '';
+        pointer-events: none;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      z-index: 0;
+
+      width: 100%;
+      height: 377px;
+
+      background-image: url('/assets/images/private-swaps/overlay.svg');
+      background-repeat: repeat-x;
+      transform: translateY(-50%);
+
+      animation: infiniteScrollRight 20s linear infinite;
+
+      content: '';
+      pointer-events: none;
+    }
+  }
+
   .private-auth-window {
     position: fixed;
     z-index: 1;
@@ -25,26 +89,21 @@
       height: 0;
     }
 
-    .overlay {
-      @include flex(row, end, center);
-      user-select: none;
-      pointer-events: none;
-    }
-
     .form {
       @include flex(column, center, center);
       position: absolute;
-      top: 217px;
+      top: 50%;
       left: 50%;
+      z-index: 1;
 
       gap: 10px;
       width: 100%;
       max-width: 679px;
-      height: 158px;
+      height: 377px;
       padding: 15px;
 
       background-color: var(--app-background);
-      transform: translate(-50%, 0);
+      transform: translate(-50%, -50%);
 
       .first-row {
         font-size: 21px;
@@ -52,6 +111,7 @@
 
       .second-row {
         font-size: 15px;
+        text-align: center;
       }
 
       .third-row {
@@ -73,6 +133,16 @@
       .green {
         color: var(--tui-primary);
       }
+    }
+  }
+
+  @keyframes infiniteScrollRight {
+    from {
+      background-position: 0 0;
+    }
+
+    to {
+      background-position: 1000px 0;
     }
   }
 }
