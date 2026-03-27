@@ -104,10 +104,7 @@ export class SwapWindowComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  public readonly fromToken$ = this.swapInfo$.pipe(
-    distinctUntilChanged((prev, curr) => compareTokens(prev.fromAsset, curr.fromAsset)),
-    map(swapInfo => swapInfo.fromAsset)
-  );
+  public readonly fromToken$ = this.swapInfo$.pipe(map(swapInfo => swapInfo.fromAsset));
 
   public get swapInfo(): PrivateSwapInfo {
     return this.privateSwapWindowService.swapInfo;
