@@ -37,21 +37,9 @@ export class PrivateAssetsService extends AssetsService {
         this.queryParamsService.enabledBlockchains.includes(blockchain.name)
       );
     }
-    blockchains = blockchains
-      .filter(blockchain => this.supportedBlockchains.includes(blockchain.name))
-      .sort((blockchainA, blockchainB) => {
-        const indexA = this.supportedBlockchains.findIndex(
-          supportedBlockchain => supportedBlockchain === blockchainA.name
-        );
-        const indexB = this.supportedBlockchains.findIndex(
-          supportedBlockchain => supportedBlockchain === blockchainB.name
-        );
-        return indexA === indexB ? 0 : indexA > indexB ? -1 : 1;
-      })
-      .map((blockchain, index) => ({
-        ...blockchain,
-        rank: index
-      }));
+    blockchains = blockchains.filter(blockchain =>
+      this.supportedBlockchains.includes(blockchain.name)
+    );
 
     const availableBlockchains = blockchains.map(blockchain => {
       const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(

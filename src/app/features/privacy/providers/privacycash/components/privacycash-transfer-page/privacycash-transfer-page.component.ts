@@ -5,7 +5,6 @@ import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service
 import { filter, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PriceTokenAmount, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -15,8 +14,8 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { PrivacycashPrivateTransferTokensFacadeService } from '../../services/common/token-facades/privacycash-private-transfer-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
-import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -25,9 +24,8 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     TuiDestroyService,
-    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
+    { provide: TokensFacadeService, useClass: PrivacycashPrivateTransferTokensFacadeService }
   ]
 })
 export class PrivacycashTransferPageComponent implements OnInit {
@@ -48,7 +46,8 @@ export class PrivacycashTransferPageComponent implements OnInit {
     withReceiver: true,
     withSrcAmount: true,
     withMaxBtn: true,
-    receiverPlaceholder: 'Enter SOLANA receiver address'
+    receiverPlaceholder: 'Enter SOLANA receiver address',
+    direction: 'from'
   };
 
   ngOnInit(): void {

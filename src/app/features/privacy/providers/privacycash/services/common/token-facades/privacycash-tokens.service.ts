@@ -9,7 +9,7 @@ import { PrivacycashSignatureService } from '../../privacy-cash-signature.servic
 import { PrivacycashInWorkerMsg, PrivacycashOutWorkerMsg } from './worker/models/worker-models';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareTokens } from '@app/shared/utils/utils';
-import { toPrivacyCashTokenAddr } from '../../../utils/converter';
+import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../../../utils/converter';
 
 @Injectable()
 export class PrivacycashTokensService {
@@ -65,11 +65,15 @@ export class PrivacycashTokensService {
             const prevTokens = this._tokens$.value;
             const tokensWithBalance = msg.data.tokens;
             const updatedTokens = prevTokens.map(token => {
-              const updatedToken = tokensWithBalance.find(balanceToken =>
-                compareTokens(token, balanceToken)
-              );
+              const updatedToken = tokensWithBalance.find(balanceToken => {
+                const rubicCompatibleToken = {
+                  ...balanceToken,
+                  address: toRubicTokenAddr(balanceToken.address)
+                };
+                return compareTokens(token, rubicCompatibleToken);
+              });
               return updatedToken
-                ? { ...updatedToken, balanceWei: new BigNumber(updatedToken.balanceWei) }
+                ? { ...token, balanceWei: new BigNumber(updatedToken.balanceWei) }
                 : token;
             });
             this._tokens$.next(updatedTokens);

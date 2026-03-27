@@ -104,10 +104,7 @@ export class SwapWindowComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  public readonly fromToken$ = this.swapInfo$.pipe(
-    distinctUntilChanged((prev, curr) => compareTokens(prev.fromAsset, curr.fromAsset)),
-    map(swapInfo => swapInfo.fromAsset)
-  );
+  public readonly fromToken$ = this.swapInfo$.pipe(map(swapInfo => swapInfo.fromAsset));
 
   public get swapInfo(): PrivateSwapInfo {
     return this.privateSwapWindowService.swapInfo;
@@ -128,6 +125,12 @@ export class SwapWindowComponent implements OnInit {
       if (receiverOpened) return 'top';
       return 'all';
     }
+  }
+
+  private get openTokensModalMethod(): 'openPrivateTokensModal' | 'openPublicTokensModal' {
+    return this.creationConfig?.selectorType !== 'public'
+      ? 'openPrivateTokensModal'
+      : 'openPublicTokensModal';
   }
 
   constructor(
@@ -243,19 +246,23 @@ export class SwapWindowComponent implements OnInit {
   }
 
   public openInputSelector(): void {
-    this.modalService
-      .openPrivateTokensModal(this.injector, 'from', this.creationConfig.assetsSelectorConfig)
-      .subscribe((selectedToken: BalanceToken) => {
-        this.patchSwapInfo({ fromAsset: selectedToken });
-      });
+    this.modalService[this.openTokensModalMethod](
+      this.injector,
+      'from',
+      this.creationConfig.assetsSelectorConfig
+    ).subscribe((selectedToken: BalanceToken) => {
+      this.patchSwapInfo({ fromAsset: selectedToken });
+    });
   }
 
   public openOutputSelector(): void {
-    this.modalService
-      .openPrivateTokensModal(this.injector, 'to', this.creationConfig.assetsSelectorConfig)
-      .subscribe((selectedToken: BalanceToken) => {
-        this.patchSwapInfo({ toAsset: selectedToken });
-      });
+    this.modalService[this.openTokensModalMethod](
+      this.injector,
+      'to',
+      this.creationConfig.assetsSelectorConfig
+    ).subscribe((selectedToken: BalanceToken) => {
+      this.patchSwapInfo({ toAsset: selectedToken });
+    });
   }
 
   public updateInputValue(value: SwapAmount): void {
@@ -289,7 +296,7 @@ export class SwapWindowComponent implements OnInit {
     this.patchSwapInfo({
       fromAsset: this.swapInfo.toAsset,
       toAsset: this.swapInfo.fromAsset,
-      fromAmount: this.swapInfo.toAmount,
+      fromAmount: this.swapInfo.toAmount ?? this.swapInfo.fromAmount,
       toAmount: null
     });
   }
