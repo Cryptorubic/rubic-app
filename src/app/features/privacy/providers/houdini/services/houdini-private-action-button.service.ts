@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { BlockchainName, ErrorInterface } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, ErrorInterface } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
@@ -34,7 +34,11 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     receiver: string,
     tradeError: Partial<ErrorInterface>
   ): Promise<PrivateActionButtonState> {
-    if (!network) {
+    const chainType = swapInfo.fromAsset
+      ? BlockchainsInfo.getChainType(swapInfo.fromAsset.blockchain)
+      : null;
+
+    if (!network && chainType === CHAIN_TYPE.EVM) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -45,6 +49,12 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       return {
         type: 'error',
         text: 'Select tokens'
+      };
+    }
+    if (swapInfo.fromAsset?.amount?.lt(swapInfo.fromAmount?.actualValue)) {
+      return {
+        type: 'error',
+        text: 'Insufficient balance'
       };
     }
     if (swapInfo.fromAsset.blockchain === swapInfo.toAsset.blockchain) {
@@ -95,7 +105,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
     return {
       type: 'parent',
-      text: 'Review Order'
+      text: 'Preview swap'
     };
   }
 }

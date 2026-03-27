@@ -23,6 +23,7 @@ export class PrivateModalsService {
 
   public openPublicTokensModal(
     injector: Injector,
+    direction: 'from' | 'to' = 'from',
     assetsSelectorConfig: AssetsSelectorConfig = this.defaultSelectorConfig
   ): Observable<BalanceToken> {
     return this.modalService.showDialog(
@@ -32,7 +33,7 @@ export class PrivateModalsService {
         size: 'l',
         showMobileMenu: true,
         data: {
-          formType: 'from',
+          formType: direction,
           assetsSelectorConfig
         },
         fitContent: true

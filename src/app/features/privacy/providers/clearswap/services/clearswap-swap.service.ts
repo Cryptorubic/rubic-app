@@ -163,7 +163,7 @@ export class ClearswapSwapService {
           )
         )
       );
-      this.clearswapTokensFacadeService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
         this.notificationsService.showSuccess('The operation was successful.');
       } else {

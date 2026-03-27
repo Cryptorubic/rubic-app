@@ -97,9 +97,16 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
 
   public async getTransferTrade(
     receiverAddress: string,
-    refundAddress?: string
+    refundAddress?: string,
+    skipAmountChangeCheck?: boolean
   ): Promise<CrossChainPaymentInfo> {
-    await this.setTransactionConfig(false, false, false, receiverAddress, refundAddress);
+    await this.setTransactionConfig(
+      skipAmountChangeCheck || false,
+      false,
+      false,
+      receiverAddress,
+      refundAddress
+    );
     if (!this.paymentInfo) {
       throw new Error('Deposit address is not set');
     }

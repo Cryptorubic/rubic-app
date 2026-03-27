@@ -98,9 +98,12 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.houdiniSwapService.subscribeOnFormUpdate(this.receiverCtrl);
   }
 
   ngOnDestroy(): void {
+    this.houdiniSwapService.resetCurrentTrade();
     this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
   }
 
@@ -133,13 +136,17 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         throw new InsufficientFundsError(fromToken.symbol);
       }
 
+      const currentTrade = this.houdiniSwapService.currentTrade;
       const preview$ = openPreview({
         steps: [
           {
             label: 'Swap',
             action: () => this.houdiniSwapService.swap(fromToken, this.receiverCtrl.value)
           }
-        ]
+        ],
+        hideFeeInfo: true,
+        srcTokenAmount: fromToken.tokenAmount.toFixed(),
+        dstTokenAmount: currentTrade.to.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);
     } catch (error) {
