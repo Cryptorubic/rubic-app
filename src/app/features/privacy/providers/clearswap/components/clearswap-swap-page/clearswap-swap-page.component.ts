@@ -12,7 +12,7 @@ import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { RubicSdkError } from '@cryptorubic/web3';
+import { RubicSdkError, Web3Pure } from '@cryptorubic/web3';
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
@@ -20,6 +20,7 @@ import { PrivateStatisticsService } from '../../../shared-privacy-providers/serv
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -86,6 +87,10 @@ export class ClearswapSwapPageComponent implements OnInit {
         throw new InsufficientFundsError(fromToken.symbol);
       }
 
+      const nativeToken = {
+        address: Web3Pure.getNativeTokenAddress(fromToken.blockchain),
+        blockchain: fromToken.blockchain
+      };
       const preview$ = openPreview({
         steps: [
           {
@@ -98,7 +103,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                   swapInfo.toAsset,
                   this.receiverCtrl.value
                 )
-                .then(() => {
+                .then(async () => {
                   this.privateStatisticsService.saveAction(
                     'TRANSFER',
                     PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -107,6 +112,52 @@ export class ClearswapSwapPageComponent implements OnInit {
                     fromToken.stringWeiAmount,
                     fromToken.blockchain
                   );
+
+                  const [newBalanceFrom, newBalanceTo] = await Promise.all([
+                    this.tokensBalanceService.getAndUpdateTokenBalance(fromToken, 5),
+                    this.tokensBalanceService.getAndUpdateTokenBalance(swapInfo.toAsset, 5)
+                  ]);
+                  if (compareTokens(this.privateSwapWindowService.swapInfo.fromAsset, fromToken)) {
+                    this.privateSwapWindowService.patchSwapInfo({
+                      fromAsset: {
+                        ...this.privateSwapWindowService.swapInfo.fromAsset,
+                        amount: newBalanceFrom
+                      }
+                    });
+                  }
+                  if (
+                    compareTokens(this.privateSwapWindowService.swapInfo.toAsset, swapInfo.toAsset)
+                  ) {
+                    this.privateSwapWindowService.patchSwapInfo({
+                      fromAsset: {
+                        ...this.privateSwapWindowService.swapInfo.toAsset,
+                        amount: newBalanceTo
+                      }
+                    });
+                  }
+
+                  if (
+                    !Web3Pure.isNativeAddress(fromToken.blockchain, fromToken.address) &&
+                    !Web3Pure.isNativeAddress(swapInfo.toAsset.blockchain, swapInfo.toAsset.address)
+                  ) {
+                    this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
+                  }
+                })
+                .catch(async () => {
+                  const nativeBalance = await this.tokensBalanceService.getAndUpdateTokenBalance(
+                    nativeToken,
+                    5
+                  );
+                  if (
+                    compareTokens(this.privateSwapWindowService.swapInfo.fromAsset, nativeToken)
+                  ) {
+                    this.privateSwapWindowService.patchSwapInfo({
+                      fromAsset: {
+                        ...this.privateSwapWindowService.swapInfo.fromAsset,
+                        amount: nativeBalance
+                      }
+                    });
+                  }
                 })
           }
         ]
