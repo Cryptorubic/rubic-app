@@ -22,6 +22,7 @@ export interface PrivateSwapOptions {
   warnings?: PreviewSwapWarning[];
   swapType?: PrivateSwapType;
   steps: PrivateStep[];
+  hideFeeInfo?: boolean;
 }
 
 export interface PreviewPrivateSwapOptions {

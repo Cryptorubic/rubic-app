@@ -48,12 +48,14 @@
   }
 
   &__status {
+    @include flex(row, flex-start, space-between);
     display: flex;
-    flex-direction: row;
     gap: var(--tui-padding-s);
-    align-items: flex-start;
-    justify-content: space-between;
     padding: var(--tui-padding-l);
+
+    @include b($mobile-md) {
+      @include flex(column, center, space-between);
+    }
 
     &-item {
       display: flex;
@@ -132,6 +134,12 @@
 
     &_failed {
       color: #ba0303;
+    }
+  }
+
+  &__arrow {
+    @include b($mobile-md) {
+      transform: rotateZ(90deg);
     }
   }
 

@@ -7,6 +7,8 @@ export const houdiniFormConfig: PrivateSwapFormConfig = {
   withReceiver: true,
   withSrcAmount: true,
   withStatus: true,
+  receiverPlaceholder: 'Enter receiver address',
+  selectorType: 'public',
   assetsSelectorConfig: {
     withChainsFilter: false,
     withTokensFilter: false,

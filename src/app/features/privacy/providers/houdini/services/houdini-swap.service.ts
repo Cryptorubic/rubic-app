@@ -27,7 +27,8 @@ import {
   tap,
   Subscription,
   combineLatest,
-  of
+  of,
+  distinctUntilChanged
 } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
@@ -57,9 +58,14 @@ import {
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { DepositTradeData } from '../../shared-privacy-providers/models/deposit-trade-data';
 import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { compareTokens } from '@app/shared/utils/utils';
+import { AsyncValidatorFn, FormControl } from '@angular/forms';
+import { isReceiverCorrect } from '../constants/receiver-validator';
 
 @Injectable()
 export class HoudiniSwapService {
+  private _currentReceiveFieldValidator: AsyncValidatorFn;
+
   private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
   // private readonly _paymentInfo$ = new BehaviorSubject<CrossChainPaymentInfo | null>(null);
@@ -95,7 +101,7 @@ export class HoudiniSwapService {
     private readonly houdiniErrorService: HoudiniErrorService,
     private readonly privateStatisticsService: PrivateStatisticsService
   ) {
-    this.subscribeOnStatusPending();
+    this.subscribeOnStatusUpdate();
   }
 
   public async quote(
@@ -110,7 +116,8 @@ export class HoudiniSwapService {
       }
     | { tradeError: ErrorInterface }
   > {
-    this._currentTradeData$.next(null);
+    this.resetCurrentTrade();
+    const fromAddress = this.walletConnectorService?.address;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -119,22 +126,30 @@ export class HoudiniSwapService {
       dstTokenBlockchain: toToken.blockchain,
       dstTokenAddress: toToken.address,
       preferredProvider: 'houdini',
-      fromAddress: this.walletConnectorService.address,
       receiver,
-      showDangerousRoutes: true
+      showDangerousRoutes: true,
+      showFailedRoutes: true,
+      ...(fromAddress && { fromAddress })
     };
 
     try {
-      const quoteResponse = await this.rubicApiService.fetchBestQuote(quoteRequest);
+      const quoteResponse = await this.rubicApiService.quoteAllRoutes(quoteRequest);
       if (quoteResponse) {
-        this.filterHoudiniSlippageWarning(quoteResponse);
+        const route = quoteResponse.routes[0];
+        if (route) {
+          this.filterHoudiniSlippageWarning(route);
+          await this.setCurrentTrade(quoteRequest, route, receiver);
 
-        await this.setCurrentTrade(quoteRequest, quoteResponse, receiver);
+          return {
+            tradeId: route.id,
+            tokenAmount: route.estimate.destinationTokenAmount,
+            tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
+          };
+        }
 
+        const failed = quoteResponse.failed[0];
         return {
-          tradeId: quoteResponse.id,
-          tokenAmount: quoteResponse.estimate.destinationTokenAmount,
-          tokenAmountWei: new BigNumber(quoteResponse.estimate.destinationWeiAmount)
+          tradeError: failed.data
         };
       }
     } catch (err) {
@@ -164,10 +179,16 @@ export class HoudiniSwapService {
           onError: () => {}
         };
 
+        const estimatedSwapDuration = this.currentTrade.lastSwapResponse.estimate.durationInMinutes;
         const swapCallback = {
           onHash: (_: string) => {},
           onSwap: () => {
-            this.notificationsService.showSuccess('The operation was successful.');
+            //TODO: change text later
+            this.notificationsService.showInfo(
+              `Transaction has started. Please wait ${
+                estimatedSwapDuration ?? '20-40'
+              } minutes until the operation is complete.`
+            );
           },
           onError: (_: RubicError<ERROR_TYPE> | null) => {},
           onSimulationSuccess: () => Promise.resolve<boolean>(true),
@@ -301,6 +322,10 @@ export class HoudiniSwapService {
     }
   }
 
+  public resetCurrentTrade(): void {
+    this._currentTradeData$.next(null);
+  }
+
   private checkIsEqualFromAmount(fromAmount: BigNumber): boolean {
     const swapInfo = this.privateSwapWindowService.swapInfo;
     const formSourceTokenAmount = swapInfo.fromAmount.actualValue;
@@ -313,6 +338,35 @@ export class HoudiniSwapService {
     );
 
     return fromAmount.eq(formSourceTokenNonWeiAmount);
+  }
+
+  public subscribeOnFormUpdate(receiverCtrl: FormControl<string>): void {
+    const sub = this.privateSwapWindowService.swapInfo$
+      .pipe(
+        distinctUntilChanged((prev, curr) => {
+          return (
+            compareTokens(prev.fromAsset, curr.fromAsset) &&
+            compareTokens(prev.toAsset, curr.toAsset) &&
+            ((prev.fromAmount === null && curr.fromAmount === null) ||
+              prev.fromAmount?.actualValue.eq(curr.fromAmount?.actualValue))
+          );
+        })
+      )
+      .subscribe(swapInfo => {
+        if (!swapInfo.toAsset?.blockchain) return;
+
+        if (this._currentReceiveFieldValidator) {
+          receiverCtrl.removeAsyncValidators(this._currentReceiveFieldValidator);
+        }
+        this._currentReceiveFieldValidator = isReceiverCorrect(swapInfo.toAsset.blockchain);
+
+        receiverCtrl.addAsyncValidators(this._currentReceiveFieldValidator);
+        receiverCtrl.updateValueAndValidity();
+
+        this.resetCurrentTrade();
+      });
+
+    this.subscriptions.push(sub);
   }
 
   //TODO: check is it okay to do it - without the filter it fails each time on trade parsing because of hardcoded API 7001 (SlippageChangedWarning) error
@@ -328,7 +382,10 @@ export class HoudiniSwapService {
 
   private parseQuoteError(error: RubicSdkError): { tradeError: ErrorInterface } {
     //TODO: refactor this later maybe
-    if (error.message.includes('No routes found.')) {
+    if (
+      error.message.includes('No routes found.') ||
+      error.message.includes('Request failed with status code 500')
+    ) {
       return {
         tradeError: {
           code: 2001,
@@ -341,7 +398,7 @@ export class HoudiniSwapService {
   private showSwapError(error: RubicError<ERROR_TYPE>): void {
     if (error instanceof InsufficientFundsError) {
       this.notificationsService.showError('Insufficient funds.');
-      this.houdiniErrorService.setTradeError({ reason: 'Insufficient funds' });
+      this.houdiniErrorService.setTradeError({ reason: 'Insufficient balance' });
     }
     if (error instanceof InsufficientGasError) {
       this.notificationsService.showError('Insufficient gas.');
@@ -371,7 +428,8 @@ export class HoudiniSwapService {
     if (trade instanceof CrossChainTransferTrade) {
       const paymentInfo = await trade.getTransferTrade(
         receiver,
-        this.walletConnectorService.address
+        this.walletConnectorService?.address,
+        true
       );
 
       // this._paymentInfo$.next(paymentInfo);
@@ -381,7 +439,7 @@ export class HoudiniSwapService {
     this._currentTradeData$.next(tradeData);
   }
 
-  private subscribeOnStatusPending(): void {
+  private subscribeOnStatusUpdate(): void {
     const sub = this.depositTradeData$
       .pipe(
         filter(tradeData => !!tradeData?.trade),
