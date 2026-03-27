@@ -13,7 +13,6 @@ import { PrivateQueryParamsService } from '../../../shared-privacy-providers/ser
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BlockchainName } from '@cryptorubic/core';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
@@ -72,6 +71,7 @@ export class HinkalViewComponent {
   }
 
   ngOnInit(): void {
+    this.hinkalFacadeService.initSubs();
     this.parseQueryParams();
     this.walletConnectorService.addressChange$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
@@ -96,10 +96,6 @@ export class HinkalViewComponent {
 
   public onPageSelect(page: PageType): void {
     this.privatePageTypeService.activePage = page;
-  }
-
-  public onSwitchNetwork(chain: BlockchainName): void {
-    this.hinkalFacadeService.switchChain(chain);
   }
 
   private parseQueryParams(): void {

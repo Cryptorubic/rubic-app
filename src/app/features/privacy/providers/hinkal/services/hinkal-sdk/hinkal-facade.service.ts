@@ -62,11 +62,9 @@ export class HinkalFacadeService {
     private readonly privateLocalStorageService: PrivateLocalStorageService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly privateStatisticsService: PrivateStatisticsService
-  ) {
-    this.initSubs();
-  }
+  ) {}
 
-  private initSubs(): void {
+  public initSubs(): void {
     const activeNetworkSub = this.subscribeOnActiveNetworkChanged();
     const pollSub = this.hinkalBalanceService.initBalanceEvent().subscribe();
     const balanceSub = this.hinkalBalanceService

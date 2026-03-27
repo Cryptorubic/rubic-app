@@ -6,20 +6,13 @@ import {
   SwapRequestInterface
 } from '@cryptorubic/core';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
-import { BehaviorSubject } from 'rxjs';
 
 export class HinkalWorkerQuoteService {
-  private readonly _lastQuoteId$ = new BehaviorSubject<QuoteResponseInterface['id'] | null>(null);
+  private _lastQuoteId: QuoteResponseInterface['id'] | null = null;
 
-  private readonly _lastQuoteParams$ = new BehaviorSubject<QuoteRequestInterface | null>(null);
+  private _lastQuoteParams: QuoteRequestInterface | null = null;
 
-  public get lastQuoteId(): QuoteResponseInterface['id'] {
-    return this._lastQuoteId$.value;
-  }
-
-  public get lastQuoteParams(): QuoteRequestInterface {
-    return this._lastQuoteParams$.value;
-  }
+  private readonly rubicUrl = 'https://rubic-api-v2.rubic.exchange/api/routes';
 
   public async fetchQuote(
     fromAsset: BalanceToken,
@@ -35,35 +28,32 @@ export class HinkalWorkerQuoteService {
       integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4'
     };
 
-    const { id, estimate } = (await fetch(
-      'https://rubic-api-v2.rubic.exchange/api/routes/quoteBest',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(params)
-      }
-    ).then(v => v.json())) as QuoteResponseInterface;
+    const { id, estimate } = (await fetch(`${this.rubicUrl}/quoteBest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(params)
+    }).then(v => v.json())) as QuoteResponseInterface;
 
-    this._lastQuoteId$.next(id);
-    this._lastQuoteParams$.next(params);
+    this._lastQuoteId = id;
+    this._lastQuoteParams = params;
 
     return estimate.destinationWeiAmount;
   }
 
   public async fetchSwapData(fromAddress: string, receiver: string): Promise<EvmTransactionConfig> {
-    if (!this.lastQuoteId || !this.lastQuoteParams) throw new Error('Invoke fetchQuote first');
+    if (!this._lastQuoteId || !this._lastQuoteParams) throw new Error('Invoke fetchQuote first');
 
     const params: SwapRequestInterface = {
-      ...this.lastQuoteParams,
-      id: this.lastQuoteId,
+      ...this._lastQuoteParams,
+      id: this._lastQuoteId,
       fromAddress,
       enableChecks: false,
       receiver
     };
 
-    const resp = (await fetch('https://rubic-api-v2.rubic.exchange/api/routes/swap', {
+    const resp = (await fetch(`${this.rubicUrl}/swap`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
