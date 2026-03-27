@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { QueryParams } from '@app/core/services/query-params/models/query-params';
-import { firstValueFrom, forkJoin, map, of, switchMap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { SwapFormQueryService } from '@app/features/trade/services/swap-form-query/swap-form-query.service';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
@@ -77,7 +77,7 @@ export class PrivateQueryParamsService {
             of(toAmount)
           ]);
         }),
-        switchMap(([fromAsset, toAsset, fromAmount, toAmount]) => {
+        tap(([fromAsset, toAsset, fromAmount, toAmount]) => {
           if (toAsset && !fromAsset) {
             toAsset = null;
           }
@@ -104,7 +104,6 @@ export class PrivateQueryParamsService {
             this.privacyMainPageService.patchFormValue({ fromAsset });
           } else {
             this.privacyMainPageService.patchFormValue(swapInfo);
-            return of(null);
           }
         })
       )
