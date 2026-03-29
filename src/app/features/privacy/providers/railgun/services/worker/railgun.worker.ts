@@ -29,6 +29,7 @@ import {
   GasEstimateForShieldRequest,
   GasEstimateForTransferRequest,
   GasEstimateForUnshieldRequest,
+  GeneratePOIRequest,
   GenerateTransferProofRequest,
   GenerateUnshieldProofRequest,
   LoadWalletRequest,
@@ -41,6 +42,7 @@ import {
   UnlockFromPasswordRequest,
   WalletCredentialsRequest
 } from '@features/privacy/providers/railgun/models/worker-types';
+import { generatePOIsForWallet } from '@railgun-community/wallet';
 
 export class RailgunAdapter {
   public readonly artifactService = new ArtifactStoreService();
@@ -362,6 +364,14 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
           gasDetails
         );
         postWorkerMessage({ id, method, response: { transaction, nullifiers } });
+        break;
+      }
+
+      case 'generatePOI': {
+        const { network, walletId } = params as GeneratePOIRequest;
+
+        await generatePOIsForWallet(network, walletId);
+        postWorkerMessage({ id, method, response: {} });
         break;
       }
     }

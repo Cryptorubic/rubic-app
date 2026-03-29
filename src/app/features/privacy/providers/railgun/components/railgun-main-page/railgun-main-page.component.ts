@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { StepType } from '@features/privacy/providers/railgun/models/step';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
@@ -16,6 +16,9 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
+import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -77,21 +80,29 @@ export class RailgunMainPageComponent {
 
   private readonly headerStore = inject(HeaderStore);
 
+  public readonly poiLoading$ = this.railgunFacade.missingPOI$.pipe(
+    map(el => {
+      console.log('POI LOADING', el);
+      return el.some(chain => chain.missingPOI);
+    })
+  );
+
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor() {
     this.initializeRailgun();
     this.privacyService.activePage = RAILGUN_PAGES[0];
-    if (this.headerStore.isMobile) {
-      this.notificationService.show(
-        'The mobile version of this site may experience slow performance. For the best experience, please use a desktop browser.',
-        {
-          status: 'warning',
-          autoClose: false,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
-        }
-      );
-    }
+    this.railgunFacade.missingPOI$.pipe(
+      distinctObjectUntilChanged(),
+      filter(chains => chains.some(Boolean)),
+      switchMap(chains => {
+        return Promise.allSettled(
+          chains.map(value =>
+            this.railgunFacade.generatePOI(fromRubicToPrivateChainMap[value.chain])
+          )
+        );
+      })
+    );
   }
 
   ngOnInit() {
@@ -142,4 +153,6 @@ export class RailgunMainPageComponent {
         this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
       });
   }
+
+  protected readonly PAGE_TYPE_IMAGE = PAGE_TYPE_IMAGE;
 }

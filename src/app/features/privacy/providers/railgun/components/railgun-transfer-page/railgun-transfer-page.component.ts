@@ -137,7 +137,7 @@ export class RailgunTransferPageComponent implements OnInit {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Transfer tokens',
+            label: 'Transfer',
             action: async () => {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',

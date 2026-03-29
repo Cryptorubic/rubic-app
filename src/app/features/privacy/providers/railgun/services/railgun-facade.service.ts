@@ -49,6 +49,7 @@ import {
   GasEstimateForTransferRequest,
   GasEstimateForUnshieldRequest,
   GasEstimateResponse,
+  GeneratePOIRequest,
   GenerateTransferProofRequest,
   GenerateUnshieldProofRequest,
   GetEvmWalletResponse,
@@ -152,6 +153,20 @@ export class RailgunFacadeService {
       return Object.values(snapshot).some(chain =>
         chain?.Spendable?.erc20Amounts.some(token => token.amount > 0)
       );
+    })
+  );
+
+  public readonly missingPOI$ = this.balancesSnapshot$.pipe(
+    map(snapshot => {
+      const array = Object.entries(snapshot);
+      return array.map(([chain, chainValue]) => {
+        return {
+          chain: chain as RailgunSupportedChain,
+          missingPOI:
+            chainValue?.MissingInternalPOI?.erc20Amounts.some(token => token.amount > 0) ||
+            chainValue?.MissingExternalPOI?.erc20Amounts.some(token => token.amount > 0)
+        };
+      });
     })
   );
 
@@ -515,41 +530,46 @@ export class RailgunFacadeService {
   public async generateUnshieldProof(
     network: PrivacySupportedNetworks,
     erc20AmountRecipients: RailgunERC20AmountRecipient[],
-    proofProgress: (progress: string) => void = progress =>
-      console.log('Proof generation progress... ', progress)
+    proofProgress: (progress: string) => void = p => console.log(p)
   ): Promise<{ gasEstimate: bigint }> {
     const walletId = (await firstValueFrom(this.railgunAccount$)).id;
     const id = ++this.messageIdCounter;
 
-    return new Promise((resolve, reject) => {
-      this.pendingRequests.set(id, { resolve, reject });
-      const progressHandler = ({ data }: MessageEvent) => {
+    const waitFor100 = new Promise<void>(resolve => {
+      const handler = ({ data }: MessageEvent) => {
         if (data.id === id && data.method === 'generateUnshieldProofProgress') {
           proofProgress(data.response);
+
+          if (String(data.response) === '100') {
+            this.railgunWorker.removeEventListener('message', handler);
+            resolve();
+          }
         }
       };
-
-      this.railgunWorker.addEventListener('message', progressHandler);
-
-      this.sendWorkerRequest<GasEstimateResponse, GenerateUnshieldProofRequest>(
-        'generateUnshieldProof',
-        {
-          txIdVersion: TXIDVersion.V2_PoseidonMerkle,
-          network,
-          walletId,
-          password: this.lastUsedPassword,
-          erc20AmountRecipients
-        }
-      )
-        .then(res => {
-          this.railgunWorker.removeEventListener('message', progressHandler);
-          resolve(res);
-        })
-        .catch(err => {
-          this.railgunWorker.removeEventListener('message', progressHandler);
-          reject(err);
-        });
+      this.railgunWorker.addEventListener('message', handler);
     });
+
+    const requestPromise = this.sendWorkerRequest<
+      GasEstimateResponse,
+      GenerateUnshieldProofRequest
+    >(
+      'generateUnshieldProof',
+      {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        erc20AmountRecipients
+      },
+      id
+    );
+
+    try {
+      const [result] = await Promise.all([requestPromise, waitFor100]);
+      return result;
+    } finally {
+      this.pendingRequests.delete(id);
+    }
   }
 
   public async populateUnshield(
@@ -603,37 +623,41 @@ export class RailgunFacadeService {
 
     const id = ++this.messageIdCounter;
 
-    return new Promise((resolve, reject) => {
-      this.pendingRequests.set(id, { resolve, reject });
-
-      const progressHandler = (event: MessageEvent) => {
-        const { data } = event;
+    const waitFor100 = new Promise<void>(resolve => {
+      const handler = ({ data }: MessageEvent) => {
         if (data.id === id && data.method === 'generateTransferProofProgress') {
           proofProgress(data.response as string);
+
+          if (String(data.response) === '100') {
+            this.railgunWorker.removeEventListener('message', handler);
+            resolve();
+          }
         }
       };
-
-      this.railgunWorker.addEventListener('message', progressHandler);
-
-      this.sendWorkerRequest<GasEstimateResponse, GenerateTransferProofRequest>(
-        'generateTransferProof',
-        {
-          txIdVersion: TXIDVersion.V2_PoseidonMerkle,
-          network,
-          walletId: account.id,
-          password: this.lastUsedPassword,
-          erc20AmountRecipients
-        }
-      )
-        .then(res => {
-          this.railgunWorker.removeEventListener('message', progressHandler);
-          resolve(res);
-        })
-        .catch(err => {
-          this.railgunWorker.removeEventListener('message', progressHandler);
-          reject(err);
-        });
+      this.railgunWorker.addEventListener('message', handler);
     });
+
+    const requestPromise = this.sendWorkerRequest<
+      GasEstimateResponse,
+      GenerateTransferProofRequest
+    >(
+      'generateTransferProof',
+      {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId: account.id,
+        password: this.lastUsedPassword,
+        erc20AmountRecipients
+      },
+      id
+    );
+
+    try {
+      const [result] = await Promise.all([requestPromise, waitFor100]);
+      return result;
+    } finally {
+      this.pendingRequests.delete(id);
+    }
   }
 
   public async populateTransfer(
@@ -652,6 +676,16 @@ export class RailgunFacadeService {
       erc20AmountRecipients,
       gasDetails,
       overallBatchMinGasPrice
+    });
+  }
+
+  public async generatePOI(network: PrivacySupportedNetworks): Promise<void> {
+    const account = await firstValueFrom(this.railgunAccount$);
+    if (!account) throw new Error('Railgun account not found');
+
+    return this.sendWorkerRequest<void, GeneratePOIRequest>('generatePOI', {
+      network,
+      walletId: account.id
     });
   }
 
@@ -677,8 +711,12 @@ export class RailgunFacadeService {
     });
   }
 
-  private sendWorkerRequest<T, P extends unknown>(method: string, params: P): Promise<T> {
-    const id = ++this.messageIdCounter;
+  private sendWorkerRequest<T, P extends unknown>(
+    method: string,
+    params: P,
+    definedId?: number
+  ): Promise<T> {
+    const id = definedId || ++this.messageIdCounter;
 
     return new Promise((resolve, reject) => {
       this.pendingRequests.set(id, { resolve, reject });

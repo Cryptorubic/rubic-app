@@ -261,3 +261,11 @@ app-swap-data-element ::ng-deep {
   20% { opacity: 1; }
   100% { opacity: 0.2; }
 }
+
+:host ::ng-deep .window-container {
+  padding: 0 !important;
+
+  @include b($mobile-md) {
+    padding: var(--tui-padding-m) !important;
+  }
+}
