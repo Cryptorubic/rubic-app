@@ -24,6 +24,7 @@ import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-w
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -138,29 +139,35 @@ export class PrivacycashSwapService {
   }
 
   public async shield(token: TokenAmount): Promise<void> {
-    const userPK = new PublicKey(this.walletConnectorService.address);
-    const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
+    try {
+      const userPK = new PublicKey(this.walletConnectorService.address);
+      const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
-    await this.makeDeposit(
-      toPrivacyCashTokenAddr(token.address),
-      token.weiAmount.toNumber(),
-      userPK,
-      (tx: VersionedTransaction) => wallet.signTransaction(tx)
-    );
+      await this.makeDeposit(
+        toPrivacyCashTokenAddr(token.address),
+        token.weiAmount.toNumber(),
+        userPK,
+        (tx: VersionedTransaction) => wallet.signTransaction(tx)
+      );
 
-    this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
-    this.privacycashTokensService.updatePrivateBalances();
-    this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
-    this.privateStatisticsService.saveAction(
-      'SHIELD',
-      PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-      this.walletConnectorService.address,
-      token.address,
-      token.stringWeiAmount,
-      token.blockchain,
-      ['shield'],
-      []
-    );
+      this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
+      this.privacycashTokensService.updatePrivateBalances();
+      this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
+      this.privateStatisticsService.saveAction(
+        'SHIELD',
+        PRIVATE_TRADE_TYPE.PRIVACY_CASH,
+        this.walletConnectorService.address,
+        token.address,
+        token.stringWeiAmount,
+        token.blockchain,
+        ['shield'],
+        []
+      );
+    } catch (err) {
+      if (err.message.includes('User rejected the request')) {
+        throw new UserRejectError();
+      }
+    }
   }
 
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
