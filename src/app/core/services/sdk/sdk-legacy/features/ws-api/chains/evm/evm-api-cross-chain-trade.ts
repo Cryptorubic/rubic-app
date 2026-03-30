@@ -75,7 +75,8 @@ export class EvmApiCrossChainTrade extends EvmCrossChainTrade {
       feeInfo: this.feeInfo,
       priceImpact: this.priceImpact,
       slippage: this.slippage * 100,
-      routePath: this.routePath
+      routePath: this.routePath,
+      durationInMinutes: this.apiResponse.estimate?.durationInMinutes
     };
   }
 }
