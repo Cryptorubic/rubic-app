@@ -68,6 +68,8 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
 
   public readonly depositTradeStatus$ = this.houdiniSwapService.depositTradeStatus$;
 
+  public readonly requireReceiverAddress$ = this.houdiniSwapService.requireReceiverAddress$;
+
   constructor(
     private readonly houdiniSwapService: HoudiniSwapService,
     private readonly privatePageTypeService: PrivatePageTypeService,

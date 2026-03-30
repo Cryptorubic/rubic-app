@@ -1,14 +1,15 @@
 <ng-container
   *ngLet="{
     depositTradeData: depositTradeData$ | async,
-    depositTradeStatus: depositTradeStatus$ | async
+    depositTradeStatus: depositTradeStatus$ | async,
+    requireReceiverAddress: requireReceiverAddress$ | async
   } as state"
 >
   <div class="privacy-wrapper">
     <div class="privacy-content">
       <app-swap-window
         [quoteAdapter]="quoteAdapter"
-        [receiverAddressRequired]="true"
+        [receiverAddressRequired]="state.requireReceiverAddress"
         [creationConfig]="formConfig"
         [receiverCtrl]="receiverCtrl"
         [depositTrade]="state.depositTradeData?.trade"

@@ -75,7 +75,7 @@ export class SwapWindowComponent implements OnInit {
 
   @Input() set receiverAddressRequired(value: boolean) {
     if (value) {
-      this._displayReceiver$.next(true);
+      this._displayReceiver$.next(value);
     }
   }
 
@@ -298,6 +298,16 @@ export class SwapWindowComponent implements OnInit {
       toAsset: this.swapInfo.fromAsset,
       fromAmount: this.swapInfo.toAmount ?? this.swapInfo.fromAmount,
       toAmount: null
+    });
+  }
+
+  public resetForm(): void {
+    this.patchSwapInfo({
+      fromAsset: null,
+      fromAmount: null,
+      toAsset: null,
+      toAmount: null,
+      tradeId: null
     });
   }
 }

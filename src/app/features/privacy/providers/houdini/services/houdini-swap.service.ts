@@ -28,7 +28,9 @@ import {
   Subscription,
   combineLatest,
   of,
-  distinctUntilChanged
+  distinctUntilChanged,
+  combineLatestWith,
+  from
 } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TransformUtils } from '@app/core/services/sdk/sdk-legacy/features/ws-api/transform-utils';
@@ -68,6 +70,10 @@ export class HoudiniSwapService {
 
   private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
+  private readonly _requireReceiverAddress$ = new BehaviorSubject<boolean>(true);
+
+  public readonly requireReceiverAddress$ = this._requireReceiverAddress$.asObservable();
+
   // private readonly _paymentInfo$ = new BehaviorSubject<CrossChainPaymentInfo | null>(null);
 
   public readonly depositTradeData$ = this._currentTradeData$.pipe(
@@ -88,6 +94,10 @@ export class HoudiniSwapService {
 
   public get currentTrade(): CrossChainTrade {
     return this._currentTradeData$.value?.trade;
+  }
+
+  public get requireReceiverAddress(): boolean {
+    return this._requireReceiverAddress$.value;
   }
 
   constructor(
@@ -117,8 +127,12 @@ export class HoudiniSwapService {
     | { tradeError: ErrorInterface }
   > {
     this.resetCurrentTrade();
+
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const fromAddress = this.walletConnectorService?.address;
+    const receiverAddress = this.requireReceiverAddress
+      ? receiver
+      : this.walletConnectorService.address;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -127,7 +141,7 @@ export class HoudiniSwapService {
       dstTokenBlockchain: toToken.blockchain,
       dstTokenAddress: toToken.address,
       preferredProvider: 'houdini',
-      receiver,
+      receiver: receiverAddress,
       showDangerousRoutes: true,
       showFailedRoutes: true,
       ...(chainType === CHAIN_TYPE.EVM && fromAddress && { fromAddress })
@@ -160,6 +174,19 @@ export class HoudiniSwapService {
         }
 
         const failed = quoteResponse.failed[0];
+
+        //TODO: move it to api later
+        if ('minAmount' in failed.data.data) {
+          const errorData = failed.data.data as { minAmount: BigNumber; tokenSymbol: string };
+          failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
+            errorData.tokenSymbol
+          }`;
+
+          return {
+            tradeError: failed.data
+          };
+        }
+
         return {
           tradeError: failed.data
         };
@@ -180,8 +207,6 @@ export class HoudiniSwapService {
         chainType !== CHAIN_TYPE.EVM;
 
       if (!isTransferTrade) {
-        await this.switchWalletChainIfNeeded(fromToken.blockchain);
-
         //TODO: maybe add some callback later
         const approveCallback = {
           onHash: (_: string) => {},
@@ -265,8 +290,8 @@ export class HoudiniSwapService {
     let txHash: string;
 
     try {
-      const isEqulaFromAmount = this.checkIsEqualFromAmount(trade.from.tokenAmount);
-      if (!isEqulaFromAmount) {
+      const isEqualFromAmount = this.checkIsEqualFromAmount(trade.from.tokenAmount);
+      if (!isEqualFromAmount) {
         throw new Error('Trade has invalid from amount');
       }
 
@@ -352,18 +377,25 @@ export class HoudiniSwapService {
   }
 
   public subscribeOnFormUpdate(receiverCtrl: FormControl<string>): void {
-    const sub = this.privateSwapWindowService.swapInfo$
+    const sub1 = this.privateSwapWindowService.swapInfo$
       .pipe(
         distinctUntilChanged((prev, curr) => {
           return (
             compareTokens(prev.fromAsset, curr.fromAsset) &&
-            compareTokens(prev.toAsset, curr.toAsset) &&
-            ((prev.fromAmount === null && curr.fromAmount === null) ||
-              prev.fromAmount?.actualValue.eq(curr.fromAmount?.actualValue))
+            compareTokens(prev.toAsset, curr.toAsset)
           );
-        })
+        }),
+        combineLatestWith(this.walletConnectorService.networkChange$)
       )
-      .subscribe(swapInfo => {
+      .subscribe(([swapInfo, walletBlockchain]) => {
+        const requireReceiverAddress = this.checkIfReceiverAdressFormRequired(
+          walletBlockchain,
+          swapInfo.toAsset?.blockchain
+        );
+        this._requireReceiverAddress$.next(requireReceiverAddress);
+
+        this.resetCurrentTrade();
+
         if (!swapInfo.toAsset?.blockchain) return;
 
         if (this._currentReceiverFieldValidator) {
@@ -373,11 +405,28 @@ export class HoudiniSwapService {
 
         receiverCtrl.addAsyncValidators(this._currentReceiverFieldValidator);
         receiverCtrl.updateValueAndValidity();
-
-        this.resetCurrentTrade();
       });
 
-    this.subscriptions.push(sub);
+    const sub2 = this.privateSwapWindowService.swapInfo$
+      .pipe(
+        switchMap(swapInfo => from(this.switchWalletChainIfNeeded(swapInfo.fromAsset?.blockchain)))
+      )
+      .subscribe();
+
+    this.subscriptions.push(sub1);
+    this.subscriptions.push(sub2);
+  }
+
+  private checkIfReceiverAdressFormRequired(
+    walletBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): boolean {
+    if (!walletBlockchain) return true;
+
+    const walletChainType = BlockchainsInfo.getChainType(walletBlockchain);
+    const toChainType = toBlockchain ? BlockchainsInfo.getChainType(toBlockchain) : null;
+
+    return !(toChainType === CHAIN_TYPE.EVM && walletChainType === CHAIN_TYPE.EVM);
   }
 
   //TODO: check is it okay to do it - without the filter it fails each time on trade parsing because of hardcoded API 7001 (SlippageChangedWarning) error
@@ -502,6 +551,8 @@ export class HoudiniSwapService {
   }
 
   private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
+    if (!this.walletConnectorService.address || !blockchain) return Promise.resolve();
+
     if (blockchain !== this.walletConnectorService.network) {
       await this.walletConnectorService.switchChain(blockchain as EvmBlockchainName);
     }
