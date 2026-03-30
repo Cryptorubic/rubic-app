@@ -129,7 +129,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                     compareTokens(this.privateSwapWindowService.swapInfo.toAsset, swapInfo.toAsset)
                   ) {
                     this.privateSwapWindowService.patchSwapInfo({
-                      fromAsset: {
+                      toAsset: {
                         ...this.privateSwapWindowService.swapInfo.toAsset,
                         amount: newBalanceTo
                       }
