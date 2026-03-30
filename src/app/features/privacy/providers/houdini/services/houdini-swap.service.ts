@@ -64,7 +64,7 @@ import { isReceiverCorrect } from '../constants/receiver-validator';
 
 @Injectable()
 export class HoudiniSwapService {
-  private _currentReceiveFieldValidator: AsyncValidatorFn;
+  private _currentReceiverFieldValidator: AsyncValidatorFn;
 
   private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
@@ -117,6 +117,7 @@ export class HoudiniSwapService {
     | { tradeError: ErrorInterface }
   > {
     this.resetCurrentTrade();
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const fromAddress = this.walletConnectorService?.address;
 
     const quoteRequest: QuoteRequestInterface = {
@@ -129,7 +130,7 @@ export class HoudiniSwapService {
       receiver,
       showDangerousRoutes: true,
       showFailedRoutes: true,
-      ...(fromAddress && { fromAddress })
+      ...(chainType === CHAIN_TYPE.EVM && fromAddress && { fromAddress })
     };
 
     try {
@@ -138,29 +139,27 @@ export class HoudiniSwapService {
         const route = quoteResponse.routes[0];
         if (route) {
           this.filterHoudiniSlippageWarning(route);
+
+          const tokenAmount = route.estimate.destinationTokenAmount;
+          const tokenAmountWei = new BigNumber(route.estimate.destinationWeiAmount);
+
+          //TODO: change it later
+          if (!tokenAmount || !tokenAmountWei) {
+            return {
+              tradeError: { code: 2001, reason: 'No routes found' }
+            };
+          }
+
           await this.setCurrentTrade(quoteRequest, route, receiver);
 
           return {
             tradeId: route.id,
-            tokenAmount: route.estimate.destinationTokenAmount,
-            tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
+            tokenAmount,
+            tokenAmountWei
           };
         }
 
         const failed = quoteResponse.failed[0];
-
-        //TODO: refactor later
-        if ('minAmount' in failed.data.data) {
-          const errorData = failed.data.data as { minAmount: BigNumber; tokenSymbol: string };
-          failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
-            errorData.tokenSymbol
-          }`;
-
-          return {
-            tradeError: failed.data
-          };
-        }
-
         return {
           tradeError: failed.data
         };
@@ -181,9 +180,7 @@ export class HoudiniSwapService {
         chainType !== CHAIN_TYPE.EVM;
 
       if (!isTransferTrade) {
-        if (fromToken.blockchain !== this.walletConnectorService.network) {
-          await this.walletConnectorService.switchChain(fromToken.blockchain as EvmBlockchainName);
-        }
+        await this.switchWalletChainIfNeeded(fromToken.blockchain);
 
         //TODO: maybe add some callback later
         const approveCallback = {
@@ -369,12 +366,12 @@ export class HoudiniSwapService {
       .subscribe(swapInfo => {
         if (!swapInfo.toAsset?.blockchain) return;
 
-        if (this._currentReceiveFieldValidator) {
-          receiverCtrl.removeAsyncValidators(this._currentReceiveFieldValidator);
+        if (this._currentReceiverFieldValidator) {
+          receiverCtrl.removeAsyncValidators(this._currentReceiverFieldValidator);
         }
-        this._currentReceiveFieldValidator = isReceiverCorrect(swapInfo.toAsset.blockchain);
+        this._currentReceiverFieldValidator = isReceiverCorrect(swapInfo.toAsset.blockchain);
 
-        receiverCtrl.addAsyncValidators(this._currentReceiveFieldValidator);
+        receiverCtrl.addAsyncValidators(this._currentReceiverFieldValidator);
         receiverCtrl.updateValueAndValidity();
 
         this.resetCurrentTrade();
@@ -502,5 +499,13 @@ export class HoudiniSwapService {
       console.log(err);
       return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
     }
+  }
+
+  private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
+    if (blockchain !== this.walletConnectorService.network) {
+      await this.walletConnectorService.switchChain(blockchain as EvmBlockchainName);
+    }
+
+    return Promise.resolve();
   }
 }
