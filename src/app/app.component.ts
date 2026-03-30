@@ -144,9 +144,9 @@ export class AppComponent implements AfterViewInit {
    */
   private initApp(): void {
     this.tokensFacadeService.init();
+    this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),
-      this.initQueryParamsSubscription(),
       this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;

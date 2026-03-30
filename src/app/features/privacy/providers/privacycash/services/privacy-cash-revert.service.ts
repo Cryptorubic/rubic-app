@@ -123,8 +123,7 @@ export class PrivacycashRefundService {
         weiAmount.toFixed(),
         nativeTokensList.SOLANA.blockchain,
         successfullSteps,
-        failedSteps,
-        ''
+        failedSteps
       );
     }
   }
@@ -203,8 +202,7 @@ export class PrivacycashRefundService {
         weiAmount.toFixed(),
         BLOCKCHAIN_NAME.SOLANA,
         successfullSteps,
-        failedSteps,
-        ''
+        failedSteps
       );
     }
   }
