@@ -50,6 +50,10 @@ export class HinkalFacadeService {
     );
   }
 
+  public resetChain(): void {
+    this._activeChain$.next(null);
+  }
+
   public readonly activeChain$ = this._activeChain$.asObservable();
 
   constructor(
@@ -62,11 +66,9 @@ export class HinkalFacadeService {
     private readonly privateLocalStorageService: PrivateLocalStorageService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly privateStatisticsService: PrivateStatisticsService
-  ) {
-    this.initSubs();
-  }
+  ) {}
 
-  private initSubs(): void {
+  public initSubs(): void {
     const activeNetworkSub = this.subscribeOnActiveNetworkChanged();
     const pollSub = this.hinkalBalanceService.initBalanceEvent().subscribe();
     const balanceSub = this.hinkalBalanceService
@@ -74,7 +76,9 @@ export class HinkalFacadeService {
       .pipe(filter(chainId => chainId === blockchainId[this._activeChain$.value]))
       .subscribe(() => this._balanceLoading$.next(false));
 
-    this.subs.push(activeNetworkSub, pollSub, balanceSub);
+    const instanceSub = this.subscribeOnInstanceChanged();
+
+    this.subs.push(activeNetworkSub, pollSub, balanceSub, instanceSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -270,6 +274,18 @@ export class HinkalFacadeService {
         })
       )
       .subscribe();
+  }
+
+  private subscribeOnInstanceChanged(): Subscription {
+    return this.hinkalInstanceService.currSignature$
+      .pipe(
+        distinctUntilChanged(),
+        filter(signature => signature && !this._balanceLoading$.value)
+      )
+      .subscribe(() => {
+        this._balanceLoading$.next(true);
+        this.hinkalBalanceService.updateBalance();
+      });
   }
 
   public removeSubs(): void {
