@@ -92,6 +92,7 @@ export class HinkalViewComponent {
 
   ngOnDestroy() {
     this.hinkalFacadeService.removeSubs();
+    this.hinkalFacadeService.resetChain();
   }
 
   public onPageSelect(page: PageType): void {

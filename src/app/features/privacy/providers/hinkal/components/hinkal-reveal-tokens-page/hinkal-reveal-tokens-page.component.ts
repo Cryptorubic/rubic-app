@@ -5,13 +5,16 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
+import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-hinkal-reveal-tokens-page',
@@ -45,7 +48,9 @@ export class HinkalRevealTokensPageComponent {
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateActionButtonService: PrivateActionButtonService
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly hinkalBalanceService: HinkalBalanceService,
+    private readonly revealWindowService: RevealWindowService
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +63,36 @@ export class HinkalRevealTokensPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+    this.subscribeOnPrivateBalanceChanges();
+  }
+
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.hinkalBalanceService.balances$
+      .pipe(
+        filter(() => !!this.revealWindowService.revealAsset?.address),
+        map(shieldBalances => {
+          const balances =
+            shieldBalances[this.revealWindowService.revealAsset?.blockchain as EvmBlockchainName];
+
+          return (
+            balances &&
+            balances.find(balance =>
+              compareAddresses(balance.tokenAddress, this.revealWindowService.revealAsset.address)
+            )
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(shieldBalance => {
+        const revealAsset = this.revealWindowService.revealAsset;
+
+        this.revealWindowService.setRevealAsset({
+          ...revealAsset,
+          amount: shieldBalance
+            ? Token.fromWei(shieldBalance.amount, revealAsset.decimals)
+            : new BigNumber(0)
+        });
+      });
   }
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

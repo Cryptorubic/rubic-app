@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
@@ -173,6 +173,15 @@ export class QueryParamsService {
     this.router.navigate([], {
       queryParams: this.queryParams,
       queryParamsHandling: 'merge'
+    });
+  }
+
+  public updateQueryParams(params: Partial<QueryParams>, currRoute: ActivatedRoute): void {
+    this.queryParams = params;
+
+    this.router.navigate([], {
+      queryParams: this.queryParams,
+      relativeTo: currRoute
     });
   }
 
