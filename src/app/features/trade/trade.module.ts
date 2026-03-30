@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
@@ -75,7 +74,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
   ],
   providers: [
     SwapsStateService,
-    SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,

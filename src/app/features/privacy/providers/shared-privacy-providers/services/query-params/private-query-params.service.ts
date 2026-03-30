@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { QueryParams } from '@app/core/services/query-params/models/query-params';
 import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
@@ -32,8 +32,6 @@ export class PrivateQueryParamsService {
   private readonly swapFormQueryService = inject(SwapFormQueryService);
 
   private readonly queryParamsService = inject(QueryParamsService);
-
-  private readonly router = inject(Router);
 
   private readonly activatedRoute = inject(ActivatedRoute);
 

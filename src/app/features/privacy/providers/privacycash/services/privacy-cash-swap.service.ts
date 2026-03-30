@@ -24,6 +24,7 @@ import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-w
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -101,56 +102,43 @@ export class PrivacycashSwapService {
 
   // withdraw private-public
   public async transfer(token: TokenAmount, receiverAddr: string): Promise<void> {
-    const successfullSteps: string[] = [];
-    const failedSteps: string[] = [];
-    try {
-      const senderPK = new PublicKey(this.walletConnectorService.address);
-      const recipientPK = new PublicKey(receiverAddr);
-      const feesResp = await this.privacycashApiService.fetchFees();
-      const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
-      const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
-      const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
-      const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
+    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const recipientPK = new PublicKey(receiverAddr);
+    const feesResp = await this.privacycashApiService.fetchFees();
+    const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
+    const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
+    const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
+    const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
 
-      if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
-        this.notificationsService.showWarning(
-          `Minimum transfer is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
-        );
-        return;
-      }
-
-      await this.makePartialWithdraw(
-        toPrivacyCashTokenAddr(token.address),
-        token.weiAmount.toNumber(),
-        senderPK,
-        recipientPK
+    if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
+      this.notificationsService.showWarning(
+        `Minimum transfer is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
       );
-      successfullSteps.push('transfer');
-      this.notificationsService.showInfo(
-        `Transfer successful. Check the receiver’s wallet balance.`
-      );
-      this.privacycashTokensService.updatePrivateBalances();
-    } catch (err) {
-      failedSteps.push(err.message);
-      throw err;
-    } finally {
-      this.privateStatisticsService.saveAction(
-        'TRANSFER',
-        PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
-        token.address,
-        token.stringWeiAmount,
-        token.blockchain,
-        successfullSteps,
-        failedSteps,
-        ''
-      );
+      return;
     }
+
+    await this.makePartialWithdraw(
+      toPrivacyCashTokenAddr(token.address),
+      token.weiAmount.toNumber(),
+      senderPK,
+      recipientPK
+    );
+
+    this.notificationsService.showInfo(`Transfer successful. Check the receiver’s wallet balance.`);
+    this.privacycashTokensService.updatePrivateBalances();
+    this.privateStatisticsService.saveAction(
+      'TRANSFER',
+      PRIVATE_TRADE_TYPE.PRIVACY_CASH,
+      this.walletConnectorService.address,
+      token.address,
+      token.stringWeiAmount,
+      token.blockchain,
+      ['transfer'],
+      []
+    );
   }
 
   public async shield(token: TokenAmount): Promise<void> {
-    const successfullSteps: string[] = [];
-    const failedSteps: string[] = [];
     try {
       const userPK = new PublicKey(this.walletConnectorService.address);
       const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
@@ -161,14 +149,10 @@ export class PrivacycashSwapService {
         userPK,
         (tx: VersionedTransaction) => wallet.signTransaction(tx)
       );
-      successfullSteps.push('shield');
+
       this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
       this.privacycashTokensService.updatePrivateBalances();
       this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
-    } catch (err) {
-      failedSteps.push(err.message);
-      throw err;
-    } finally {
       this.privateStatisticsService.saveAction(
         'SHIELD',
         PRIVATE_TRADE_TYPE.PRIVACY_CASH,
@@ -176,59 +160,53 @@ export class PrivacycashSwapService {
         token.address,
         token.stringWeiAmount,
         token.blockchain,
-        successfullSteps,
-        failedSteps,
-        ''
+        ['shield'],
+        []
       );
+    } catch (err) {
+      if (err.message.includes('User rejected the request')) {
+        throw new UserRejectError();
+      }
     }
   }
 
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
-    const successfullSteps: string[] = [];
-    const failedSteps: string[] = [];
-    try {
-      const senderPK = new PublicKey(this.walletConnectorService.address);
-      const recipientPK = new PublicKey(receiverAddr);
-      const feesResp = await this.privacycashApiService.fetchFees();
-      const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
-      const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
-      const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
-      const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
+    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const recipientPK = new PublicKey(receiverAddr);
+    const feesResp = await this.privacycashApiService.fetchFees();
+    const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
+    const srcTokenUsdPricePerOne = feesResp.prices[pcTokenSymbol];
+    const srcTokenMinWithdrawAmountUsd = feesResp.minimum_withdrawal[pcTokenSymbol];
+    const srcTokenUsdAmount = token.tokenAmount.multipliedBy(srcTokenUsdPricePerOne);
 
-      if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
-        this.notificationsService.showWarning(
-          `Minimum unshield is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
-        );
-        return;
-      }
-
-      await this.makePartialWithdraw(
-        toPrivacyCashTokenAddr(token.address),
-        token.weiAmount.toNumber(),
-        senderPK,
-        recipientPK
+    if (srcTokenUsdAmount.lt(srcTokenMinWithdrawAmountUsd)) {
+      this.notificationsService.showWarning(
+        `Minimum unshield is ${srcTokenMinWithdrawAmountUsd} ${pcTokenSymbol}.`
       );
-      successfullSteps.push('unshield');
-      this.notificationsService.showInfo(
-        'Unshielding successful. Check the receiver’s wallet balance.'
-      );
-      this.privacycashTokensService.updatePrivateBalances();
-    } catch (err) {
-      failedSteps.push(err.message);
-      throw err;
-    } finally {
-      this.privateStatisticsService.saveAction(
-        'UNSHIELD',
-        PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
-        token.address,
-        token.stringWeiAmount,
-        token.blockchain,
-        successfullSteps,
-        failedSteps,
-        ''
-      );
+      return;
     }
+
+    await this.makePartialWithdraw(
+      toPrivacyCashTokenAddr(token.address),
+      token.weiAmount.toNumber(),
+      senderPK,
+      recipientPK
+    );
+
+    this.notificationsService.showInfo(
+      'Unshielding successful. Check the receiver’s wallet balance.'
+    );
+    this.privacycashTokensService.updatePrivateBalances();
+    this.privateStatisticsService.saveAction(
+      'UNSHIELD',
+      PRIVATE_TRADE_TYPE.PRIVACY_CASH,
+      this.walletConnectorService.address,
+      token.address,
+      token.stringWeiAmount,
+      token.blockchain,
+      ['unshield'],
+      []
+    );
   }
 
   /**
@@ -365,8 +343,7 @@ export class PrivacycashSwapService {
         srcAmountWei.toFixed(),
         srcToken.blockchain,
         successfullSteps,
-        failedSteps,
-        ''
+        failedSteps
       );
     }
   }

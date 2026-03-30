@@ -2,7 +2,13 @@ import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
-import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
+import {
+  BlockchainsInfo,
+  compareAddresses,
+  EvmBlockchainName,
+  Token,
+  TokenAmount
+} from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
@@ -56,7 +62,9 @@ export class HinkalSwapTokensPageComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly privateSwapWindowService: PrivateSwapWindowService
+    private readonly privateSwapWindowService: PrivateSwapWindowService,
+    private readonly fromAssetsService: FromAssetsService,
+    private readonly toAssetsService: ToAssetsService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +77,24 @@ export class HinkalSwapTokensPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.fromAssetsService.assetListType$.pipe(takeUntil(this.destroy$)).subscribe(asset => {
+      const isFromChain = BlockchainsInfo.isBlockchainName(asset);
+      const isToChain = BlockchainsInfo.isBlockchainName(this.toAssetsService.assetListType);
+
+      if (isFromChain && isToChain && asset !== this.toAssetsService.assetListType) {
+        this.privateSwapWindowService.patchSwapInfo({ toAsset: null });
+      }
+    });
+
+    this.toAssetsService.assetListType$.pipe(takeUntil(this.destroy$)).subscribe(asset => {
+      const isToChain = BlockchainsInfo.isBlockchainName(asset);
+      const isFromChain = BlockchainsInfo.isBlockchainName(this.fromAssetsService.assetListType);
+
+      if (isFromChain && isToChain && asset !== this.fromAssetsService.assetListType) {
+        this.privateSwapWindowService.patchSwapInfo({ fromAsset: null });
+      }
+    });
     this.subscribeOnPrivateBalanceChanges();
   }
 
@@ -80,7 +106,7 @@ export class HinkalSwapTokensPageComponent {
 
         if (swapInfo.fromAsset) {
           const balances = shieldedBalances[swapInfo.fromAsset.blockchain as EvmBlockchainName];
-          const tokenBalance = balances.find(balance =>
+          const tokenBalance = balances?.find(balance =>
             compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
           );
 

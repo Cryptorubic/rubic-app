@@ -9,7 +9,7 @@ import {
   Self,
   inject
 } from '@angular/core';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject, skip, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
@@ -87,7 +87,8 @@ export class PrivatePageSwapComponent implements OnInit {
 
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
-      .pipe(takeUntil(this.destroy$))
+      // used skip(1) to prevent emitting formChanged with empty value and override existing queryParams
+      .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 

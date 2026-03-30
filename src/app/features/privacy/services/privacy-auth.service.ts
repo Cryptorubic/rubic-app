@@ -13,7 +13,6 @@ export class PrivacyAuthService {
 
   public readonly refCodeCtrl = new FormControl<string>('');
 
-  // @TODO_1712 отправлять этот код перед любым приватным действием в запросе на swap_trade для клиента
   public get refCode(): string {
     return this.refCodeCtrl.value;
   }

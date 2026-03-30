@@ -78,7 +78,7 @@ import { TurnstileService } from '@app/core/services/turnstile/turnstile.service
 import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { WINDOW } from '@ng-web-apis/common';
-import { DefaultSocketManager } from './socket-managers/default-socket-manager';
+import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -97,13 +97,11 @@ export class SwapsControllerService {
 
   private readonly socketSubs: Array<Subscription> = [];
 
-  // private socketManager: ApiSocketManager = new CloudflareSocketManager(
-  //   this.rubicApiService,
-  //   this,
-  //   this.turnstileService
-  // );
-  // @TODO_1712 uncomment CloudflareSocketManager
-  private socketManager: ApiSocketManager = new DefaultSocketManager(this.rubicApiService, this);
+  private socketManager: ApiSocketManager = new CloudflareSocketManager(
+    this.rubicApiService,
+    this,
+    this.turnstileService
+  );
 
   /**
    * Contains trades types, which were disabled due to critical errors.

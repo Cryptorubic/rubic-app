@@ -29,6 +29,8 @@ import { PrivateStep } from '../../../shared-privacy-providers/components/privat
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
+import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -65,7 +67,9 @@ export class HinkalFacadeService {
     private readonly notificationService: NotificationsService,
     private readonly privateLocalStorageService: PrivateLocalStorageService,
     private readonly privatePageTypeService: PrivatePageTypeService,
-    private readonly privateStatisticsService: PrivateStatisticsService
+    private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly hideWindowService: HideWindowService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public initSubs(): void {
@@ -118,17 +122,23 @@ export class HinkalFacadeService {
       label: 'Shield',
       action: () =>
         this.hinkalSwapService.deposit(token).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'SHIELD',
-            'HINKAL',
-            this.walletConnectorService.address,
-            token.address,
-            token.weiAmount.toFixed(),
-            token.blockchain
-          );
           if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'SHIELD',
+              'HINKAL',
+              this.walletConnectorService.address,
+              token.address,
+              token.weiAmount.toFixed(),
+              token.blockchain
+            );
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
             this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
+            this.tokensFacade.getAndUpdateTokenBalance(token).then(balance => {
+              this.hideWindowService.setHideAsset({
+                ...this.hideWindowService.hideAsset,
+                amount: balance
+              });
+            });
           }
         })
     });
@@ -148,18 +158,19 @@ export class HinkalFacadeService {
       label: 'Unshield',
       action: () => {
         return this.hinkalSwapService.withdraw(token, receiver).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'UNSHIELD',
-            'HINKAL',
-            this.walletConnectorService.address,
-            token.address,
-            token.weiAmount.toFixed(),
-            token.blockchain
-          );
-          if (isSuccess)
+          if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'UNSHIELD',
+              'HINKAL',
+              this.walletConnectorService.address,
+              token.address,
+              token.weiAmount.toFixed(),
+              token.blockchain
+            );
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
             );
+          }
         });
       }
     });
@@ -181,18 +192,19 @@ export class HinkalFacadeService {
         return this.hinkalSwapService
           .privateTransfer(token, receiverPrivateShieldedKey)
           .then(isSuccess => {
-            this.privateStatisticsService.saveAction(
-              'TRANSFER',
-              'HINKAL',
-              this.walletConnectorService.address,
-              token.address,
-              token.weiAmount.toFixed(),
-              token.blockchain
-            );
-            if (isSuccess)
+            if (isSuccess) {
+              this.privateStatisticsService.saveAction(
+                'TRANSFER',
+                'HINKAL',
+                this.walletConnectorService.address,
+                token.address,
+                token.weiAmount.toFixed(),
+                token.blockchain
+              );
               this.showSuccessNotification(
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
+            }
           });
       }
     });
@@ -212,18 +224,19 @@ export class HinkalFacadeService {
       label: 'Swap',
       action: () => {
         return this.hinkalSwapService.privateSwap(fromToken, toToken).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'PRIVATE_ONCHAIN_SWAP',
-            'HINKAL',
-            this.walletConnectorService.address,
-            fromToken.address,
-            fromToken.weiAmount.toFixed(),
-            fromToken.blockchain
-          );
-          if (isSuccess)
+          if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'PRIVATE_ONCHAIN_SWAP',
+              'HINKAL',
+              this.walletConnectorService.address,
+              fromToken.address,
+              fromToken.weiAmount.toFixed(),
+              fromToken.blockchain
+            );
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
             );
+          }
         });
       }
     });
