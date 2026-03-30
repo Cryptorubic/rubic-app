@@ -6,6 +6,9 @@
     showDepositStatus: creationConfig.withStatus && depositTrade
   } as state"
 >
+  <div class="back-button" *ngIf="state.showDepositStatus">
+    <app-back-button [isMobile]="false" (onClick)="resetForm()"></app-back-button>
+  </div>
   <app-input-output-container [round]="inputContainerRounding" [marginTop]="true">
     <app-asset-selector
       left
