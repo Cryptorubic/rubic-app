@@ -1,12 +1,7 @@
 import { Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
-import { BehaviorSubject } from 'rxjs';
 
 export class HinkalWorkerSnapshotService {
-  private readonly _currSignature$ = new BehaviorSubject<string | null>(null);
-
-  public get currSignature(): string {
-    return this._currSignature$.value;
-  }
+  private _currSignature: string | null = null;
 
   private readonly hinkal: Hinkal<unknown>;
 
@@ -19,7 +14,7 @@ export class HinkalWorkerSnapshotService {
       await prepareHinkalWithSignature(this.hinkal, address, chainId, signature);
       await this.hinkal.resetMerkleTreesIfNecessary();
       await this.hinkal.getEventsFromHinkal();
-      this._currSignature$.next(signature);
+      this._currSignature = signature;
     } catch (err) {
       console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
     }
@@ -28,7 +23,7 @@ export class HinkalWorkerSnapshotService {
   public async switchNetwork(chainId: number, address: string): Promise<void> {
     if (this.hinkal.getProviderAdapter().chainId !== chainId) {
       this.hinkal.snapshotsClearInterval();
-      await this.updateInstance(address, chainId, this.currSignature);
+      await this.updateInstance(address, chainId, this._currSignature);
     }
   }
 }

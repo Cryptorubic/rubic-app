@@ -15,7 +15,10 @@ export class PrivateStatisticsService {
     userAddress: string,
     tokenAddress: string,
     tokenAmountWei: string,
-    network: string
+    network: string,
+    successfulSteps: string[] = [],
+    failedSteps: string[] = [],
+    refCode: string = ''
   ): void {
     this.httpService
       .post('v3/tmp/private_actions/save_action', {
@@ -25,9 +28,9 @@ export class PrivateStatisticsService {
         userAddress,
         tokenAddress,
         tokenAmountWei,
-        successfulSteps: [],
-        failedSteps: [],
-        refCode: ''
+        successfulSteps,
+        failedSteps,
+        refCode
       })
       .subscribe();
   }

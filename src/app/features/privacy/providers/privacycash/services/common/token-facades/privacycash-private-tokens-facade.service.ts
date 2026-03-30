@@ -31,12 +31,10 @@ export abstract class PrivacycashPrivateTokensFacadeService extends TokensFacade
       this.swapInfo$.pipe(first())
     ]).pipe(
       map(([rubicTokens, privacycashTokens, swapInfo]) => {
-        console.log('privacycashTokens', privacycashTokens);
         const rubicTokensMap = rubicTokens.reduce(
           (acc, token) => ({ ...acc, [this.getKey(token)]: token }),
           {} as Record<string, AvailableTokenAmount>
         );
-        console.log('rubicTokensMap', rubicTokensMap);
         return privacycashTokens
           .filter(
             pcToken =>

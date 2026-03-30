@@ -16,6 +16,9 @@ import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivacycashPrivateSwapTokensFacadeService } from '../../services/common/token-facades/privacycash-private-swap-tokens-facade.service';
+import { compareTokens } from '@app/shared/utils/utils';
+import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
+import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -33,6 +36,10 @@ export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
+
+  private readonly privacycashTokensService = inject(PrivacycashTokensService);
+
+  private readonly privateSwapWindowService = inject(PrivateSwapWindowService);
 
   private readonly notificationsService = inject(NotificationsService);
 
@@ -63,6 +70,29 @@ export class PrivacycashSwapPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.subscribeOnPrivateBalanceChanges();
+  }
+
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.privacycashTokensService.tokens$.pipe(takeUntil(this.destroy$)).subscribe(pcTokens => {
+      const swapInfo = this.privateSwapWindowService.swapInfo;
+      const foundSrcToken = pcTokens.find(pcToken => compareTokens(swapInfo.fromAsset, pcToken));
+      const foundDstToken = pcTokens.find(pcToken => compareTokens(swapInfo.toAsset, pcToken));
+
+      if (swapInfo.fromAsset && foundSrcToken) {
+        const balance = Token.fromWei(foundSrcToken.balanceWei, swapInfo.fromAsset.decimals);
+        this.privateSwapWindowService.patchSwapInfo({
+          fromAsset: { ...swapInfo.fromAsset, amount: balance }
+        });
+      }
+      if (swapInfo.toAsset && foundDstToken) {
+        const balance = Token.fromWei(foundDstToken.balanceWei, swapInfo.toAsset.decimals);
+        this.privateSwapWindowService.patchSwapInfo({
+          toAsset: { ...swapInfo.toAsset, amount: balance }
+        });
+      }
+    });
   }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {

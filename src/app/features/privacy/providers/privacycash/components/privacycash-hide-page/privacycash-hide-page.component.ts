@@ -9,10 +9,11 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
-import { PriceToken, nativeTokensList } from '@cryptorubic/core';
+import { PriceToken, Token, nativeTokensList } from '@cryptorubic/core';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -32,19 +33,16 @@ export class PrivacycashHidePageComponent implements OnInit {
 
   private readonly tokenService = inject(TokenService);
 
+  private readonly tokensFacade = inject(TokensFacadeService);
+
+  private readonly hideWindowService = inject(HideWindowService);
+
   public readonly hideFormCreationConfig: PrivateShieldFormConfig = {
     withActionButton: true,
     withReceiver: false,
     withSrcAmount: true,
     withMaxBtn: true
   };
-
-  // public readonly shieldedTokens$ = this.privateTokensFacade
-  //   .getTokensList('allChains', '', 'from', {} as SwapFormInput)
-  //   .pipe(
-  //     map(tokens => tokens.filter(t => t.amount.gt(0))),
-  //     startWith([])
-  //   );
 
   public readonly receiverCtrl = new FormControl<string>('');
 
@@ -84,6 +82,10 @@ export class PrivacycashHidePageComponent implements OnInit {
         dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);
+
+      const balanceWei = await this.tokensFacade.getAndUpdateTokenBalance(token);
+      const balance = Token.fromWei(balanceWei, token.decimals);
+      this.hideWindowService.setHideAsset({ ...this.hideWindowService.hideAsset, amount: balance });
     } finally {
       loadingCallback();
     }

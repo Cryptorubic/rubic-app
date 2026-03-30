@@ -6,10 +6,12 @@ import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets
 import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import { EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
+import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-hinkal-hide-tokens-page',
@@ -43,7 +45,9 @@ export class HinkalHideTokensPageComponent {
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateActionButtonService: PrivateActionButtonService
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly hideWindowService: HideWindowService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +70,10 @@ export class HinkalHideTokensPageComponent {
 
       const preview$ = openPreview({ steps });
       await firstValueFrom(preview$);
+
+      const balanceWei = await this.tokensFacade.getAndUpdateTokenBalance(token);
+      const balance = Token.fromWei(balanceWei, token.decimals);
+      this.hideWindowService.setHideAsset({ ...this.hideWindowService.hideAsset, amount: balance });
     } finally {
       loadingCallback();
     }

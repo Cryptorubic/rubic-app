@@ -4,8 +4,8 @@ import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
@@ -13,6 +13,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
+import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -46,7 +49,9 @@ export class HinkalTransferTokensPageComponent {
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateActionButtonService: PrivateActionButtonService
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly hinkalBalanceService: HinkalBalanceService,
+    private readonly transferWindowService: PrivateTransferWindowService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +64,41 @@ export class HinkalTransferTokensPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+    this.subscribeOnPrivateBalanceChanges();
+  }
+
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.hinkalBalanceService.balances$
+      .pipe(
+        filter(() => !!this.transferWindowService.transferAsset?.address),
+        map(shieldBalances => {
+          const balances =
+            shieldBalances[
+              this.transferWindowService.transferAsset.blockchain as EvmBlockchainName
+            ];
+
+          return (
+            balances &&
+            balances.find(balance =>
+              compareAddresses(
+                balance.tokenAddress,
+                this.transferWindowService.transferAsset.address
+              )
+            )
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(shieldBalance => {
+        const transferAsset = this.transferWindowService.transferAsset;
+
+        this.transferWindowService.setTransferAsset({
+          ...transferAsset,
+          amount: shieldBalance
+            ? Token.fromWei(shieldBalance.amount, transferAsset.decimals)
+            : new BigNumber(0)
+        });
+      });
   }
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

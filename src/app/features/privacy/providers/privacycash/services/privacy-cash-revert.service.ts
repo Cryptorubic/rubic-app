@@ -14,6 +14,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../constants/privacycash-consts';
 import BigNumber from 'bignumber.js';
 import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-wallet-tokens.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 
 @Injectable()
 export class PrivacycashRefundService {
@@ -22,7 +24,8 @@ export class PrivacycashRefundService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly privacycashSignatureService: PrivacycashSignatureService,
     private readonly notificationsService: NotificationsService,
-    private readonly ephemeralWalletTokensService: EphemeralWalletTokensService
+    private readonly ephemeralWalletTokensService: EphemeralWalletTokensService,
+    private readonly privateStatisticsService: PrivateStatisticsService
   ) {}
 
   /**
@@ -59,100 +62,150 @@ export class PrivacycashRefundService {
   }
 
   private async revertNative(receiverAddr: string): Promise<void> {
-    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SOLANA);
-    const senderPK = new PublicKey(this.walletConnectorService.address);
-    const receiverPK = new PublicKey(receiverAddr);
+    const successfullSteps: string[] = [];
+    const failedSteps: string[] = [];
+    let weiAmount = new BigNumber(0);
 
-    const ephemeralKeypair =
-      await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
-        this.privacycashSignatureService.signature,
-        senderPK,
-        0
+    try {
+      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        BLOCKCHAIN_NAME.SOLANA
       );
-    const burnerWalletBalanceWei = await adapter.getBalance(ephemeralKeypair.publicKey.toBase58());
-    const amountLeftForGasWei = Token.toWei(
-      EPHEMERAL_WALLET_GAS_AMOUNT,
-      nativeTokensList.SOLANA.decimals
-    );
-    const availableBalanceToRefundWei = burnerWalletBalanceWei.minus(amountLeftForGasWei);
-    if (availableBalanceToRefundWei.lte(0)) {
-      this.notificationsService.showWarning('Withdrawal failed: 0.0033 SOL is required for gas.');
-      return;
+      const senderPK = new PublicKey(this.walletConnectorService.address);
+      const receiverPK = new PublicKey(receiverAddr);
+
+      const ephemeralKeypair =
+        await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
+          this.privacycashSignatureService.signature,
+          senderPK,
+          0
+        );
+      const burnerWalletBalanceWei = await adapter.getBalance(
+        ephemeralKeypair.publicKey.toBase58()
+      );
+      const amountLeftForGasWei = Token.toWei(
+        EPHEMERAL_WALLET_GAS_AMOUNT,
+        nativeTokensList.SOLANA.decimals
+      );
+      const availableBalanceToRefundWei = burnerWalletBalanceWei.minus(amountLeftForGasWei);
+      weiAmount = availableBalanceToRefundWei;
+      if (availableBalanceToRefundWei.lte(0)) {
+        this.notificationsService.showWarning('Withdrawal failed: 0.0033 SOL is required for gas.');
+        return;
+      }
+
+      const transferBlockhash = await adapter.public.getLatestBlockhash();
+      const transaction = new Transaction({
+        feePayer: ephemeralKeypair.publicKey,
+        blockhash: transferBlockhash.blockhash,
+        lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
+      }).add(
+        SystemProgram.transfer({
+          fromPubkey: ephemeralKeypair.publicKey,
+          toPubkey: receiverPK,
+          lamports: availableBalanceToRefundWei.toNumber()
+        })
+      );
+      transaction.sign(ephemeralKeypair);
+
+      const signature = await adapter.public.sendRawTransaction(transaction.serialize());
+
+      successfullSteps.push(`refund(signature: ${signature})`);
+      this.notificationsService.showInfo('Successfull refund.');
+    } catch (err) {
+      failedSteps.push(err.message);
+      throw err;
+    } finally {
+      this.privateStatisticsService.saveAction(
+        'REFUND',
+        PRIVATE_TRADE_TYPE.PRIVACY_CASH,
+        this.walletConnectorService.address,
+        nativeTokensList.SOLANA.address,
+        weiAmount.toFixed(),
+        nativeTokensList.SOLANA.blockchain,
+        successfullSteps,
+        failedSteps,
+        ''
+      );
     }
-
-    const transferBlockhash = await adapter.public.getLatestBlockhash();
-    const transaction = new Transaction({
-      feePayer: ephemeralKeypair.publicKey,
-      blockhash: transferBlockhash.blockhash,
-      lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
-    }).add(
-      SystemProgram.transfer({
-        fromPubkey: ephemeralKeypair.publicKey,
-        toPubkey: receiverPK,
-        lamports: availableBalanceToRefundWei.toNumber()
-      })
-    );
-    transaction.sign(ephemeralKeypair);
-
-    const signature = await adapter.public.sendRawTransaction(transaction.serialize());
-
-    console.debug('[PrivacycashRefundService_revertNative] signature:', signature);
-    this.notificationsService.showInfo('Successfull refund.');
   }
 
   private async revertSPL(tokenAddr: string, receiverAddr: string): Promise<void> {
-    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SOLANA);
-    const userPK = new PublicKey(this.walletConnectorService.address);
-    const receiverPK = new PublicKey(receiverAddr);
-    const mintPK = new PublicKey(tokenAddr);
+    const successfullSteps: string[] = [];
+    const failedSteps: string[] = [];
+    let weiAmount = new BigNumber(0);
 
-    const ephemeralKeypair =
-      await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
-        this.privacycashSignatureService.signature,
-        userPK,
-        0
+    try {
+      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        BLOCKCHAIN_NAME.SOLANA
       );
-    const burnerWalletBalanceWei = await adapter.getBalance(
-      ephemeralKeypair.publicKey.toBase58(),
-      tokenAddr
-    );
-    if (burnerWalletBalanceWei.lte(0)) {
-      this.notificationsService.showWarning('Nothing to refund.');
-      return;
+      const userPK = new PublicKey(this.walletConnectorService.address);
+      const receiverPK = new PublicKey(receiverAddr);
+      const mintPK = new PublicKey(tokenAddr);
+
+      const ephemeralKeypair =
+        await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
+          this.privacycashSignatureService.signature,
+          userPK,
+          0
+        );
+      const burnerWalletBalanceWei = await adapter.getBalance(
+        ephemeralKeypair.publicKey.toBase58(),
+        tokenAddr
+      );
+      weiAmount = burnerWalletBalanceWei;
+      if (burnerWalletBalanceWei.lte(0)) {
+        this.notificationsService.showWarning('Nothing to refund.');
+        return;
+      }
+
+      const burnerATA = await getOrCreateAssociatedTokenAccount(
+        adapter.public,
+        ephemeralKeypair,
+        mintPK,
+        ephemeralKeypair.publicKey
+      );
+      const recipientATA = await getOrCreateAssociatedTokenAccount(
+        adapter.public,
+        ephemeralKeypair,
+        mintPK,
+        receiverPK
+      );
+      const transferInstruction = createTransferInstruction(
+        burnerATA.address,
+        recipientATA.address,
+        ephemeralKeypair.publicKey,
+        burnerWalletBalanceWei.toNumber(),
+        [],
+        TOKEN_PROGRAM_ID
+      );
+
+      const transferBlockhash = await adapter.public.getLatestBlockhash();
+      let transaction = new Transaction({
+        feePayer: ephemeralKeypair.publicKey,
+        blockhash: transferBlockhash.blockhash,
+        lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
+      }).add(transferInstruction);
+      transaction.sign(ephemeralKeypair);
+
+      const signature = await adapter.public.sendRawTransaction(transaction.serialize());
+
+      successfullSteps.push(`refund(signature: ${signature})`);
+      this.notificationsService.showInfo('Successfull refund.');
+    } catch (err) {
+      failedSteps.push(err.message);
+      throw err;
+    } finally {
+      this.privateStatisticsService.saveAction(
+        'REFUND',
+        PRIVATE_TRADE_TYPE.PRIVACY_CASH,
+        this.walletConnectorService.address,
+        tokenAddr,
+        weiAmount.toFixed(),
+        BLOCKCHAIN_NAME.SOLANA,
+        successfullSteps,
+        failedSteps,
+        ''
+      );
     }
-
-    const burnerATA = await getOrCreateAssociatedTokenAccount(
-      adapter.public,
-      ephemeralKeypair,
-      mintPK,
-      ephemeralKeypair.publicKey
-    );
-    const recipientATA = await getOrCreateAssociatedTokenAccount(
-      adapter.public,
-      ephemeralKeypair,
-      mintPK,
-      receiverPK
-    );
-    const transferInstruction = createTransferInstruction(
-      burnerATA.address,
-      recipientATA.address,
-      ephemeralKeypair.publicKey,
-      burnerWalletBalanceWei.toNumber(),
-      [],
-      TOKEN_PROGRAM_ID
-    );
-
-    const transferBlockhash = await adapter.public.getLatestBlockhash();
-    let transaction = new Transaction({
-      feePayer: ephemeralKeypair.publicKey,
-      blockhash: transferBlockhash.blockhash,
-      lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
-    }).add(transferInstruction);
-    transaction.sign(ephemeralKeypair);
-
-    const signature = await adapter.public.sendRawTransaction(transaction.serialize());
-
-    console.debug('[PrivacycashRefundService_revertSPL] signature:', signature);
-    this.notificationsService.showInfo('Successfull refund.');
   }
 }
