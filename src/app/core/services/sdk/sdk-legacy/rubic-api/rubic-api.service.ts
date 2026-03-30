@@ -46,7 +46,16 @@ import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
+import {
+  delay,
+  exhaustMap,
+  filter,
+  first,
+  retry,
+  startWith,
+  switchMap,
+  throttleTime
+} from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
@@ -306,7 +315,10 @@ export class RubicApiService {
   public handleSocketConnected(): Observable<void> {
     return this.socket$.pipe(
       filter(socket => !!socket),
-      switchMap(socket => fromEvent(socket, 'connect'))
+      switchMap(socket => {
+        const connect$ = fromEvent<void>(socket, 'connect');
+        return socket.connected ? connect$.pipe(startWith(undefined as void)) : connect$;
+      })
     );
   }
 

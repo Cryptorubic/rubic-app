@@ -7,6 +7,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { inject, Injectable } from '@angular/core';
 import { ZamaTokensService } from './zama-sdk/zama-tokens.service';
 import { compareAddresses, EvmBlockchainName } from '@cryptorubic/core';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Injectable()
 export class ZamaHideTokensFacadeService extends TokensFacadeService {
@@ -16,22 +17,24 @@ export class ZamaHideTokensFacadeService extends TokensFacadeService {
     type: AssetListType,
     _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     const supportedTokensMapping = this.tokensService.supportedTokensMapping;
 
-    return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
-      map(tokens => {
-        const supportedTokens = tokens.filter(({ blockchain, address }) => {
-          const shieldedTokens = supportedTokensMapping[blockchain as EvmBlockchainName];
-          return (
-            shieldedTokens &&
-            shieldedTokens.find(token => compareAddresses(token.tokenAddress, address))
-          );
-        });
+    return this.tokensBuilderService
+      .getTokensList(type, _query, direction, getEmptySwapFormInput())
+      .pipe(
+        map(tokens => {
+          const supportedTokens = tokens.filter(({ blockchain, address }) => {
+            const shieldedTokens = supportedTokensMapping[blockchain as EvmBlockchainName];
+            return (
+              shieldedTokens &&
+              shieldedTokens.find(token => compareAddresses(token.tokenAddress, address))
+            );
+          });
 
-        return supportedTokens;
-      })
-    );
+          return supportedTokens;
+        })
+      );
   }
 }
