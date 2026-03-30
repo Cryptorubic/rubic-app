@@ -41,7 +41,7 @@ export class SwapDataElementComponent {
     if (value.displayAmount) {
       this.displayAmount = value.displayAmount;
     } else {
-      const providerPercentFee = value?.fee?.provider.platformFee;
+      const providerPercentFee = value?.fee?.provider?.platformFee;
       const percentFeeAmount = new BigNumber(providerPercentFee?.percent ?? 0).multipliedBy(
         providerPercentFee?.token.tokenAmount ?? 0
       );
@@ -52,6 +52,7 @@ export class SwapDataElementComponent {
       const nativeFeeSum = new BigNumber(0)
         .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
         .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
+
       if (nativeFeeSum.gt(0)) {
         if (value?.nativeToken?.price) {
           const fiatAmountOut = nativeFeeSum
@@ -75,14 +76,21 @@ export class SwapDataElementComponent {
           }
         }
       } else if (percentFeeAmountUsd.gt(0)) {
-        const bnPipe = new BigNumberFormatPipe();
-        const shortenPipe = new ShortenAmountPipe();
-        const uiPercentFeeTokenAmount = shortenPipe.transform(
-          bnPipe.transform(percentFeeAmount),
-          6,
-          4
-        );
-        this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
+        if (value?.nativeToken?.price) {
+          const fiatAmountOut = nativeFeeSum
+            .multipliedBy(value.nativeToken.price)
+            .plus(percentFeeAmountUsd);
+          this.displayAmount = fiatAmountOut.gt(0.001) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
+        } else {
+          const bnPipe = new BigNumberFormatPipe();
+          const shortenPipe = new ShortenAmountPipe();
+          const uiPercentFeeTokenAmount = shortenPipe.transform(
+            bnPipe.transform(percentFeeAmount),
+            6,
+            4
+          );
+          this.displayAmount = `${uiPercentFeeTokenAmount} ${providerPercentFee?.token.symbol}`;
+        }
       } else {
         this.displayAmount = this.creationConfig.zeroFeeText ?? null;
       }
