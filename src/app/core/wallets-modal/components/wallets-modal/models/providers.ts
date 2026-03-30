@@ -16,7 +16,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
