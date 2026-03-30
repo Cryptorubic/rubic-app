@@ -15,6 +15,7 @@ import { PrivacyMainPageService } from '@app/features/privacy/services/privacy-m
 import { PrivacyFormValue } from '@app/features/privacy/services/models/privacy-form';
 import { PrivateSwapWindowService } from '../private-swap-window/private-swap-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Injectable()
 export class PrivateQueryParamsService {
@@ -29,6 +30,8 @@ export class PrivateQueryParamsService {
   private readonly privacyMainPageService = inject(PrivacyMainPageService);
 
   private readonly swapFormQueryService = inject(SwapFormQueryService);
+
+  private readonly queryParamsService = inject(QueryParamsService);
 
   private readonly router = inject(Router);
 
@@ -112,10 +115,7 @@ export class PrivateQueryParamsService {
 
   public setQueryParams(swapInfo: PrivacyFormValue): void {
     const queryParams = this.convertSwapInfoToQueryParams(swapInfo);
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams
-    });
+    this.queryParamsService.updateQueryParams(queryParams, this.activatedRoute);
   }
 
   private convertSwapInfoToQueryParams(swapInfo: PrivacyFormValue): Partial<QueryParams> {

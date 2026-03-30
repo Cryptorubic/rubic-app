@@ -6,11 +6,11 @@ import {
 } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { Observable, combineLatest, filter, switchMap } from 'rxjs';
 import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../../constants/wallets';
-import { compareAddresses } from '@app/shared/utils/utils';
+import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
 
 @Injectable()
 export class PrivacycashActionButtonService extends PrivateActionButtonService {
@@ -69,6 +69,16 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
       return {
         type: 'error',
         text: 'Select tokens'
+      };
+    }
+    const nativeToken = nativeTokensList[swapInfo.fromAsset.blockchain];
+    if (
+      !compareTokens(nativeToken, swapInfo.fromAsset) &&
+      !compareTokens(nativeToken, swapInfo.toAsset)
+    ) {
+      return {
+        type: 'error',
+        text: 'One token should be native'
       };
     }
     if (!network || network !== swapInfo.fromAsset.blockchain) {

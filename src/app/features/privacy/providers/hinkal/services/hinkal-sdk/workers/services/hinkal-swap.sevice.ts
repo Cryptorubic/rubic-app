@@ -102,8 +102,6 @@ export class HinkalWorkerSwapService {
         false
       )) as RelayerTransaction;
 
-      hinkalInstance.snapshotsClearInterval();
-
       return resp.transactionHash;
     } catch (err) {
       console.log(err);

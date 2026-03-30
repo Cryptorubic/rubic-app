@@ -234,10 +234,10 @@ export class ZamaFacadeService {
     ])
       .pipe(distinctUntilChanged())
       .subscribe(([signature]) => {
+        this.zamaBalanceService.clearBalances();
+
         if (signature) {
           this.zamaBalanceService.refreshBalances();
-        } else {
-          this.zamaBalanceService.clearBalances();
         }
       });
   }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
-import { EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
+import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
@@ -17,6 +17,9 @@ import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.ser
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { HinkalToPrivateAssetsService } from '../../services/hinkal-to-assets.service';
+import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
+import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -51,7 +54,9 @@ export class HinkalSwapTokensPageComponent {
     private readonly hinkalFacadeService: HinkalFacadeService,
     private readonly notificationsService: NotificationsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateActionButtonService: PrivateActionButtonService
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly hinkalBalanceService: HinkalBalanceService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +69,31 @@ export class HinkalSwapTokensPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+    this.subscribeOnPrivateBalanceChanges();
+  }
+
+  private subscribeOnPrivateBalanceChanges(): void {
+    this.hinkalBalanceService.balances$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(shieldedBalances => {
+        const swapInfo = this.privateSwapWindowService.swapInfo;
+
+        if (swapInfo.fromAsset) {
+          const balances = shieldedBalances[swapInfo.fromAsset.blockchain as EvmBlockchainName];
+          const tokenBalance = balances.find(balance =>
+            compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
+          );
+
+          this.privateSwapWindowService.patchSwapInfo({
+            fromAsset: {
+              ...swapInfo.fromAsset,
+              amount: tokenBalance
+                ? Token.fromWei(tokenBalance.amount, swapInfo.fromAsset.decimals)
+                : new BigNumber(0)
+            }
+          });
+        }
+      });
   }
 
   public readonly quoteAdapter = new HinkalQuoteAdapter(
