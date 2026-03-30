@@ -99,16 +99,15 @@ export class ZamaFacadeService {
       label: 'Transfer',
       action: () =>
         this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'TRANSFER',
-            'ZAMA',
-            this.walletConnectorService.address,
-            token.address,
-            token.weiAmount.toFixed(),
-            token.blockchain
-          );
-
           if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'TRANSFER',
+              'ZAMA',
+              this.walletConnectorService.address,
+              token.address,
+              token.weiAmount.toFixed(),
+              token.blockchain
+            );
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
             );
@@ -138,15 +137,15 @@ export class ZamaFacadeService {
       label: 'Shield',
       action: () =>
         this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'SHIELD',
-            'ZAMA',
-            this.walletConnectorService.address,
-            wrapToken.address,
-            wrapToken.weiAmount.toFixed(),
-            wrapToken.blockchain
-          );
           if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'SHIELD',
+              'ZAMA',
+              this.walletConnectorService.address,
+              wrapToken.address,
+              wrapToken.weiAmount.toFixed(),
+              wrapToken.blockchain
+            );
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
             this.refreshBalancesAfterAction();
             this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
@@ -180,16 +179,15 @@ export class ZamaFacadeService {
       label: 'Finalize unshield',
       action: () =>
         this.zamaSwapService.finalizeUnwrap(unwrapToken, unwrapReceipt).then(isSuccess => {
-          this.privateStatisticsService.saveAction(
-            'UNSHIELD',
-            'ZAMA',
-            this.walletConnectorService.address,
-            unwrapToken.address,
-            unwrapToken.weiAmount.toFixed(),
-            unwrapToken.blockchain
-          );
-
           if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'UNSHIELD',
+              'ZAMA',
+              this.walletConnectorService.address,
+              unwrapToken.address,
+              unwrapToken.weiAmount.toFixed(),
+              unwrapToken.blockchain
+            );
             this.showSuccessNotification(
               'Transaction sent. This may take a moment. Please keep Rubic App open'
             );
