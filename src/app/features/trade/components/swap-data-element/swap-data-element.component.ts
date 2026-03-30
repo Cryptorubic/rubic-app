@@ -35,10 +35,10 @@ export class SwapDataElementComponent {
   @Input({ required: true }) set feeInfoChange(value: {
     fee: FeeInfo | null;
     nativeToken: Token;
-    displayAmount?: string;
+    displayAmount?: string | null;
   }) {
     this.feeInfo = value.fee;
-    if (value.displayAmount) {
+    if (value.displayAmount !== undefined) {
       this.displayAmount = value.displayAmount;
     } else {
       const providerPercentFee = value?.fee?.provider.platformFee;

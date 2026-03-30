@@ -92,6 +92,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         blockchain: fromToken.blockchain
       };
       const preview$ = openPreview({
+        displayAmount: null,
         steps: [
           {
             label: 'Swap',
