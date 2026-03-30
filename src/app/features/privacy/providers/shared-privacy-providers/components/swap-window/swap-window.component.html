@@ -25,6 +25,7 @@
         inputMode="input"
         (amountUpdated)="updateInputValue($event)"
         [amountValue]="state.swapInfo.fromAmount"
+        [allowManualInputClear]="true"
       ></app-amount-transput>
       <app-user-balance-container
         [fromToken$]="fromToken$"
