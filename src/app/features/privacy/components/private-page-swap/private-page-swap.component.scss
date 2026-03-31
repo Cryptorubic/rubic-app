@@ -106,6 +106,20 @@
       }
     }
 
+    &.disabled {
+      opacity: 0.5;
+
+      app-asset-selector {
+        cursor: not-allowed;
+        
+        ::ng-deep {
+          .selector {
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
     app-asset-selector {
       flex: 1;
 

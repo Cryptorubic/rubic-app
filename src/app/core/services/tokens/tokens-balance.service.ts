@@ -201,12 +201,6 @@ export class TokensBalanceService {
     }
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const balancePromises: Promise<BigNumber>[] = [];
-
-    balancePromises.push(
-      this.getAndUpdateTokenBalance(fromToken),
-      this.getAndUpdateTokenBalance(toToken)
-    );
 
     if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);

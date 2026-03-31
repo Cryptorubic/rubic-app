@@ -1,7 +1,8 @@
 <div
   class="swap-container"
   *ngLet="{
-    swapInfo: swapInfo$ | async
+    swapInfo: swapInfo$ | async,
+    showAllProviders: showAllProviders$ | async
   } as state"
 >
   <div class="providers-switcher-wrapper">
@@ -9,18 +10,26 @@
       Show all {{ selectedTab$ | async | lowercase }} providers
       <tui-toggle
         size="m"
-        [ngModel]="showAllProviders$ | async"
+        [ngModel]="state.showAllProviders"
         (ngModelChange)="switchShowAllProviders($event)"
       ></tui-toggle>
     </div>
   </div>
 
   <div class="selectors-wrapper">
-    <div class="selectors-container" [class.without-output]="!hasOutputContainer">
+    <div
+      class="selectors-container"
+      [class.without-output]="!hasOutputContainer"
+      [class.disabled]="state.showAllProviders"
+      [tuiHint]="state.showAllProviders ? 'Disabled show all providers switcher' : ''"
+      tuiHintAppearance="error"
+      tuiHintDirection="top-left"
+    >
       <app-asset-selector
         [class.empty]="!state.swapInfo.fromAsset"
         selectorType="from"
         [asset]="state.swapInfo.fromAsset"
+        [isDisabled]="state.showAllProviders"
         (handleAssetSelection)="openInputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">
@@ -37,7 +46,7 @@
         [class.empty]="!state.swapInfo.toAsset"
         selectorType="to"
         [asset]="state.swapInfo.toAsset"
-        [isDisabled]="!state.swapInfo.fromAsset"
+        [isDisabled]="!state.swapInfo.fromAsset || state.showAllProviders"
         (handleAssetSelection)="openOutputSelector()"
       >
         <ng-template #emptySelector let-isDisabled="isDisabled">
