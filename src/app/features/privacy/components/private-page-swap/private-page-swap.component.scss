@@ -66,45 +66,12 @@
     display: flex;
     gap: 2px;
 
-    @include b($mobile-sm-middle) {
-      flex-direction: column;
-
-      app-asset-selector {
-        border-radius: 0 !important;
-
-        &:first-child {
-          padding: 16px 16px 32px !important;
-        }
-        
-        &:nth-child(3) {
-          justify-content: start !important;
-          padding: 32px 16px 16px !important;
-        }
-
-        &.empty,
-        &.empty:first-child {
-          padding: 24px 20px !important;
-        }
-      }
-      
-      &.without-output {
-        app-asset-selector {
-          &:first-child {
-            padding: 24px 16px !important;
-          }
-        }
-      }
-
-      app-form-switcher {
-        transform: translate(-50%, -50%) !important;
-      }
-    }
-
     &.disabled {
       cursor: not-allowed;
       opacity: 0.5;
 
-      * {
+      *,
+      ::ng-deep * {
         cursor: not-allowed !important;
       }
     }
@@ -154,6 +121,40 @@
         .switcher {
           transform: unset;
         }
+      }
+    }
+
+    @include b($mobile-sm-middle) {
+      flex-direction: column;
+
+      app-asset-selector {
+        border-radius: 0;
+
+        &:first-child {
+          padding: 16px 16px 32px;
+        }
+        
+        &:nth-child(3) {
+          justify-content: start;
+          padding: 32px 16px 16px;
+        }
+
+        &.empty,
+        &.empty:first-child {
+          padding: 24px 20px;
+        }
+      }
+      
+      &.without-output {
+        app-asset-selector {
+          &:first-child {
+            padding: 24px 16px;
+          }
+        }
+      }
+
+      app-form-switcher {
+        transform: translate(-50%, -50%);
       }
     }
   }
