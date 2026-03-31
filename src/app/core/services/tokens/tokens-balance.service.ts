@@ -451,6 +451,7 @@ export class TokensBalanceService {
       .subscribe(([user, balanceNetworks]) => {
         if (user?.address) {
           this.collectionsFacade.allTokens.setBalanceLoading(true);
+          this.tokensStore.clearAllBalances();
           Promise.all([
             this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
             this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
