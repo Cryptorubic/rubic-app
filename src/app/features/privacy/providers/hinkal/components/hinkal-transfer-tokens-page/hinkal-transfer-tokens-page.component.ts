@@ -7,7 +7,6 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -16,6 +15,7 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
 import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import BigNumber from 'bignumber.js';
+import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',

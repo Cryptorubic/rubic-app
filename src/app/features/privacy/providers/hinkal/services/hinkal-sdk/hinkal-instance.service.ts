@@ -70,4 +70,13 @@ export class HinkalInstanceService {
       return false;
     }
   }
+
+  public async clearSnapshotsInterval(): Promise<void> {
+    try {
+      await this.workerService.request({
+        params: {},
+        type: 'stop'
+      });
+    } catch {}
+  }
 }

@@ -14,7 +14,6 @@ import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -26,6 +25,7 @@ import { HinkalToPrivateAssetsService } from '../../services/hinkal-to-assets.se
 import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
+import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -36,6 +36,7 @@ import BigNumber from 'bignumber.js';
     TuiDestroyService,
     { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: ToAssetsService, useClass: HinkalToPrivateAssetsService },
+
     { provide: TokensFacadeService, useClass: HinkalSwapTokensFacadeService }
   ]
 })
