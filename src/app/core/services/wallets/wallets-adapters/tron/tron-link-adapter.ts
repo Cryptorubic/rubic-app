@@ -51,6 +51,9 @@ export class TronLinkAdapter extends CommonWalletAdapter {
   }
 
   private async connectToWallet(): Promise<void> {
+    const url = encodeURIComponent(window.location.href);
+    window.location.href = `tronlink://dapp?url=${url}`;
+
     const provider = this.window.tronLink;
     if (provider?.isBitKeepChrome) {
       throw new RubicError('Please, check you unlocked TronLink.');
