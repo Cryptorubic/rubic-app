@@ -12,8 +12,7 @@ export class HinkalWorkerSnapshotService {
   public async updateInstance(address: string, chainId: number, signature: string): Promise<void> {
     try {
       await prepareHinkalWithSignature(this.hinkal, address, chainId, signature);
-      await this.hinkal.resetMerkleTreesIfNecessary();
-      await this.hinkal.getEventsFromHinkal();
+      await this.hinkal.resetMerkle();
       this._currSignature = signature;
     } catch (err) {
       console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
@@ -25,5 +24,12 @@ export class HinkalWorkerSnapshotService {
       this.hinkal.snapshotsClearInterval();
       await this.updateInstance(address, chainId, this._currSignature);
     }
+  }
+
+  public async clearSnapshotsInterval(): Promise<void> {
+    try {
+      await this.hinkal.getEventsFromHinkal();
+      this.hinkal.snapshotsClearInterval();
+    } catch {}
   }
 }

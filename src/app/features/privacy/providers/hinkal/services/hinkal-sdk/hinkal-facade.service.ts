@@ -3,15 +3,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  filter,
-  skip,
-  Subscription,
-  switchMap,
-  tap
-} from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, filter, skip, Subscription, switchMap } from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -50,10 +42,6 @@ export class HinkalFacadeService {
         ? asset
         : BLOCKCHAIN_NAME.ETHEREUM
     );
-  }
-
-  public resetChain(): void {
-    this._activeChain$.next(null);
   }
 
   public readonly activeChain$ = this._activeChain$.asObservable();
@@ -272,7 +260,6 @@ export class HinkalFacadeService {
         filter(Boolean),
         skip(1),
         distinctUntilChanged(),
-        tap(chain => console.log('CHAIN SWITCHED', chain)),
         switchMap(chain => {
           this._balanceLoading$.next(true);
           return this.hinkalWorkerService
@@ -301,7 +288,21 @@ export class HinkalFacadeService {
       });
   }
 
-  public removeSubs(): void {
+  private removeSubs(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+  }
+
+  private resetChain(): void {
+    this._activeChain$.next(null);
+  }
+
+  private stopWorkerEvents(): Promise<void> {
+    return this.hinkalInstanceService.clearSnapshotsInterval();
+  }
+
+  public resetState(): void {
+    this.removeSubs();
+    this.resetChain();
+    this.stopWorkerEvents();
   }
 }

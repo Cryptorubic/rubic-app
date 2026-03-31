@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { HinkalBalanceService } from './hinkal-sdk/hinkal-balance.service';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { map, Observable, switchMap } from 'rxjs';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { BlockchainsInfo, compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { PrivateSwapWindowService } from '../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { sorterByChain } from '@app/features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { HINKAL_SUPPORTED_CHAINS } from '../constants/hinkal-supported-chains';
+import { HinkalBalanceService } from '../hinkal-sdk/hinkal-balance.service';
+import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 
 @Injectable()
 export class HinkalSwapTokensFacadeService extends TokensFacadeService {

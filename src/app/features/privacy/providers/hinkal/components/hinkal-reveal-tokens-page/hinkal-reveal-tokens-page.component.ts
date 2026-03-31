@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
@@ -15,6 +14,7 @@ import { ToAssetsService } from '@app/features/trade/components/assets-selector/
 import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.service';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import BigNumber from 'bignumber.js';
+import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
 
 @Component({
   selector: 'app-hinkal-reveal-tokens-page',

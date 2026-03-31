@@ -9,7 +9,8 @@ export type HinkalWorkerType =
   | 'deposit'
   | 'transfer'
   | 'quote'
-  | 'swap';
+  | 'swap'
+  | 'stop';
 
 export interface PureTokenAmount<T extends BlockchainName = BlockchainName> {
   stringWeiAmount: string;

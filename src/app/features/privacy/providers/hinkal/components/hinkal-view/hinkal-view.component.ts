@@ -15,8 +15,8 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
-import { HinkalSwapTokensFacadeService } from '../../services/hinkal-swap-tokens-facade.service';
 import { ActivatedRoute } from '@angular/router';
+import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hide-facade.service';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -60,7 +60,7 @@ export class HinkalViewComponent {
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly privatePageTypeService: PrivatePageTypeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly hinkalRevealFacade: HinkalSwapTokensFacadeService,
+    private readonly hinkalHideFacade: HinkalHideFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly privateLocalStorageService: PrivateLocalStorageService,
@@ -91,8 +91,7 @@ export class HinkalViewComponent {
   }
 
   ngOnDestroy() {
-    this.hinkalFacadeService.removeSubs();
-    this.hinkalFacadeService.resetChain();
+    this.hinkalFacadeService.resetState();
   }
 
   public onPageSelect(page: PageType): void {
@@ -100,7 +99,7 @@ export class HinkalViewComponent {
   }
 
   private parseQueryParams(): void {
-    this.hinkalRevealFacade
+    this.hinkalHideFacade
       .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
       .pipe(
         filter(tokens => tokens.length > 0),

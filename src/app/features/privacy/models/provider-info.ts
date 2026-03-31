@@ -12,8 +12,10 @@ export interface PrivateProviderInfoUI {
   icon: `assets/images/private-swaps/common/${string}`;
   url: PrivateProviderUrl;
   warning?: { message: string; hint: string };
-  minAmountUsd: number;
-  feeSize: string;
+  //minAmountUsd: number;
+  executionTimeRate: number;
+  feeInfo: { feeSize: string; feeRate: number };
+  executionSteps: { steps: number; hint: string };
 }
 
 export interface PrivateProviderRawInfo {
@@ -24,10 +26,12 @@ export interface PrivateProviderRawInfo {
   icon: `assets/images/private-swaps/common/${string}`;
   url: PrivateProviderUrl;
   warning?: { message: string; hint: string };
-  getMinAmountUsd: (tab: PrivateModeTab) => number;
-  getFeeSize: (
+  executionTimeRate: number;
+  //getMinAmountUsd: (tab: PrivateModeTab) => number;
+  getExecutionStepsInfo: (tab: PrivateModeTab) => { steps: number; hint: string };
+  getFeeInfo: (
     tab: PrivateModeTab,
     formValue: Partial<PrivacyFormValue>,
     privacyApiService: PrivacyApiService
-  ) => Promise<string>;
+  ) => Promise<{ feeSize: string; feeRate: number }>;
 }
