@@ -10,6 +10,8 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hide-facade.service';
 
 @Component({
   selector: 'app-hinkal-hide-tokens-page',
@@ -21,6 +23,10 @@ import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-c
     {
       provide: FromAssetsService,
       useClass: HinkalPrivateAssetsService
+    },
+    {
+      provide: TokensFacadeService,
+      useClass: HinkalHideFacadeService
     }
   ]
 })

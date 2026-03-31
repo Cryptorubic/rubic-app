@@ -38,7 +38,7 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
     tradeId?: string;
   }> {
     const receiver = this.receiverCtrl.value;
-    if (!this.receiverCtrl.value) {
+    if (!this.receiverCtrl.value && this.houdiniSwapService.requireReceiverAddress) {
       return throwError(() => new Error('Receiver address must not be empty'));
     }
 
@@ -46,11 +46,11 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
 
     return from(Web3Pure.getInstance(toAsset.blockchain).isAddressCorrect(receiver)).pipe(
       tap(isCorrect => {
-        if (!isCorrect) {
+        if (!isCorrect && this.houdiniSwapService.requireReceiverAddress) {
           throw Error('Incorrect receiver address');
         }
       }),
-      switchMap(() =>
+      switchMap(isAddressCorrect =>
         defer(() => {
           return this.houdiniSwapService.quote(
             new TokenAmount({
@@ -58,7 +58,7 @@ export class HoudiniQuoteAdapter implements PrivateQuoteAdapter {
               tokenAmount: fromAmount.actualValue
             }),
             toAsset,
-            this.receiverCtrl.value
+            isAddressCorrect ? receiver : null
           );
         }).pipe(
           retry({

@@ -29,8 +29,14 @@ export class AmountTransputComponent {
 
   @Input() public inputMode: 'input' | 'output' | 'combined';
 
+  @Input() public allowManualInputClear: boolean = false;
+
   @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
-    if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
+    if (
+      this.inputMode !== 'input' ||
+      (value?.actualValue && value?.actualValue.gt(0)) ||
+      (this.inputMode === 'input' && this.allowManualInputClear)
+    ) {
       this.updateAmountValue(value);
     }
   }

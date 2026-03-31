@@ -201,12 +201,6 @@ export class TokensBalanceService {
     }
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const balancePromises: Promise<BigNumber>[] = [];
-
-    balancePromises.push(
-      this.getAndUpdateTokenBalance(fromToken),
-      this.getAndUpdateTokenBalance(toToken)
-    );
 
     if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
@@ -457,6 +451,7 @@ export class TokensBalanceService {
       .subscribe(([user, balanceNetworks]) => {
         if (user?.address) {
           this.collectionsFacade.allTokens.setBalanceLoading(true);
+          this.tokensStore.clearAllBalances();
           Promise.all([
             this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
             this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
