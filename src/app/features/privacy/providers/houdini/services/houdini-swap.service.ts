@@ -117,7 +117,7 @@ export class HoudiniSwapService {
   public async quote(
     fromToken: TokenAmount<BlockchainName>,
     toToken: SharedToken,
-    receiver: string
+    receiver: string | null
   ): Promise<
     | {
         tradeId: string;
@@ -130,9 +130,8 @@ export class HoudiniSwapService {
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const fromAddress = this.walletConnectorService?.address;
-    const receiverAddress = this.requireReceiverAddress
-      ? receiver
-      : this.walletConnectorService.address;
+    const receiverAddress =
+      this.requireReceiverAddress || receiver ? receiver : this.walletConnectorService.address;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -176,8 +175,11 @@ export class HoudiniSwapService {
         const failed = quoteResponse.failed[0];
 
         //TODO: move it to api later
-        if ('minAmount' in failed.data.data) {
-          const errorData = failed.data.data as { minAmount: BigNumber; tokenSymbol: string };
+        if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+          const errorData = {
+            minAmount: new BigNumber(failed.data.data?.minAmount as string),
+            tokenSymbol: failed.data.data?.tokenSymbol as string
+          };
           failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
             errorData.tokenSymbol
           }`;
