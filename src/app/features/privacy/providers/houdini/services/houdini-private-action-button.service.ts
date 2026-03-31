@@ -39,11 +39,13 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     tradeError: Partial<ErrorInterface>,
     requireReceiverAddress: boolean
   ): Promise<PrivateActionButtonState> {
-    const chainType = swapInfo.fromAsset
+    const fromChainType = swapInfo.fromAsset
       ? BlockchainsInfo.getChainType(swapInfo.fromAsset.blockchain)
       : null;
 
-    if (!network && chainType === CHAIN_TYPE.EVM) {
+    const walletChainType = network ? BlockchainsInfo.getChainType(network) : null;
+
+    if ((!network && fromChainType === CHAIN_TYPE.EVM) || walletChainType !== fromChainType) {
       return {
         type: 'action',
         text: 'Connect wallet',
