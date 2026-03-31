@@ -76,9 +76,9 @@
           padding: 16px 16px 32px !important;
         }
         
-        &:last-child {
-          justify-content: start;
-          padding: 32px 16px 16px;
+        &:nth-child(3) {
+          justify-content: start !important;
+          padding: 32px 16px 16px !important;
         }
 
         &.empty,
@@ -96,27 +96,16 @@
       }
 
       app-form-switcher {
-        transform: unset;
-
-        ::ng-deep {
-          .switcher {
-            transform: translate(-50%, -50%);
-          }
-        }
+        transform: translate(-50%, -50%) !important;
       }
     }
 
     &.disabled {
+      cursor: not-allowed;
       opacity: 0.5;
 
-      app-asset-selector {
-        cursor: not-allowed;
-        
-        ::ng-deep {
-          .selector {
-            cursor: not-allowed;
-          }
-        }
+      * {
+        cursor: not-allowed !important;
       }
     }
 
@@ -126,12 +115,12 @@
       background: var(--io-background);
 
       &:first-child {
-        padding: 12px 10px !important;
+        padding: 12px 10px;
 
         border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
       }
 
-      &:last-child {
+      &:nth-child(3) {
         display: flex;
         justify-content: end;
         padding: 12px 20px 12px 0;
@@ -157,11 +146,13 @@
       top: 50%;
       left: 50%;
 
-      transform: rotate(90deg);
+      background: var(--io-background);
+
+      transform: translate(-50%, -50%) rotate(90deg);
 
       ::ng-deep {
         .switcher {
-          transform: translate(-50%, 50%);
+          transform: unset;
         }
       }
     }
