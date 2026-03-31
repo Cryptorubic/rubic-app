@@ -63,6 +63,7 @@ import { PrivateStatisticsService } from '../../shared-privacy-providers/service
 import { compareTokens } from '@app/shared/utils/utils';
 import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { isReceiverCorrect } from '../constants/receiver-validator';
+import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -555,7 +556,14 @@ export class HoudiniSwapService {
   private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
     if (!this.walletConnectorService.address || !blockchain) return Promise.resolve();
 
-    if (blockchain !== this.walletConnectorService.network) {
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const isEvmWallet = this.walletConnectorService.provider instanceof EvmWalletAdapter;
+
+    if (
+      isEvmWallet &&
+      chainType === CHAIN_TYPE.EVM &&
+      blockchain !== this.walletConnectorService.network
+    ) {
       await this.walletConnectorService.switchChain(blockchain as EvmBlockchainName);
     }
 
