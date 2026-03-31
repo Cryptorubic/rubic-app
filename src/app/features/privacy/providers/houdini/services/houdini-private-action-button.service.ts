@@ -6,10 +6,13 @@ import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, ErrorInterface } from '@cr
 import { Web3Pure } from '@cryptorubic/web3';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
+import { HoudiniSwapService } from './houdini-swap.service';
 
 @Injectable()
 export class HoudiniPrivateActionButtonService extends PrivateActionButtonService {
   private readonly houdiniErrorService = inject(HoudiniErrorService);
+
+  private readonly houdiniSwapService = inject(HoudiniSwapService);
 
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
@@ -19,7 +22,8 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
           this.walletConnector.networkChange$,
           this.privateSwapWindowService.swapInfo$,
           this._receiverAddress$,
-          this.houdiniErrorService.tradeError$
+          this.houdiniErrorService.tradeError$,
+          this.houdiniSwapService.requireReceiverAddress$
         ]).pipe(switchMap(params => this.getSwapState(...params)))
       )
     );
@@ -32,7 +36,8 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     network: BlockchainName | null,
     swapInfo: PrivateSwapInfo,
     receiver: string,
-    tradeError: Partial<ErrorInterface>
+    tradeError: Partial<ErrorInterface>,
+    requireReceiverAddress: boolean
   ): Promise<PrivateActionButtonState> {
     const chainType = swapInfo.fromAsset
       ? BlockchainsInfo.getChainType(swapInfo.fromAsset.blockchain)
@@ -72,7 +77,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Enter amount'
       };
     }
-    if (!receiver) {
+    if (!receiver && requireReceiverAddress) {
       return {
         type: 'error',
         text: 'Enter receiver address'
@@ -81,7 +86,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     const isAddressCorrect = await Web3Pure.getInstance(
       swapInfo.toAsset.blockchain
     ).isAddressCorrect(receiver);
-    if (!isAddressCorrect) {
+    if (!isAddressCorrect && requireReceiverAddress) {
       return {
         type: 'error',
         text: 'Incorrect receiver address'

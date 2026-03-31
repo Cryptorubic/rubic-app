@@ -172,6 +172,18 @@ export class TokensFacadeService {
     return this.tokensBalanceService.getAndUpdateTokenBalance(token);
   }
 
+  public async waitForChangeAndGetAndUpdateTokenBalance(
+    token: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    tokenPrevBalanceWei: BigNumber
+  ): Promise<BigNumber> {
+    return this.tokensBalanceService.waitForBalanceChangeAndCall(token, tokenPrevBalanceWei, () =>
+      this.getAndUpdateTokenBalance(token)
+    );
+  }
+
   public async updateTokenBalancesAfterItSwap(
     fromToken: {
       address: string;

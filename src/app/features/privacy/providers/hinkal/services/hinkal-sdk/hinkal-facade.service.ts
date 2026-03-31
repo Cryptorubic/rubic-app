@@ -133,6 +133,12 @@ export class HinkalFacadeService {
             );
             this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
             this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.HINKAL);
+            this.tokensFacade.getAndUpdateTokenBalance(token).then(balance => {
+              this.hideWindowService.setHideAsset({
+                ...this.hideWindowService.hideAsset,
+                amount: balance
+              });
+            });
           }
         })
     });

@@ -96,13 +96,13 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
     ) {
       return {
         type: 'error',
-        text: 'Review Order'
+        text: 'Preview swap'
       };
     }
 
     return {
       type: 'parent',
-      text: 'Review Order'
+      text: 'Preview swap'
     };
   }
 
