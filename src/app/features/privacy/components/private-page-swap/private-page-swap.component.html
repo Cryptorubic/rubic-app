@@ -21,7 +21,9 @@
       class="selectors-container"
       [class.without-output]="!hasOutputContainer"
       [class.disabled]="state.showAllProviders"
-      [tuiHint]="state.showAllProviders ? 'Disabled show all providers switcher' : ''"
+      [tuiHint]="
+        state.showAllProviders ? 'Disable “Show All Providers” to select chains and tokens.' : ''
+      "
       tuiHintAppearance="error"
       tuiHintDirection="top-left"
     >
@@ -39,7 +41,11 @@
         </ng-template>
       </app-asset-selector>
 
-      <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
+      <app-form-switcher
+        *ngIf="hasOutputContainer"
+        [isDisabled]="state.showAllProviders"
+        (switcherClick)="revert()"
+      ></app-form-switcher>
 
       <app-asset-selector
         *ngIf="hasOutputContainer"
