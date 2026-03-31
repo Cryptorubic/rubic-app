@@ -52,10 +52,6 @@ export class HinkalFacadeService {
     );
   }
 
-  public resetChain(): void {
-    this._activeChain$.next(null);
-  }
-
   public readonly activeChain$ = this._activeChain$.asObservable();
 
   constructor(
@@ -301,7 +297,21 @@ export class HinkalFacadeService {
       });
   }
 
-  public removeSubs(): void {
+  private removeSubs(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+  }
+
+  private resetChain(): void {
+    this._activeChain$.next(null);
+  }
+
+  private stopWorkerEvents(): Promise<void> {
+    return this.hinkalInstanceService.clearSnapshotsInterval();
+  }
+
+  public resetState(): void {
+    this.removeSubs();
+    this.resetChain();
+    this.stopWorkerEvents();
   }
 }

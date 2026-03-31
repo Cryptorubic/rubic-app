@@ -85,7 +85,12 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       if (type === 'swap') {
         const { fromToken, toToken } = params as SwapParams;
         const resp = await hinkalWorkerLogic.swapService.privateSwap(fromToken, toToken);
-        postMessage({ success: true, result: resp, type: 'swap' });
+        postMessage({ success: true, result: resp, type: type });
+      }
+
+      if (type === 'stop') {
+        await hinkalWorkerLogic.snapshotService.clearSnapshotsInterval();
+        postMessage({ success: true, result: null, type: type });
       }
     } catch (err) {
       console.log('WORKER ERROR', err);

@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { HinkalBalanceService } from './hinkal-sdk/hinkal-balance.service';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { map, Observable, switchMap } from 'rxjs';
@@ -9,6 +8,7 @@ import { compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { HinkalBalanceService } from '../hinkal-sdk/hinkal-balance.service';
 
 @Injectable()
 export class HinkalRevealFacadeService extends TokensFacadeService {
