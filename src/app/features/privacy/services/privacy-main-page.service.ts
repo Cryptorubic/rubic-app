@@ -117,12 +117,13 @@ export class PrivacyMainPageService {
   ): Promise<PrivateProviderInfoUI[]> {
     return Promise.all(
       privateProvidersRaw.map(providerInfo => {
-        return providerInfo.getFeeSize(selectedTab, formValue, this.privacyApiService).then(
-          feeMsg =>
+        return providerInfo.getFeeInfo(selectedTab, formValue, this.privacyApiService).then(
+          feeInfo =>
             ({
               ...providerInfo,
-              feeSize: feeMsg,
-              minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
+              feeInfo,
+              executionSteps: providerInfo.getExecutionStepsInfo(selectedTab)
+              // minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
             } as PrivateProviderInfoUI)
         );
       })
