@@ -110,7 +110,8 @@ export class HinkalTransferTokensPageComponent {
       const preview$ = openPreview({
         steps,
         warnings: HINKAL_WARNINGS,
-        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed()
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed(),
+        hideFeeInfo: true
       });
 
       await firstValueFrom(preview$);

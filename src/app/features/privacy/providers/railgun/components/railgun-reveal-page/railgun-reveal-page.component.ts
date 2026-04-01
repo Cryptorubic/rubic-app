@@ -127,7 +127,8 @@ export class RailgunRevealPageComponent {
           }
         ],
         swapType: 'unshield',
-        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed()
+        dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
+        hideFeeInfo: true
       });
 
       await firstValueFrom(preview$);

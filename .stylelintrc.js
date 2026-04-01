@@ -31,6 +31,7 @@ module.exports = {
     'scss/dollar-variable-pattern': null,
     'scss/at-function-pattern': null,
     'scss/at-mixin-pattern': null,
-    'scss/at-extend-no-missing-placeholder': null
+    'scss/at-extend-no-missing-placeholder': null,
+    'order/order': null
   }
 }

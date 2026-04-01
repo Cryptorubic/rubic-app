@@ -63,6 +63,7 @@ import { PrivateStatisticsService } from '../../shared-privacy-providers/service
 import { compareTokens } from '@app/shared/utils/utils';
 import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { isReceiverCorrect } from '../constants/receiver-validator';
+import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -117,7 +118,7 @@ export class HoudiniSwapService {
   public async quote(
     fromToken: TokenAmount<BlockchainName>,
     toToken: SharedToken,
-    receiver: string
+    receiver: string | null
   ): Promise<
     | {
         tradeId: string;
@@ -130,9 +131,8 @@ export class HoudiniSwapService {
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const fromAddress = this.walletConnectorService?.address;
-    const receiverAddress = this.requireReceiverAddress
-      ? receiver
-      : this.walletConnectorService.address;
+    const receiverAddress =
+      this.requireReceiverAddress || receiver ? receiver : this.walletConnectorService.address;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -176,8 +176,11 @@ export class HoudiniSwapService {
         const failed = quoteResponse.failed[0];
 
         //TODO: move it to api later
-        if ('minAmount' in failed.data.data) {
-          const errorData = failed.data.data as { minAmount: BigNumber; tokenSymbol: string };
+        if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+          const errorData = {
+            minAmount: new BigNumber(failed.data.data?.minAmount as string),
+            tokenSymbol: failed.data.data?.tokenSymbol as string
+          };
           failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
             errorData.tokenSymbol
           }`;
@@ -553,7 +556,14 @@ export class HoudiniSwapService {
   private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
     if (!this.walletConnectorService.address || !blockchain) return Promise.resolve();
 
-    if (blockchain !== this.walletConnectorService.network) {
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const isEvmWallet = this.walletConnectorService.provider instanceof EvmWalletAdapter;
+
+    if (
+      isEvmWallet &&
+      chainType === CHAIN_TYPE.EVM &&
+      blockchain !== this.walletConnectorService.network
+    ) {
       await this.walletConnectorService.switchChain(blockchain as EvmBlockchainName);
     }
 
