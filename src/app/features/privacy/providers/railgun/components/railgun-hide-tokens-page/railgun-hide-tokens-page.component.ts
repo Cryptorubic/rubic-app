@@ -138,9 +138,12 @@ export class RailgunHideTokensPageComponent {
       ...token,
       shieldingCompleteAtMs: Date.now() + 3600000
     };
-    const alreadyShielded = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS') || [];
-    const newShielded = [shieldToken, ...alreadyShielded];
-    this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newShielded);
+    const storeInfo = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
+    const userInfo = storeInfo?.[this.authService.userAddress];
+    const newShielded = [shieldToken, ...(userInfo || [])];
+    const newInfo = { ...(storeInfo || {}), [this.authService.userAddress]: newShielded };
+
+    this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newInfo);
     this.railgunFacadeService.setShieldedTokens(newShielded);
   }
 }

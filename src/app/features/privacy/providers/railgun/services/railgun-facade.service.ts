@@ -250,8 +250,15 @@ export class RailgunFacadeService {
 
   constructor() {
     console.log('RAILGUN_WORKER_CREATED');
-    const shieldedTokens = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
-    this._shieldedTokens$.next(shieldedTokens || []);
+    this.railgunAccount$.subscribe(account => {
+      if (!account?.evmWalletAddress) {
+        return;
+      }
+      const storeInfo = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
+      const userInfo = storeInfo?.[account.evmWalletAddress.toLowerCase()] || [];
+      this._shieldedTokens$.next(userInfo);
+    });
+
     this.balanceUpdater$.subscribe();
   }
 

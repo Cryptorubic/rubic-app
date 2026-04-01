@@ -85,7 +85,7 @@ export type Store = PrivacyLocalStorage & {
 
   RAILGUN_ENCRYPTION_CREDS_V1: string;
 
-  RAILGUN_SHIELDED_TOKENS: ShieldedBalanceToken[];
+  RAILGUN_SHIELDED_TOKENS: Record<string, ShieldedBalanceToken[]>;
 
   ZAMA_SIGNATURES_INFO: Record<string, SignatureInfo>;
 
