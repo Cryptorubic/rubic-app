@@ -2,4 +2,9 @@
   (handleTransfer)="transfer($event)"
   [receiverCtrl]="receiverCtrl"
   [creationConfig]="creationConfig"
-></app-transfer-tokens-window>
+>
+  <tui-notification>
+    You’re sending a private token to a public address. It won’t show up in your wallet until it’s
+    unshielded.</tui-notification
+  >
+</app-transfer-tokens-window>
