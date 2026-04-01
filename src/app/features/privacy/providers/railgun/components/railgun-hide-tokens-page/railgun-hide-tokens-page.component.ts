@@ -19,6 +19,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
+import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -29,7 +31,8 @@ import { RailgunPublicActionButtonService } from '@features/privacy/providers/ra
     RailgunPublicAssetsService,
     { provide: FromAssetsService, useExisting: RailgunPublicAssetsService },
     TuiDestroyService,
-    { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService }
+    { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService },
+    { provide: TokensFacadeService, useExisting: RailgunHideFacadeService }
   ]
 })
 export class RailgunHideTokensPageComponent {
