@@ -44,7 +44,6 @@ import { RailgunWalletLoadingComponent } from './components/railgun-wallet-loadi
 import { RailgunTokensBootstrapService } from '@features/privacy/providers/railgun/services/common/railgun-tokens-bootstrap.service';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
 import { RailgunRevealFacadeService } from './services/common/railgun-reveal-facade.service';
-import { RailgunMobileStubComponent } from './components/railgun-mobile-stub/railgun-mobile-stub.component';
 
 @NgModule({
   declarations: [
@@ -58,8 +57,7 @@ import { RailgunMobileStubComponent } from './components/railgun-mobile-stub/rai
     RailgunLoginPageComponent,
     RailgunWalletImportComponent,
     RailgunWalletCreateComponent,
-    RailgunWalletLoadingComponent,
-    RailgunMobileStubComponent
+    RailgunWalletLoadingComponent
   ],
   imports: [
     CommonModule,
