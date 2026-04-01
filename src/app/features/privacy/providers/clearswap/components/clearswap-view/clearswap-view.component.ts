@@ -14,6 +14,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ClearswapBalancesService } from '../../services/clearswap-balances.service';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-clearswap-view',
@@ -34,9 +35,13 @@ export class ClearswapViewComponent implements OnInit {
 
   private readonly сlearswapBalancesService = inject(ClearswapBalancesService);
 
+  private readonly headerStore = inject(HeaderStore);
+
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = CLEARSWAP_PAGES;
+
+  public readonly isMobile = this.headerStore.isMobile;
 
   constructor(private readonly privatePageTypeService: PrivatePageTypeService) {
     this.privatePageTypeService.activePage = this.pages[0];

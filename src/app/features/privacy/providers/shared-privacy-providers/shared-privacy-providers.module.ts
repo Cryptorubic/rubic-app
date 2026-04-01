@@ -69,6 +69,8 @@ import { DepositPrivateTradeInfoComponent } from './components/deposit-private-t
 import { PrivateRefundWindowService } from './services/private-refund-window/private-refund-window.service';
 import { PrivateQueryParamsService } from './services/query-params/private-query-params.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { MobileStubComponent } from './components/mobile-stub/mobile-stub.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -89,7 +91,8 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
     SwitchNetworkPageComponent,
     LoginWindowComponent,
     DepositStatusInfoComponent,
-    DepositPrivateTradeInfoComponent
+    DepositPrivateTradeInfoComponent,
+    MobileStubComponent
   ],
   imports: [
     CommonModule,
@@ -110,7 +113,8 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
     TuiDataListWrapperModule,
     TuiAvatarModule,
     TuiSelectModule,
-    ClipboardModule
+    ClipboardModule,
+    RouterModule
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -125,7 +129,8 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
     SwapWindowComponent,
     SwitchNetworkPageComponent,
     LoginWindowComponent,
-    DepositPrivateTradeInfoComponent
+    DepositPrivateTradeInfoComponent,
+    MobileStubComponent
   ],
   providers: [
     SwapsFormService,

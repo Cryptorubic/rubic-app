@@ -43,7 +43,6 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { RailgunWalletLoadingComponent } from './components/railgun-wallet-loading/railgun-wallet-loading.component';
 import { RailgunTokensBootstrapService } from '@features/privacy/providers/railgun/services/common/railgun-tokens-bootstrap.service';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
-import { RailgunMobileStubComponent } from './components/railgun-mobile-stub/railgun-mobile-stub.component';
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 
 @NgModule({
@@ -58,8 +57,7 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     RailgunLoginPageComponent,
     RailgunWalletImportComponent,
     RailgunWalletCreateComponent,
-    RailgunWalletLoadingComponent,
-    RailgunMobileStubComponent
+    RailgunWalletLoadingComponent
   ],
   imports: [
     CommonModule,
