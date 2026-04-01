@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { privacyAuthGuard } from '@features/privacy/guards/privacy-auth.guard';
+import { privacyDisclaimerGuard } from '@features/privacy/guards/privacy-disclaimer.guard';
 
 const routes: Routes = [
   {
@@ -15,8 +16,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.PRIVACY,
-    canActivate: [privacyAuthGuard],
-    canActivateChild: [privacyAuthGuard],
+    canActivateChild: [privacyAuthGuard, privacyDisclaimerGuard],
     loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
   },
   {

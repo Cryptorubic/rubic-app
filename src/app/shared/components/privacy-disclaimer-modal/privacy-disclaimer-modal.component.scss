@@ -1,0 +1,61 @@
+@use 'src/scss/core' as *;
+
+.modal {
+  &__content {
+    @include flex(column, center, space-around);
+    padding: 35px 20px 0;
+
+    text-align: center;
+  }
+
+  &__header {
+    margin-bottom: 10px;
+
+    img {
+      width: 120px;
+    }
+  }
+
+  &__footer {
+    @include flex(row, center, space-around);
+    gap: var(--tui-padding-xl);
+    width: 100%;
+    padding-top: var(--tui-padding-xl);
+
+    app-rubic-button {
+      flex: 0 1 40%;
+    }
+  }
+
+  &__body {
+    width: 336px;
+    margin-bottom: 18px;
+
+    @include b($mobile-md) {
+      width: 100%;
+    }
+
+    a {
+      color: var(--tui-primary);
+      text-decoration: underline;
+    }
+
+    &-path {
+      &__tokens {
+        @include flex(row, center, center);
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .token {
+          @include flex(column, center, center);
+          gap: 3px;
+        }
+
+        img {
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
