@@ -14,7 +14,6 @@ import {
   CHAIN_TYPE
 } from '@cryptorubic/core';
 import { Token as SharedToken } from '@app/shared/models/tokens/token';
-import { RubicSdkError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import {
   BehaviorSubject,
@@ -72,6 +71,11 @@ export class HoudiniSwapService {
   private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
   private readonly _requireReceiverAddress$ = new BehaviorSubject<boolean>(true);
+
+  //TODO: move it somewhere else later
+  private readonly NO_ROUTES_FOUND_ERROR = {
+    tradeError: { code: 2001, reason: 'No routes found' }
+  };
 
   public readonly requireReceiverAddress$ = this._requireReceiverAddress$.asObservable();
 
@@ -132,7 +136,7 @@ export class HoudiniSwapService {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const fromAddress = this.walletConnectorService?.address;
     const receiverAddress =
-      this.requireReceiverAddress || receiver ? receiver : this.walletConnectorService.address;
+      this.requireReceiverAddress || receiver ? receiver : this.walletConnectorService?.address;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -150,7 +154,7 @@ export class HoudiniSwapService {
     try {
       const quoteResponse = await this.rubicApiService.quoteAllRoutes(quoteRequest);
       if (quoteResponse) {
-        const route = quoteResponse.routes[0];
+        const route = quoteResponse?.routes[0];
         if (route) {
           this.filterHoudiniSlippageWarning(route);
 
@@ -159,9 +163,7 @@ export class HoudiniSwapService {
 
           //TODO: change it later
           if (!tokenAmount || !tokenAmountWei) {
-            return {
-              tradeError: { code: 2001, reason: 'No routes found' }
-            };
+            return this.NO_ROUTES_FOUND_ERROR;
           }
 
           await this.setCurrentTrade(quoteRequest, route, receiver);
@@ -173,29 +175,34 @@ export class HoudiniSwapService {
           };
         }
 
-        const failed = quoteResponse.failed[0];
+        const failed = quoteResponse?.failed[0];
 
-        //TODO: move it to api later
-        if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
-          const errorData = {
-            minAmount: new BigNumber(failed.data.data?.minAmount as string),
-            tokenSymbol: failed.data.data?.tokenSymbol as string
-          };
-          failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
-            errorData.tokenSymbol
-          }`;
+        if (failed) {
+          //TODO: move it to api later
+          if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+            const errorData = {
+              minAmount: new BigNumber(failed.data.data?.minAmount as string),
+              tokenSymbol: failed.data.data?.tokenSymbol as string
+            };
+            failed.data.reason = `Min amount is ${errorData.minAmount.toFixed(4)}${
+              errorData.tokenSymbol
+            }`;
+
+            return {
+              tradeError: failed.data
+            };
+          }
 
           return {
             tradeError: failed.data
           };
         }
 
-        return {
-          tradeError: failed.data
-        };
+        return this.NO_ROUTES_FOUND_ERROR;
       }
     } catch (err) {
-      return this.parseQuoteError(err);
+      console.log(err);
+      return this.NO_ROUTES_FOUND_ERROR;
     }
   }
 
@@ -443,21 +450,6 @@ export class HoudiniSwapService {
     );
   }
 
-  private parseQuoteError(error: RubicSdkError): { tradeError: ErrorInterface } {
-    //TODO: refactor this later maybe
-    if (
-      error.message.includes('No routes found.') ||
-      error.message.includes('Request failed with status code 500')
-    ) {
-      return {
-        tradeError: {
-          code: 2001,
-          reason: 'No routes found'
-        }
-      };
-    }
-  }
-
   private showSwapError(error: RubicError<ERROR_TYPE>): void {
     if (error instanceof InsufficientFundsError) {
       this.notificationsService.showError('Insufficient funds.');
@@ -489,11 +481,7 @@ export class HoudiniSwapService {
     };
 
     if (trade instanceof CrossChainTransferTrade) {
-      const paymentInfo = await trade.getTransferTrade(
-        receiver,
-        this.walletConnectorService?.address,
-        true
-      );
+      const paymentInfo = await trade.getTransferTrade(receiver, undefined, true);
 
       // this._paymentInfo$.next(paymentInfo);
       tradeData.paymentInfo = paymentInfo;
@@ -520,7 +508,7 @@ export class HoudiniSwapService {
                 this.privateStatisticsService.saveAction(
                   'PRIVATE_CROSSCHAIN_SWAP',
                   'HOUDINI',
-                  this.walletConnectorService.address,
+                  'nonevm',
                   trade.from.address,
                   trade.from.weiAmount.toFixed(),
                   trade.from.blockchain
@@ -554,10 +542,10 @@ export class HoudiniSwapService {
   }
 
   private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
-    if (!this.walletConnectorService.address || !blockchain) return Promise.resolve();
+    if (!this.walletConnectorService?.address || !blockchain) return Promise.resolve();
 
     const chainType = BlockchainsInfo.getChainType(blockchain);
-    const isEvmWallet = this.walletConnectorService.provider instanceof EvmWalletAdapter;
+    const isEvmWallet = this.walletConnectorService?.provider instanceof EvmWalletAdapter;
 
     if (
       isEvmWallet &&
