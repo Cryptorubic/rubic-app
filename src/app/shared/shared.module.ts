@@ -86,6 +86,7 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
 import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
+import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
 @NgModule({
   declarations: [
@@ -144,7 +145,8 @@ import { TrustlineComponent } from '@app/features/trade/components/trustline/tru
     ChartTogglerComponent,
     InputNumberComponent,
     TrustlineModalComponent,
-    TrustlineComponent
+    TrustlineComponent,
+    PrivacyDisclaimerModalComponent
   ],
   imports: [
     CommonModule,

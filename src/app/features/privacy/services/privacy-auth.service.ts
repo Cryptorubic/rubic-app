@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { HttpService } from '@app/core/services/http/http.service';
 import { BehaviorSubject, combineLatestWith, firstValueFrom, map } from 'rxjs';
 import { PrivateLocalStorageService } from './privacy-local-storage.service';
-import { StoreService } from '@app/core/services/store/store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +23,7 @@ export class PrivacyAuthService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly privateLocalStorage: PrivateLocalStorageService,
-    private readonly storeService: StoreService
+    private readonly privateLocalStorage: PrivateLocalStorageService
   ) {}
 
   public async validateCode(code: string): Promise<boolean> {
@@ -33,9 +31,6 @@ export class PrivacyAuthService {
       const res = await firstValueFrom(
         this.httpService.get<{ is_valid: boolean }>('v3/tmp/referrers/check_code', { code })
       );
-      if (!this._authorized$.value && res.is_valid) {
-        this.storeService.setItem('ALREADY_AUTHORIZED_PRIVACY', true);
-      }
       this._authorized$.next(res.is_valid);
       return res.is_valid;
     } catch (err) {

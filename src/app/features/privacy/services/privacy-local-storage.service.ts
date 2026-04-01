@@ -11,7 +11,7 @@ export class PrivateLocalStorageService {
       (acc, privateTradeType) => ({ ...acc, [privateTradeType]: true }),
       {} as PrivacyLocalStorage['ALREADY_SHIELDED']
     ),
-    ALREADY_AUTHORIZED_PRIVACY: false
+    FIRST_TIME_PRIVACY: true
   });
 
   public readonly storage$ = this._storage$.pipe(shareReplay({ bufferSize: 1, refCount: false }));
@@ -21,7 +21,7 @@ export class PrivateLocalStorageService {
   }
 
   public alreadyAuthorized$(): Observable<boolean> {
-    return this.storage$.pipe(map(storage => storage.ALREADY_AUTHORIZED_PRIVACY));
+    return this.storage$.pipe(map(storage => storage.FIRST_TIME_PRIVACY === false));
   }
 
   constructor(private readonly storeService: StoreService) {
@@ -29,8 +29,8 @@ export class PrivateLocalStorageService {
   }
 
   private initStorage(): void {
-    const alreadyAuthorized = this.storeService.getItem('ALREADY_AUTHORIZED_PRIVACY') || false;
-    this._storage$.next({ ...this._storage$.value, ALREADY_AUTHORIZED_PRIVACY: alreadyAuthorized });
+    const notAuthorized = this.storeService.getItem('FIRST_TIME_PRIVACY') ?? true;
+    this._storage$.next({ ...this._storage$.value, FIRST_TIME_PRIVACY: notAuthorized });
   }
 
   public markProviderAsShielded(providerType: PrivateTradeType): void {

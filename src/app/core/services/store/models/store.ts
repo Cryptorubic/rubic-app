@@ -85,7 +85,7 @@ export type Store = PrivacyLocalStorage & {
 
   RAILGUN_ENCRYPTION_CREDS_V1: string;
 
-  RAILGUN_SHIELDED_TOKENS: ShieldedBalanceToken[];
+  RAILGUN_SHIELDED_TOKENS: Record<string, ShieldedBalanceToken[]>;
 
   ZAMA_SIGNATURES_INFO: Record<string, SignatureInfo>;
 
@@ -115,6 +115,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RAILGUN_SHIELDED_TOKENS: null,
   ZAMA_SIGNATURES_INFO: null,
   ALREADY_SHIELDED: null,
-  ALREADY_AUTHORIZED_PRIVACY: null,
-  SHOW_ALL_PROVIDERS_KEY: null
+  SHOW_ALL_PROVIDERS_KEY: null,
+  FIRST_TIME_PRIVACY: null
 };

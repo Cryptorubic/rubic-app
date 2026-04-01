@@ -4,5 +4,5 @@ export interface PrivacyLocalStorage {
   ALREADY_SHIELDED: {
     [key in PrivateTradeType]: boolean;
   };
-  ALREADY_AUTHORIZED_PRIVACY: boolean;
+  FIRST_TIME_PRIVACY: boolean;
 }

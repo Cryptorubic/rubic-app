@@ -20,6 +20,8 @@ import { getEmptySwapFormInput } from '../../utils/empty-swap-form-input';
 import { List } from 'immutable';
 import { PRIVATE_MODE_SUPPORTED_CHAINS } from '../../constants/private-mode-supported-chains';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../../constants/private-mode-supported-tokens';
+import { StoreService } from '@core/services/store/store.service';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -88,6 +90,10 @@ export class PrivacyPageViewComponent implements OnInit {
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
   public readonly tabs = Object.values(PRIVATE_MODE_TAB);
+
+  private readonly store = inject(StoreService);
+
+  private readonly modalService = inject(ModalService);
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
