@@ -62,6 +62,8 @@ export class SwapFormQueryService {
           const protectedParams = this.getProtectedSwapParams(queryParams);
           const fromBlockchain = protectedParams.fromChain as BlockchainName;
           const toBlockchain = protectedParams.toChain;
+          const isSameToken =
+            protectedParams.from === protectedParams.to && fromBlockchain === toBlockchain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
             List(tokens),
@@ -69,12 +71,9 @@ export class SwapFormQueryService {
             fromBlockchain,
             false
           );
-          const findToToken$ = this.getTokenBySymbolOrAddress(
-            List(tokens),
-            protectedParams.to,
-            toBlockchain,
-            false
-          );
+          const findToToken$ = isSameToken
+            ? of(null)
+            : this.getTokenBySymbolOrAddress(List(tokens), protectedParams.to, toBlockchain, false);
 
           return forkJoin([findFromToken$, findToToken$]).pipe(
             map(([fromToken, toToken]) => ({

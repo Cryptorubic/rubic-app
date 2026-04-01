@@ -19,6 +19,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
+import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -29,7 +31,8 @@ import { RailgunPublicActionButtonService } from '@features/privacy/providers/ra
     RailgunPublicAssetsService,
     { provide: FromAssetsService, useExisting: RailgunPublicAssetsService },
     TuiDestroyService,
-    { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService }
+    { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService },
+    { provide: TokensFacadeService, useExisting: RailgunHideFacadeService }
   ]
 })
 export class RailgunHideTokensPageComponent {
@@ -135,9 +138,12 @@ export class RailgunHideTokensPageComponent {
       ...token,
       shieldingCompleteAtMs: Date.now() + 3600000
     };
-    const alreadyShielded = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS') || [];
-    const newShielded = [shieldToken, ...alreadyShielded];
-    this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newShielded);
+    const storeInfo = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
+    const userInfo = storeInfo?.[this.authService.userAddress];
+    const newShielded = [shieldToken, ...(userInfo || [])];
+    const newInfo = { ...(storeInfo || {}), [this.authService.userAddress]: newShielded };
+
+    this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newInfo);
     this.railgunFacadeService.setShieldedTokens(newShielded);
   }
 }

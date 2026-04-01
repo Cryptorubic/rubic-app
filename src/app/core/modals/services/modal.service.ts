@@ -55,6 +55,7 @@ import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-inf
 import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
+import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -541,6 +542,15 @@ export class ModalService {
         PrivacyAuthWindowComponent,
         { size: 'page' }
       )
+    );
+  }
+
+  public showDisclaimer(): Promise<boolean> {
+    this.setOpenedModalName('privacy-disclaimer');
+    return firstValueFrom(
+      this.showDialog(PrivacyDisclaimerModalComponent, {
+        size: 's'
+      })
     );
   }
 }

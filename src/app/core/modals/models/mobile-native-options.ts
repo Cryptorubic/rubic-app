@@ -41,7 +41,8 @@ export type ModalName =
   | 'swap-backup-rate-changed'
   | 'all-swap-backups-failed'
   | 'cloudflare-validation'
-  | 'trustline-modal';
+  | 'trustline-modal'
+  | 'privacy-disclaimer';
 
 export interface ModalStruct {
   name: ModalName;

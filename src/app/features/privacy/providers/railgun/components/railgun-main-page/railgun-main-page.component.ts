@@ -10,7 +10,6 @@ import { fadeAnimation } from '@shared/utils/utils';
 import { PrivatePageTypeService } from '@features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { TokenService } from '@core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateQueryParamsService } from '../../../shared-privacy-providers/services/query-params/private-query-params.service';
-import { RailgunRevealFacadeService } from '../../services/common/railgun-reveal-facade.service';
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
@@ -19,6 +18,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
+import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 
 @Component({
   selector: 'app-railgun-main-page',
@@ -66,7 +66,7 @@ export class RailgunMainPageComponent {
 
   private readonly privateQueryParamsService = inject(PrivateQueryParamsService);
 
-  private readonly revealTokensFacade = inject(RailgunRevealFacadeService);
+  private readonly tokensFacade = inject(RailgunHideFacadeService);
 
   public readonly pendingBalances$ = this.railgunFacade.shieldedTokens$;
 
@@ -143,7 +143,7 @@ export class RailgunMainPageComponent {
   }
 
   private parseQueryParams(): void {
-    this.revealTokensFacade
+    this.tokensFacade
       .getTokensList('allChains', '', 'from', getEmptySwapFormInput())
       .pipe(
         filter(tokens => tokens.length > 0),
