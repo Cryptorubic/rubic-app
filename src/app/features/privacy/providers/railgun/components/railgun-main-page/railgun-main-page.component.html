@@ -13,7 +13,7 @@
   } as data"
 >
   <div class="privacy-wrapper">
-    <app-railgun-mobile-stub *ngIf="isMobile; else desktop"></app-railgun-mobile-stub>
+    <app-mobile-stub *ngIf="isMobile; else desktop"></app-mobile-stub>
 
     <ng-template #desktop>
       <app-page-navigation
