@@ -116,5 +116,6 @@ export const storeRecord: Record<keyof Store, null> = {
   ZAMA_SIGNATURES_INFO: null,
   ALREADY_SHIELDED: null,
   SHOW_ALL_PROVIDERS_KEY: null,
-  FIRST_TIME_PRIVACY: null
+  FIRST_TIME_PRIVACY: null,
+  PRIVACY_REF_CODE: null
 };
