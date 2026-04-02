@@ -13,6 +13,8 @@ import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 import * as Sentry from '@sentry/angular';
+import { privacyInitializer } from './features/privacy/utils/privacy-initializer';
+import { PrivateLocalStorageService } from './features/privacy/services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -52,6 +54,12 @@ import * as Sentry from '@sentry/angular';
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: privacyInitializer,
+      deps: [PrivateLocalStorageService],
       multi: true
     }
   ],

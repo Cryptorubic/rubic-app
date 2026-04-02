@@ -15,6 +15,8 @@ import { waitFor } from '@cryptorubic/web3';
 import { Subject } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { StoreService } from '@app/core/services/store/store.service';
+import { PrivateLocalStorageService } from '../../services/privacy-local-storage.service';
 
 @Component({
   selector: 'app-privacy-auth-window',
@@ -53,7 +55,9 @@ export class PrivacyAuthWindowComponent implements AfterViewInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<{ valid: boolean; forceClosed: boolean }>,
     private readonly privacyAuthService: PrivacyAuthService,
-    private readonly notificationService: NotificationsService
+    private readonly notificationService: NotificationsService,
+    private readonly storeService: StoreService,
+    private readonly privateStoreService: PrivateLocalStorageService
   ) {}
 
   ngAfterViewInit(): void {
@@ -68,7 +72,13 @@ export class PrivacyAuthWindowComponent implements AfterViewInit {
     this._validationSuccess$.next(valid);
     if (!valid) this.notificationService.showInvalidPrivacyCodeWarning();
     await waitFor(2_000);
-    if (valid) this.context.completeWith({ valid, forceClosed: false });
+    if (valid) {
+      this.storeService.setItem('PRIVACY_REF_CODE', this.privacyAuthService.refCode);
+      this.privateStoreService.patchStorageState({
+        PRIVACY_REF_CODE: this.privacyAuthService.refCode
+      });
+      this.context.completeWith({ valid, forceClosed: false });
+    }
   }
 
   public closeWindow(): void {

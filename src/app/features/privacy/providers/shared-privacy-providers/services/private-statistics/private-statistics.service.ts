@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
+import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { HttpService } from '@core/services/http/http.service';
 import {
   PrivateAction,
@@ -10,7 +10,7 @@ import {
 export class PrivateStatisticsService {
   private readonly httpService = inject(HttpService);
 
-  private readonly privacyAuthService = inject(PrivacyAuthService);
+  private readonly privateLocalStorage = inject(PrivateLocalStorageService);
 
   public saveAction(
     action: PrivateAction,
@@ -32,7 +32,7 @@ export class PrivateStatisticsService {
         tokenAmountWei,
         successfulSteps,
         failedSteps,
-        refCode: this.privacyAuthService.refCode
+        refCode: this.privateLocalStorage.refCode
       })
       .subscribe();
   }
