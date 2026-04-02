@@ -1,0 +1,16 @@
+<app-reveal-window
+  (handleReveal)="reveal($event)"
+  [receiverCtrl]="receiverCtrl"
+  [creationConfig]="{
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true,
+    withMaxBtn: true,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false,
+      showAllChains: false
+    }
+  }"
+></app-reveal-window>

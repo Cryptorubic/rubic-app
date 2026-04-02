@@ -1,0 +1,5 @@
+<app-login-window
+  [authorized]="authorized$ | async"
+  [supportedWallets]="supportedWallets"
+  (handleClick)="signMessage()"
+></app-login-window>

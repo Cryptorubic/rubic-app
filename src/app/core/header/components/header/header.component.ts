@@ -13,7 +13,7 @@ import {
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Router } from '@angular/router';
+import { IsActiveMatchOptions, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { map, startWith } from 'rxjs/operators';
@@ -32,6 +32,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 })
 export class HeaderComponent {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
+
+  public readonly ROUTER_LINK_OPTS: IsActiveMatchOptions = {
+    queryParams: 'ignored',
+    matrixParams: 'exact',
+    paths: 'exact',
+    fragment: 'exact'
+  };
 
   /**
    * Rubic advertisement type. Renders different components based on type.
@@ -80,6 +87,10 @@ export class HeaderComponent {
     return this.headerStore.isMobile;
   }
 
+  public get isTablet(): boolean {
+    return this.headerStore.isTablet;
+  }
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
@@ -102,6 +113,7 @@ export class HeaderComponent {
     this.advertisementType = 'default';
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
     if (isPlatformBrowser(platformId)) {
       this.zone.runOutsideAngular(() => {
         this.setNotificationPosition();
@@ -125,6 +137,7 @@ export class HeaderComponent {
   @HostListener('window:resize')
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
   }
 
   public navigateToSwaps(): void {
@@ -134,6 +147,10 @@ export class HeaderComponent {
   public navigateToTestnets(): void {
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
+
+  // public navigateToPrivateSwaps(): void {
+  //   this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
+  // }
 
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();

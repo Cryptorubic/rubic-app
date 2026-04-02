@@ -77,8 +77,8 @@ import { UserRejectError } from '@app/core/errors/models/provider/user-reject-er
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
-import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { WINDOW } from '@ng-web-apis/common';
+import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -174,11 +174,11 @@ export class SwapsControllerService {
     /**
      * @TODO
      * this.plarformConfigSrv.useCF$.subscribe((useCloudflare) => {
-     *    this.socketManager.close()
+     *    this.socketManager.removeSubs()
      *    this.socketManager = useCloudflare
      *        ? new CloudflareSocketManager(this.rubicApiService)
      *        : new DefaultSocketManager(this.rubicApiService)
-     *    this.socketManager.initialize();
+     *    this.socketManager.initSubs();
      * })
      */
   }
@@ -193,7 +193,7 @@ export class SwapsControllerService {
             !this.swapFormService.isFilled ||
             !this.socketManager.allowCalculation()
           ) {
-            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled;
+            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled && !calculateData.stop;
             SENTRY_CF_STATUS.wasAllowedCalculate = this.socketManager.allowCalculation();
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };

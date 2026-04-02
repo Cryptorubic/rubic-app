@@ -1,0 +1,31 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .signature-window-wrapper {
+    @include flex(column, center, center);
+    gap: 12px;
+    padding: 15px;
+
+    font-size: 16px;
+    text-align: center;
+
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+    @include b($mobile-md) {
+      width: 100%;
+    }
+  }
+
+  app-login-button,
+  button {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  ::ng-deep app-login-button {
+    button {
+      width: 100%;
+    }
+  }
+  
+}

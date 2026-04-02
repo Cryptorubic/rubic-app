@@ -8,4 +8,5 @@ export interface TradeInfo {
   priceImpact: number | null;
   slippage: number;
   routePath: RubicStep[];
+  durationInMinutes?: number;
 }

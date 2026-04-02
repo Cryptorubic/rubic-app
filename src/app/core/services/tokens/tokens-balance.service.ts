@@ -12,8 +12,23 @@ import {
 import BigNumber from 'bignumber.js';
 import { AbstractAdapter, waitFor, Web3Pure } from '@cryptorubic/web3';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { catchError, debounceTime, distinctUntilChanged, first, switchMap } from 'rxjs/operators';
-import { combineLatestWith, firstValueFrom, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  retry,
+  switchMap
+} from 'rxjs/operators';
+import {
+  combineLatestWith,
+  defer,
+  firstValueFrom,
+  lastValueFrom,
+  of,
+  throwError,
+  timer
+} from 'rxjs';
 import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -28,6 +43,7 @@ import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.servi
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { getChainTypeSafe } from './utils/get-chain-type-safe';
 
 @Injectable({
   providedIn: 'root'
@@ -103,10 +119,13 @@ export class TokensBalanceService {
     }
   }
 
-  public async getAndUpdateTokenBalance(token: {
-    address: string;
-    blockchain: BlockchainName;
-  }): Promise<BigNumber> {
+  public async getAndUpdateTokenBalance(
+    token: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    maxRetries: number = 0
+  ): Promise<BigNumber> {
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
     const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
       token.blockchain,
@@ -131,7 +150,24 @@ export class TokensBalanceService {
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
-      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
+      const balanceInWei = await lastValueFrom(
+        defer(() => blockchainAdapter.getBalance(this.userAddress, token.address)).pipe(
+          retry({
+            count: maxRetries,
+            delay: (error, retryCount) => {
+              console.error('check balance error:', error, 'retry #', retryCount);
+              // Tron Api too many requests error
+              if (
+                token.blockchain === BLOCKCHAIN_NAME.TRON &&
+                error?.message?.includes('Request failed with status code 429')
+              ) {
+                return timer(5000);
+              }
+              return throwError(() => error);
+            }
+          })
+        )
+      );
 
       const storedToken = this.findTokenSync(token);
       if (!storedToken) return new BigNumber(NaN);
@@ -165,12 +201,6 @@ export class TokensBalanceService {
     }
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const balancePromises: Promise<BigNumber>[] = [];
-
-    balancePromises.push(
-      this.getAndUpdateTokenBalance(fromToken),
-      this.getAndUpdateTokenBalance(toToken)
-    );
 
     if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
@@ -266,10 +296,12 @@ export class TokensBalanceService {
   ): Promise<BalanceToken[]> {
     const chainTokensMap: Partial<Record<BlockchainName, Token[]>> = {};
     tokens.forEach(token => {
-      if (!chainTokensMap[token.blockchain]) {
-        chainTokensMap[token.blockchain] = [];
+      if (this.authService.userChainType === getChainTypeSafe(token.blockchain)) {
+        if (!chainTokensMap[token.blockchain]) {
+          chainTokensMap[token.blockchain] = [];
+        }
+        chainTokensMap[token.blockchain].push(token);
       }
-      chainTokensMap[token.blockchain].push(token);
     });
     const promises = Object.entries(chainTokensMap).map(
       ([chain, chainTokens]: [BlockchainName, Token[]]) => {
@@ -314,19 +346,11 @@ export class TokensBalanceService {
     return tokensWithBalances.flat().sort(sorterByTokenRank);
   }
 
-  private async fetchListBalances(
+  public async fetchListBalances(
     address: string,
     chainType: ChainType,
     chains: BlockchainName[]
   ): Promise<void> {
-    const getChainTypeSafe = (chain: BlockchainName): ChainType | null => {
-      try {
-        return BlockchainsInfo.getChainType(chain);
-      } catch {
-        return null;
-      }
-    };
-
     const resultChains = chains.filter(
       (chain: BlockchainName) => chainType === getChainTypeSafe(chain)
     );
@@ -427,6 +451,7 @@ export class TokensBalanceService {
       .subscribe(([user, balanceNetworks]) => {
         if (user?.address) {
           this.collectionsFacade.allTokens.setBalanceLoading(true);
+          this.tokensStore.clearAllBalances();
           Promise.all([
             this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
             this.fetchT2Balances(user.address, user.chainType, balanceNetworks)

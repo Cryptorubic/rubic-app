@@ -11,7 +11,7 @@ import {
   UtilityBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
-import { Token as OldToken } from '@cryptorubic/core';
+import { Cache as Memo, Token as OldToken } from '@cryptorubic/core';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
@@ -149,19 +149,22 @@ export class NewTokensApiService {
       );
   }
 
-  public getTopTokens(): Observable<
+  @Memo({ maxAge: 60 * 60 * 1_000 })
+  public getTopTokens(
+    chainsList = this.topTierChains
+  ): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
     return this.httpService
       .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
         ENDPOINTS.NEW_TOKENS,
-        { networks: this.topTierChains.join(',') },
+        { networks: chainsList.join(',') },
         this.tokensApiUrl,
         { retry: 2, timeoutMs: 15_000, external: true }
       )
       .pipe(
         map(response => {
-          return this.topTierChains.reduce((acc, blockchain) => {
+          return chainsList.reduce((acc, blockchain) => {
             // const blockchain = FROM_BACKEND_BLOCKCHAINS[chain];
             const chainResponse = response[blockchain];
             if (!chainResponse) return acc;
@@ -179,6 +182,7 @@ export class NewTokensApiService {
       );
   }
 
+  @Memo({ maxAge: 60 * 60 * 1_000 })
   public getRestTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {

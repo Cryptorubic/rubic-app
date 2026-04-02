@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -32,7 +32,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
-import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
@@ -57,7 +56,7 @@ import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 
 @Injectable()
 export class CrossChainService {
@@ -92,7 +91,7 @@ export class CrossChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly privacyAuthService: PrivacyAuthService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -206,7 +205,7 @@ export class CrossChainService {
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+    params: { useCacheData: boolean; skipAmountCheck: boolean; receiverAddress?: string } = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -254,7 +253,7 @@ export class CrossChainService {
 
     const referrer = this.sessionStorage.getItem('referral');
 
-    const receiverAddress = this.receiverAddress;
+    const receiverAddress = this.receiverAddress || params?.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
@@ -269,16 +268,13 @@ export class CrossChainService {
       solanaSponsorParams: {
         feePayer: SOLANA_SPONSOR,
         tradeId: trade.rubicId
-      }
+      },
+      privacyRefCode: this.privacyAuthService.refCode
     };
 
     try {
       await trade.swap(swapOptions);
-      await this.conditionalAwait(fromToken.blockchain);
-
-      setTimeout(() => {
-        this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
-      }, 3_000);
+      setTimeout(() => this.updateBalancesAfterSwap(fromToken, toToken), 5_000);
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
@@ -414,22 +410,18 @@ export class CrossChainService {
     );
   }
 
-  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
-    if (blockchain === BLOCKCHAIN_NAME.SOLANA || blockchain === BLOCKCHAIN_NAME.STELLAR) {
-      const waitTime = 3_000;
-      await firstValueFrom(timer(waitTime));
-    }
-  }
+  private async updateBalancesAfterSwap(
+    fromToken: BalanceToken,
+    toToken: BalanceToken
+  ): Promise<void> {
+    await this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
 
-  private calculateTimeoutForChains(): number {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    if (
-      CCR_LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
-      CCR_LONG_TIMEOUT_CHAINS.includes(toBlockchain)
-    ) {
-      return 30_000;
-    }
-    return this.defaultTimeout;
+    const updatedSrcToken = this.tokensFacade.findTokenSync(fromToken);
+    const updatedDstToken = this.tokensFacade.findTokenSync(toToken);
+    const input = this.swapFormService.inputValue;
+    this.swapFormService.form.patchValue({
+      input: { ...input, fromToken: updatedSrcToken, toToken: updatedDstToken }
+    });
   }
 
   private getDisabledProviders(

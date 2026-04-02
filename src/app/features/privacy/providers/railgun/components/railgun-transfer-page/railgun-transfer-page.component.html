@@ -1,0 +1,17 @@
+<app-transfer-tokens-window
+  (handleTransfer)="transfer($event)"
+  [receiverCtrl]="receiverCtrl"
+  [creationConfig]="{
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true,
+    withMaxBtn: true,
+    receiverPlaceholder: 'Enter the receiver’s zk-address',
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false,
+      showAllChains: false
+    }
+  }"
+></app-transfer-tokens-window>

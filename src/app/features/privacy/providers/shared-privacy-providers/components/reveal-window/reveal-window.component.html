@@ -1,0 +1,57 @@
+<app-window-container
+  *ngLet="{
+    revealAsset: revealAsset$ | async,
+    revealAmount: revealAmount$ | async,
+    loading: loading$ | async,
+    displayReceiver: displayReceiver$ | async
+  } as state"
+>
+  <app-input-output-container
+    [round]="creationConfig.withReceiver && state.displayReceiver ? 'top' : 'all'"
+    [marginTop]="false"
+  >
+    <app-asset-selector
+      left
+      selectorType="to"
+      (handleAssetSelection)="openSelector()"
+      [asset]="state.revealAsset"
+      [isDisabled]="state.loading"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        formType="from"
+        [selectedToken]="state.revealAsset"
+        inputMode="input"
+        (amountUpdated)="updateInputValue($event)"
+        [amountValue]="state.revealAmount"
+      ></app-amount-transput>
+      <app-user-balance-container
+        [fromToken$]="revealAsset$"
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+
+  <app-target-network-address
+    *ngIf="state.displayReceiver && creationConfig.withReceiver"
+    [addressCtrl]="receiverCtrl"
+    [placeholderText]="creationConfig?.receiverPlaceholder"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <div
+    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    class="buttons-container"
+  >
+    <app-private-action-button
+      *ngIf="creationConfig.withActionButton"
+      [showLoader]="state.loading"
+      (onClick)="reveal()"
+    ></app-private-action-button>
+    <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
+      [toBlockchain]="state.revealAsset ? state.revealAsset.blockchain : 'target network'"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
+  </div>
+</app-window-container>

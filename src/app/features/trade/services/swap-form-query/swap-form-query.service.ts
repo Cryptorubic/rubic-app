@@ -62,17 +62,18 @@ export class SwapFormQueryService {
           const protectedParams = this.getProtectedSwapParams(queryParams);
           const fromBlockchain = protectedParams.fromChain as BlockchainName;
           const toBlockchain = protectedParams.toChain;
+          const isSameToken =
+            protectedParams.from === protectedParams.to && fromBlockchain === toBlockchain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
             List(tokens),
             protectedParams.from,
-            fromBlockchain
+            fromBlockchain,
+            false
           );
-          const findToToken$ = this.getTokenBySymbolOrAddress(
-            List(tokens),
-            protectedParams.to,
-            toBlockchain
-          );
+          const findToToken$ = isSameToken
+            ? of(null)
+            : this.getTokenBySymbolOrAddress(List(tokens), protectedParams.to, toBlockchain, false);
 
           return forkJoin([findFromToken$, findToToken$]).pipe(
             map(([fromToken, toToken]) => ({
@@ -105,7 +106,7 @@ export class SwapFormQueryService {
       });
   }
 
-  private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
+  public getProtectedSwapParams(queryParams: QueryParams): QueryParams {
     let fromChain: AssetListType;
     if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
@@ -127,11 +128,12 @@ export class SwapFormQueryService {
     return newParams;
   }
 
-  private getTokenBySymbolOrAddress(
+  public getTokenBySymbolOrAddress(
     tokens: List<BalanceToken>,
     token: string,
-    chain: BlockchainName
-  ): Observable<BalanceToken> {
+    chain: BlockchainName,
+    syncOnly: boolean
+  ): Observable<BalanceToken | null> {
     if (!token) {
       return of(null);
     }
@@ -144,12 +146,12 @@ export class SwapFormQueryService {
         if (chainType && isAddressCorrect) {
           const address =
             chainType === CHAIN_TYPE.EVM ? EvmAdapter.toChecksumAddress(token) : token;
-          return this.searchTokenByAddress(tokens, address, chain);
+          return this.searchTokenByAddress(tokens, address, chain, syncOnly);
         }
-        return this.searchTokenBySymbol(tokens, token, chain);
+        return this.searchTokenBySymbol(tokens, token, chain, syncOnly);
       }),
       catchError(() => {
-        return this.searchTokenBySymbol(tokens, token, chain);
+        return this.searchTokenBySymbol(tokens, token, chain, syncOnly);
       }),
       switchMap(foundToken =>
         forkJoin([
@@ -169,12 +171,14 @@ export class SwapFormQueryService {
   private searchTokenBySymbol(
     tokens: List<BalanceToken>,
     symbol: string,
-    chain: BlockchainName
+    chain: BlockchainName,
+    syncOnly: boolean
   ): Observable<BalanceToken | null> {
     const similarTokens = tokens.filter(
       token => token.symbol.toLowerCase() === symbol.toLowerCase() && token.blockchain === chain
     );
     if (similarTokens.size) return of(similarTokens.first());
+    if (syncOnly) return of(null);
 
     return this.tokensFacade.fetchQueryTokens({ symbol, blockchain: chain }).pipe(
       map(foundTokens => {
@@ -195,11 +199,13 @@ export class SwapFormQueryService {
   private searchTokenByAddress(
     tokens: List<BalanceToken>,
     address: string,
-    chain: BlockchainName
+    chain: BlockchainName,
+    syncOnly: boolean
   ): Observable<BalanceToken> {
     const searchingToken = tokens.find(
       token => compareAddresses(token.address, address) && token.blockchain === chain
     );
+    if (syncOnly) return of(searchingToken ?? null);
 
     return searchingToken
       ? of(searchingToken)

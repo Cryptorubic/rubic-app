@@ -10,20 +10,25 @@
     balanceLoading: balanceLoading$ | async,
     customToken: customToken$ | async,
     blockchainFilter: blockchainFilter$ | async,
-    blockchainsToShow: blockchainsToShow$ | async
+    blockchainsToShow: blockchainsToShow$ | async,
+    platformLoading: platformLoading$ | async
   } as state"
 >
   <section class="assets-selector">
     <ng-container header *ngIf="!isMobile">
       <div class="assets-selector__header">
         <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-        <span class="back-button__text">{{ headerText$ | async }}</span>
+        <span class="back-button__text">{{ customHeaderText || state.headerText }}</span>
       </div>
     </ng-container>
 
     <ng-container>
       <app-blockchains-filter-list
-        *ngIf="!isMobile && state.selectorListType !== 'blockchains'"
+        *ngIf="
+          !isMobile &&
+          state.selectorListType !== 'blockchains' &&
+          assetsSelectorConfig.withChainsFilter
+        "
         [selectedFilter]="state.blockchainFilter"
         (selectFilter)="handleBlockchainFilterSelection($event)"
       ></app-blockchains-filter-list>
@@ -39,6 +44,7 @@
             [blockchainFilter]="state.blockchainFilter"
             [totalBlockchains]="totalBlockchains"
             [assetListType]="state.assetListType"
+            [showAllChains]="assetsSelectorConfig.showAllChains"
             (handleBlockchainSelect)="selectAssetList($event)"
             (handleFilterSelect)="handleBlockchainFilterSelection($event)"
             (onSearchQuery)="onBlockchainsQuery($event)"
@@ -51,10 +57,11 @@
                 [balanceLoading]="state.balanceLoading"
                 [customToken]="state.customToken"
                 [listType]="state.assetListType"
-                [loading]="state.pageLoading"
+                [loading]="state.pageLoading || state.platformLoading"
                 [tokensSearchQuery]="state.tokensSearchQuery"
                 [tokensToShow]="state.tokensToShow"
                 [totalBlockchains]="totalBlockchains"
+                [assetsSelectorConfig]="assetsSelectorConfig"
                 (selectAssetList)="selectAssetList($event)"
                 (selectToken)="selectToken($event)"
                 (switchMode)="switchMode()"
@@ -73,7 +80,7 @@
             (queryChange)="onTokensQuery($event)"
           ></app-search-tokens-bar>
           <app-switch-list-type-button
-            *ngIf="state.selectorListType === 'tokens'"
+            *ngIf="state.selectorListType === 'tokens' && assetsSelectorConfig.withFavoriteTokens"
             [assetListType]="state.assetListType"
             (switchListType)="switchMode()"
           >

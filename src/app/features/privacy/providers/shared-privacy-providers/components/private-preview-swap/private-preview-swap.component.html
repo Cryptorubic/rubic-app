@@ -1,0 +1,222 @@
+<app-window-container *ngLet="isMobile$ | async as isMobile">
+  <ng-container header>
+    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
+    <span class="back-button__text">
+      {{ formLabel }}
+    </span>
+  </ng-container>
+  <ng-container>
+    <div class="preview">
+      <div
+        class="preview__data-container"
+        [ngClass]="{
+          'preview__data-container_with-line': true
+        }"
+      >
+        <ng-container *ngIf="!isMobile; else mobileInputTokenContainer">
+          <div class="preview__io-container">
+            <div class="preview__token-container">
+              <div
+                class="preview__second-image-container"
+                [style]="{ background: fromAsset.secondColor }"
+              >
+                <img [src]="fromAsset.secondImage" [alt]="fromAsset.secondImage" />
+              </div>
+              <img
+                class="preview__main-image"
+                [src]="fromAsset.mainImage"
+                [alt]="fromAsset.mainLabel"
+                (error)="onImageError($event)"
+              />
+            </div>
+            <div class="preview__amount-container">
+              <div class="preview__token-amount">
+                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                  fromAsset.mainLabel
+                }}
+              </div>
+              <div *ngIf="fromValue.fiatAmount as amount" class="preview__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileInputTokenContainer>
+          <div class="preview__io-container">
+            <div class="preview__token-and-amount-container">
+              <div class="preview__token-container">
+                <div
+                  class="preview__second-image-container"
+                  [style]="{ background: fromAsset.secondColor }"
+                >
+                  <img [src]="fromAsset.secondImage" [alt]="fromAsset.secondImage" />
+                </div>
+                <img
+                  class="preview__main-image"
+                  [src]="fromAsset.mainImage"
+                  [alt]="fromAsset.mainLabel"
+                  (error)="onImageError($event)"
+                />
+              </div>
+              <div class="preview__token-amount">
+                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                  fromAsset.mainLabel
+                }}
+              </div>
+            </div>
+            <div class="preview__fiat-container">
+              <div *ngIf="fromValue.fiatAmount as amount" class="preview__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <span
+          *ngIf="!isMobile"
+          inlineSVG="assets/images/icons/white-bottom-arrow.svg"
+          class="preview__icon"
+        >
+        </span>
+        <!-- <app-route-element
+          *ngIf="state.transaction.step === 'idle' || state.transaction.step === 'success'"
+          [routes]="state.tradeState?.routes || []"
+          [tradeType]="state.tradeState.tradeType"
+        ></app-route-element> -->
+
+        <!-- <app-transaction-state
+          *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+          [transactionData]="{
+            type:
+              state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
+                ? 'swap'
+                : 'bridge',
+            needApprove: state.tradeState?.needApprove,
+            needAuthWallet: state.tradeState.needAuthWallet,
+            needTrustlineAfterSwap: state.tradeState.needTrustlineOptions?.needTrustlineAfterSwap
+          }"
+          [state]="state.transaction.step"
+        ></app-transaction-state> -->
+
+        <ng-container *ngIf="!isMobile; else mobileOutputTokenContainer">
+          <div class="preview__io-container">
+            <div class="preview__token-container">
+              <div
+                class="preview__second-image-container"
+                [style]="{ background: toAsset.secondColor }"
+              >
+                <img [src]="toAsset.secondImage" [alt]="toAsset.secondImage" />
+              </div>
+              <img
+                class="preview__main-image"
+                [src]="toAsset.mainImage"
+                [alt]="toAsset.mainLabel"
+                (error)="onImageError($event)"
+              />
+            </div>
+            <div class="preview__amount-container">
+              <div class="preview__token-amount">
+                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                  toAsset.mainLabel
+                }}
+              </div>
+              <div *ngIf="toValue.fiatAmount as amount" class="preview__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">on {{ toAsset.secondLabel }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileOutputTokenContainer>
+          <div class="preview__io-container">
+            <div class="preview__token-and-amount-container">
+              <div class="preview__token-container">
+                <div
+                  class="preview__second-image-container"
+                  [style]="{ background: toAsset.secondColor }"
+                >
+                  <img [src]="toAsset.secondImage" [alt]="toAsset.secondImage" />
+                </div>
+                <img
+                  class="preview__main-image"
+                  [src]="toAsset.mainImage"
+                  [alt]="toAsset.mainLabel"
+                  (error)="onImageError($event)"
+                />
+              </div>
+              <div class="preview__token-amount">
+                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                  toAsset.mainLabel
+                }}
+              </div>
+            </div>
+            <div class="preview__fiat-container">
+              <div *ngIf="toValue.fiatAmount as amount" class="preview__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ toAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div *ngIf="!hideFeeInfo" class="preview__swap-info">
+        <app-swap-data-element
+          [creationConfig]="swapDataCreationConfig"
+          [gasInfo]="gasInfo"
+          [feeInfoChange]="{
+            fee: feeInfo,
+            nativeToken: nativeToken$ | async,
+            displayAmount
+          }"
+        ></app-swap-data-element>
+      </div>
+    </div>
+
+    <ng-container *ngIf="warnings?.length">
+      <tui-notification class="notification" status="warning" *ngFor="let warning of warnings">
+        {{ warning.text }}
+        <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
+          >Learn more</a
+        >
+      </tui-notification>
+    </ng-container>
+
+    <ng-container *ngLet="currentStep$ | async as currentStep">
+      <div class="preview__action-container">
+        <button
+          class="preview__action-button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          [disabled]="currentStep.disabled"
+          (click)="handleStep(currentStep)"
+        >
+          <ng-container *ngIf="!currentStep.disabled; else loader">
+            {{ currentStep.label }}
+          </ng-container>
+        </button>
+      </div>
+
+      <ng-template #loader>
+        <div class="loader">
+          <span>{{ currentStep.label }}</span>
+          <span class="loader__dot"></span>
+          <span class="loader__dot"></span>
+          <span class="loader__dot"></span>
+        </div>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</app-window-container>

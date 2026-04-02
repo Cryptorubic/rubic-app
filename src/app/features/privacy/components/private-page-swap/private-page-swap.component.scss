@@ -1,0 +1,210 @@
+@use 'src/scss/core' as *;
+
+.swap-container {
+  display: flex;
+  flex-direction: column;
+
+  .providers-switcher-wrapper {
+    display: flex;
+    justify-content: end;
+    padding: 18px 28px 17px 0;
+
+    background: var(--tui-secondary);
+    border-radius: 20px 20px 0 0;
+
+    @include b($mobile-sm-middle) {
+      order: 2;
+      padding: 16px;
+
+      border-radius: 0 0 20px 20px;
+    }
+  }
+
+  .providers-switcher-container {
+    display: flex;
+    gap: 8px;
+
+    color: var(--tui-text-02);
+    font-weight: 500;
+
+    tui-toggle {
+      position: relative;
+      top: 2px;
+
+      ::ng-deep {
+        [tuiWrapper][data-appearance='secondary'] {
+          background: var(--io-background);
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.3);
+          }
+
+          .t-circle {
+            background: white;
+          }
+        }
+      }
+    }
+  }
+
+  .selectors-wrapper {
+    padding: 0 12px;
+
+    background: var(--tui-secondary);
+
+    @include b($mobile-sm-middle) {
+      order: 1;
+      padding: 0;
+
+      background: transparent;
+    }
+  }
+
+  .selectors-container {
+    position: relative;
+
+    display: flex;
+    gap: 2px;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+
+      *,
+      ::ng-deep * {
+        cursor: not-allowed !important;
+      }
+    }
+
+    app-asset-selector {
+      flex: 1;
+
+      background: var(--io-background);
+
+      &:first-child {
+        padding: 12px 10px;
+
+        border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+      }
+
+      &:nth-child(3) {
+        display: flex;
+        justify-content: end;
+        padding: 12px 20px 12px 0;
+
+        border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+      }
+    }
+
+    &.without-output {
+      app-asset-selector {
+        border-radius: var(--tui-radius-m);
+
+        ::ng-deep {
+          .selector {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    app-form-switcher {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      background: var(--io-background);
+
+      transform: translate(-50%, -50%) rotate(90deg);
+
+      ::ng-deep {
+        .switcher {
+          transform: unset;
+        }
+      }
+    }
+
+    @include b($mobile-sm-middle) {
+      flex-direction: column;
+
+      app-asset-selector {
+        border-radius: 0;
+
+        &:first-child {
+          padding: 16px 16px 32px;
+        }
+        
+        &:nth-child(3) {
+          justify-content: start;
+          padding: 32px 16px 16px;
+        }
+
+        &.empty,
+        &.empty:first-child {
+          padding: 24px 20px;
+        }
+      }
+      
+      &.without-output {
+        app-asset-selector {
+          &:first-child {
+            padding: 24px 16px;
+          }
+        }
+      }
+
+      app-form-switcher {
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  .instruction-wrapper {
+    padding: 12px;
+
+    background: var(--tui-secondary);
+    border-radius: 0 0 20px 20px;
+
+    @include b($mobile-sm-middle) {
+      order: 3;
+      padding: 16px 0 0;
+
+      background: transparent;
+    }
+  }
+
+  .instruction-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 11px 0;
+
+    font-weight: 500;
+    font-size: 15px;
+
+    border: 1px solid var(--io-background);
+    border-radius: 17px;
+
+    @include b($mobile-sm-middle) {
+      border-color: var(--tui-secondary);
+    }
+  }
+}
+
+.empty-asset-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  color: $text-gray-2;
+  font-weight: 500;
+  font-size: 15px;
+
+  @include b($mobile-sm-middle) {
+    justify-content: start;
+
+    font-size: 12px;
+  }
+}

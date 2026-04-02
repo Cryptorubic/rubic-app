@@ -1,0 +1,20 @@
+<ng-container *ngIf="activePage$ | async as activePage">
+  <div class="privacy-wrapper">
+    <app-mobile-stub *ngIf="isMobile; else desktop"></app-mobile-stub>
+
+    <ng-template #desktop>
+      <app-page-navigation
+        [activePage]="activePage"
+        [pages]="pages"
+        (onSelect)="onPageSelect($event)"
+      ></app-page-navigation>
+
+      <div class="privacy-content">
+        <app-clearswap-transfer-tokens-page
+          *ngIf="activePage.type === 'transfer'"
+        ></app-clearswap-transfer-tokens-page>
+        <app-clearswap-swap-page *ngIf="activePage.type === 'swap'"></app-clearswap-swap-page>
+      </div>
+    </ng-template>
+  </div>
+</ng-container>

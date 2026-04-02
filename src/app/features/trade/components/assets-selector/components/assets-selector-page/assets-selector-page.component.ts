@@ -14,7 +14,15 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -29,6 +37,7 @@ import {
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
+import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -42,7 +51,18 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Input({ required: true }) type: 'from' | 'to';
 
+  @Input() assetsSelectorConfig: AssetsSelectorConfig = {
+    withChainsFilter: true,
+    withTokensFilter: true,
+    withFavoriteTokens: true,
+    showAllChains: true
+  };
+
+  @Input() customHeaderText: string | null = null;
+
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
+
+  @Output() public readonly handleBack = new EventEmitter<void>();
 
   public readonly selectorListType$ = of('tokens');
 
@@ -70,6 +90,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public pageLoading$: Observable<boolean>;
 
+  public platformLoading$: Observable<boolean>;
+
   public assetListType$: Observable<AssetListType>;
 
   public customToken$: Observable<AvailableTokenAmount | null>;
@@ -94,9 +116,13 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setWindowHeight();
+    if (this.assetsSelectorConfig.listType) {
+      this.lastDefaultMode = this.assetsSelectorConfig.listType;
+      this.assetsSelectorService.assetListType = this.assetsSelectorConfig.listType;
+    }
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
       distinctUntilChanged(),
-      startWith('allChains' as AssetListType)
+      startWith(this.assetsSelectorConfig.listType || ('allChains' as AssetListType))
     );
 
     this.tokensSearchQuery$ = this.assetListType$.pipe(
@@ -107,6 +133,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
     this.blockchainFilter$ = this.assetsSelectorService.blockchainFilter$;
     this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(shareReplay(1));
+    this.platformLoading$ = this.assetsSelectorConfig.platformLoading$ || of(false);
 
     this.balanceLoading$ = this.assetListType$.pipe(
       switchMap(type => {
@@ -138,6 +165,17 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     );
+
+    this.blockchainsToShow$
+      .pipe(
+        first(blockchains => !!blockchains.length),
+        tap(blockchains => {
+          if (!this.assetsSelectorConfig.showAllChains && !this.assetsSelectorConfig.listType) {
+            this.assetsSelectorService.assetListType = blockchains[0].name;
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -148,6 +186,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
+    this.handleBack.emit();
   }
 
   /**

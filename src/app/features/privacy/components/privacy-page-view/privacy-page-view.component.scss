@@ -1,0 +1,82 @@
+@use 'src/scss/core' as *;
+
+$mobile-width: 360px;
+
+:host {
+  display: flex;
+}
+
+.swap-container {
+  @include flex(row, flex-start, start);
+  margin: 0 auto;
+
+  .form-and-activity {
+    @include flex(column, center, center);
+    position: relative;
+
+    gap: 12px;
+    width: 600px;
+    margin-right: 10px;
+    margin-left: 10px;
+
+    transition: 0.2s ease-in-out;
+
+    &_small {
+      width: $mobile-width;
+    }
+
+    app-tab-bar {
+      width: 100%;
+    }
+
+    app-private-main-page-swap {
+      width: 100%;
+      max-width: 600px;
+    }
+  }
+
+  app-token-selector-page,
+  app-last-private-activity {
+    width: 100%;
+  }
+
+  app-private-providers-list-general {
+    display: block;
+    width: $mobile-width;
+    height: 510px;
+
+    background: var(--secondary-background);
+    border-radius: 17px;
+  }
+}
+
+@include b($laptop) {
+  .swap-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l);
+    align-items: center;
+    width: 600px;
+
+    .form-and-activity {
+      width: 100%;
+    }
+    
+    app-private-providers-list-general {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+      overflow: hidden;
+
+      background: none;
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .swap-container {
+    .form-and-activity {
+      gap: 2px;
+    }
+  }
+}

@@ -55,6 +55,8 @@ import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/featur
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -88,7 +90,8 @@ export class OnChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly privacyAuthService: PrivacyAuthService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -201,7 +204,8 @@ export class OnChainService {
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
       },
-      ...(gasLimitRatio && { gasLimitRatio })
+      ...(gasLimitRatio && { gasLimitRatio }),
+      privacyRefCode: this.privacyAuthService.refCode
     };
 
     try {
@@ -221,9 +225,7 @@ export class OnChainService {
       ]);
 
       await trade.swap(options);
-      await this.conditionalAwait(fromBlockchain);
-
-      this.tokensFacade.updateTokenBalancesAfterItSwap(
+      this.updateBalancesAfterSwap(
         fromToken,
         toToken,
         fromTokenPrevBalanceWei,
@@ -388,11 +390,25 @@ export class OnChainService {
     }
   }
 
-  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
-    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const waitTime = 5_000;
-      await firstValueFrom(timer(waitTime));
-    }
+  private async updateBalancesAfterSwap(
+    fromToken: BalanceToken,
+    toToken: BalanceToken,
+    fromTokenPrevBalanceWei: BigNumber,
+    toTokenPrevBalanceWei: BigNumber
+  ): Promise<void> {
+    await this.tokensFacade.updateTokenBalancesAfterItSwap(
+      fromToken,
+      toToken,
+      fromTokenPrevBalanceWei,
+      toTokenPrevBalanceWei
+    );
+
+    const updatedSrcToken = this.tokensFacade.findTokenSync(fromToken);
+    const updatedDstToken = this.tokensFacade.findTokenSync(toToken);
+    const input = this.swapFormService.inputValue;
+    this.swapFormService.form.patchValue({
+      input: { ...input, fromToken: updatedSrcToken, toToken: updatedDstToken }
+    });
   }
 
   private calculateTimeoutForChains(): number {

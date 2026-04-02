@@ -1,0 +1,45 @@
+<div class="wrapper" xmlns="http://www.w3.org/1999/html">
+  <app-window-container>
+    <ng-container header> Wallet details</ng-container>
+    <ng-container>
+      <div class="account-info">
+        <div class="account-info__wrapper">
+          <h3 class="account-info__label">Address 0zk:</h3>
+          <p class="account-info__text">{{ railgunAddress }}</p>
+          <div class="account-info__row">
+            <app-copy-container [text]="railgunAddress"></app-copy-container>
+          </div>
+        </div>
+
+        <!--        <div class="account-info__wrapper">-->
+        <!--          <h3 class="account-info__label">Account ID:</h3>-->
+        <!--          <p class="account-info__text">{{ accountId }}</p>-->
+        <!--          <div class="account-info__row">-->
+        <!--            <app-copy-container [text]="accountId"></app-copy-container>-->
+        <!--          </div>-->
+        <!--        </div>-->
+
+        <div class="account-info__wrapper">
+          <h3 class="account-info__label">Public EVM Address:</h3>
+          <p class="account-info__text">{{ evmAddress }}</p>
+          <div class="account-info__public-chains">
+            <img *ngFor="let chain of supportedChains" [src]="chain.icon" [alt]="chain.label" />
+            <app-copy-container [text]="evmAddress"></app-copy-container>
+          </div>
+        </div>
+      </div>
+      <button
+        class="account-info__button"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="logout()"
+      >
+        Sign Out
+      </button>
+    </ng-container>
+  </app-window-container>
+</div>
+
+<ng-template #template>The address copied on clipboard</ng-template>

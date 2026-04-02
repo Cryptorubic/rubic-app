@@ -1,0 +1,22 @@
+export const WRAP_SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
+
+/**
+ * this amount shoud stay on ephemeral wallet to perform tranfer of stucked tokenss
+ */
+export const EPHEMERAL_WALLET_GAS_AMOUNT = 0.0033;
+export const swap_reserved_rent_fee = 0.0033;
+export const deposit_rent_fee = 0.002;
+
+export const addr_to_symbol_map: Record<string, string> = {
+  [WRAP_SOL_ADDRESS.toLowerCase()]: 'sol',
+  ['Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'.toLowerCase()]: 'usdt',
+  ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'.toLowerCase()]: 'usdc',
+  ['sTorERYB6xAZ1SSbwpK3zoK2EEwbBrc7TZAzg1uCGiH'.toLowerCase()]: 'store',
+  ['oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp'.toLowerCase()]: 'ore',
+  ['A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS'.toLowerCase()]: 'zec'
+};
+
+export const PRIVACYCASH_SYMBOL_TO_ADDR_MAP = Object.entries(addr_to_symbol_map).reduce(
+  (acc, [addr, symbol]) => ({ ...acc, [symbol.toLowerCase()]: addr }),
+  {} as Record<string, string>
+);

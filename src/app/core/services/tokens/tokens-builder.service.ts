@@ -44,16 +44,23 @@ export class TokensBuilderService {
     return store;
   }
 
+  /**
+   * @param type
+   * @param _query
+   * @param direction
+   * @param inputValue in PrivateMode inputValue is empty object or object with nullable fields
+   * @returns
+   */
   public getTokensList(
     type: AssetListType,
-    query: string,
+    _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    inputValue: Partial<SwapFormInput>
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
-        if (query) this.balanceService.fetchDifferentChainsBalances(tokens, false);
+        this.balanceService.fetchDifferentChainsBalances(tokens, false);
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {

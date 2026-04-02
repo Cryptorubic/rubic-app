@@ -1,0 +1,28 @@
+<app-window-container>
+  <ng-container header>Import account</ng-container>
+  <form [formGroup]="secretForm" (ngSubmit)="handleConfirm()">
+    <p>Your wallet data is encrypted using your hash and stored securely in your browser.</p>
+
+    <tui-input-password formControlName="mnemonic">
+      Seed phrase
+      <span class="tui-required"></span>
+    </tui-input-password>
+    <tui-error
+      formControlName="mnemonic"
+      [error]="['required', 'mnemonic'] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-input-password formControlName="password">
+      Password
+      <span class="tui-required"></span>
+    </tui-input-password>
+    <tui-error
+      formControlName="password"
+      [error]="['required'] | tuiFieldError | async"
+    ></tui-error>
+
+    <div class="buttons">
+      <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
+    </div>
+  </form>
+</app-window-container>

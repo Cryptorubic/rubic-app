@@ -7,12 +7,13 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { SafeAppProvider } from '@safe-global/safe-apps-provider';
-import SafeAppsSDK, { Methods } from '@safe-global/safe-apps-sdk';
-import {
+import SafeAppsSDK, {
   Communicator,
+  Methods,
   SendTransactionsParams,
   SendTransactionsResponse
-} from '@safe-global/safe-apps-sdk/src/types';
+} from '@safe-global/safe-apps-sdk';
+
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 

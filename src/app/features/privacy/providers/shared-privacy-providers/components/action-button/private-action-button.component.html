@@ -1,0 +1,13 @@
+<ng-container *ngIf="buttonState$ | async as state">
+  <button
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    [showLoader]="showLoader"
+    [disabled]="state.type === 'error'"
+    (click)="state.type === 'parent' ? onClick.emit() : state.action()"
+  >
+    {{ state.text }}
+  </button>
+</ng-container>

@@ -52,7 +52,7 @@
     height: 100%;
 
     @include b($mobile-md-minus) {
-      height: calc(100% - 10px);
+      height: calc(100% - 50px);
     }
   }
 }
@@ -95,6 +95,14 @@ tui-loader {
       .t-wrapper {
         background-color: var(--io-background);
         border-radius: 0;
+        border-top-right-radius: var(--tui-radius-m);
+      }
+    }
+  }
+
+  &__hide-favorites {
+    ::ng-deep {
+      .tui-autofill {
         border-top-right-radius: var(--tui-radius-m);
       }
     }

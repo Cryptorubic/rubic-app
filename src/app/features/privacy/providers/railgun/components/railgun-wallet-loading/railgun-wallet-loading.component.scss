@@ -1,0 +1,9 @@
+.progress {
+  display: flex;
+  gap: var(--tui-padding-m);
+
+  &__image {
+    width: 24px;
+    height: 24px;
+  }
+}

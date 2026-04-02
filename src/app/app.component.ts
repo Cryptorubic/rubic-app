@@ -143,9 +143,10 @@ export class AppComponent implements AfterViewInit {
    * Waits for all initializing observables to complete.
    */
   private initApp(): void {
+    this.tokensFacadeService.init();
+    this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),
-      this.initQueryParamsSubscription(),
       this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;

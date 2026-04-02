@@ -1,4 +1,9 @@
-<div class="provider-info">
+<div
+  class="provider-info"
+  *ngIf="
+    gasInfo?.amountInUsd?.gt(0) || displayAmount || (averageTimeMins && time95PercentSwapsMins)
+  "
+>
   <div
     *ngIf="gasInfo?.amountInUsd?.gt(0)"
     class="provider-info__element"
@@ -18,16 +23,17 @@
   <div
     *ngIf="displayAmount"
     class="provider-info__element"
-    [tuiHint]="feeData"
+    [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
     [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
-    <img src="assets/images/icons/money.svg" alt="Fee" />
+    <img [src]="creationConfig.feeIcon" alt="Fee" />
     {{ displayAmount }}
   </div>
 
   <div
+    *ngIf="averageTimeMins && time95PercentSwapsMins"
     class="provider-info__element time"
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"
@@ -39,22 +45,25 @@
   </div>
 </div>
 
-<ng-template #feeData>
+<ng-template #verboseFeeHint>
   <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
     Protocol Fee:
     {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
   </div>
   <div *ngIf="feeInfo?.provider?.cryptoFee?.amount.gt(0)">
-    Provider Fee:
+    Provider Native Fee:
     {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.provider.cryptoFee.token.symbol }}
   </div>
-  <!-- <div>
-    Percent Fee:
-    {{ feeInfo?.rubicProxy?.platformFee?.percent || 0 }}%
-    {{ feeInfo?.rubicProxy?.platformFee?.token?.symbol }}
-  </div> -->
+  <div *ngIf="feeInfo?.provider?.platformFee?.percent">
+    Provider Percent Fee:
+    {{ toPercent(feeInfo.provider.platformFee.percent) }}% of
+    {{ feeInfo.provider.platformFee.token.symbol }}
+  </div>
+</ng-template>
+<ng-template #shortFeeHint>
+  <div>Provider Fee</div>
 </ng-template>
 
 <ng-template #timeTooltip> May take up to {{ time95PercentSwapsMins }} </ng-template>

@@ -11,8 +11,11 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import BigNumber from 'bignumber.js';
+import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
+import { SignatureInfo } from '@app/features/privacy/providers/zama/services/zama-sdk/models/signature-info';
+import { PrivacyLocalStorage } from '@app/features/privacy/services/models/privacy-local-storage';
 
-export type Store = {
+export type Store = PrivacyLocalStorage & {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
 } & {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.INSTANT_TRADE}`]: ItSettingsForm;
@@ -79,6 +82,14 @@ export type Store = {
   IS_RUSSIAN_IP: boolean;
 
   LOBSTR_WALLET_ADDRESS: string;
+
+  RAILGUN_ENCRYPTION_CREDS_V1: string;
+
+  RAILGUN_SHIELDED_TOKENS: Record<string, ShieldedBalanceToken[]>;
+
+  ZAMA_SIGNATURES_INFO: Record<string, SignatureInfo>;
+
+  SHOW_ALL_PROVIDERS_KEY: boolean;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -99,5 +110,11 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
   RUBIC_TOTAL_VALUES: null,
   IS_RUSSIAN_IP: null,
-  LOBSTR_WALLET_ADDRESS: null
+  LOBSTR_WALLET_ADDRESS: null,
+  RAILGUN_ENCRYPTION_CREDS_V1: null,
+  RAILGUN_SHIELDED_TOKENS: null,
+  ZAMA_SIGNATURES_INFO: null,
+  ALREADY_SHIELDED: null,
+  SHOW_ALL_PROVIDERS_KEY: null,
+  FIRST_TIME_PRIVACY: null
 };

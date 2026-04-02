@@ -5,7 +5,8 @@
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async
+    toAmount: toAmount$ | async,
+    toBlockchain: toBlockchain$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -17,9 +18,8 @@
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openSelector('from', state.isMobile)"
         [asset]="state.fromAsset"
-        [isDisabled]="state.isDisabledFromSelector"
+        (handleAssetSelection)="openSelector('from', state.isMobile)"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -30,6 +30,7 @@
           [amountValue]="state.fromAmount"
         ></app-amount-transput>
         <app-user-balance-container
+          [fromToken$]="fromAsset$"
           (maxButtonClickEvent)="handleMaxButton()"
         ></app-user-balance-container>
       </div>
@@ -39,8 +40,8 @@
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openSelector('to', state.isMobile)"
         [asset]="state.toAsset"
+        (handleAssetSelection)="openSelector('to', state.isMobile)"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -56,13 +57,17 @@
 
   <app-target-network-address
     *ngIf="state.displayReceiver"
+    [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
 
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
-      <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+      <app-receiver-address-button
+        [toBlockchain]="state.toBlockchain ? state.toBlockchain : 'target network'"
+        (handleClick)="toggleReceiver()"
+      ></app-receiver-address-button>
     </div>
   </ng-container>
 </app-window-container>

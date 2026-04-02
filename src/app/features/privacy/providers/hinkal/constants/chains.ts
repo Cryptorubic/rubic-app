@@ -1,0 +1,11 @@
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+
+export const HINKAL_SUPPORTED_CHAINS = [
+  BLOCKCHAIN_NAME.ETHEREUM,
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.BASE,
+  BLOCKCHAIN_NAME.OPTIMISM,
+  BLOCKCHAIN_NAME.POLYGON
+] as const;
+
+export type HinkalSupportedChain = (typeof HINKAL_SUPPORTED_CHAINS)[number];
