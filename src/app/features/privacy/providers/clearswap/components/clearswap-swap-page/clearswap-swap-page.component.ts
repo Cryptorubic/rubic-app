@@ -12,7 +12,8 @@ import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { RubicSdkError, Web3Pure } from '@cryptorubic/web3';
+import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';
+
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
@@ -144,7 +145,20 @@ export class ClearswapSwapPageComponent implements OnInit {
                     this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                   }
                 })
-                .catch(async () => {
+                .catch(async err => {
+                  if (!(err instanceof UserRejectError)) {
+                    this.privateStatisticsService.saveAction(
+                      'TRANSFER',
+                      PRIVATE_TRADE_TYPE.CLEARSWAP,
+                      userAddress,
+                      fromToken.address,
+                      fromToken.stringWeiAmount,
+                      fromToken.blockchain,
+                      [],
+                      [JSON.stringify(err)]
+                    );
+                  }
+
                   const nativeBalance = await this.tokensBalanceService.getAndUpdateTokenBalance(
                     nativeToken,
                     5
