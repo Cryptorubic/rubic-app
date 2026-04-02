@@ -204,8 +204,7 @@ export class OnChainService {
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
       },
-      ...(gasLimitRatio && { gasLimitRatio }),
-      privacyRefCode: this.privacyAuthService.refCode
+      ...(gasLimitRatio && { gasLimitRatio })
     };
 
     try {
