@@ -50,14 +50,12 @@ export class PrivateLocalStorageService {
           { timeoutMs: 5_000 }
         )
       );
-      this._storage$.next({
-        ...this._storage$.value,
+      this.patchStorageState({
         FIRST_TIME_PRIVACY: notAuthorized,
         PRIVACY_REF_CODE: is_valid ? refCode : null
       });
     } else {
-      this._storage$.next({
-        ...this._storage$.value,
+      this.patchStorageState({
         FIRST_TIME_PRIVACY: notAuthorized,
         PRIVACY_REF_CODE: null
       });
