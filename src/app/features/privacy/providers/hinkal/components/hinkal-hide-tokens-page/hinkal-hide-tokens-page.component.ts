@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
@@ -12,6 +12,8 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hide-facade.service';
+import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-hinkal-hide-tokens-page',
@@ -49,7 +51,9 @@ export class HinkalHideTokensPageComponent {
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateActionButtonService: PrivateActionButtonService
+    private readonly privateActionButtonService: PrivateActionButtonService,
+    private readonly hinkalHideFacadeService: HinkalHideFacadeService,
+    private readonly hideWindowService: HideWindowService
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +66,20 @@ export class HinkalHideTokensPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.hinkalHideFacadeService.tokens$
+      .pipe(
+        filter(() => !!this.hideWindowService.hideAsset?.address),
+        map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(token => {
+        this.hideWindowService.setHideAsset({
+          ...this.hideWindowService.hideAsset,
+          amount: token.amount
+        });
+      });
   }
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
