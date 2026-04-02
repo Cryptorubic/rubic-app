@@ -268,8 +268,7 @@ export class CrossChainService {
       solanaSponsorParams: {
         feePayer: SOLANA_SPONSOR,
         tradeId: trade.rubicId
-      },
-      privacyRefCode: this.privacyAuthService.refCode
+      }
     };
 
     try {

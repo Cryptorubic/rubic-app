@@ -104,8 +104,6 @@ export abstract class CrossChainTrade<T = unknown> {
    */
   public promotions: string[] = [];
 
-  protected privacyRefCode: string = '';
-
   public readonly contractSpender: string;
 
   protected get httpClient(): HttpClient {
@@ -209,10 +207,6 @@ export abstract class CrossChainTrade<T = unknown> {
   public abstract encode(options: EncodeTransactionOptions): Promise<unknown>;
 
   public abstract authWallet(): Promise<string>;
-
-  public setPrivacyRefCode(refCode: string): void {
-    this.privacyRefCode = refCode;
-  }
 
   protected checkAmountChange(newWeiAmount: string, oldWeiAmount: string): void {
     const oldAmount = new BigNumber(oldWeiAmount);

@@ -149,7 +149,6 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
-      privacyRefCode: this.privacyRefCode,
       enableChecks: !testMode,
       // @ts-ignore
       sponsorGas: true,
