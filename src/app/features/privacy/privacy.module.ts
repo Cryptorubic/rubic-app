@@ -20,7 +20,6 @@ import { SharedPrivacyProvidersModule } from './providers/shared-privacy-provide
 import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
 import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
-import { PrivateLocalStorageService } from './services/privacy-local-storage.service';
 import { TuiToggleModule } from '@taiga-ui/kit';
 import { PrivacyMainPageTokensFacadeService } from './services/privacy-main-page-tokens-facade.service';
 import { PrivacyMainPageFromPrivateAssetsService } from './services/privacy-main-page-from-private-assets.service';
@@ -57,14 +56,11 @@ import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-p
     PrivacyMainPageService,
     PrivacyApiService,
     PrivateSwapWindowService,
-    PrivateLocalStorageService,
     PrivacyMainPageTokensFacadeService,
     PrivacyMainPageFromPrivateAssetsService,
     PrivacyMainPageToPrivateAssetsService
   ]
 })
 export class PrivacyModule {
-  constructor(private readonly privateLocalStorageService: PrivateLocalStorageService) {
-    this.privateLocalStorageService.initStorage();
-  }
+  constructor() {}
 }
