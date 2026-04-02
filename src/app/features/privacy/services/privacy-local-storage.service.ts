@@ -18,6 +18,10 @@ export class PrivateLocalStorageService {
 
   public readonly storage$ = this._storage$.pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
+  public get refCode(): string {
+    return this._storage$.value.PRIVACY_REF_CODE ?? '';
+  }
+
   public alreadyMadeShielding$(providerType: PrivateTradeType): Observable<boolean> {
     return this.storage$.pipe(map(storage => storage.ALREADY_SHIELDED[providerType]));
   }
@@ -32,7 +36,7 @@ export class PrivateLocalStorageService {
   ) {}
 
   public async initStorage(): Promise<void> {
-    const notAuthorized = this.storeService.getItem('FIRST_TIME_PRIVACY') ?? true;
+    const notAuthorized = Boolean(this.storeService.getItem('FIRST_TIME_PRIVACY') ?? true);
     const refCode = this.storeService.getItem('PRIVACY_REF_CODE') ?? null;
 
     if (refCode) {
