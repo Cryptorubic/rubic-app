@@ -210,6 +210,10 @@ export abstract class CrossChainTrade<T = unknown> {
 
   public abstract authWallet(): Promise<string>;
 
+  public setPrivacyRefCode(refCode: string): void {
+    this.privacyRefCode = refCode;
+  }
+
   protected checkAmountChange(newWeiAmount: string, oldWeiAmount: string): void {
     const oldAmount = new BigNumber(oldWeiAmount);
     const newAmount = new BigNumber(newWeiAmount);

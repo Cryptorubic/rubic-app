@@ -63,6 +63,7 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { isReceiverCorrect } from '../constants/receiver-validator';
 import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
+import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -114,7 +115,8 @@ export class HoudiniSwapService {
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly settingsService: SettingsService,
     private readonly houdiniErrorService: HoudiniErrorService,
-    private readonly privateStatisticsService: PrivateStatisticsService
+    private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly privacyAuthService: PrivacyAuthService
   ) {
     this.subscribeOnStatusUpdate();
   }
@@ -474,6 +476,8 @@ export class HoudiniSwapService {
       this.sdkLegacyService,
       this.rubicApiService
     );
+
+    trade.setPrivacyRefCode(this.privacyAuthService.refCode);
 
     const tradeData: DepositTradeData = {
       trade,
