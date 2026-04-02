@@ -104,8 +104,6 @@ export abstract class CrossChainTrade<T = unknown> {
    */
   public promotions: string[] = [];
 
-  protected privacyRefCode: string = '';
-
   public readonly contractSpender: string;
 
   protected get httpClient(): HttpClient {

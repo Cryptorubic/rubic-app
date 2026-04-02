@@ -148,6 +148,7 @@ export class HoudiniSwapService {
       receiver: receiverAddress,
       showDangerousRoutes: true,
       showFailedRoutes: true,
+      integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4',
       ...(chainType === CHAIN_TYPE.EVM && fromAddress && { fromAddress })
     };
 

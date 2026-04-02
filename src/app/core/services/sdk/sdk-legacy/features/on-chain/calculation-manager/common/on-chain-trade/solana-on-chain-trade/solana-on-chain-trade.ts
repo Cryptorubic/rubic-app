@@ -195,7 +195,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
       fromAddress: this.walletAddress,
       receiver: options?.receiverAddress || this.walletAddress,
       id: this.apiResponse.id,
-      privacyRefCode: this.privacyRefCode,
       // @ts-ignore
       sponsorGas: true,
       // @ts-ignore
