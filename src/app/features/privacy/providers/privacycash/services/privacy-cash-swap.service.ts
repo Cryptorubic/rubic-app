@@ -248,7 +248,6 @@ export class PrivacycashSwapService {
       const ephemeralSecretKey = ephemeralKeypair.secretKey.toString();
       const msg = `ethemeral_created(publicKey: ${ephemeralPublicKey}, secretKey: ${ephemeralSecretKey})`;
       successfullSteps.push(msg);
-      localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', ephemeralPublicKey);
 
       const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
         toRubicTokenAddr(srcToken.address),

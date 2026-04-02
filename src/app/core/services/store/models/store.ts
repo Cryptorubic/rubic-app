@@ -90,8 +90,6 @@ export type Store = PrivacyLocalStorage & {
   ZAMA_SIGNATURES_INFO: Record<string, SignatureInfo>;
 
   SHOW_ALL_PROVIDERS_KEY: boolean;
-
-  FIRST_TIME_PRIVACY: boolean;
 };
 
 export const storeRecord: Record<keyof Store, null> = {

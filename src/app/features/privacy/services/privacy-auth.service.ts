@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HttpService } from '@app/core/services/http/http.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, firstValueFrom, map } from 'rxjs';
+import { PrivateLocalStorageService } from './privacy-local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,10 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 export class PrivacyAuthService {
   private readonly _authorized$ = new BehaviorSubject<boolean>(false);
 
-  public readonly authorized$ = this._authorized$.asObservable();
+  public readonly authorized$ = this._authorized$.asObservable().pipe(
+    combineLatestWith(this.privateLocalStorage.alreadyAuthorized$()),
+    map(([authorized, alreadyAuthorized]) => authorized || alreadyAuthorized)
+  );
 
   public readonly refCodeCtrl = new FormControl<string>('');
 
@@ -17,7 +21,10 @@ export class PrivacyAuthService {
     return this.refCodeCtrl.value;
   }
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly privateLocalStorage: PrivateLocalStorageService
+  ) {}
 
   public async validateCode(code: string): Promise<boolean> {
     try {
