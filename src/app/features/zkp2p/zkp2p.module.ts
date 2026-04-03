@@ -8,6 +8,8 @@ import { AssetsSelectorModule } from '../trade/components/assets-selector/assets
 import { Zkp2pService } from './services/zkp2p.service';
 import { SharedTradeModule } from '../trade/shared-trade.module';
 import { TuiButtonModule } from '@taiga-ui/core';
+import { Zkp2pAssetsService } from './services/zkp2p-assets.service';
+import { Zkp2pTokensFacadeService } from './services/zkp2p-tokens-facade.service';
 
 @NgModule({
   declarations: [Zkp2pFormComponent, Zkp2pTokensSelectorComponent],
@@ -19,6 +21,6 @@ import { TuiButtonModule } from '@taiga-ui/core';
     SharedTradeModule,
     TuiButtonModule
   ],
-  providers: [Zkp2pService]
+  providers: [Zkp2pService, Zkp2pAssetsService, Zkp2pTokensFacadeService]
 })
 export class Zkp2pModule {}

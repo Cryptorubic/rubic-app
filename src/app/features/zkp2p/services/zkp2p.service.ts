@@ -5,9 +5,7 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 import { Zkp2pTokensSelectorComponent } from '../components/zkp2p-tokens-selector/zkp2p-tokens-selector.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class Zkp2pService {
   private readonly modalService = inject(ModalService);
 

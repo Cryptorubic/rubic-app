@@ -66,28 +66,32 @@ export class Zkp2pFormComponent {
       token.blockchain === BLOCKCHAIN_NAME.SOLANA ? 792703809 : blockchainId[token.blockchain];
     const recipientAddress = this.receiverCtrl.value;
 
-    const urlWithoutQuery = window.location.href.split('?')[0];
-    const session = await createCheckoutSession(
-      {
-        merchantId: 'cmnfujh3503trbppexzi6jkn4',
-        amountUsdc: amount,
-        destinationChainId: chain,
-        destinationToken: token.address,
-        recipientAddress,
-        successUrl: `${urlWithoutQuery}?status=success`,
-        cancelUrl: `${urlWithoutQuery}?status=cancel`,
-        metadata: {
-          // orderId: 'order_123',
-          // customerId: 'cust_456'
+    try {
+      const urlWithoutQuery = window.location.href.split('?')[0];
+      const session = await createCheckoutSession(
+        {
+          merchantId: 'cmnfujh3503trbppexzi6jkn4',
+          amountUsdc: amount,
+          destinationChainId: chain,
+          destinationToken: token.address,
+          recipientAddress,
+          successUrl: `${urlWithoutQuery}?status=success`,
+          cancelUrl: `${urlWithoutQuery}?status=cancel`,
+          metadata: {
+            // orderId: 'order_123',
+            // customerId: 'cust_456'
+          }
+        },
+        {
+          apiBaseUrl: 'https://api.pay.peer.xyz',
+          apiKey: 'f9b51cb451a35a3399124864b14c8e75bd67a9748ac95ed5'
         }
-      },
-      {
-        apiBaseUrl: 'https://api.pay.peer.xyz',
-        apiKey: 'f9b51cb451a35a3399124864b14c8e75bd67a9748ac95ed5'
-      }
-    );
-    window.open(session.checkoutUrl, '_blank');
-
-    this.loading$.next(false);
+      );
+      window.open(session.checkoutUrl, '_blank');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.loading$.next(false);
+    }
   }
 }
