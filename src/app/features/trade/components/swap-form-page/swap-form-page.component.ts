@@ -1,8 +1,17 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
-import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -14,15 +23,16 @@ import { compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
-import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-swap-form-page',
   templateUrl: './swap-form-page.component.html',
   styleUrls: ['./swap-form-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
   animations: [
     trigger('receiverAnimation', [
       transition(':enter', [
@@ -89,19 +99,45 @@ export class SwapFormPageComponent {
     private readonly swapsStateService: SwapsStateService,
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
-      this.refundService.onSwapFormInputChanged(inputValue);
-      this.solanaGaslessService.onSwapFormInputChanged(inputValue);
-    });
+    this.swapFormService.inputValueDistinct$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inputValue => {
+        this.refundService.onSwapFormInputChanged(inputValue);
+        this.solanaGaslessService.onSwapFormInputChanged(inputValue);
+      });
+
+    this.authService.currentUser$
+      .pipe(
+        switchMap(() =>
+          this.tokensFacade.getTokensList('allChains', '', 'from', this.swapFormService.inputValue)
+        ),
+        filter(() => !!this.swapFormService.inputValue.fromToken),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(tokensList => {
+        const srcToken = this.swapFormService.inputValue.fromToken;
+        const dstToken = this.swapFormService.inputValue.toToken;
+        tokensList.forEach(t => {
+          if (compareTokens(srcToken, t)) {
+            this.swapFormService.inputControl.patchValue({
+              fromToken: { ...srcToken, amount: t.amount }
+            });
+          }
+          if (compareTokens(dstToken, t)) {
+            this.swapFormService.inputControl.patchValue({
+              toToken: { ...dstToken, amount: t.amount }
+            });
+          }
+        });
+      });
   }
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
     if (isMobile) {
-      // @TODO получить выбранный в модалке токен внутри subcribe и перезаписать this.swapFormService.inputControl.patchValue
       this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
