@@ -24,6 +24,10 @@ const routes: Routes = [
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
+    path: 'zk',
+    loadChildren: () => import('./features/zkp2p/zkp2p.module').then(m => m.Zkp2pModule)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

@@ -1,0 +1,48 @@
+<div class="swap-container">
+  <app-window-container
+    *ngLet="{
+      transferAsset: transferAsset$ | async,
+      transferAmount: transferAmount$ | async,
+      loading: loading$ | async,
+    } as state"
+  >
+    <app-input-output-container [round]="'top'" [marginTop]="true">
+      <app-asset-selector
+        left
+        selectorType="from"
+        (handleAssetSelection)="openSelector()"
+        [asset]="state.transferAsset"
+        [isDisabled]="state.loading"
+      ></app-asset-selector>
+      <div right class="input-container">
+        <app-amount-transput
+          formType="from"
+          [selectedToken]="state.transferAsset"
+          inputMode="input"
+          (amountUpdated)="updateInputValue($event)"
+          [amountValue]="state.transferAmount"
+        ></app-amount-transput>
+      </div>
+    </app-input-output-container>
+
+    <app-target-network-address [addressCtrl]="receiverCtrl"></app-target-network-address>
+
+    <button
+      class="swap-button"
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      [showLoader]="state.loading"
+      [disabled]="
+        !state.transferAsset ||
+        !state.transferAmount?.actualValue.gt(0) ||
+        !receiverCtrl.value ||
+        !receiverCtrl.valid
+      "
+      (click)="swap()"
+    >
+      Swap
+    </button>
+  </app-window-container>
+</div>

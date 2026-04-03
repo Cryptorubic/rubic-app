@@ -97,6 +97,7 @@
     "@walletconnect/ethereum-provider": "^2.13.3",
     "@walletconnect/modal": "^2.5.9",
     "@zama-fhe/relayer-sdk": "0.4.1",
+    "@zkp2p/pay-sdk": "^0.0.3",
     "bignumber.js": "9.1.2",
     "browserify-zlib": "^0.2.0",
     "bs58": "^6.0.0",

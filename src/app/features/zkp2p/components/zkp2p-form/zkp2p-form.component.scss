@@ -1,0 +1,23 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: flex;
+}
+
+.swap-container {
+  width: 600px;
+  margin: 0 auto;
+  
+  @include b($mobile-md) {
+    width: calc(100vw - (2 * var(--tui-padding-l)));
+  }
+  
+  > * {
+    width: 100%;
+  }
+}
+
+.swap-button {
+  width: 100%;
+  margin-top: 12px;
+}

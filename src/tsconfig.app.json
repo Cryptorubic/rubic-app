@@ -26,7 +26,9 @@
     "polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "../node_modules/@zkp2p/pay-sdk/src/**/*.ts",
+    "../node_modules/@zkp2p/pay-shared/src/**/*.ts"
   ],
   "angularCompilerOptions": {
     "strictTemplates": true

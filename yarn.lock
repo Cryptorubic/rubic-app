@@ -9439,6 +9439,18 @@
   dependencies:
     argparse "^2.0.1"
 
+"@zkp2p/pay-sdk@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@zkp2p/pay-sdk/-/pay-sdk-0.0.3.tgz#afebb4e40f54fd63549e45e2467b67d8ea8398ae"
+  integrity sha512-veuk82pex0/Z+ymyBsdy8FU/jIT50bsPlHsp9Lr1JrDBuFc72uri94xDpS/7eg/62pZSQLGmki019ahKnezAAQ==
+  dependencies:
+    "@zkp2p/pay-shared" "^0.0.2"
+
+"@zkp2p/pay-shared@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@zkp2p/pay-shared/-/pay-shared-0.0.2.tgz#545622be715c541f579c01bb76f85345be106c30"
+  integrity sha512-uPZIPJALKKtRA2xWxvVfEbUFsgLZUFUMippi4w6iUOuy4cKeZ+vSx64rIAL8fbPmR1pKeWqaxe9XXAaLbq2JaQ==
+
 JSV@^4.0.x:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/JSV/-/JSV-4.0.2.tgz#d077f6825571f82132f9dffaed587b4029feff57"
