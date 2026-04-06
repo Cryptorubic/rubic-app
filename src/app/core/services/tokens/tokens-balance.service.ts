@@ -126,6 +126,8 @@ export class TokensBalanceService {
     },
     maxRetries: number = 0
   ): Promise<BigNumber> {
+    if (!this.userAddress) return new BigNumber(NaN);
+
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
     const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
       token.blockchain,
@@ -133,12 +135,11 @@ export class TokensBalanceService {
     );
 
     if (
-      !this.userAddress ||
       !chainType ||
       !isAddressCorrectValue
       // @TODO CHECK IF BLOCKCHAIN SUPPORTED
     ) {
-      return null;
+      return new BigNumber(NaN);
     }
 
     const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
