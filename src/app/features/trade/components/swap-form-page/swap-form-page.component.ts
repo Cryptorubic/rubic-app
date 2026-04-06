@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { combineLatestWith } from 'rxjs';
+import { combineLatestWith, forkJoin, of } from 'rxjs';
 import {
   distinctUntilChanged,
-  filter,
   first,
   map,
   startWith,
@@ -19,7 +18,7 @@ import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
@@ -112,26 +111,28 @@ export class SwapFormPageComponent {
 
     this.authService.currentUser$
       .pipe(
-        switchMap(() =>
-          this.tokensFacade.getTokensList('allChains', '', 'from', this.swapFormService.inputValue)
-        ),
-        filter(() => !!this.swapFormService.inputValue.fromToken),
+        distinctUntilChanged((prev, curr) => compareAddresses(prev?.address, curr?.address)),
+        switchMap(() => {
+          const srcToken = this.swapFormService.inputValue.fromToken;
+          const dstToken = this.swapFormService.inputValue.toToken;
+          const srcBalance$ = srcToken
+            ? this.tokensFacade.getAndUpdateTokenBalance(srcToken)
+            : of(new BigNumber(NaN));
+          const dstBalance$ = dstToken
+            ? this.tokensFacade.getAndUpdateTokenBalance(dstToken)
+            : of(new BigNumber(NaN));
+          return forkJoin([srcBalance$, dstBalance$]);
+        }),
         takeUntil(this.destroy$)
       )
-      .subscribe(tokensList => {
+      .subscribe(([srcBalance, dstBalance]) => {
         const srcToken = this.swapFormService.inputValue.fromToken;
         const dstToken = this.swapFormService.inputValue.toToken;
-        tokensList.forEach(t => {
-          if (compareTokens(srcToken, t)) {
-            this.swapFormService.inputControl.patchValue({
-              fromToken: { ...srcToken, amount: t.amount }
-            });
-          }
-          if (compareTokens(dstToken, t)) {
-            this.swapFormService.inputControl.patchValue({
-              toToken: { ...dstToken, amount: t.amount }
-            });
-          }
+        this.swapFormService.inputControl.patchValue({
+          fromToken: { ...srcToken, amount: srcBalance }
+        });
+        this.swapFormService.inputControl.patchValue({
+          toToken: { ...dstToken, amount: dstBalance }
         });
       });
   }
