@@ -20,7 +20,6 @@ import {
   MOBILE_NAVIGATION_LIST,
   NAVIGATION_LIST
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
-import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -66,7 +65,6 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly gtmService: GoogleTagManagerService,
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly mobileNativeService: MobileNativeModalService,
@@ -95,7 +93,6 @@ export class RubicMenuComponent implements AfterViewInit {
   }
 
   public handleButtonClick(item?: NavigationItem): void {
-    this.gtmService.reloadGtmSession();
     this.onClose.emit();
     if (!item) return;
     this.window.open(item.link, item?.target || '_blank');

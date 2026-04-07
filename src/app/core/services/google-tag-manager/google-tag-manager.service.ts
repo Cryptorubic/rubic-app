@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { CookieService } from 'ngx-cookie-service';
-import { addMinutes } from 'date-and-time';
-import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import {
+  FormSteps,
+  PrivateFlowTabEvent,
+  SwitchModeEvent
+} from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -14,6 +16,7 @@ import { OnChainTrade } from '../sdk/sdk-legacy/features/on-chain/calculation-ma
 import { BlockchainName, nativeTokensList, PriceTokenAmount, Token } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { ActivatedRoute, Router } from '@angular/router';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -44,35 +47,18 @@ export class GoogleTagManagerService {
     this._needTrackFormEventsNow$.next(value);
   }
 
-  get isGtmSessionActive(): boolean {
-    return Boolean(this.cookieService.get('gtmSessionActive'));
-  }
-
   constructor(
-    private readonly cookieService: CookieService,
     private readonly angularGtmService: GoogleAnalyticsService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
   ) {}
 
-  /**
-   * Reloads GTM session.
-   */
-  public reloadGtmSession(): void {
-    if (!this.isGtmSessionActive) {
-      return;
-    }
-
-    this.cookieService.delete('gtmSessionActive');
-
-    this.cookieService.set(
-      'gtmSessionActive',
-      'true',
-      addMinutes(new Date(), 30),
-      null,
-      null,
-      null,
-      null
-    );
+  private getCurrentPage(): string {
+    const pathWithoutQuery = this.router.url.split('?')[0].split('#')[0];
+    const segments = pathWithoutQuery.split('/').filter(segment => segment.length > 0);
+    const lastSegment = segments[segments.length - 1] ?? '';
+    return lastSegment ? `${lastSegment}_page` : 'main_page';
   }
 
   /**
@@ -249,5 +235,48 @@ export class GoogleTagManagerService {
 
   public fireClickOnVerifyEvent(): void {
     this.angularGtmService.gtag('event', 'click_verify');
+  }
+
+  /**
+   * Fires when the private mode page is opened.
+   */
+  public fireViewPrivateModePageEvent(entrySource?: string): void {
+    entrySource =
+      entrySource ?? this.activatedRoute.snapshot.queryParamMap.get('entry_source') ?? 'direct';
+    this.angularGtmService.gtag('event', 'view_private_mode_page', {
+      page: this.getCurrentPage(),
+      entry_source: entrySource
+    });
+  }
+
+  /**
+   * Fires when switching app mode from header (Regular / Private / Testnets).
+   */
+  public fireSwitchModeEvent(selectedMode: SwitchModeEvent): void {
+    this.angularGtmService.gtag('event', 'switch_mode', {
+      page: this.getCurrentPage(),
+      selected_mode: selectedMode
+    });
+  }
+
+  /**
+   * Fires when switching private flow tab (On-Chain / Cross-Chain / Transfer).
+   */
+  public fireSelectPrivateFlowTabEvent(flowType: PrivateFlowTabEvent): void {
+    this.angularGtmService.gtag('event', 'select_private_flow_tab', {
+      page: this.getCurrentPage(),
+      flow_type: flowType
+    });
+  }
+
+  /**
+   * Fires when toggling "Show all … providers" on the private swap form.
+   */
+  public fireToggleShowAllProvidersEvent(flowType: PrivateFlowTabEvent, isEnabled: boolean): void {
+    this.angularGtmService.gtag('event', 'toggle_show_all_providers', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      is_enabled: isEnabled
+    });
   }
 }

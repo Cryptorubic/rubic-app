@@ -29,6 +29,7 @@
       routerLink="/"
       routerLinkActive="active-router-link"
       [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+      (click)="onHeaderModeSwitch('regular')"
       tuiButton
       appearance="secondary"
       type="button"
@@ -40,6 +41,7 @@
     <button
       routerLink="/privacy"
       routerLinkActive="active-router-link"
+      (click)="onHeaderModeSwitch('private')"
       class="private-mode-button"
       tuiButton
       appearance="secondary"

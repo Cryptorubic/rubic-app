@@ -22,6 +22,7 @@ import { PRIVATE_MODE_SUPPORTED_CHAINS } from '../../constants/private-mode-supp
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../../constants/private-mode-supported-tokens';
 import { StoreService } from '@core/services/store/store.service';
 import { ModalService } from '@core/modals/services/modal.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -95,6 +96,8 @@ export class PrivacyPageViewComponent implements OnInit {
 
   private readonly modalService = inject(ModalService);
 
+  private readonly gtmService = inject(GoogleTagManagerService);
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService,
@@ -103,6 +106,7 @@ export class PrivacyPageViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.gtmService.fireViewPrivateModePageEvent();
     this.parseQueryParams();
   }
 

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-logo',
@@ -12,4 +13,10 @@ export class LogoComponent {
   @Input({ required: true }) noFrameLink: string;
 
   @Input({ required: true }) currentUser: boolean;
+
+  private readonly gtmService = inject(GoogleTagManagerService);
+
+  public navigateToHome(): void {
+    this.gtmService.fireSwitchModeEvent('regular');
+  }
 }
