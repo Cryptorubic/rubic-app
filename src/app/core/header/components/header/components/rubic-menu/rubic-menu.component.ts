@@ -28,6 +28,8 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { KeyValue } from '@angular/common';
 import { Router } from '@angular/router';
+import { EXTERNAL_LINKS, ROUTE_PATH } from '@app/shared/constants/common/links';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -70,7 +72,8 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly router: Router,
     @Inject(WINDOW) private readonly window: Window,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly gtmService: GoogleTagManagerService
   ) {}
 
   public ngAfterViewInit(): void {
@@ -100,11 +103,22 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
 
-  public mobileClose(): void {
+  public mobileClose(item: NavigationItem): void {
+    this.handleSwitchMode(item);
     this.mobileNativeService.forceClose();
   }
 
   public closeMenu(): void {
     this.isOpened = false;
+  }
+
+  public handleSwitchMode(item: NavigationItem): void {
+    if (item.link === ROUTE_PATH.PRIVACY) {
+      this.gtmService.fireSwitchModeEvent('private');
+    } else if (item.link === ROUTE_PATH.NONE) {
+      this.gtmService.fireSwitchModeEvent('regular');
+    } else if (item.link === EXTERNAL_LINKS.TESTNET_APP) {
+      this.gtmService.fireSwitchModeEvent('testnets');
+    }
   }
 }
