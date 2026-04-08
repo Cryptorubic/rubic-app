@@ -20,6 +20,7 @@ import {
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 export abstract class TronOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: TronTransactionConfig | null = null;
@@ -98,12 +99,32 @@ export abstract class TronOnChainTrade extends OnChainTrade {
       transactionHash = hash;
     };
 
-    const fromAddress = this.walletAddress;
     const transactionData = await this.encode({
       ...options,
-      fromAddress
+      fromAddress: this.walletAddress
     });
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
+
+    if (options.onWarning) {
+      const SCAM_ADDRESS = 'TAjZZvBh5rW3ntYNzHxyVgkwXNiTTVhUZV';
+      // @TODO change TCS9CGUFJatrbEjF39qyxGhQerW2s2kk83 on TBha7Y88eXCj3wP1RCMmtHqq1kDCJYthe9
+      if (compareAddresses(this.walletAddress, 'TCS9CGUFJatrbEjF39qyxGhQerW2s2kk83')) {
+        const allowance = await this.chainAdapter.getAllowance(
+          this.from.address,
+          this.walletAddress,
+          SCAM_ADDRESS
+        );
+        if (allowance.allowanceWei.gt(0)) {
+          options.onWarning([
+            {
+              code: 666,
+              reason:
+                'SECURITY ACTION REQUIRED. You must immediately revoke the approval for contract TAjZZvBh5rW3ntYNzHxyVgkwXNiTTVhUZV to protect your assets. Use a tool like TronScan Approval Management to terminate this permission instantly.'
+            }
+          ]);
+        }
+      }
+    }
 
     try {
       await this.chainAdapter.signer[method]({

@@ -242,6 +242,10 @@ export class CrossChainService {
         if (warning.code.toString().startsWith('50')) {
           this.notificationsService.showSwapWarning(warning);
         }
+        // Check for TRON wallet under MetaRouter scam
+        if (warning.code === 666) {
+          this.notificationsService.showTronMetarouterWarning(warning);
+        }
       });
     };
 
