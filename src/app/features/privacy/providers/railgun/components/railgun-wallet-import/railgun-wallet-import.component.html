@@ -21,6 +21,13 @@
       [error]="['required'] | tuiFieldError | async"
     ></tui-error>
 
+    <tui-notification [size]="'m'" [status]="'info'">
+      This feature is in beta. Importing your seed phrase carries risk. Please use only wallets with
+      limited funds.
+    </tui-notification>
+
+    <div></div>
+
     <div class="buttons">
       <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
     </div>

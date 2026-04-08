@@ -78,9 +78,10 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
-  ...new Set(
-    Object.values(onChainBlacklist)
+  ...new Set([
+    ...Object.values(onChainBlacklist)
       .filter(providersPerChain => providersPerChain.length)
-      .flat()
-  )
+      .flat(),
+    ON_CHAIN_TRADE_TYPE.CLEARSWAP
+  ])
 ];
