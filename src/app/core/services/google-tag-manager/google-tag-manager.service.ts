@@ -5,6 +5,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import {
   FormSteps,
   PrivateFlowTabEvent,
+  PrivateProviderNameEvent,
   SwitchModeEvent
 } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
@@ -321,6 +322,22 @@ export class GoogleTagManagerService {
       selected_chain: selectedChain,
       selected_token_symbol: selectedTokenSymbol,
       selected_token_address: selectedTokenAddress
+    });
+  }
+
+  /**
+   * Fires when private provider is selected.
+   */
+  public fireSelectPrivateProviderEvent(
+    flowType: PrivateFlowTabEvent,
+    providerName: PrivateProviderNameEvent,
+    showAllProvidersEnabled: boolean
+  ): void {
+    this.angularGtmService.gtag('event', 'select_private_provider', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      provider_name: providerName,
+      show_all_providers_enabled: showAllProvidersEnabled
     });
   }
 }

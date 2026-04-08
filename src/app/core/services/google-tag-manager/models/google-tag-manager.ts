@@ -1,4 +1,8 @@
 import { PRIVATE_MODE_TAB, PrivateModeTab } from '@app/features/privacy/constants/private-mode-tab';
+import {
+  PRIVATE_TRADE_TYPE,
+  PrivateTradeType
+} from '@app/features/privacy/constants/private-trade-types';
 
 export interface FormSteps {
   token1: boolean;
@@ -22,4 +26,24 @@ export const PRIVATE_TAB_TO_FLOW_TYPE_EVENT: Record<PrivateModeTab, PrivateFlowT
   [PRIVATE_MODE_TAB.ON_CHAIN]: 'on_chain',
   [PRIVATE_MODE_TAB.CROSS_CHAIN]: 'cross_chain',
   [PRIVATE_MODE_TAB.TRANSFER]: 'transfer'
+};
+
+export type PrivateProviderNameEvent =
+  | 'hinkal'
+  | 'privacy_cash'
+  | 'clearswap'
+  | 'houdini'
+  | 'zama'
+  | 'railgun';
+
+export const PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT: Record<
+  PrivateTradeType,
+  PrivateProviderNameEvent
+> = {
+  [PRIVATE_TRADE_TYPE.HINKAL]: 'hinkal',
+  [PRIVATE_TRADE_TYPE.PRIVACY_CASH]: 'privacy_cash',
+  [PRIVATE_TRADE_TYPE.CLEARSWAP]: 'clearswap',
+  [PRIVATE_TRADE_TYPE.HOUDINI]: 'houdini',
+  [PRIVATE_TRADE_TYPE.ZAMA]: 'zama',
+  [PRIVATE_TRADE_TYPE.RAILGUN]: 'railgun'
 };

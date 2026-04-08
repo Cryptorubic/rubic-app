@@ -23,6 +23,10 @@ import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../../constants/private-mode-supp
 import { StoreService } from '@core/services/store/store.service';
 import { ModalService } from '@core/modals/services/modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import {
+  PRIVATE_TAB_TO_FLOW_TYPE_EVENT,
+  PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT
+} from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -206,6 +210,12 @@ export class PrivacyPageViewComponent implements OnInit {
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {
+    this.gtmService.fireSelectPrivateProviderEvent(
+      PRIVATE_TAB_TO_FLOW_TYPE_EVENT[this.privacyMainPageService.selectedTab],
+      PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT[tradeType],
+      this.privacyMainPageService.showAllProviders
+    );
+
     const url = PRIVATE_MODE_URLS[tradeType];
     await this.router.navigate([url], {
       relativeTo: this.activatedRoute,

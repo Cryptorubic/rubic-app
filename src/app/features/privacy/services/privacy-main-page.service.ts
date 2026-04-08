@@ -81,11 +81,15 @@ export class PrivacyMainPageService {
 
   // @TODO_1712 использовать реальную активность из локал стора
   public readonly lastActivity$: Observable<PrivateActivityItem[]> = of(FAKE_ACTIVITY).pipe(
-    map(() => [])
+    map((): PrivateActivityItem[] => [])
   );
 
   public get selectedTab(): PrivateModeTab {
     return this._selectedTab$.getValue();
+  }
+
+  public get showAllProviders(): boolean {
+    return this._showAllProviders$.getValue();
   }
 
   public get swapInfo(): Partial<PrivacyFormValue> {
