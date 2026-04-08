@@ -9,6 +9,7 @@ import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { HideWindowService } from '../hide-window-service/hide-window.service';
 import { RevealWindowService } from '../reveal-window/reveal-window.service';
 import { PrivateRefundWindowService } from '../private-refund-window/private-refund-window.service';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable()
 export class PrivateActionButtonService {
@@ -39,10 +40,15 @@ export class PrivateActionButtonService {
     protected readonly privateSwapWindowService: PrivateSwapWindowService,
     protected readonly hideWindowService: HideWindowService,
     protected readonly revealWindowService: RevealWindowService,
-    protected readonly privatePageTypeService: PrivatePageTypeService
+    protected readonly privatePageTypeService: PrivatePageTypeService,
+    protected readonly googleTagManagerService: GoogleTagManagerService
   ) {}
 
   public setReceiverAddress(address: string): void {
     this._receiverAddress$.next(address);
+  }
+
+  protected connectWallet(): void {
+    this.googleTagManagerService.fireClickOnConnectWalletButtonEvent('form');
   }
 }

@@ -74,7 +74,10 @@
 
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">
-        <app-login-button class="rubic-header__login"></app-login-button>
+        <app-login-button
+          class="rubic-header__login"
+          [buttonHierarchy]="'header'"
+        ></app-login-button>
       </ng-container>
       <ng-template #loggedIn>
         <app-user-profile class="rubic-header__profile-user"></app-user-profile>

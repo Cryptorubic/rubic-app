@@ -91,10 +91,13 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Fires wallet GTM event.
+   * Fires when clicking on connect wallet button.
    */
-  public fireClickOnConnectWalletButtonEvent(): void {
-    this.angularGtmService.gtag('event', 'click_connect_wallet');
+  public fireClickOnConnectWalletButtonEvent(buttonHierarchy: 'header' | 'form'): void {
+    this.angularGtmService.gtag('event', 'click_connect_wallet', {
+      page: this.getCurrentPage(),
+      button_hierarchy: buttonHierarchy
+    });
   }
 
   /**
