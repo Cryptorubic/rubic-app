@@ -1,9 +1,4 @@
-import {
-  BitcoinBlockchainName,
-  BLOCKCHAIN_NAME,
-  PriceTokenAmount,
-  SwapRequestInterface
-} from '@cryptorubic/core';
+import { BitcoinBlockchainName, PriceTokenAmount, SwapRequestInterface } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { CrossChainTrade } from '../cross-chain-trade';
@@ -110,6 +105,17 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
     return this.to.price.multipliedBy(this.to.tokenAmount).minus(feeSum);
   }
 
+  private async getWalletPublicKey(): Promise<string> {
+    try {
+      const publicKey = await this.chainAdapter.getPublicKey(this.walletAddress);
+
+      return publicKey || this.chainAdapter.getPublicKeyFromWallet();
+    } catch (err) {
+      console.error('FAILED TO GET PUBLIC KEY: ', err);
+      throw err;
+    }
+  }
+
   protected async getTransactionConfigAndAmount(
     testMode?: boolean,
     receiverAddress?: string
@@ -117,21 +123,13 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
     config: BitcoinTransferEncodedConfig | BitcoinPsbtEncodedConfig;
     amount: string;
   }> {
-    let publicKey: string | null = null;
-    if (this.needProvidePubKey) {
-      const btcAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-        BLOCKCHAIN_NAME.BITCOIN
-      );
-      publicKey = await btcAdapter.getPublicKey(this.walletAddress);
-    }
-
     const swapRequestData: SwapRequestInterface = {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
       enableChecks: !testMode,
-      ...(publicKey && { publicKey })
+      ...(this.needProvidePubKey && { publicKey: await this.getWalletPublicKey() })
     };
 
     const swapData = await this.fetchSwapData<BitcoinTransferTxApiResp | BitcoinPsbtEncodedConfig>(
