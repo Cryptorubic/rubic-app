@@ -295,4 +295,32 @@ export class GoogleTagManagerService {
       page_section: 'floating_chat'
     });
   }
+
+  /**
+   * Fires when token selector is opened on the private form.
+   */
+  public firePrivateFormOpenTokenSelectorEvent(selectorSide: 'from' | 'to'): void {
+    this.angularGtmService.gtag('event', 'private_form_open_token_selector', {
+      page: this.getCurrentPage(),
+      selector_side: selectorSide
+    });
+  }
+
+  /**
+   * Fires when token is selected on the private form.
+   */
+  public firePrivateFormSelectTokenEvent(
+    selectorSide: 'from' | 'to',
+    selectedChain: BlockchainName,
+    selectedTokenSymbol: string,
+    selectedTokenAddress: string
+  ): void {
+    this.angularGtmService.gtag('event', 'private_form_select_token', {
+      page: this.getCurrentPage(),
+      selector_side: selectorSide,
+      selected_chain: selectedChain,
+      selected_token_symbol: selectedTokenSymbol,
+      selected_token_address: selectedTokenAddress
+    });
+  }
 }

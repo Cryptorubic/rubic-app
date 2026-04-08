@@ -108,6 +108,8 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   public openInputSelector(): void {
+    this.gtmService.firePrivateFormOpenTokenSelectorEvent('from');
+
     const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
     const config: AssetsSelectorConfig = {
       ...this.creationConfig.assetsSelectorConfig,
@@ -123,10 +125,19 @@ export class PrivatePageSwapComponent implements OnInit {
         } else {
           this.patchSwapInfo({ fromAsset: selectedToken });
         }
+
+        this.gtmService.firePrivateFormSelectTokenEvent(
+          'from',
+          selectedToken.blockchain,
+          selectedToken.symbol,
+          selectedToken.address
+        );
       });
   }
 
   public openOutputSelector(): void {
+    this.gtmService.firePrivateFormOpenTokenSelectorEvent('to');
+
     const isOnChain = this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.ON_CHAIN;
     const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
     const config: AssetsSelectorConfig = {
@@ -140,6 +151,13 @@ export class PrivatePageSwapComponent implements OnInit {
       .openPrivateTokensModal(this.injector, 'to', config)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
+
+        this.gtmService.firePrivateFormSelectTokenEvent(
+          'to',
+          selectedToken.blockchain,
+          selectedToken.symbol,
+          selectedToken.address
+        );
       });
   }
 
