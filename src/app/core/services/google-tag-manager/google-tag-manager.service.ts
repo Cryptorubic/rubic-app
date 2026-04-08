@@ -62,11 +62,14 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Fires click on banner GTM event.
+   * Fires when clicking on banner.
    */
-  public fireClickOnBannerEvent(banner_type: string): void {
+  public fireClickOnBannerEvent(bannerText: string, bannerLink: string): void {
     this.angularGtmService.gtag('event', 'click_banner', {
-      banner_type
+      page: this.getCurrentPage(),
+      page_section: 'top_banner',
+      banner_text: bannerText,
+      destination: bannerLink
     });
   }
 
