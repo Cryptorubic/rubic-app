@@ -107,8 +107,8 @@ export abstract class TronOnChainTrade extends OnChainTrade {
 
     if (options.onWarning) {
       const SCAM_ADDRESS = 'TAjZZvBh5rW3ntYNzHxyVgkwXNiTTVhUZV';
-      // @TODO change TCS9CGUFJatrbEjF39qyxGhQerW2s2kk83 on TBha7Y88eXCj3wP1RCMmtHqq1kDCJYthe9
-      if (compareAddresses(this.walletAddress, 'TCS9CGUFJatrbEjF39qyxGhQerW2s2kk83')) {
+      // @TODO change THePhyk9gYUSLBtYehRTRkTVfzd7531pWr on TBha7Y88eXCj3wP1RCMmtHqq1kDCJYthe9
+      if (compareAddresses(this.walletAddress, 'THePhyk9gYUSLBtYehRTRkTVfzd7531pWr')) {
         const allowance = await this.chainAdapter.getAllowance(
           this.from.address,
           this.walletAddress,
