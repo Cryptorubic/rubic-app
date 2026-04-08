@@ -5,6 +5,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import {
   FormSteps,
   PrivateFlowTabEvent,
+  PrivateProviderMetricTypeEvent,
   PrivateProviderNameEvent,
   SwitchModeEvent
 } from '@core/services/google-tag-manager/models/google-tag-manager';
@@ -338,6 +339,22 @@ export class GoogleTagManagerService {
       flow_type: flowType,
       provider_name: providerName,
       show_all_providers_enabled: showAllProvidersEnabled
+    });
+  }
+
+  /**
+   * Fires when user hovers provider metric tooltip.
+   */
+  public fireViewProviderMetricTooltipEvent(
+    flowType: PrivateFlowTabEvent,
+    providerName: PrivateProviderNameEvent,
+    metricType: PrivateProviderMetricTypeEvent
+  ): void {
+    this.angularGtmService.gtag('event', 'view_provider_metric_tooltip', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      provider_name: providerName,
+      metric_type: metricType
     });
   }
 }

@@ -47,3 +47,5 @@ export const PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT: Record<
   [PRIVATE_TRADE_TYPE.ZAMA]: 'zama',
   [PRIVATE_TRADE_TYPE.RAILGUN]: 'railgun'
 };
+
+export type PrivateProviderMetricTypeEvent = 'fees' | 'privacy_score';
