@@ -285,4 +285,14 @@ export class GoogleTagManagerService {
       is_enabled: isEnabled
     });
   }
+
+  /**
+   * Fires when floating live chat is opened.
+   */
+  public fireOpenChatEvent(): void {
+    this.angularGtmService.gtag('event', 'open_chat', {
+      page: this.getCurrentPage(),
+      page_section: 'floating_chat'
+    });
+  }
 }
