@@ -86,7 +86,7 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.PRIVACY_CASH],
     name: PRIVATE_TRADE_TYPE.PRIVACY_CASH,
     uiName: 'PrivacyCash',
-    privacyType: 'Dual exchange system +Randomized L1',
+    privacyType: ' ZK based privacy pool',
     security: 3,
     executionTimeRate: 1
   },
