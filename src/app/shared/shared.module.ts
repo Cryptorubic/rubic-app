@@ -53,7 +53,6 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
-import { LiveChatComponent } from './components/live-chat/live-chat.component';
 import { AssetSelectorComponent } from '@shared/components/asset-selector/asset-selector.component';
 import { WindowContainerComponent } from './components/window-container/window-container.component';
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
@@ -114,7 +113,6 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     TokenAmountDirective,
     LetDirective,
     CommaToPeriodDirective,
-    LiveChatComponent,
     AssetSelectorComponent,
     WindowContainerComponent,
     InputOutputContainerComponent,
@@ -206,7 +204,6 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     LoginButtonComponent,
     CommaToPeriodDirective,
     SuccessWithdrawModalComponent,
-    LiveChatComponent,
     AssetSelectorComponent,
     WindowContainerComponent,
     InputOutputContainerComponent,
