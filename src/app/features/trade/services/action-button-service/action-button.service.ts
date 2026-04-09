@@ -95,7 +95,7 @@ export class ActionButtonService {
         action: this.connectWallet.bind(this)
       };
     }
-    if (notEnoughBalance) {
+    if (notEnoughBalance && !isTransferFromNonEvm) {
       return {
         type: 'error',
         text: 'Insufficient balance',
