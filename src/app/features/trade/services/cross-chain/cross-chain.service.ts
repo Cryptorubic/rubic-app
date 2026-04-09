@@ -133,7 +133,6 @@ export class CrossChainService {
     this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
-      nativeBlacklist: ['houdini'],
       ...tradeParams,
       ...options
     });
@@ -433,7 +432,10 @@ export class CrossChainService {
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
     ).includes(fromBlockchain);
 
-    let disabledProviders = [...disabledTradesTypes];
+    let disabledProviders: CrossChainTradeType[] = [
+      ...disabledTradesTypes,
+      CROSS_CHAIN_TRADE_TYPE.HOUDINI
+    ];
 
     if (isNonEvmCNChain && this.iframeService.isIframe) {
       disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
