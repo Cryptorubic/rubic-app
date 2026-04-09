@@ -56,7 +56,7 @@ export class SdkService {
       },
       clientParams: {
         envType: ENVIRONMENT.environmentName,
-        lazyLoadWeb3: true,
+        // lazyLoadWeb3: true,
         viemConfig: rubicSdkDefaultConfig.viemConfig
       }
     });
