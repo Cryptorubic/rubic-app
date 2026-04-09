@@ -133,6 +133,7 @@ export class CrossChainService {
     this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
+      nativeBlacklist: ['houdini'],
       ...tradeParams,
       ...options
     });
