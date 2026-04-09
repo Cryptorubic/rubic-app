@@ -63,7 +63,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.setupIframeSettings();
     this.turnstileService.loadSessionID();
   }
 
@@ -107,36 +106,6 @@ export class AppComponent implements AfterViewInit {
           console.debug('timestamp file is not found');
         });
     }
-  }
-
-  /**
-   * Setups settings for app in iframe.
-   */
-  private setupIframeSettings(): void {
-    if (this.iframeService.isIframe) {
-      this.removeLiveChatInIframe();
-    }
-    this.queryParamsService.queryParams$
-      .pipe(first(queryParams => Boolean(Object.keys(queryParams).length)))
-      .subscribe(params => {
-        this.useLargeIframe = params.useLargeIframe === 'true';
-      });
-  }
-
-  private removeLiveChatInIframe(): void {
-    const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementById('chat-widget-container');
-      if (liveChat) {
-        liveChat.remove();
-        observer.disconnect();
-      }
-    });
-    observer.observe(this.document.body, {
-      attributes: false,
-      childList: true,
-      characterData: false,
-      subtree: false
-    });
   }
 
   /**
