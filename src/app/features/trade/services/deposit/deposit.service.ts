@@ -14,6 +14,9 @@ import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/feature
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { TransferTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Injectable()
 export class DepositService {
@@ -39,7 +42,8 @@ export class DepositService {
     private readonly swapsFormService: SwapsFormService,
     private readonly storeService: StoreService,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async updateTrade(
@@ -99,6 +103,30 @@ export class DepositService {
 
   public removePrevDeposit(): void {
     this._depositTrade$.next(null);
+  }
+
+  public subscribeOnSelectedTrade(): void {
+    const sub = this.previewSwapService.selectedTradeState$
+      .pipe(tap(trade => this.showDepositProviderHint(trade?.tradeType)))
+      .subscribe();
+
+    this.subs.push(sub);
+  }
+
+  private showDepositProviderHint(
+    tradeType: CrossChainTradeType | OnChainTradeType | undefined
+  ): void {
+    if (!tradeType) return;
+
+    const msg = `If you are using a smart account, please be aware that ${this.getProviderName(
+      tradeType
+    )} may not recognise your transaction correctly. You can choose another best option.`;
+    this.notificationsService.showInfo(msg);
+  }
+
+  private getProviderName(tradeType: CrossChainTradeType | OnChainTradeType): string {
+    const provider = BRIDGE_PROVIDERS[tradeType as CrossChainTradeType];
+    return provider.name || 'unknown';
   }
 
   private saveTrade(tradeData: CrossChainTransferTrade): void {
