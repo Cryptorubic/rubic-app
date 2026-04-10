@@ -3,7 +3,7 @@ import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
 const defaultSrc = 'assets/images/icons/navigation/';
 
-type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
+type Section = 'Trade' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
@@ -39,39 +39,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       type: 'internal',
       link: ROUTE_PATH.NONE,
       active: false
-    },
-    {
-      translateKey: 'Private Mode',
-      type: 'internal',
-      link: ROUTE_PATH.PRIVACY,
-      active: false
-    }
-  ],
-  ['More']: [
-    {
-      translateKey: 'Testnet App',
-      type: 'external',
-      link: EXTERNAL_LINKS.TESTNET_APP
-    },
-    {
-      translateKey: 'Documentation',
-      type: 'external',
-      link: 'https://docs.rubic.finance/rubic/introduction'
-    },
-    {
-      translateKey: 'SDK',
-      type: 'external',
-      link: 'https://tools.rubic.exchange/sdk'
-    },
-    {
-      translateKey: 'Widget',
-      type: 'external',
-      link: 'https://tools.rubic.exchange/widget'
-    },
-    {
-      translateKey: 'About',
-      type: 'external',
-      link: EXTERNAL_LINKS.LANDING
     }
   ],
   ['Social']: [

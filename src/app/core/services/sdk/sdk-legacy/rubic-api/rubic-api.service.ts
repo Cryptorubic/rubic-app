@@ -128,8 +128,7 @@ export class RubicApiService {
 
     this.client.emit('auth_cloudflare', { token, needRecalculation });
 
-    // return { alreadyOpened: false, success: token !== null };
-    return { alreadyOpened: false, success: true };
+    return { alreadyOpened: false, success: token !== null };
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {

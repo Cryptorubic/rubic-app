@@ -28,7 +28,6 @@ import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
-import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { ModalsModule } from '../modals/modals.module';
@@ -50,7 +49,6 @@ import { BannersService } from './services/banners.service';
     HeaderComponent,
     UserProfileComponent,
     MobileMenuTogglerComponent,
-    RubicMenuComponent,
     ThemeSwitcherComponent,
     BannerDirective,
     RubicMenuTogglerComponent,

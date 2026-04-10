@@ -1,5 +1,5 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
-import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
+// import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
@@ -49,13 +49,7 @@ import { AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
-import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
-import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
-import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
-import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
-import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
-import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -143,42 +137,6 @@ export class ModalService {
       },
       injector
     );
-  }
-
-  /**
-   * Show Other private providers list dialog.
-   */
-  public openOtherPrivateProvidersList(
-    states: PrivateProviderInfoUI[],
-    selectedTradeType: PrivateTradeType,
-    isModal: true,
-    injector: Injector
-  ): Observable<PrivateTradeType> {
-    this.setOpenedModalName('other-provider-list');
-    return this.showDialog<PrivateProvidersListComponent, PrivateTradeType>(
-      PrivateProvidersListComponent,
-      {
-        title: 'Available Cross-Chain Providers',
-        scrollableContent: true,
-        data: {
-          states,
-          selectedTradeType,
-          isModal
-        }
-      },
-      injector
-    );
-  }
-
-  /**
-   * Show Rubic Menu dialog.
-   */
-  public openRubicMenu(): Observable<NavigationItem> {
-    this.setOpenedModalName('rubic-menu');
-    return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
-      title: 'Menu',
-      scrollableContent: true
-    });
   }
 
   /**
@@ -532,24 +490,6 @@ export class ModalService {
         size: 'auto',
         closeable: true,
         fitContent: true
-      })
-    );
-  }
-
-  public async openPrivacyAuthModal(): Promise<{ valid: boolean; forceClosed: boolean }> {
-    return firstValueFrom(
-      this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
-        PrivacyAuthWindowComponent,
-        { size: 'page' }
-      )
-    );
-  }
-
-  public showDisclaimer(): Promise<boolean> {
-    this.setOpenedModalName('privacy-disclaimer');
-    return firstValueFrom(
-      this.showDialog(PrivacyDisclaimerModalComponent, {
-        size: 's'
       })
     );
   }

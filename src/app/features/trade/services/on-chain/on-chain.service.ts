@@ -55,7 +55,6 @@ import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/featur
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 type NotWhitelistedProviderErrors =
@@ -90,8 +89,7 @@ export class OnChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly sdkLegacyService: SdkLegacyService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -248,6 +246,7 @@ export class OnChainService {
                 statusData.status === TX_STATUS.SUCCESS || statusData.status === TX_STATUS.FAIL
             ),
             catchError(err => {
+              // eslint-disable-next-line no-console
               console.log(err);
               return of({ hash: null, status: TX_STATUS.PENDING });
             })

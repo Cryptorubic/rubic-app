@@ -144,14 +144,6 @@ export class HeaderComponent {
     this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
-  public navigateToTestnets(): void {
-    this.window.open('https://testnet.rubic.exchange', '_blank');
-  }
-
-  // public navigateToPrivateSwaps(): void {
-  //   this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
-  // }
-
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }

@@ -12,18 +12,7 @@
       [isDarkTheme]="isDarkTheme$ | async"
       [noFrameLink]="noFrameLink"
     ></app-logo>
-
-    <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
-      <app-rubic-menu
-        [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-        [crossChainActive]="
-          rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-        "
-        (swapClick)="navigateToSwaps()"
-      ></app-rubic-menu>
-    </app-rubic-menu-toggler>
-
-    <button
+    <!-- <button
       *ngIf="!useLargeIframe && !isMobile"
       class="swap-button"
       routerLink="/"
@@ -35,9 +24,9 @@
       size="m"
     >
       {{ !isTablet ? 'Regular Mode' : 'Regular' }}
-    </button>
+    </button> -->
 
-    <button
+    <!-- <button
       routerLink="/privacy"
       routerLinkActive="active-router-link"
       class="private-mode-button"
@@ -50,25 +39,31 @@
         <span>{{ !isTablet ? 'Private Mode' : 'Private' }}</span>
         <span class="icon" inlineSVG="assets/images/private-swaps/common/lock-white.svg"></span>
       </div>
-    </button>
-
-    <button
-      *ngIf="!useLargeIframe && !isMobile"
-      class="testnets-button"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-      (click)="navigateToTestnets()"
-    >
-      Testnets
-    </button>
+    </button> -->
   </div>
 
   <div class="rubic-header__right">
+    <!-- Uncomment when light theme ready -->
+    <button
+      class="theme-switcher"
+      tuiIconButton
+      appearance="secondary"
+      type="button"
+      size="m"
+      (click)="switchTheme()"
+    >
+      <div
+        class="image"
+        [inlineSVG]="
+          (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
+        "
+      ></div>
+    </button>
+
     <app-language-selector *ngIf="!useLargeIframe"></app-language-selector>
 
-    <app-history-button *ngIf="!useLargeIframe"></app-history-button>
+    <app-history-button *ngIf="!useLargeIframe" [isDarkTheme]="isDarkTheme$ | async">
+    </app-history-button>
 
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">
@@ -79,23 +74,6 @@
       </ng-template>
     </div>
   </div>
-
-  <!-- Uncomment when light theme ready -->
-  <!--  <button-->
-  <!--    class="theme-switcher"-->
-  <!--    tuiIconButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="switchTheme()"-->
-  <!--  >-->
-  <!--    <div-->
-  <!--      class="image"-->
-  <!--      [inlineSVG]="-->
-  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
-  <!--      "-->
-  <!--    ></div>-->
-  <!--  </button>-->
 
   <ng-container *noFrame>
     <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>

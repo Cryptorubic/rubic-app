@@ -33,9 +33,6 @@ export class MobileMenuComponent {
       case 'profile':
         this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
         break;
-      case 'rubic-menu':
-        this.modalService.openRubicMenu().subscribe();
-        break;
       case 'settings':
         this.modalService.openSettings(this.injector).subscribe();
         break;

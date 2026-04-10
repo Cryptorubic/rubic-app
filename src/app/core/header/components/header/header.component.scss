@@ -52,12 +52,6 @@
   }
 }
 
-/* .testnets-button,
-.birthday-button,
-.private-swaps-button {
-  margin-right: auto;
-} */
-
 .image {
   display: flex;
   align-items: center;
@@ -66,17 +60,11 @@
   height: 100%;
 }
 
-@include b($laptop) {
-  .testnets-button {
-    display: none;
-  }
-}
-
 @include b($tablet) {
   .rubic-header {
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
-  
+
   .swap-button,
   .private-mode-button {
     height: 40px !important;

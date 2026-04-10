@@ -147,6 +147,7 @@ export class TokensListComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe(() => {
         const assetType = this.listType;
         if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
