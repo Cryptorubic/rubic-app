@@ -25,6 +25,7 @@ import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasle
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -139,7 +140,21 @@ export class SwapFormPageComponent {
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
     if (isMobile) {
-      this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
+      this.modalService
+        .openAssetsSelector(inputType, this.injector)
+        .subscribe((selectedToken: AvailableTokenAmount) => {
+          if (inputType === 'from') {
+            this.swapFormService.inputControl.patchValue({
+              fromBlockchain: selectedToken.blockchain,
+              fromToken: selectedToken
+            });
+          } else {
+            this.swapFormService.inputControl.patchValue({
+              toToken: selectedToken,
+              toBlockchain: selectedToken.blockchain
+            });
+          }
+        });
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
     }

@@ -29,7 +29,7 @@ export class TokenSelectorPageComponent {
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, { formType: FormType }>,
+    private readonly context: TuiDialogContext<Asset, { formType: FormType }>,
     private readonly headerStore: HeaderStore
   ) {
     this.formType = this.context?.data?.formType;
@@ -37,5 +37,6 @@ export class TokenSelectorPageComponent {
 
   public handleTokenSelect(asset: Asset): void {
     this.tokenSelected.emit(asset);
+    this.context.completeWith(asset);
   }
 }
