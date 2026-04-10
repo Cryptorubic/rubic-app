@@ -56,36 +56,54 @@ export class TokenService {
     if (chainType === CHAIN_TYPE.EVM) {
       const blockchain = tokenBaseStruct.blockchain as EvmBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;
     }
     if (chainType === CHAIN_TYPE.SOLANA) {
       const blockchain = tokenBaseStruct.blockchain as SolanaBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;
     }
     if (chainType === CHAIN_TYPE.TRON) {
       const blockchain = tokenBaseStruct.blockchain as TronBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;
     }
     if (chainType === CHAIN_TYPE.TON) {
       const blockchain = tokenBaseStruct.blockchain as TonBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;
     }
     if (chainType === CHAIN_TYPE.SUI) {
       const blockchain = tokenBaseStruct.blockchain as SuiBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;
     }
     if (chainType === CHAIN_TYPE.STELLAR) {
       const blockchain = tokenBaseStruct.blockchain as StellarBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      if (!adapter.public) {
+        adapter.initWeb3Client();
+      }
       const tokensInfo = await adapter.callForTokenInfo(tokenBaseStruct.address);
       return tokensInfo;
     }
