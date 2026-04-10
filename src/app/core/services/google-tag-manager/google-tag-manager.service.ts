@@ -64,6 +64,17 @@ export class GoogleTagManagerService {
   }
 
   /**
+   * gtag / GA4 may coerce strings that look like hex literals (e.g. "0x8335…") to numbers.
+   * Prefix so the value stays a string in reports.
+   */
+  private formatEvmAddressForAnalytics(address: string): string {
+    if (!address) {
+      return address;
+    }
+    return address.startsWith('0x') ? `evm:${address}` : address;
+  }
+
+  /**
    * Fires when clicking on banner.
    */
   public fireClickOnBannerEvent(bannerText: string, bannerLink: string): void {
@@ -206,15 +217,15 @@ export class GoogleTagManagerService {
 
     this.angularGtmService.gtag('event', 'swap_error', {
       input_token: trade.from.name,
-      input_token_address: trade.from.address,
+      input_token_address: this.formatEvmAddressForAnalytics(trade.from.address),
       input_token_amount: trade.from.tokenAmount.toFixed(),
       output_token: trade.to.name,
-      output_token_address: trade.to.address,
+      output_token_address: this.formatEvmAddressForAnalytics(trade.to.address),
       output_token_amount: trade.to.tokenAmount.toFixed(),
       network_from: trade.from.blockchain,
       network_to: trade.to.blockchain,
       provider: trade.type,
-      wallet_address: walletAddress,
+      wallet_address: this.formatEvmAddressForAnalytics(walletAddress),
       token_from_ballance: srcTokenBalance,
       token_native_ballance: nativeBalance,
       identified_app_error: !isErrorDefined,
@@ -322,7 +333,7 @@ export class GoogleTagManagerService {
       selector_side: selectorSide,
       selected_chain: selectedChain,
       selected_token_symbol: selectedTokenSymbol,
-      selected_token_address: selectedTokenAddress
+      selected_token_address: this.formatEvmAddressForAnalytics(selectedTokenAddress)
     });
   }
 
