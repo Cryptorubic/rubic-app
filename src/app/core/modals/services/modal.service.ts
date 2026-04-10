@@ -45,7 +45,7 @@ import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { AssetListType } from '@features/trade/models/asset';
+import { Asset, AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
@@ -99,9 +99,9 @@ export class ModalService {
   /**
    * Show tokens dialog.
    */
-  public openAssetsSelector(formType: FormType, injector: Injector): Observable<void> {
+  public openAssetsSelector(formType: FormType, injector: Injector): Observable<Asset> {
     this.setOpenedModalName('token-selector');
-    return this.showDialog<TokenSelectorPageComponent, void>(
+    return this.showDialog<TokenSelectorPageComponent, Asset>(
       TokenSelectorPageComponent,
       {
         title: '',
