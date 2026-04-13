@@ -4,6 +4,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable({ providedIn: 'root' })
 export class LiveChatService {
@@ -20,7 +21,8 @@ export class LiveChatService {
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly windowWidth: WindowWidthService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly googleTagManagerService: GoogleTagManagerService
   ) {}
 
   public initMessageListener(): void {
@@ -47,6 +49,7 @@ export class LiveChatService {
               liveChat.height = '652px';
               liveChat.style.opacity = '1';
               this._isIframeOpened = true;
+              this.googleTagManagerService.fireOpenChatEvent();
             }
           } else {
             if (value === 'minimized' || value === 'hidden') {
@@ -64,6 +67,7 @@ export class LiveChatService {
               liveChat.style.top = '0';
               liveChat.style.bottom = 'inherit';
               this._isIframeOpened = true;
+              this.googleTagManagerService.fireOpenChatEvent();
             }
           }
         }

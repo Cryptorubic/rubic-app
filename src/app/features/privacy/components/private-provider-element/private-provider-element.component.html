@@ -40,7 +40,11 @@
       ></div>
     </div>
 
-    <div class="fee-size" [tuiHint]="providerInfo.feeInfo.feeSize">
+    <div
+      class="fee-size"
+      [tuiHint]="providerInfo.feeInfo.feeSize"
+      (mouseenter)="handleMetricTooltipHover('fees')"
+    >
       <div
         *ngFor="let count of feeRateCount"
         inlineSVG="assets/images/private-swaps/common/dollar.svg"
@@ -78,6 +82,7 @@
         'Privacy metric based on data from the Web3Privacy Explorer:
 https://explorer.web3privacy.info/'
       "
+      (mouseenter)="handleMetricTooltipHover('privacy_score')"
     >
       <img src="assets/images/private-swaps/common/lock.svg" width="15" height="15" />
       <div class="stars">

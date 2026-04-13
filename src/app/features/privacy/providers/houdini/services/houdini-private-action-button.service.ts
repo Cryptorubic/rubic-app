@@ -28,7 +28,8 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       )
     );
 
-  private connectWallet(): void {
+  protected connectWallet(): void {
+    super.connectWallet();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 

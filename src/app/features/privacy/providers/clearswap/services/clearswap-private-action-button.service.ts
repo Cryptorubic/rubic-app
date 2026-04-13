@@ -35,7 +35,8 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
       )
     );
 
-  private connectWallet(): void {
+  protected connectWallet(): void {
+    super.connectWallet();
     this.modalService
       .openWalletModal(this.injector, { providers: CLEARSWAP_SUPPORTED_WALLETS })
       .subscribe();
