@@ -8,7 +8,7 @@ export class CloudflareSocketManager extends ApiSocketManager {
   protected subs: Subscription[];
 
   public allowCalculation(): boolean {
-    return !!this.turnstileService.token;
+    return true;
   }
 
   constructor(
