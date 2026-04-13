@@ -5,12 +5,10 @@ import {
   Inject,
   Injector,
   Input,
-  Output,
-  ViewChild
+  Output
 } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { PrivateTradeType } from '../../constants/private-trade-types';
-import { TuiScrollbarComponent } from '@taiga-ui/core';
 import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
@@ -26,8 +24,6 @@ export class PrivateProvidersListGeneralComponent {
   @Input({ required: true }) selectedTradeType: PrivateTradeType;
 
   @Output() readonly selectTrade = new EventEmitter<PrivateTradeType>();
-
-  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
 
   public readonly isTablet$ = this.headerStore.getTabletDisplayStatus();
 
