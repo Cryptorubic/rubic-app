@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, Injector } from '@angular/core';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { createCheckoutSession } from '@zkp2p/pay-sdk';
 import { BehaviorSubject, from, map, Observable, of } from 'rxjs';
 import { Zkp2pService } from '../../services/zkp2p.service';
 import { SwapAmount } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { AbstractControl, AsyncValidatorFn, FormControl, ValidationErrors } from '@angular/forms';
 import { Web3Pure } from '@cryptorubic/web3';
-import { BLOCKCHAIN_NAME, blockchainId } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Component({
   selector: 'app-zkp2p-form',
@@ -18,6 +18,8 @@ export class Zkp2pFormComponent {
   private readonly zkp2pService = inject(Zkp2pService);
 
   private readonly injector = inject(Injector);
+
+  private readonly rubicApiService = inject(RubicApiService);
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly transferAsset$ = new BehaviorSubject<BalanceToken | null>(null);
@@ -62,31 +64,19 @@ export class Zkp2pFormComponent {
 
     const token = this.transferAsset$.getValue();
     const amount = this.transferAmount$.getValue().actualValue.toFixed(6);
-    const chain =
-      token.blockchain === BLOCKCHAIN_NAME.SOLANA ? 792703809 : blockchainId[token.blockchain];
     const recipientAddress = this.receiverCtrl.value;
 
     try {
       const urlWithoutQuery = window.location.href.split('?')[0];
-      const session = await createCheckoutSession(
-        {
-          merchantId: 'cmnfujh3503trbppexzi6jkn4',
-          amountUsdc: amount,
-          destinationChainId: chain,
-          destinationToken: token.address,
-          recipientAddress,
-          successUrl: `${urlWithoutQuery}?status=success`,
-          cancelUrl: `${urlWithoutQuery}?status=cancel`,
-          metadata: {
-            // orderId: 'order_123',
-            // customerId: 'cust_456'
-          }
-        },
-        {
-          apiBaseUrl: 'https://api.pay.peer.xyz',
-          apiKey: 'f9b51cb451a35a3399124864b14c8e75bd67a9748ac95ed5'
-        }
-      );
+      const session = await this.rubicApiService.createZkp2pCheckoutSession({
+        usdcAmount: amount,
+        dstBlockchain: token.blockchain,
+        dstTokenAddress: token.address,
+        receiver: recipientAddress,
+        baseUrl: urlWithoutQuery
+      });
+      console.log(session);
+
       window.open(session.checkoutUrl, '_blank');
     } catch (error) {
       console.error(error);

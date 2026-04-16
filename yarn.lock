@@ -9439,17 +9439,17 @@
   dependencies:
     argparse "^2.0.1"
 
-"@zkp2p/pay-sdk@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@zkp2p/pay-sdk/-/pay-sdk-0.0.3.tgz#afebb4e40f54fd63549e45e2467b67d8ea8398ae"
-  integrity sha512-veuk82pex0/Z+ymyBsdy8FU/jIT50bsPlHsp9Lr1JrDBuFc72uri94xDpS/7eg/62pZSQLGmki019ahKnezAAQ==
+"@zkp2p/pay-sdk@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@zkp2p/pay-sdk/-/pay-sdk-1.0.0.tgz#51c8e379807f08092ac48281b79a6171d93683ae"
+  integrity sha512-908d3RXtNSfsdkHJWXgiVoCpghZorhEIEJNOX88h1NQ6GiRXry6h2+QKUOvwazEmfg0VgOfWk/TLQiuyZeVxWw==
   dependencies:
-    "@zkp2p/pay-shared" "^0.0.2"
+    "@zkp2p/pay-shared" "^1.0.0"
 
-"@zkp2p/pay-shared@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@zkp2p/pay-shared/-/pay-shared-0.0.2.tgz#545622be715c541f579c01bb76f85345be106c30"
-  integrity sha512-uPZIPJALKKtRA2xWxvVfEbUFsgLZUFUMippi4w6iUOuy4cKeZ+vSx64rIAL8fbPmR1pKeWqaxe9XXAaLbq2JaQ==
+"@zkp2p/pay-shared@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@zkp2p/pay-shared/-/pay-shared-1.0.0.tgz#5d7c1d29b5dc88493a4624f97dc276250cb950b3"
+  integrity sha512-A2B7C/gXEbOrOtvFM830AQy1Lqus3jb4OEMXdjx2eOUJoLm1X4769AIGmg576rull69M8/lXSN+/HRQJZAeCXw==
 
 JSV@^4.0.x:
   version "4.0.2"

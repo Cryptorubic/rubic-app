@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import {
+  BlockchainName,
   EvmBlockchainName,
   QuoteAllInterface,
   QuoteRequestInterface,
@@ -59,6 +60,7 @@ import {
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { CreateCheckoutResult } from '@zkp2p/pay-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -522,5 +524,20 @@ export class RubicApiService {
       }
     }
     return new RubicSdkError(JSON.stringify(err));
+  }
+
+  public async createZkp2pCheckoutSession(params: {
+    usdcAmount: string;
+    dstBlockchain: BlockchainName;
+    dstTokenAddress: string;
+    receiver: string;
+    baseUrl: string;
+  }): Promise<CreateCheckoutResult> {
+    return await firstValueFrom(
+      this.sdkLegacyService.httpClient.get<CreateCheckoutResult>(
+        `${this.apiUrl}/api/zkp2pSession`,
+        { params }
+      )
+    );
   }
 }
