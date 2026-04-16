@@ -127,7 +127,8 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     map(
       tradeState =>
         tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS
+        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
+        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP
     )
   );
 
