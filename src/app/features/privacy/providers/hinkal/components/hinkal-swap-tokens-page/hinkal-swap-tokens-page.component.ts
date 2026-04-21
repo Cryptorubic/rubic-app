@@ -10,7 +10,7 @@ import {
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -26,6 +26,7 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -56,6 +57,12 @@ export class HinkalSwapTokensPageComponent {
     })
   );
 
+  private readonly _availableGasTokens$ = new BehaviorSubject<BalanceToken[]>([]);
+
+  public get availableGasTokens(): BalanceToken[] {
+    return this._availableGasTokens$?.value;
+  }
+
   constructor(
     private readonly workerService: HinkalWorkerService,
     private readonly hinkalFacadeService: HinkalFacadeService,
@@ -65,7 +72,8 @@ export class HinkalSwapTokensPageComponent {
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly fromAssetsService: FromAssetsService,
-    private readonly toAssetsService: ToAssetsService
+    private readonly toAssetsService: ToAssetsService,
+    private readonly tokensFacadeService: TokensFacadeService
   ) {}
 
   ngOnInit(): void {
@@ -96,10 +104,20 @@ export class HinkalSwapTokensPageComponent {
         this.privateSwapWindowService.patchSwapInfo({ fromAsset: null });
       }
     });
+
+    this.privateSwapWindowService.selectedGasToken$
+      .pipe(
+        tap(t => console.log(t)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
     this.subscribeOnPrivateBalanceChanges();
   }
 
   private subscribeOnPrivateBalanceChanges(): void {
+    const tokens = this.tokensFacadeService.tokens;
+
     this.hinkalBalanceService.balances$
       .pipe(takeUntil(this.destroy$))
       .subscribe(shieldedBalances => {
@@ -119,6 +137,15 @@ export class HinkalSwapTokensPageComponent {
                 : new BigNumber(0)
             }
           });
+
+          const availableGasTokens = balances?.map(
+            balance =>
+              ({
+                ...tokens.find(token => compareAddresses(token.address, balance.tokenAddress)),
+                amount: balance.amount
+              } as BalanceToken)
+          );
+          this._availableGasTokens$.next(availableGasTokens ?? []);
         }
       });
   }
@@ -137,21 +164,25 @@ export class HinkalSwapTokensPageComponent {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
         weiAmount: Token.toWei(swapInfo.fromAmount.actualValue, swapInfo.fromAsset.decimals)
-      });
+      }) as TokenAmount<EvmBlockchainName>;
 
       const toToken = new TokenAmount({
         ...swapInfo.toAsset,
         weiAmount: Token.toWei(swapInfo.toAmount.actualValue, swapInfo.toAsset.decimals)
-      });
+      }) as TokenAmount<EvmBlockchainName>;
 
-      const steps = this.hinkalFacadeService.prepareSwapSteps(
-        fromToken as TokenAmount<EvmBlockchainName>,
-        toToken as TokenAmount<EvmBlockchainName>
+      const _estimates = await Promise.all(
+        this.availableGasTokens.map(token =>
+          this.hinkalFacadeService.estimateGas(fromToken, toToken, token)
+        )
       );
+
+      const steps = this.hinkalFacadeService.prepareSwapSteps(fromToken, toToken);
 
       const preview$ = openPreview({
         steps,
-        warnings: HINKAL_WARNINGS
+        warnings: HINKAL_WARNINGS,
+        gasTokens: this.availableGasTokens
       });
 
       await firstValueFrom(preview$);

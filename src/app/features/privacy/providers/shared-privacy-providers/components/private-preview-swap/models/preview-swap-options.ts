@@ -23,6 +23,7 @@ export interface PrivateSwapOptions {
   swapType?: PrivateSwapType;
   steps: PrivateStep[];
   hideFeeInfo?: boolean;
+  gasTokens?: BalanceToken[];
 }
 
 export interface PreviewPrivateSwapOptions {

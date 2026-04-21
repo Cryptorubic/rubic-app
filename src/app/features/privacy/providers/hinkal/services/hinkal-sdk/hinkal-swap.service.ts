@@ -12,6 +12,8 @@ import {
 } from './workers/models/worker-params';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
+import BigNumber from 'bignumber.js';
+import { Token } from '@app/shared/models/tokens/token';
 
 @Injectable()
 export class HinkalSwapService {
@@ -124,9 +126,45 @@ export class HinkalSwapService {
     }
   }
 
+  public async estimateGasForSwap(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    toToken: TokenAmount<EvmBlockchainName>,
+    feeToken: Token
+  ): Promise<BigNumber> {
+    try {
+      if (fromToken.blockchain !== toToken.blockchain)
+        throw new Error('Cross-chain swaps not supported');
+
+      const params: SwapParams = {
+        fromToken: {
+          ...fromToken,
+          stringWeiAmount: fromToken.stringWeiAmount
+        },
+        toToken: {
+          ...toToken,
+          stringWeiAmount: toToken.stringWeiAmount
+        },
+        feeToken,
+        onlyGasEstimate: true
+      };
+
+      const result = await this.hinkalWorker.request<BigNumber>({
+        type: 'swap',
+        params
+      });
+
+      return result;
+    } catch (err) {
+      console.log('FAILED TO ESTIMATE GAS FOR SWAP', err);
+      this.errorService.catch(err);
+      return new BigNumber(-1);
+    }
+  }
+
   public async privateSwap(
     fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>
+    toToken: TokenAmount<EvmBlockchainName>,
+    feeToken?: Token
   ): Promise<boolean> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
@@ -140,7 +178,8 @@ export class HinkalSwapService {
         toToken: {
           ...toToken,
           stringWeiAmount: toToken.stringWeiAmount
-        }
+        },
+        ...(feeToken && { feeToken })
       };
 
       await this.hinkalWorker.request({

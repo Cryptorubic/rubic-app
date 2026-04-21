@@ -23,6 +23,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
+import { PrivateSwapWindowService } from '../../services/private-swap-window/private-swap-window.service';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -49,6 +50,8 @@ export class PrivatePreviewSwapComponent {
 
   public readonly gasInfo: AppGasData | null;
 
+  public readonly gasTokens: BalanceToken[];
+
   public readonly feeInfo: FeeInfo | null;
 
   public readonly displayAmount: string | undefined;
@@ -70,7 +73,8 @@ export class PrivatePreviewSwapComponent {
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
     withVerboseFeeHint: false,
-    zeroFeeText: 'Zero fee'
+    zeroFeeText: 'Zero fee',
+    direction: 'vertical'
   };
 
   constructor(
@@ -78,7 +82,8 @@ export class PrivatePreviewSwapComponent {
     private readonly context: TuiDialogContext<void, PreviewPrivateSwapOptions>,
     private readonly headerStore: HeaderStore,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService
   ) {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
@@ -103,6 +108,7 @@ export class PrivatePreviewSwapComponent {
     this.warnings = context.data.swapOptions.warnings;
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
+    this.gasTokens = context.data.swapOptions.gasTokens || [];
     this.feeInfo = context.data.swapOptions.feeInfo || null;
     this.displayAmount = context.data.swapOptions.displayAmount;
     this.hideFeeInfo = context.data.swapOptions.hideFeeInfo;
@@ -170,5 +176,9 @@ export class PrivatePreviewSwapComponent {
       this.errorService.catch(err);
       this.context.completeWith();
     }
+  }
+
+  public selectGasToken(token: BalanceToken): void {
+    this.privateSwapWindowService.selectGasToken(token);
   }
 }

@@ -174,6 +174,8 @@
         <app-swap-data-element
           [creationConfig]="swapDataCreationConfig"
           [gasInfo]="gasInfo"
+          [gasTokens]="gasTokens"
+          (onGasTokenSelect)="selectGasToken($event)"
           [feeInfoChange]="{
             fee: feeInfo,
             nativeToken: nativeToken$ | async,

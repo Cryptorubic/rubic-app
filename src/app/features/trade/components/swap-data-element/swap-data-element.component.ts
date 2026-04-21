@@ -1,11 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
-import { HintAppearance, HintDirection, SwapDataElementConfig } from './model';
+import { GasTokenData, HintAppearance, HintDirection, SwapDataElementConfig } from './model';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
+import { AssetSelector } from '@app/shared/models/asset-selector';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
+import { blockchainColor } from '@app/shared/constants/blockchain/blockchain-color';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -23,8 +28,13 @@ export class SwapDataElementComponent {
 
   public displayAmount: string | null;
 
+  public gasTokenAssets: GasTokenData[];
+
+  public selectedTokenIndex: number = 0;
+
   @Input() creationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/money.svg',
+    gasIcon: 'assets/images/icons/gas.svg',
     withVerboseFeeHint: true
   };
 
@@ -99,13 +109,56 @@ export class SwapDataElementComponent {
 
   @Input() gasInfo: AppGasData | null;
 
+  @Input() set gasTokens(tokens: BalanceToken[]) {
+    if (!tokens) return;
+    this.gasTokenAssets = tokens.map(token => ({
+      token,
+      asset: this.getTokenAsset(token),
+      value: this.getTokenValue(token)
+    }));
+  }
+
   @Input() averageTimeMins: string | number;
 
   @Input() time95PercentSwapsMins: string | number;
 
   @Input() hideHint: boolean = false;
 
+  @Output() onGasTokenSelect = new EventEmitter<BalanceToken>();
+
   public toPercent(amount: number): string {
     return new BigNumber(amount).multipliedBy(100).toFixed();
+  }
+
+  public onImageError($event: Event): void {
+    TokensFacadeService.onTokenImageError($event);
+  }
+
+  public selectGasToken(token: BalanceToken, index: number): void {
+    this.selectedTokenIndex = index;
+    this.onGasTokenSelect?.emit(token);
+  }
+
+  private getTokenAsset(token: BalanceToken): AssetSelector {
+    const blockchain = BLOCKCHAINS[token.blockchain];
+    const color = blockchainColor[token.blockchain];
+
+    return {
+      secondImage: blockchain.img,
+      secondLabel: blockchain.name,
+      mainImage: token.image,
+      mainLabel: token.symbol,
+      secondColor: color
+    };
+  }
+
+  private getTokenValue(token: BalanceToken): { tokenAmount: BigNumber; fiatAmount: string } {
+    return {
+      tokenAmount: token.amount,
+      fiatAmount:
+        token.amount.gt(0) && token.price
+          ? token.amount.multipliedBy(token.price || 0).toFixed(2)
+          : '0'
+    };
   }
 }

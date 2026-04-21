@@ -23,6 +23,8 @@ import { PrivateStatisticsService } from '../../../shared-privacy-providers/serv
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import BigNumber from 'bignumber.js';
+import { Token } from '@shared/models/tokens/token';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -198,6 +200,18 @@ export class HinkalFacadeService {
     });
 
     return steps;
+  }
+
+  //TODO: rename it
+  public async estimateGas(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    toToken: TokenAmount<EvmBlockchainName>,
+    feeToken: Token
+  ): Promise<BigNumber> {
+    const result = await this.hinkalSwapService.estimateGasForSwap(fromToken, toToken, feeToken);
+    console.log(`GAS ESTIMATE RESPONSE FOR ${feeToken.blockchain}.${feeToken.symbol} = ${result}`);
+
+    return result;
   }
 
   public prepareSwapSteps(
