@@ -2,6 +2,7 @@ import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/
 import { AppGasData } from '@app/features/trade/models/provider-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { SwapAmount } from '../../../models/swap-info';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
 
 export type PreviewSwapWarning = { text: string; link?: string };
 
@@ -23,7 +24,7 @@ export interface PrivateSwapOptions {
   swapType?: PrivateSwapType;
   steps: PrivateStep[];
   hideFeeInfo?: boolean;
-  gasTokens?: BalanceToken[];
+  gasTokens?: GasToken[];
 }
 
 export interface PreviewPrivateSwapOptions {

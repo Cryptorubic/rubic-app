@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
-import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
@@ -14,9 +14,11 @@ export class PrivateSwapWindowService {
 
   public readonly swapInfo$ = this._swapInfo$.asObservable();
 
-  private readonly _selectedGasToken$ = new BehaviorSubject<BalanceToken | null>(null);
+  private readonly _selectedGasToken$ = new BehaviorSubject<GasToken | null>(null);
 
-  public readonly selectedGasToken$ = this._selectedGasToken$.asObservable();
+  public get selectedGasToken(): GasToken | null {
+    return this._selectedGasToken$.value;
+  }
 
   public get swapInfo(): PrivateSwapInfo {
     return this._swapInfo$.value;
@@ -26,7 +28,7 @@ export class PrivateSwapWindowService {
     this._swapInfo$.next({ ...this.swapInfo, ...value });
   }
 
-  public selectGasToken(token: BalanceToken | null): void {
+  public selectGasToken(token: GasToken | null): void {
     this._selectedGasToken$.next(token);
   }
 }

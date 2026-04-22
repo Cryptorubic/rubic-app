@@ -97,6 +97,11 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
         await hinkalWorkerLogic.snapshotService.clearSnapshotsInterval();
         postMessage({ success: true, result: null, type: type });
       }
+
+      if (type === 'getGasPrice') {
+        const resp = await hinkalWorkerLogic.swapService.getGasPrice();
+        postMessage({ success: true, result: resp, type: type });
+      }
     } catch (err) {
       console.log('WORKER ERROR', err);
       postMessage({

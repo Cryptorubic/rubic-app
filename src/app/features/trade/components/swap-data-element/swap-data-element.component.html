@@ -33,41 +33,55 @@
     {{ displayAmount }}
   </div>
 
-  <div *ngIf="gasTokenAssets" class="provider-info__element gas-tokens">
+  <div *ngIf="gasTokenAssets?.length > 0" class="provider-info__element gas-tokens">
     <div class="provider-info__selected-asset">
       <img [src]="creationConfig.gasIcon" alt="Fee" />
-      {{ displayAmount }}
+      Gas fee {{ selectedGasToken.gasFee }}&nbsp;{{ selectedGasToken.symbol }}&nbsp;(${{
+        selectedGasToken.gasFeeUsd
+      }})&nbsp;
+      <button
+        class="provider-info__dropdown-button"
+        [ngClass]="{ expanded: gasTokensShown }"
+        (click)="toggleGasTokensDropdown()"
+      ></button>
     </div>
-    <div
-      *ngFor="let gasToken of gasTokenAssets; let i = index"
-      class="provider-info__asset"
-      (click)="selectGasToken(gasToken.token, i)"
-    >
-      <div class="provider-info__token-container">
+    <tui-scrollbar class="scrollbar" *ngIf="gasTokensShown">
+      <div class="provider-info__tokens">
         <div
-          class="provider-info__second-image-container"
-          [style]="{ background: gasToken.asset.secondColor }"
+          *ngFor="let gasToken of gasTokenAssets; let i = index"
+          class="provider-info__asset"
+          (click)="selectGasToken(gasToken.token, i)"
         >
-          <img [src]="gasToken.asset.secondImage" [alt]="gasToken.asset.secondImage" />
+          <div class="provider-info__token-container">
+            <div
+              class="provider-info__second-image-container"
+              [style]="{ background: gasToken.asset.secondColor }"
+            >
+              <img [src]="gasToken.asset.secondImage" [alt]="gasToken.asset.secondImage" />
+            </div>
+            <img
+              class="provider-info__main-image"
+              [src]="gasToken.asset.mainImage"
+              [alt]="gasToken.asset.mainLabel"
+              (error)="onImageError($event)"
+            />
+          </div>
+          <div class="provider-info__amount-container">
+            <div
+              class="provider-info__token-amount"
+              [ngClass]="{ selected: selectedGasTokenIndex === i }"
+            >
+              {{ gasToken.value.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                gasToken.asset.mainLabel
+              }}
+            </div>
+            <div *ngIf="gasToken.value.fiatAmount as amount" class="provider-info__fiat-amount">
+              ~ ${{ amount }}
+            </div>
+          </div>
         </div>
-        <img
-          class="provider-info__main-image"
-          [src]="gasToken.asset.mainImage"
-          [alt]="gasToken.asset.mainLabel"
-          (error)="onImageError($event)"
-        />
       </div>
-      <div class="provider-info__amount-container">
-        <div class="provider-info__token-amount" [ngClass]="{ selected: selectedTokenIndex === i }">
-          {{ gasToken.value.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
-            gasToken.asset.mainLabel
-          }}
-        </div>
-        <div *ngIf="gasToken.value.fiatAmount as amount" class="provider-info__fiat-amount">
-          ~ ${{ amount }}
-        </div>
-      </div>
-    </div>
+    </tui-scrollbar>
   </div>
 
   <div

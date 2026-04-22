@@ -11,7 +11,8 @@ export type HinkalWorkerType =
   | 'transfer'
   | 'quote'
   | 'swap'
-  | 'stop';
+  | 'stop'
+  | 'getGasPrice';
 
 export interface PureTokenAmount<T extends BlockchainName = BlockchainName> {
   stringWeiAmount: string;

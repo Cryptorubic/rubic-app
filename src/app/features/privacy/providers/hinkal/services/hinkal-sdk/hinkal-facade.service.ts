@@ -10,6 +10,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName,
+  nativeTokensList,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
@@ -25,6 +26,8 @@ import { HideWindowService } from '../../../shared-privacy-providers/services/hi
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import BigNumber from 'bignumber.js';
 import { Token } from '@shared/models/tokens/token';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -202,21 +205,51 @@ export class HinkalFacadeService {
     return steps;
   }
 
-  //TODO: rename it
-  public async estimateGas(
+  private async estimateGas(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>,
     feeToken: Token
   ): Promise<BigNumber> {
-    const result = await this.hinkalSwapService.estimateGasForSwap(fromToken, toToken, feeToken);
+    const result = await this.hinkalSwapService.estimateGas(fromToken, toToken, feeToken);
     console.log(`GAS ESTIMATE RESPONSE FOR ${feeToken.blockchain}.${feeToken.symbol} = ${result}`);
 
     return result;
   }
 
+  public async prepareGasTokens(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    toToken: TokenAmount<EvmBlockchainName>,
+    availableGasTokens: BalanceToken[]
+  ): Promise<GasToken[]> {
+    const estimates = await Promise.all(
+      availableGasTokens.map(async token => ({
+        ...token,
+        gasLimit: await this.estimateGas(fromToken, toToken, token)
+      }))
+    );
+
+    const gasPriceInNativeToken = await this.hinkalSwapService.getGasPrice();
+
+    const nativeToken = nativeTokensList[fromToken.blockchain];
+    const nativeTokenPrice = this.tokensFacade.findTokenSync(nativeToken)?.price ?? 0;
+    const nativeDecimals = new BigNumber(10).pow(nativeToken.decimals);
+
+    return estimates
+      .map(({ gasLimit, ...token }) => {
+        const gasFeeWei = gasLimit.multipliedBy(gasPriceInNativeToken);
+        const gasFeeInNative = gasFeeWei.dividedBy(nativeDecimals);
+        const gasFeeUsd = gasFeeInNative.multipliedBy(nativeTokenPrice);
+        const gasFee = token.price ? gasFeeUsd.dividedBy(token.price) : new BigNumber(0);
+
+        return { ...token, gasFee, gasFeeUsd };
+      })
+      .filter(token => token.amount.gt(token.gasFee));
+  }
+
   public prepareSwapSteps(
     fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>
+    toToken: TokenAmount<EvmBlockchainName>,
+    getSelectedGasToken?: () => GasToken | undefined
   ): PrivateStep[] {
     const steps: PrivateStep[] = [];
 
@@ -225,21 +258,26 @@ export class HinkalFacadeService {
     steps.push({
       label: 'Swap',
       action: () => {
-        return this.hinkalSwapService.privateSwap(fromToken, toToken).then(isSuccess => {
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'PRIVATE_ONCHAIN_SWAP',
-              'HINKAL',
-              this.walletConnectorService.address,
-              fromToken.address,
-              fromToken.weiAmount.toFixed(),
-              fromToken.blockchain
-            );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
-          }
-        });
+        const selectedGasToken = getSelectedGasToken?.();
+        console.log(`SELECTED GAS TOKEN`, selectedGasToken);
+
+        return this.hinkalSwapService
+          .privateSwap(fromToken, toToken, selectedGasToken)
+          .then(isSuccess => {
+            if (isSuccess) {
+              this.privateStatisticsService.saveAction(
+                'PRIVATE_ONCHAIN_SWAP',
+                'HINKAL',
+                this.walletConnectorService.address,
+                fromToken.address,
+                fromToken.weiAmount.toFixed(),
+                fromToken.blockchain
+              );
+              this.showSuccessNotification(
+                'Transaction sent. This may take a moment. Please keep Rubic App open'
+              );
+            }
+          });
       }
     });
 

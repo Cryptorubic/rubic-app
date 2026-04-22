@@ -107,12 +107,12 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    if (!fromAsset.amount.isFinite() || fromAsset.amount.lt(assetAmount.visibleValue)) {
-      return {
-        type: 'error',
-        text: 'Insufficient balance'
-      };
-    }
+    // if (!fromAsset.amount.isFinite() || fromAsset.amount.lt(assetAmount.visibleValue)) {
+    //   return {
+    //     type: 'error',
+    //     text: 'Insufficient balance'
+    //   };
+    // }
 
     if (currPage.type === 'transfer' && !receiver) {
       return {

@@ -8,6 +8,7 @@
 
   &.vertical {
     flex-direction: column;
+    padding-right: 4px !important;
   }
 
   &__element {
@@ -28,6 +29,51 @@
     &.gas-tokens {
       flex-direction: column;
       gap: var(--tui-padding-l) !important;
+      align-items: flex-start;
+    }
+  }
+
+  .scrollbar {
+    width: 100%;
+    height: fit-content;
+    max-height: calc(128px + 3 * var(--tui-padding-l));
+  }
+
+  &__tokens {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l) !important;
+    align-items: flex-start;
+  }
+
+  &__selected-asset {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+  }
+
+  &__dropdown-button {
+    width: 11px;
+    height: 11px;
+
+    background-image: url('/assets/images/icons/arrow/arrow-up-green.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    &.expanded {
+      background-image: url('/assets/images/icons/arrow/arrow-down-green.svg');
+    }
+
+    @include b($mobile-md) {
+      width: 13px;
+      height: 13px;
+
+      background-image: url('/assets/images/icons/arrow/arrow-up-green-mobile.svg');
+
+      &.expanded {
+        background-image: url('/assets/images/icons/arrow/arrow-down-green-mobile.svg');
+      }
     }
   }
 
@@ -94,5 +140,33 @@
 
   &__fiat-amount {
     color: var(--tui-text-03);
+  }
+
+  @include b($mobile-md) {
+    .scrollbar {
+      max-height: calc(113px + 3 * var(--tui-padding-l));
+    }
+
+    &__asset {
+      align-items: flex-start;
+    }
+
+    &__token-container {
+      height: 25px;
+    }
+
+    &__amount-container {
+      gap: var(--tui-padding-s);
+      margin-top: 4px;
+    }
+
+    &__token-amount {
+      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+    }
+
+    &__main-image {
+      width: 25px;
+      height: 25px !important;
+    }
   }
 }

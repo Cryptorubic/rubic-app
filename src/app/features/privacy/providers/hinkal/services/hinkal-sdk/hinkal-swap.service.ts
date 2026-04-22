@@ -49,6 +49,20 @@ export class HinkalSwapService {
     }
   }
 
+  public async getGasPrice(): Promise<BigNumber> {
+    try {
+      const gasPrice = await this.hinkalWorker.request<BigNumber>({
+        type: 'getGasPrice',
+        params: {}
+      });
+
+      return gasPrice;
+    } catch (err) {
+      this.errorService.catch(err);
+      throw err;
+    }
+  }
+
   public async deposit(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     try {
       const params: DepositParams = {
@@ -126,7 +140,7 @@ export class HinkalSwapService {
     }
   }
 
-  public async estimateGasForSwap(
+  public async estimateGas(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>,
     feeToken: Token
@@ -155,7 +169,7 @@ export class HinkalSwapService {
 
       return result;
     } catch (err) {
-      console.log('FAILED TO ESTIMATE GAS FOR SWAP', err);
+      console.log('FAILED TO ESTIMATE GAS', err);
       this.errorService.catch(err);
       return new BigNumber(-1);
     }

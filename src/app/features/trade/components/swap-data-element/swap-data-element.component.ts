@@ -11,6 +11,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@app/shared/constants/blockchain/blockchain-color';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -30,11 +31,17 @@ export class SwapDataElementComponent {
 
   public gasTokenAssets: GasTokenData[];
 
-  public selectedTokenIndex: number = 0;
+  public gasTokensShown = false;
+
+  public selectedGasTokenIndex: number = 0;
+
+  public get selectedGasToken(): GasToken {
+    return this.gasTokenAssets[this.selectedGasTokenIndex].token;
+  }
 
   @Input() creationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/money.svg',
-    gasIcon: 'assets/images/icons/gas.svg',
+    gasIcon: 'assets/images/icons/gas-private.svg',
     withVerboseFeeHint: true
   };
 
@@ -109,13 +116,15 @@ export class SwapDataElementComponent {
 
   @Input() gasInfo: AppGasData | null;
 
-  @Input() set gasTokens(tokens: BalanceToken[]) {
-    if (!tokens) return;
+  @Input() set gasTokens(tokens: GasToken[]) {
+    if (!(tokens && tokens.length > 0)) return;
     this.gasTokenAssets = tokens.map(token => ({
       token,
       asset: this.getTokenAsset(token),
       value: this.getTokenValue(token)
     }));
+
+    this.selectGasToken(this.gasTokenAssets[0].token, 0);
   }
 
   @Input() averageTimeMins: string | number;
@@ -124,7 +133,7 @@ export class SwapDataElementComponent {
 
   @Input() hideHint: boolean = false;
 
-  @Output() onGasTokenSelect = new EventEmitter<BalanceToken>();
+  @Output() onGasTokenSelect = new EventEmitter<GasToken>();
 
   public toPercent(amount: number): string {
     return new BigNumber(amount).multipliedBy(100).toFixed();
@@ -134,9 +143,13 @@ export class SwapDataElementComponent {
     TokensFacadeService.onTokenImageError($event);
   }
 
-  public selectGasToken(token: BalanceToken, index: number): void {
-    this.selectedTokenIndex = index;
+  public selectGasToken(token: GasToken, index: number): void {
+    this.selectedGasTokenIndex = index;
     this.onGasTokenSelect?.emit(token);
+  }
+
+  public toggleGasTokensDropdown(): void {
+    this.gasTokensShown = !this.gasTokensShown;
   }
 
   private getTokenAsset(token: BalanceToken): AssetSelector {

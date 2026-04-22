@@ -33,6 +33,18 @@ export class HinkalWorkerSwapService {
     return networkRegistry[chainId].contractData.emporiumAddress;
   }
 
+  public async getGasPrice(): Promise<BigNumber> {
+    try {
+      const hinkalInstance = this.hinkal;
+      const result = await hinkalInstance.getGasPrice();
+
+      return new BigNumber(result.toString());
+    } catch (err) {
+      console.log('FAILED TO GET GAS PRICE', err);
+      throw err;
+    }
+  }
+
   public async deposit(token: PureTokenAmount<EvmBlockchainName>): Promise<EvmTransactionConfig> {
     try {
       const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(token);

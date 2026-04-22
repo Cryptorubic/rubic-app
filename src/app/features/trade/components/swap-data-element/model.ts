@@ -1,5 +1,5 @@
 import { AssetSelector } from '@app/shared/models/asset-selector';
-import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
 import BigNumber from 'bignumber.js';
 
 export type HintAppearance = 'onDark' | '' | 'error';
@@ -27,6 +27,6 @@ export interface SwapDataElementConfig {
 
 export interface GasTokenData {
   asset: AssetSelector;
-  token: BalanceToken;
+  token: GasToken;
   value: { tokenAmount: BigNumber; fiatAmount: string };
 }

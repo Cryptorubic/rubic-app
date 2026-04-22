@@ -24,6 +24,7 @@ import { BlockchainsInfo } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
 import { PrivateSwapWindowService } from '../../services/private-swap-window/private-swap-window.service';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -50,7 +51,7 @@ export class PrivatePreviewSwapComponent {
 
   public readonly gasInfo: AppGasData | null;
 
-  public readonly gasTokens: BalanceToken[];
+  public readonly gasTokens: GasToken[];
 
   public readonly feeInfo: FeeInfo | null;
 
@@ -72,6 +73,7 @@ export class PrivatePreviewSwapComponent {
 
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
+    gasIcon: 'assets/images/icons/gas-private.svg',
     withVerboseFeeHint: false,
     zeroFeeText: 'Zero fee',
     direction: 'vertical'
@@ -178,7 +180,7 @@ export class PrivatePreviewSwapComponent {
     }
   }
 
-  public selectGasToken(token: BalanceToken): void {
+  public selectGasToken(token: GasToken): void {
     this.privateSwapWindowService.selectGasToken(token);
   }
 }
