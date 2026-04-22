@@ -71,7 +71,7 @@ export class Zkp2pFormComponent {
       const session = await this.rubicApiService.createZkp2pCheckoutSession({
         usdcAmount: amount,
         dstBlockchain: token.blockchain,
-        dstTokenAddress: token.address,
+        dstTokenSymbol: token.symbol,
         receiver: recipientAddress,
         baseUrl: urlWithoutQuery
       });
