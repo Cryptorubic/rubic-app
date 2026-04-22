@@ -83,8 +83,13 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       }
 
       if (type === 'swap') {
-        const { fromToken, toToken } = params as SwapParams;
-        const resp = await hinkalWorkerLogic.swapService.privateSwap(fromToken, toToken);
+        const { fromToken, toToken, feeToken, onlyGasEstimate } = params as SwapParams;
+        const resp = await hinkalWorkerLogic.swapService.privateSwap(
+          fromToken,
+          toToken,
+          feeToken,
+          onlyGasEstimate
+        );
         postMessage({ success: true, result: resp, type: type });
       }
 
