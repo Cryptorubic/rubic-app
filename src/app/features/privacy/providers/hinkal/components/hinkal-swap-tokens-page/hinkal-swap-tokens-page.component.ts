@@ -118,18 +118,6 @@ export class HinkalSwapTokensPageComponent {
 
         if (swapInfo.fromAsset) {
           const balances = shieldedBalances[swapInfo.fromAsset.blockchain as EvmBlockchainName];
-          const tokenBalance = balances?.find(balance =>
-            compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
-          );
-
-          this.privateSwapWindowService.patchSwapInfo({
-            fromAsset: {
-              ...swapInfo.fromAsset,
-              amount: tokenBalance
-                ? Token.fromWei(tokenBalance.amount, swapInfo.fromAsset.decimals)
-                : new BigNumber(0)
-            }
-          });
 
           const availableGasTokens = balances?.map(
             balance =>
@@ -143,6 +131,19 @@ export class HinkalSwapTokensPageComponent {
               } as BalanceToken)
           );
           this._availableGasTokens$.next(availableGasTokens ?? []);
+
+          const tokenBalance = balances?.find(balance =>
+            compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
+          );
+
+          this.privateSwapWindowService.patchSwapInfo({
+            fromAsset: {
+              ...swapInfo.fromAsset,
+              amount: tokenBalance
+                ? Token.fromWei(tokenBalance.amount, swapInfo.fromAsset.decimals)
+                : new BigNumber(0)
+            }
+          });
         }
       });
   }
