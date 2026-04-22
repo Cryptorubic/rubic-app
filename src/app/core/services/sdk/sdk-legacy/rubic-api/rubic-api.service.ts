@@ -529,7 +529,7 @@ export class RubicApiService {
   public async createZkp2pCheckoutSession(params: {
     usdcAmount: string;
     dstBlockchain: BlockchainName;
-    dstTokenAddress: string;
+    dstTokenSymbol: string;
     receiver: string;
     baseUrl: string;
   }): Promise<CreateCheckoutResult> {
