@@ -141,7 +141,11 @@ export class HinkalSwapTokensPageComponent {
           const availableGasTokens = balances?.map(
             balance =>
               ({
-                ...tokens.find(token => compareAddresses(token.address, balance.tokenAddress)),
+                ...tokens.find(
+                  token =>
+                    token.blockchain === swapInfo.fromAsset?.blockchain &&
+                    compareAddresses(token.address, balance.tokenAddress)
+                ),
                 amount: balance.amount
               } as BalanceToken)
           );
