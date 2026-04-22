@@ -173,7 +173,6 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
     this.previewSwapService.activateDepositPage();
-    this.depositService.subscribeOnSelectedTrade();
   }
 
   ngOnDestroy(): void {

@@ -56,7 +56,15 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
-import { BLOCKCHAIN_NAME, BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  CrossChainTradeType,
+  EvmBlockchainName,
+  OnChainTradeType
+} from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -66,6 +74,11 @@ import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 import { SwapRetryModalInput } from '../../components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { checkAmountChange } from '../../utils/check-amount-change';
+import {
+  transferTradeSupportedProviders,
+  TransferTradeType
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
 
 @Injectable()
 export class PreviewSwapService {
@@ -239,6 +252,7 @@ export class PreviewSwapService {
     this.resetTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
+    this.subscribeOnSelectedTradeChange();
     this.subscribeOnValidation();
     this.handleTransactionState();
     this.handleRetryModal();
@@ -422,6 +436,36 @@ export class PreviewSwapService {
       address => this.checkAddress(address)
     );
     this.subscriptions$.push(addressChangeSubscription$);
+  }
+
+  public subscribeOnSelectedTradeChange(): void {
+    const tradeStateChangeSubscription$ = this._selectedTradeState$
+      .pipe(tap(trade => this.showSmartAccountHintIfNeeded(trade)))
+      .subscribe();
+
+    this.subscriptions$.push(tradeStateChangeSubscription$);
+  }
+
+  private showSmartAccountHintIfNeeded(trade: SelectedTrade): void {
+    const fromChainType = BlockchainsInfo.getChainType(
+      trade?.trade?.from.blockchain as BlockchainName
+    );
+    const isFromEvm = fromChainType === CHAIN_TYPE.EVM;
+    const shouldShowHint =
+      trade?.tradeType &&
+      transferTradeSupportedProviders.indexOf(trade?.tradeType as TransferTradeType) > -1 &&
+      isFromEvm;
+    if (!shouldShowHint) return;
+
+    const msg = `If you are using a smart account, please be aware that ${this.getProviderName(
+      trade?.tradeType
+    )} may not recognise your transaction correctly. You can choose another best option.`;
+    this.notificationsService.showInfo(msg);
+  }
+
+  private getProviderName(tradeType: CrossChainTradeType | OnChainTradeType): string {
+    const provider = BRIDGE_PROVIDERS[tradeType as CrossChainTradeType];
+    return provider.name || 'unknown';
   }
 
   private checkAddress(address: string = this.walletConnectorService.address): void {
