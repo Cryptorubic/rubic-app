@@ -4,14 +4,7 @@ import { concatMap, firstValueFrom, of, timer } from 'rxjs';
 import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import {
-  NotWhitelistedProviderError,
-  TX_STATUS,
-  UnnecessaryApproveError,
-  UserRejectError,
-  UnapprovedContractError,
-  UnapprovedMethodError
-} from '@cryptorubic/web3';
+import { TX_STATUS, UnnecessaryApproveError, UserRejectError } from '@cryptorubic/web3';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -58,10 +51,6 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
-type NotWhitelistedProviderErrors =
-  | UnapprovedContractError
-  | UnapprovedMethodError
-  | NotWhitelistedProviderError;
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
@@ -273,20 +262,10 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (
-        err instanceof NotWhitelistedProviderError ||
-        err instanceof UnapprovedContractError ||
-        err instanceof UnapprovedMethodError
-      ) {
-        this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
-      }
-
       const parsedError = RubicSdkErrorParser.parseError(err);
-
       if (!(err instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
-
       throw parsedError;
     }
   }
@@ -354,29 +333,6 @@ export class OnChainService {
         switchMap(() =>
           this.onChainApiService.createTrade(transactionHash, trade.type, trade, preTradeId)
         )
-      )
-    );
-  }
-
-  public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderErrors,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): void {
-    if (error instanceof NotWhitelistedProviderError) {
-      this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
-    } else {
-      this.onChainApiService
-        .saveNotWhitelistedOnChainProvider(error, blockchain, tradeType)
-        .subscribe();
-    }
-  }
-
-  private isNotMinedError(err: Error): boolean {
-    return (
-      Boolean(err?.message?.includes) &&
-      err.message.includes(
-        'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
       )
     );
   }

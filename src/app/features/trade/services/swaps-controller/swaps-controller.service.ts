@@ -82,8 +82,7 @@ import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-man
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
-  didntReachQuoteEnd: true,
-  wasAllowedCalculate: false
+  didntReachQuoteEnd: true
 };
 
 @Injectable()
@@ -148,7 +147,7 @@ export class SwapsControllerService {
     this.window.addEventListener('beforeunload', () => {
       if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
         console.debug(
-          '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers',
+          '[SwapsControllerService_subscribeOnCalculation] user did not reach providers',
           { ...SENTRY_CF_STATUS, sessionID: this.turnstileService.sessionID }
         );
       }
@@ -188,13 +187,8 @@ export class SwapsControllerService {
       .pipe(
         debounceTime(220),
         map(calculateData => {
-          if (
-            calculateData.stop ||
-            !this.swapFormService.isFilled ||
-            !this.socketManager.allowCalculation()
-          ) {
+          if (calculateData.stop || !this.swapFormService.isFilled) {
             SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled && !calculateData.stop;
-            SENTRY_CF_STATUS.wasAllowedCalculate = this.socketManager.allowCalculation();
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };
           }

@@ -65,6 +65,7 @@
                 [href]="menu.link"
                 target="_blank"
                 rel="noopener noreferrer"
+                (click)="handleSwitchMode(menu)"
               >
                 <button class="data-list__option" (click)="handleButtonClick()">
                   {{ menu.translateKey | translate }}
@@ -78,7 +79,7 @@
                 appearance="secondary"
                 type="button"
                 size="m"
-                (click)="mobileClose()"
+                (click)="mobileClose(menu)"
                 [routerLink]="menu.link"
                 routerLinkActive="data-list__element_active"
               >

@@ -4,6 +4,8 @@ import { STAKING_CONFIG_DEVELOP } from '../constants/staking';
 export interface Env {
   environmentName: EnvType;
   production: boolean;
+  local: boolean;
+  googleAnalyticsId: string;
 
   apiBaseUrl: string;
   apiTokenUrl: string;

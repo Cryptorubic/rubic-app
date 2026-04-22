@@ -65,7 +65,8 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
       })
     );
 
-  private connectWallet(): void {
+  protected connectWallet(): void {
+    super.connectWallet();
     const walletsMap = this.headerStore.isMobile
       ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
       : PRIVATE_PROVIDERS_WALLETS_MAP;

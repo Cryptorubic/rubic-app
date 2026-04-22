@@ -29,6 +29,7 @@
       routerLink="/"
       routerLinkActive="active-router-link"
       [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+      (click)="onHeaderModeSwitch('regular')"
       tuiButton
       appearance="secondary"
       type="button"
@@ -40,6 +41,7 @@
     <button
       routerLink="/privacy"
       routerLinkActive="active-router-link"
+      (click)="onHeaderModeSwitch('private')"
       class="private-mode-button"
       tuiButton
       appearance="secondary"
@@ -72,7 +74,10 @@
 
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">
-        <app-login-button class="rubic-header__login"></app-login-button>
+        <app-login-button
+          class="rubic-header__login"
+          [buttonHierarchy]="'header'"
+        ></app-login-button>
       </ng-container>
       <ng-template #loggedIn>
         <app-user-profile class="rubic-header__profile-user"></app-user-profile>

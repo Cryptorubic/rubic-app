@@ -153,7 +153,6 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private logoutAndChangeWallet(): void {
     this.authService.disconnectWallet();
-    this.gtmService.fireClickOnConnectWalletButtonEvent();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 
