@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Inject, Injectable } from '@angular/core';
 import {
   EvmBlockchainName,
   QuoteAllInterface,
@@ -59,11 +59,14 @@ import {
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
+  private readonly configService = inject(PlatformConfigurationService);
+
   private get apiUrl(): string {
     const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
 
@@ -323,8 +326,10 @@ export class RubicApiService {
   }
 
   public handleQuotesAsync(): Observable<WrappedAsyncTradeOrNull> {
-    return this.turnstileService.token$.pipe(
-      first(el => el !== null),
+    return this.configService.useCloudflareProtection$.pipe(
+      switchMap(useCFProtection =>
+        useCFProtection ? this.turnstileService.token$.pipe(first(el => el !== null)) : of('token')
+      ),
       switchMap(token => {
         if (!token) return throwError(() => 'cloudflare token is undefined');
 
