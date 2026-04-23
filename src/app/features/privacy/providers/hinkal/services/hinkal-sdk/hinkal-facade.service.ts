@@ -11,6 +11,7 @@ import {
   BlockchainsInfo,
   EvmBlockchainName,
   nativeTokensList,
+  Token,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
@@ -25,7 +26,6 @@ import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import BigNumber from 'bignumber.js';
-import { Token } from '@shared/models/tokens/token';
 import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
@@ -208,7 +208,7 @@ export class HinkalFacadeService {
   private async estimateGas(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>,
-    feeToken: Token
+    feeToken: BalanceToken
   ): Promise<BigNumber> {
     const result = await this.hinkalSwapService.estimateGas(fromToken, toToken, feeToken);
     console.log(`GAS ESTIMATE RESPONSE FOR ${feeToken.blockchain}.${feeToken.symbol} = ${result}`);
@@ -232,16 +232,16 @@ export class HinkalFacadeService {
 
     const nativeToken = nativeTokensList[fromToken.blockchain];
     const nativeTokenPrice = this.tokensFacade.findTokenSync(nativeToken)?.price ?? 0;
-    const nativeDecimals = new BigNumber(10).pow(nativeToken.decimals);
 
     return estimates
       .map(({ gasLimit, ...token }) => {
-        const gasFeeWei = gasLimit.multipliedBy(gasPriceInNativeToken);
-        const gasFeeInNative = gasFeeWei.dividedBy(nativeDecimals);
-        const gasFeeUsd = gasFeeInNative.multipliedBy(nativeTokenPrice);
+        const gasFeeWeiNative = gasLimit.multipliedBy(gasPriceInNativeToken);
+        const gasFeeNative = Token.fromWei(gasFeeWeiNative, nativeToken.decimals);
+        const gasFeeUsd = gasFeeNative.multipliedBy(nativeTokenPrice);
         const gasFee = token.price ? gasFeeUsd.dividedBy(token.price) : new BigNumber(0);
+        const gasFeeWei = new BigNumber(Token.toWei(gasFee, token.decimals));
 
-        return { ...token, gasFee, gasFeeUsd };
+        return { ...token, gasFee: gasFeeWei, gasFeeUsd };
       })
       .filter(token => token.amount.gt(token.gasFee));
   }
