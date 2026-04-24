@@ -10,8 +10,6 @@ import {
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName,
-  nativeTokensList,
-  Token,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
@@ -28,6 +26,8 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import BigNumber from 'bignumber.js';
 import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
+import { HinkalPrivateOperation } from '../../models/hinkal-private-operations';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -205,43 +205,37 @@ export class HinkalFacadeService {
     return steps;
   }
 
-  private async estimateGas(
-    fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>,
-    feeToken: BalanceToken
-  ): Promise<BigNumber> {
-    const result = await this.hinkalSwapService.estimateGas(fromToken, toToken, feeToken);
-    console.log(`GAS ESTIMATE RESPONSE FOR ${feeToken.blockchain}.${feeToken.symbol} = ${result}`);
+  private async estimateGas(params: EstimateFeeStructureParams): Promise<BigNumber> {
+    const result = await this.hinkalSwapService.estimateFee(params);
+
+    console.log(`GAS ESTIMATE RESPONSE FOR ${params.feeTokenAddress} = ${result}`);
 
     return result;
   }
 
   public async prepareGasTokens(
     fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>,
-    availableGasTokens: BalanceToken[]
+    availableGasTokens: BalanceToken[],
+    operation: HinkalPrivateOperation,
+    toToken?: TokenAmount<EvmBlockchainName>
   ): Promise<GasToken[]> {
     const estimates = await Promise.all(
       availableGasTokens.map(async token => ({
         ...token,
-        gasLimit: await this.estimateGas(fromToken, toToken, token)
+        estimatedFee: await this.estimateGas({
+          feeTokenAddress: token.address,
+          fromToken,
+          toToken,
+          operation
+        })
       }))
     );
 
-    const gasPriceInNativeToken = await this.hinkalSwapService.getGasPrice();
-
-    const nativeToken = nativeTokensList[fromToken.blockchain];
-    const nativeTokenPrice = this.tokensFacade.findTokenSync(nativeToken)?.price ?? 0;
-
     return estimates
-      .map(({ gasLimit, ...token }) => {
-        const gasFeeWeiNative = gasLimit.multipliedBy(gasPriceInNativeToken);
-        const gasFeeNative = Token.fromWei(gasFeeWeiNative, nativeToken.decimals);
-        const gasFeeUsd = gasFeeNative.multipliedBy(nativeTokenPrice);
-        const gasFee = token.price ? gasFeeUsd.dividedBy(token.price) : new BigNumber(0);
-        const gasFeeWei = new BigNumber(Token.toWei(gasFee, token.decimals));
+      .map(({ estimatedFee, ...token }) => {
+        const gasFeeUsd = estimatedFee.multipliedBy(token.price);
 
-        return { ...token, gasFee: gasFeeWei, gasFeeUsd };
+        return { ...token, gasFee: estimatedFee, gasFeeUsd };
       })
       .filter(token => token.amount.gt(token.gasFee));
   }

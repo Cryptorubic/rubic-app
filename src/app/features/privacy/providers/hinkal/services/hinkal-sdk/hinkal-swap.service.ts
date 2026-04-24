@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import { blockchainId, EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import {
@@ -14,6 +14,9 @@ import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
 import BigNumber from 'bignumber.js';
 import { Token } from '@app/shared/models/tokens/token';
+import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
+import { ExternalActionId, getFeeStructure } from '@hinkal/common';
+import { HINKAL_PRIVATE_OPERATION } from '../../models/hinkal-private-operations';
 
 @Injectable()
 export class HinkalSwapService {
@@ -140,38 +143,60 @@ export class HinkalSwapService {
     }
   }
 
-  public async estimateGas(
-    fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>,
-    feeToken: Token
-  ): Promise<BigNumber> {
+  // public async estimateGas(
+  //   fromToken: TokenAmount<EvmBlockchainName>,
+  //   toToken: TokenAmount<EvmBlockchainName>,
+  //   feeToken: Token
+  // ): Promise<BigNumber> {
+  //   try {
+  //     if (fromToken.blockchain !== toToken.blockchain)
+  //       throw new Error('Cross-chain swaps not supported');
+
+  //     const params: SwapParams = {
+  //       fromToken: {
+  //         ...fromToken,
+  //         stringWeiAmount: fromToken.stringWeiAmount
+  //       },
+  //       toToken: {
+  //         ...toToken,
+  //         stringWeiAmount: toToken.stringWeiAmount
+  //       },
+  //       feeToken,
+  //       onlyGasEstimate: true
+  //     };
+
+  //     const result = await this.hinkalWorker.request<BigNumber>({
+  //       type: 'swap',
+  //       params
+  //     });
+
+  //     return result;
+  //   } catch (err) {
+  //     console.log('FAILED TO ESTIMATE GAS', err);
+  //     this.errorService.catch(err);
+  //     return new BigNumber(-1);
+  //   }
+  // }
+
+  public async estimateFee(params: EstimateFeeStructureParams): Promise<BigNumber> {
     try {
-      if (fromToken.blockchain !== toToken.blockchain)
-        throw new Error('Cross-chain swaps not supported');
+      const { operation, feeTokenAddress, fromToken } = params;
 
-      const params: SwapParams = {
-        fromToken: {
-          ...fromToken,
-          stringWeiAmount: fromToken.stringWeiAmount
-        },
-        toToken: {
-          ...toToken,
-          stringWeiAmount: toToken.stringWeiAmount
-        },
-        feeToken,
-        onlyGasEstimate: true
-      };
+      const chainId = blockchainId[fromToken.blockchain];
 
-      const result = await this.hinkalWorker.request<BigNumber>({
-        type: 'swap',
-        params
-      });
+      const isSwap = operation === HINKAL_PRIVATE_OPERATION.SWAP;
 
-      return result;
+      const fee = await getFeeStructure(
+        chainId,
+        feeTokenAddress,
+        [fromToken.address, ...(isSwap ? [params.toToken.address] : [])],
+        isSwap ? ExternalActionId.Emporium : ExternalActionId.Transact
+      );
+
+      return new BigNumber(fee.flatFee.toString());
     } catch (err) {
-      console.log('FAILED TO ESTIMATE GAS', err);
-      this.errorService.catch(err);
-      return new BigNumber(-1);
+      console.log(err);
+      return new BigNumber(0);
     }
   }
 

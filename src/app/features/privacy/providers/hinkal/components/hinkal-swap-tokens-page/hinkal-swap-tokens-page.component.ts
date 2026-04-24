@@ -27,6 +27,8 @@ import { PrivateSwapWindowService } from '../../../shared-privacy-providers/serv
 import BigNumber from 'bignumber.js';
 import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
+import { HINKAL_PRIVATE_OPERATION } from '../../models/hinkal-private-operations';
 
 @Component({
   selector: 'app-hinkal-swap-tokens-page',
@@ -73,7 +75,8 @@ export class HinkalSwapTokensPageComponent {
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly fromAssetsService: FromAssetsService,
     private readonly toAssetsService: ToAssetsService,
-    private readonly tokensFacadeService: TokensFacadeService
+    private readonly tokensFacadeService: TokensFacadeService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {}
 
   ngOnInit(): void {
@@ -172,116 +175,15 @@ export class HinkalSwapTokensPageComponent {
       const steps = this.hinkalFacadeService.prepareSwapSteps(
         fromToken,
         toToken,
-        () => this.privateSwapWindowService.selectedGasToken ?? undefined
+        () => this.gasTokenService.selectedGasToken ?? undefined
       );
 
       const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
         fromToken,
-        toToken,
-        this.availableGasTokens
+        this.availableGasTokens,
+        HINKAL_PRIVATE_OPERATION.SWAP,
+        toToken
       );
-
-      // //FOR TESTS ONLY
-      // const gasTokens: GasToken[] = [
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      //     address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      //     name: 'Wrapped Ether',
-      //     symbol: 'WETH',
-      //     decimals: 18,
-      //     price: 3142.57,
-      //     amount: new BigNumber(1.5),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      //     address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-      //     name: 'Binance USD',
-      //     symbol: 'BUSD',
-      //     decimals: 18,
-      //     price: 1.0,
-      //     amount: new BigNumber(500),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.POLYGON,
-      //     address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-      //     name: 'USD Coin',
-      //     symbol: 'USDC',
-      //     decimals: 6,
-      //     price: 0.9998,
-      //     amount: new BigNumber(250.75),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.AVALANCHE,
-      //     address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
-      //     name: 'Avalanche',
-      //     symbol: 'AVAX',
-      //     decimals: 18,
-      //     price: 38.44,
-      //     amount: new BigNumber(12.3),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.ARBITRUM,
-      //     address: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
-      //     name: 'GMX',
-      //     symbol: 'GMX',
-      //     decimals: 18,
-      //     price: 27.91,
-      //     amount: new BigNumber(8.0),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.SOLANA,
-      //     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      //     name: 'USD Coin',
-      //     symbol: 'USDC',
-      //     decimals: 6,
-      //     price: 1.0001,
-      //     amount: new BigNumber(1000),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   },
-      //   {
-      //     blockchain: BLOCKCHAIN_NAME.OPTIMISM,
-      //     address: '0x4200000000000000000000000000000000000042',
-      //     name: 'Optimism',
-      //     symbol: 'OP',
-      //     decimals: 18,
-      //     price: 1.73,
-      //     amount: new BigNumber(45.5),
-      //     favorite: false,
-      //     image: '',
-      //     rank: 0,
-      //     gasFee: new BigNumber(0.5),
-      //     gasFeeUsd: new BigNumber(1)
-      //   }
-      // ];
 
       const preview$ = openPreview({
         steps,

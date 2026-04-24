@@ -45,6 +45,19 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  // public async estimateFee(params: EstimateFeeStructureParams): Promise<FeeStructure> {
+  //   const { operation, fromToken, chainId, feeTokenAddress } = params;
+
+  //   if (operation !== HINKAL_PRIVATE_OPERATION.SWAP) {
+  //     return getFeeStructure(
+  //       chainId,
+  //       feeTokenAddress,
+  //       [fromToken.address],
+  //       ExternalActionId.Transact
+  //     );
+  //   }
+  // }
+
   public async deposit(token: PureTokenAmount<EvmBlockchainName>): Promise<EvmTransactionConfig> {
     try {
       const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(token);

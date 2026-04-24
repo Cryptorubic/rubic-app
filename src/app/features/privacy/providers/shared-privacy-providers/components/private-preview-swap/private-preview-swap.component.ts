@@ -23,8 +23,8 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
-import { PrivateSwapWindowService } from '../../services/private-swap-window/private-swap-window.service';
 import { GasToken } from '@app/shared/models/tokens/gas-token';
+import { PrivateGasTokenService } from '../../services/gas-token-service/gas-token.service';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -85,7 +85,7 @@ export class PrivatePreviewSwapComponent {
     private readonly headerStore: HeaderStore,
     private readonly tokensFacade: TokensFacadeService,
     private readonly errorService: ErrorsService,
-    private readonly privateSwapWindowService: PrivateSwapWindowService
+    private readonly gasTokenService: PrivateGasTokenService
   ) {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
@@ -181,6 +181,6 @@ export class PrivatePreviewSwapComponent {
   }
 
   public selectGasToken(token: GasToken): void {
-    this.privateSwapWindowService.selectGasToken(token);
+    this.gasTokenService.selectGasToken(token);
   }
 }

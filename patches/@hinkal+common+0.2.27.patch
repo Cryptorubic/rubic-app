@@ -199,6 +199,30 @@ index 8b9d8dd..ddee868 100644
    }
  }
  export {
+diff --git a/node_modules/@hinkal/common/functions/pre-transaction/index.d.ts b/node_modules/@hinkal/common/functions/pre-transaction/index.d.ts
+index 843afc4..053bf97 100644
+--- a/node_modules/@hinkal/common/functions/pre-transaction/index.d.ts
++++ b/node_modules/@hinkal/common/functions/pre-transaction/index.d.ts
+@@ -15,3 +15,4 @@ export * from './sendInitNullifiersTransaction';
+ export * from './initTokenLimitIfNeeded';
+ export * from './recipientUtxoProcessing';
+ export * from './store-instructions';
++export * from './getFeeStructure'
+diff --git a/node_modules/@hinkal/common/index.mjs b/node_modules/@hinkal/common/index.mjs
+index 9617f72..2839fdd 100644
+--- a/node_modules/@hinkal/common/index.mjs
++++ b/node_modules/@hinkal/common/index.mjs
+@@ -268,7 +268,10 @@ import { abi as qd } from "./externalABIs/BUSD.mjs";
+ import { abi as jd } from "./externalABIs/SanctionsList.mjs";
+ import { default as Qd } from "./externalABIs/OptimismGasPriceOracle.json.mjs";
+ import { default as eT } from "./externalABIs/NodeInterfaceABI.json.mjs";
++import { getFeeStructure as BB } from './functions/pre-transaction/getFeeStructure.mjs';
++
+ export {
++ BB as getFeeStructure,
+   _t as ACCESS_TOKEN_MINTING_POINTS,
+   Ct as ACCESS_TOKEN_RECLAIM_POINTS,
+   Pa as ACHIEVEMENTS,
 diff --git a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
 index ec5bc33..6d6451c 100644
 --- a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
