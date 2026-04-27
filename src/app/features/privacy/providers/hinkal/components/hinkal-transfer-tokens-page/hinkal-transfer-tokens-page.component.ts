@@ -122,7 +122,6 @@ export class HinkalTransferTokensPageComponent {
         steps,
         warnings: HINKAL_WARNINGS,
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed(),
-        hideFeeInfo: true,
         gasTokens
       });
 
