@@ -56,23 +56,23 @@
     width: 11px;
     height: 11px;
 
-    background-image: url('/assets/images/icons/arrow/arrow-up-green.svg');
+    background-image: url('/assets/images/icons/arrow/arrow-down-green.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
 
     &.expanded {
-      background-image: url('/assets/images/icons/arrow/arrow-down-green.svg');
+      background-image: url('/assets/images/icons/arrow/arrow-up-green.svg');
     }
 
     @include b($mobile-md) {
       width: 13px;
       height: 13px;
 
-      background-image: url('/assets/images/icons/arrow/arrow-up-green-mobile.svg');
+      background-image: url('/assets/images/icons/arrow/arrow-down-green-mobile.svg');
 
       &.expanded {
-        background-image: url('/assets/images/icons/arrow/arrow-down-green-mobile.svg');
+        background-image: url('/assets/images/icons/arrow/arrow-up-green-mobile.svg');
       }
     }
   }
@@ -151,6 +151,8 @@
 
   @include b($mobile-md) {
     .scrollbar {
+      scrollbar-width: thin;
+
       max-height: calc(113px + 3 * var(--tui-padding-l));
     }
 

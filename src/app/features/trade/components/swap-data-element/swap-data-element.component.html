@@ -34,7 +34,7 @@
   </div>
 
   <div *ngIf="gasTokenAssets?.length > 0" class="provider-info__element gas-tokens">
-    <div class="provider-info__selected-asset">
+    <div class="provider-info__selected-asset" (click)="toggleGasTokensDropdown()">
       <img [src]="creationConfig.gasIcon" alt="Fee" />
       Gas fee {{ selectedGasToken.gasFee }}&nbsp;{{ selectedGasToken.symbol }}&nbsp;(${{
         selectedGasToken.gasFeeUsd
@@ -42,10 +42,9 @@
       <button
         class="provider-info__dropdown-button"
         [ngClass]="{ expanded: gasTokensShown }"
-        (click)="toggleGasTokensDropdown()"
       ></button>
     </div>
-    <tui-scrollbar class="scrollbar" *ngIf="gasTokensShown">
+    <tui-scrollbar class="scrollbar" *ngIf="gasTokensShown" [hidden]="false">
       <div class="provider-info__tokens">
         <div
           *ngFor="let gasToken of gasTokenAssets; let i = index"
