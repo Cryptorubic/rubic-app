@@ -115,9 +115,15 @@ export class RubicApiService {
     return interval(4.5 * 60 * 1_000).pipe(switchMap(() => this.refreshCloudflareToken(false)));
   }
 
+  private pendingRecalculation = false;
+
   public async refreshCloudflareToken(
     needRecalculation: boolean
   ): Promise<{ success: boolean; alreadyOpened: boolean }> {
+    if (needRecalculation) {
+      this.pendingRecalculation = true;
+    }
+
     const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
     if (alreadyOpened) return { alreadyOpened: true, success: false };
 
@@ -129,7 +135,13 @@ export class RubicApiService {
       return { alreadyOpened: false, success: false };
     }
 
-    this.client.emit('auth_cloudflare', { token, needRecalculation });
+    // pendingRecalculation может быть true, если параллельный вызов с needRecalculation=true
+    // был заблокирован (alreadyOpened) и вернулся раньше — его намерение сохранено здесь.
+    // Реализовано для избавления от гонки при параллельных запросах
+    const shouldRecalculate = this.pendingRecalculation;
+    this.pendingRecalculation = false;
+
+    this.client.emit('auth_cloudflare', { token, needRecalculation: shouldRecalculate });
 
     return { alreadyOpened: false, success: token !== null };
   }
