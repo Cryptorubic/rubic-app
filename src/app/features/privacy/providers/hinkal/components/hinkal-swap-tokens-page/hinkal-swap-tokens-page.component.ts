@@ -10,7 +10,7 @@ import {
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { BehaviorSubject, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -26,7 +26,6 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
-import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
 import { HINKAL_PRIVATE_OPERATION } from '../../models/hinkal-private-operations';
 
@@ -58,12 +57,6 @@ export class HinkalSwapTokensPageComponent {
       };
     })
   );
-
-  private readonly _availableGasTokens$ = new BehaviorSubject<BalanceToken[]>([]);
-
-  public get availableGasTokens(): BalanceToken[] {
-    return this._availableGasTokens$?.value;
-  }
 
   constructor(
     private readonly workerService: HinkalWorkerService,
@@ -112,8 +105,6 @@ export class HinkalSwapTokensPageComponent {
   }
 
   private subscribeOnPrivateBalanceChanges(): void {
-    const tokens = this.tokensFacadeService.tokens;
-
     this.hinkalBalanceService.balances$
       .pipe(takeUntil(this.destroy$))
       .subscribe(shieldedBalances => {
@@ -121,19 +112,6 @@ export class HinkalSwapTokensPageComponent {
 
         if (swapInfo.fromAsset) {
           const balances = shieldedBalances[swapInfo.fromAsset.blockchain as EvmBlockchainName];
-
-          const availableGasTokens = balances?.map(
-            balance =>
-              ({
-                ...tokens.find(
-                  token =>
-                    token.blockchain === swapInfo.fromAsset?.blockchain &&
-                    compareAddresses(token.address, balance.tokenAddress)
-                ),
-                amount: balance.amount
-              } as BalanceToken)
-          );
-          this._availableGasTokens$.next(availableGasTokens ?? []);
 
           const tokenBalance = balances?.find(balance =>
             compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
@@ -175,12 +153,11 @@ export class HinkalSwapTokensPageComponent {
       const steps = this.hinkalFacadeService.prepareSwapSteps(
         fromToken,
         toToken,
-        () => this.gasTokenService.selectedGasToken ?? undefined
+        () => this.gasTokenService.selectedGasToken
       );
 
       const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
         fromToken,
-        this.availableGasTokens,
         HINKAL_PRIVATE_OPERATION.SWAP,
         toToken
       );

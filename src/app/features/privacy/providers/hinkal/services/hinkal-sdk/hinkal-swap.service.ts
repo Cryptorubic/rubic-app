@@ -13,7 +13,6 @@ import {
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
 import BigNumber from 'bignumber.js';
-import { Token } from '@app/shared/models/tokens/token';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { ExternalActionId, getFeeStructure } from '@hinkal/common';
 import { HINKAL_PRIVATE_OPERATION } from '../../models/hinkal-private-operations';
@@ -95,6 +94,7 @@ export class HinkalSwapService {
 
   public async withdraw(
     token: TokenAmount<EvmBlockchainName>,
+    feeToken: string,
     receiver?: string
   ): Promise<boolean> {
     try {
@@ -103,7 +103,8 @@ export class HinkalSwapService {
           ...token,
           stringWeiAmount: token.stringWeiAmount
         },
-        receiver
+        receiver,
+        feeToken
       };
 
       await this.hinkalWorker.request({
@@ -120,7 +121,8 @@ export class HinkalSwapService {
 
   public async privateTransfer(
     token: TokenAmount<EvmBlockchainName>,
-    recipientStealthAddress: string
+    recipientStealthAddress: string,
+    feeToken: string
   ): Promise<boolean> {
     try {
       const params: TransferParams = {
@@ -128,7 +130,8 @@ export class HinkalSwapService {
           ...token,
           stringWeiAmount: token.stringWeiAmount
         },
-        receiver: recipientStealthAddress
+        receiver: recipientStealthAddress,
+        feeToken
       };
 
       await this.hinkalWorker.request({
@@ -143,40 +146,39 @@ export class HinkalSwapService {
     }
   }
 
-  // public async estimateGas(
-  //   fromToken: TokenAmount<EvmBlockchainName>,
-  //   toToken: TokenAmount<EvmBlockchainName>,
-  //   feeToken: Token
-  // ): Promise<BigNumber> {
-  //   try {
-  //     if (fromToken.blockchain !== toToken.blockchain)
-  //       throw new Error('Cross-chain swaps not supported');
+  public async privateSwap(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    toToken: TokenAmount<EvmBlockchainName>,
+    feeToken: string
+  ): Promise<boolean> {
+    try {
+      if (fromToken.blockchain !== toToken.blockchain)
+        throw new Error('Cross-chain swaps not supported');
 
-  //     const params: SwapParams = {
-  //       fromToken: {
-  //         ...fromToken,
-  //         stringWeiAmount: fromToken.stringWeiAmount
-  //       },
-  //       toToken: {
-  //         ...toToken,
-  //         stringWeiAmount: toToken.stringWeiAmount
-  //       },
-  //       feeToken,
-  //       onlyGasEstimate: true
-  //     };
+      const params: SwapParams = {
+        fromToken: {
+          ...fromToken,
+          stringWeiAmount: fromToken.stringWeiAmount
+        },
+        toToken: {
+          ...toToken,
+          stringWeiAmount: toToken.stringWeiAmount
+        },
+        feeToken
+      };
 
-  //     const result = await this.hinkalWorker.request<BigNumber>({
-  //       type: 'swap',
-  //       params
-  //     });
+      await this.hinkalWorker.request({
+        type: 'swap',
+        params
+      });
 
-  //     return result;
-  //   } catch (err) {
-  //     console.log('FAILED TO ESTIMATE GAS', err);
-  //     this.errorService.catch(err);
-  //     return new BigNumber(-1);
-  //   }
-  // }
+      return true;
+    } catch (err) {
+      console.log('FAILED TO SWAP', err);
+      this.errorService.catch(err);
+      return false;
+    }
+  }
 
   public async estimateFee(params: EstimateFeeStructureParams): Promise<BigNumber> {
     try {
@@ -197,40 +199,6 @@ export class HinkalSwapService {
     } catch (err) {
       console.log(err);
       return new BigNumber(0);
-    }
-  }
-
-  public async privateSwap(
-    fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>,
-    feeToken?: Token
-  ): Promise<boolean> {
-    try {
-      if (fromToken.blockchain !== toToken.blockchain)
-        throw new Error('Cross-chain swaps not supported');
-
-      const params: SwapParams = {
-        fromToken: {
-          ...fromToken,
-          stringWeiAmount: fromToken.stringWeiAmount
-        },
-        toToken: {
-          ...toToken,
-          stringWeiAmount: toToken.stringWeiAmount
-        },
-        ...(feeToken && { feeToken })
-      };
-
-      await this.hinkalWorker.request({
-        type: 'swap',
-        params
-      });
-
-      return true;
-    } catch (err) {
-      console.log('FAILED TO SWAP', err);
-      this.errorService.catch(err);
-      return false;
     }
   }
 }

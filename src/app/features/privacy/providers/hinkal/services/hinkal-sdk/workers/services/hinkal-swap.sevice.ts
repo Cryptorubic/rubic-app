@@ -17,7 +17,6 @@ import { ContractTransaction } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
 import BigNumber from 'bignumber.js';
-import { Token } from '@app/shared/models/tokens/token';
 
 export class HinkalWorkerSwapService {
   private readonly hinkal: Hinkal<unknown>;
@@ -85,6 +84,7 @@ export class HinkalWorkerSwapService {
 
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     receiver?: string
   ): Promise<string> {
     try {
@@ -97,7 +97,7 @@ export class HinkalWorkerSwapService {
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
         false,
-        undefined,
+        feeToken,
         undefined,
         undefined,
         false
@@ -113,6 +113,7 @@ export class HinkalWorkerSwapService {
 
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     recipientStealthAddress: string
   ): Promise<string> {
     try {
@@ -123,7 +124,7 @@ export class HinkalWorkerSwapService {
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
         recipientStealthAddress,
-        undefined,
+        feeToken,
         undefined,
         undefined,
         false
@@ -139,8 +140,7 @@ export class HinkalWorkerSwapService {
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
     toToken: PureTokenAmount<EvmBlockchainName>,
-    feeToken?: Token,
-    onlyGasEstimate?: boolean
+    feeToken: string
   ): Promise<string | BigNumber> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
@@ -214,14 +214,14 @@ export class HinkalWorkerSwapService {
         ops,
         [fromTokenChanges, toTokenChanges],
         subAccount,
-        feeToken?.address,
+        feeToken,
         undefined,
         undefined,
         undefined,
         undefined,
         undefined,
         undefined,
-        onlyGasEstimate
+        false
       )) as RelayerTransaction | bigint;
 
       if (typeof res === 'bigint') return new BigNumber(res.toString());

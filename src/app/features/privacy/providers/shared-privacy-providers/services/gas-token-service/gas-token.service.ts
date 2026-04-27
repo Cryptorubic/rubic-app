@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
-import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class PrivateGasTokenService {
-  private readonly _selectedGasToken$ = new BehaviorSubject<GasToken | null>(null);
+  private readonly DEFAULT_FEE_TOKEN = '0x0000000000000000000000000000000000000000';
 
-  public get selectedGasToken(): GasToken | null {
+  private readonly _selectedGasToken$ = new BehaviorSubject<string>(this.DEFAULT_FEE_TOKEN);
+
+  public readonly selectedGasToken$ = this._selectedGasToken$.asObservable();
+
+  public get selectedGasToken(): string {
     return this._selectedGasToken$.value;
   }
 
-  public selectGasToken(token: GasToken | null): void {
+  public selectGasToken(token: string): void {
     this._selectedGasToken$.next(token);
   }
 }

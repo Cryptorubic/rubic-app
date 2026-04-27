@@ -51,6 +51,9 @@
           *ngFor="let gasToken of gasTokenAssets; let i = index"
           class="provider-info__asset"
           (click)="selectGasToken(gasToken.token, i)"
+          [class.provider-info__asset-disabled]="
+            gasToken.value.tokenAmount.isNaN() || gasToken.value.tokenAmount.lte(0)
+          "
         >
           <div class="provider-info__token-container">
             <div
@@ -71,9 +74,11 @@
               class="provider-info__token-amount"
               [ngClass]="{ selected: selectedGasTokenIndex === i }"
             >
-              {{ gasToken.value.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
-                gasToken.asset.mainLabel
-              }}
+              {{
+                gasToken.value.tokenAmount.gt(0)
+                  ? (gasToken.value.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6)
+                  : '0'
+              }}&nbsp;{{ gasToken.asset.mainLabel }}
             </div>
             <div *ngIf="gasToken.value.fiatAmount as amount" class="provider-info__fiat-amount">
               ~ ${{ amount }}

@@ -181,6 +181,6 @@ export class PrivatePreviewSwapComponent {
   }
 
   public selectGasToken(token: GasToken): void {
-    this.gasTokenService.selectGasToken(token);
+    this.gasTokenService.selectGasToken(token.address);
   }
 }

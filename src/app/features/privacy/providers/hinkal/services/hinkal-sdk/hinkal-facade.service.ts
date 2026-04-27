@@ -3,13 +3,23 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import { BehaviorSubject, distinctUntilChanged, filter, skip, Subscription, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  skip,
+  Subscription,
+  switchMap
+} from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
   BlockchainName,
   BlockchainsInfo,
+  compareAddresses,
   EvmBlockchainName,
+  Token,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
@@ -28,6 +38,9 @@ import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { HinkalPrivateOperation } from '../../models/hinkal-private-operations';
+import { HinkalSwapTokensFacadeService } from '../token-facades/hinkal-swap-tokens-facade.service';
+import { HINKAL_SUPPORTED_GAS_TOKENS } from '../../constants/hinkal-supported-gas-tokens';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -62,7 +75,8 @@ export class HinkalFacadeService {
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly hideWindowService: HideWindowService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly privateTokensFacade: HinkalSwapTokensFacadeService
   ) {}
 
   public initSubs(): void {
@@ -94,6 +108,29 @@ export class HinkalFacadeService {
         label: 'Switch network',
         action: () => this.walletConnectorService.switchChain(fromBlockchain)
       });
+    }
+  }
+
+  private async getGasTokens(fromToken: TokenAmount): Promise<BalanceToken[]> {
+    try {
+      const tokens = await firstValueFrom(
+        this.privateTokensFacade.getTokensList(
+          fromToken.blockchain,
+          '',
+          'from',
+          getEmptySwapFormInput()
+        )
+      );
+
+      return tokens
+        .filter(token => token.blockchain === fromToken.blockchain)
+        .filter(fetchedToken => {
+          const gasTokens = HINKAL_SUPPORTED_GAS_TOKENS[fetchedToken.blockchain] || [];
+
+          return gasTokens.some(gasToken => compareAddresses(gasToken, fetchedToken.address));
+        });
+    } catch {
+      return [];
     }
   }
 
@@ -141,6 +178,7 @@ export class HinkalFacadeService {
 
   public prepareWithdrawSteps(
     token: TokenAmount<EvmBlockchainName>,
+    getSelectedGasToken: () => string,
     receiver?: string
   ): PrivateStep[] {
     const steps: PrivateStep[] = [];
@@ -150,21 +188,24 @@ export class HinkalFacadeService {
     steps.push({
       label: 'Unshield',
       action: () => {
-        return this.hinkalSwapService.withdraw(token, receiver).then(isSuccess => {
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'UNSHIELD',
-              'HINKAL',
-              this.walletConnectorService.address,
-              token.address,
-              token.weiAmount.toFixed(),
-              token.blockchain
-            );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
-          }
-        });
+        const selectedGasToken = getSelectedGasToken();
+        return this.hinkalSwapService
+          .withdraw(token, selectedGasToken, receiver)
+          .then(isSuccess => {
+            if (isSuccess) {
+              this.privateStatisticsService.saveAction(
+                'UNSHIELD',
+                'HINKAL',
+                this.walletConnectorService.address,
+                token.address,
+                token.weiAmount.toFixed(),
+                token.blockchain
+              );
+              this.showSuccessNotification(
+                'Transaction sent. This may take a moment. Please keep Rubic App open'
+              );
+            }
+          });
       }
     });
 
@@ -173,7 +214,8 @@ export class HinkalFacadeService {
 
   public prepareTransferSteps(
     token: TokenAmount<EvmBlockchainName>,
-    receiverPrivateShieldedKey: string
+    receiverPrivateShieldedKey: string,
+    getSelectedGasToken: () => string
   ): PrivateStep[] {
     const steps: PrivateStep[] = [];
 
@@ -182,8 +224,9 @@ export class HinkalFacadeService {
     steps.push({
       label: 'Transfer tokens',
       action: () => {
+        const selectedGasToken = getSelectedGasToken();
         return this.hinkalSwapService
-          .privateTransfer(token, receiverPrivateShieldedKey)
+          .privateTransfer(token, receiverPrivateShieldedKey, selectedGasToken)
           .then(isSuccess => {
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
@@ -215,10 +258,11 @@ export class HinkalFacadeService {
 
   public async prepareGasTokens(
     fromToken: TokenAmount<EvmBlockchainName>,
-    availableGasTokens: BalanceToken[],
     operation: HinkalPrivateOperation,
     toToken?: TokenAmount<EvmBlockchainName>
   ): Promise<GasToken[]> {
+    const availableGasTokens = await this.getGasTokens(fromToken);
+
     const estimates = await Promise.all(
       availableGasTokens.map(async token => ({
         ...token,
@@ -231,19 +275,22 @@ export class HinkalFacadeService {
       }))
     );
 
-    return estimates
-      .map(({ estimatedFee, ...token }) => {
-        const gasFeeUsd = estimatedFee.multipliedBy(token.price);
+    return estimates.map(({ estimatedFee, ...token }) => {
+      const feeAmount = Token.fromWei(estimatedFee, token.decimals);
+      const gasFeeUsd = feeAmount.multipliedBy(token.price);
 
-        return { ...token, gasFee: estimatedFee, gasFeeUsd };
-      })
-      .filter(token => token.amount.gt(token.gasFee));
+      return {
+        ...token,
+        gasFee: feeAmount.decimalPlaces(6, BigNumber.ROUND_HALF_UP),
+        gasFeeUsd: gasFeeUsd.decimalPlaces(2, BigNumber.ROUND_HALF_UP)
+      };
+    });
   }
 
   public prepareSwapSteps(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>,
-    getSelectedGasToken?: () => GasToken | undefined
+    getSelectedGasToken: () => string
   ): PrivateStep[] {
     const steps: PrivateStep[] = [];
 
@@ -252,7 +299,7 @@ export class HinkalFacadeService {
     steps.push({
       label: 'Swap',
       action: () => {
-        const selectedGasToken = getSelectedGasToken?.();
+        const selectedGasToken = getSelectedGasToken();
         console.log(`SELECTED GAS TOKEN`, selectedGasToken);
 
         return this.hinkalSwapService

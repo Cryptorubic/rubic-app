@@ -55,8 +55,8 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       }
 
       if (type === 'withdraw') {
-        const { token, receiver } = params as WithdrawParams;
-        const resp = await hinkalWorkerLogic.swapService.withdraw(token, receiver);
+        const { token, receiver, feeToken } = params as WithdrawParams;
+        const resp = await hinkalWorkerLogic.swapService.withdraw(token, feeToken, receiver);
         postMessage({ success: true, result: resp, type });
       }
 
@@ -67,8 +67,8 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       }
 
       if (type === 'transfer') {
-        const { token, receiver } = params as TransferParams;
-        const resp = await hinkalWorkerLogic.swapService.privateTransfer(token, receiver);
+        const { token, receiver, feeToken } = params as TransferParams;
+        const resp = await hinkalWorkerLogic.swapService.privateTransfer(token, feeToken, receiver);
         postMessage({ success: true, result: resp, type });
       }
 
@@ -83,24 +83,14 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       }
 
       if (type === 'swap') {
-        const { fromToken, toToken, feeToken, onlyGasEstimate } = params as SwapParams;
-        const resp = await hinkalWorkerLogic.swapService.privateSwap(
-          fromToken,
-          toToken,
-          feeToken,
-          onlyGasEstimate
-        );
+        const { fromToken, toToken, feeToken } = params as SwapParams;
+        const resp = await hinkalWorkerLogic.swapService.privateSwap(fromToken, toToken, feeToken);
         postMessage({ success: true, result: resp, type: type });
       }
 
       if (type === 'stop') {
         await hinkalWorkerLogic.snapshotService.clearSnapshotsInterval();
         postMessage({ success: true, result: null, type: type });
-      }
-
-      if (type === 'getGasPrice') {
-        const resp = await hinkalWorkerLogic.swapService.getGasPrice();
-        postMessage({ success: true, result: resp, type: type });
       }
     } catch (err) {
       console.log('WORKER ERROR', err);

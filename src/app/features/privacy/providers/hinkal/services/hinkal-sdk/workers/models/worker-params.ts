@@ -1,5 +1,4 @@
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { Token } from '@app/shared/models/tokens/token';
 import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 
 export type HinkalWorkerType =
@@ -46,6 +45,7 @@ export type InitParams = {
 
 export type WithdrawParams = {
   token: PureTokenAmount<EvmBlockchainName>;
+  feeToken: string;
   receiver?: string;
 };
 
@@ -60,10 +60,9 @@ export type QuoteParams = {
 export type SwapParams = {
   fromToken: PureTokenAmount<EvmBlockchainName>;
   toToken: PureTokenAmount<EvmBlockchainName>;
-  feeToken?: Token;
-  onlyGasEstimate?: boolean;
+  feeToken: string;
 };
 
-export type DepositParams = Omit<WithdrawParams, 'receiver'>;
+export type DepositParams = Omit<WithdrawParams, 'receiver' | 'feeToken'>;
 
 export type SwitchNetworkParams = Omit<InitParams, 'signature'>;
