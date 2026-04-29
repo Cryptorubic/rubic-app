@@ -176,6 +176,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}wormhole.svg`,
     name: `Maker's wormhole`
   },
+  mayan: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}mayan.svg`,
+    name: 'Mayan'
+  },
   mayaprotocol: {
     averageTime: 5,
     color: 'white',
