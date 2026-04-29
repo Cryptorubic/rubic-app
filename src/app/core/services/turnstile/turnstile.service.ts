@@ -48,6 +48,8 @@ export class TurnstileService {
     return this.window.turnstile;
   }
 
+  private _cfPromise: Promise<boolean> | null = null;
+
   constructor(
     private readonly modalService: ModalService,
     private readonly injector: Injector,
@@ -55,29 +57,34 @@ export class TurnstileService {
   ) {}
 
   /**
-   * @returns whether token successfully updated or not
+   * @returns true - if this._cfPromise wasn't set yet, otherwise - false
    */
   public async askForCloudflareToken(): Promise<boolean> {
+    if (this._cfPromise) return false;
+
     try {
-      this._cfModalOpened$.next(true);
-      const success = await this.createInvisibleWidget();
-      if (success) {
-        this._cfModalOpened$.next(false);
-        return true;
-      }
-      // calls this.createWidget() after rendering component for cloudflare checkbox
-      return this.modalService
-        .openTurnstileModal(this.injector)
-        .then(() => true)
-        .catch(() => false)
-        .finally(() => this._cfModalOpened$.next(false));
+      this._cfPromise = new Promise(async resolve => {
+        const success = await this.createInvisibleWidget();
+        if (success) {
+          resolve(true);
+        } else {
+          // calls this.createWidget() after rendering component for cloudflare checkbox
+          return this.modalService
+            .openTurnstileModal(this.injector)
+            .then(() => resolve(true))
+            .catch(() => resolve(false));
+        }
+      });
+      const success = await this._cfPromise;
+      return success;
     } catch (err) {
       console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', {
         err,
         sessionID: this.sessionID
       });
-      this._cfModalOpened$.next(false);
       return false;
+    } finally {
+      this._cfPromise = null;
     }
   }
 
@@ -99,6 +106,7 @@ export class TurnstileService {
                 sessionID: this.sessionID
               });
               this._token$.next(token);
+              this.turnstile.remove(widgetId);
               resolve(true);
             });
           },
@@ -137,6 +145,7 @@ export class TurnstileService {
                 sessionID: this.sessionID
               });
               this._token$.next(token);
+              this.turnstile.remove(widgetId);
               resolve(true);
             });
           },
