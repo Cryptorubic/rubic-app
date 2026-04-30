@@ -1,6 +1,7 @@
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  ErrorInterface,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
@@ -152,6 +153,8 @@ export abstract class CrossChainTrade<T = unknown> {
 
   public lastSwapResponse: SwapResponseInterface<T> | null = null;
 
+  public readonly warnings: ErrorInterface[];
+
   protected constructor(
     protected readonly providerAddress: string,
     protected readonly routePath: RubicStep[],
@@ -163,6 +166,7 @@ export abstract class CrossChainTrade<T = unknown> {
     this.useProxy = apiResponse.useRubicContract;
     this.contractSpender = apiResponse.transaction.approvalAddress!;
     this.rubicId = apiResponse.id;
+    this.warnings = apiResponse.warnings;
   }
 
   /**

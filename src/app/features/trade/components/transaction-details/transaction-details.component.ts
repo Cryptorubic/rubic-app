@@ -84,4 +84,8 @@ export class TransactionDetailsComponent {
       ? this.targetAddressService.address
       : this.walletConnector.address;
   }
+
+  public showSlippageInfo(trade: CrossChainTrade | OnChainTrade): boolean {
+    return !trade.warnings.some(warning => warning.code === 7002);
+  }
 }

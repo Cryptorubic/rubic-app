@@ -20,7 +20,7 @@
   </app-transaction-details-element>
 
   <app-transaction-details-element
-    *ngIf="state.details?.slippage"
+    *ngIf="state.details?.slippage && showSlippageInfo(state.trade)"
     [title]="text.slippage.label"
     [description]="text.slippage.description"
   >

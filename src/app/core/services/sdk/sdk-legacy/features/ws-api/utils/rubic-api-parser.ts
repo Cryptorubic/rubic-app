@@ -104,6 +104,10 @@ export class RubicApiParser {
         parsedWarnings.needAuthWallet = true;
         continue;
       }
+      // not throw error on 70XX errors
+      if (warning.code.toString().startsWith('70')) {
+        continue;
+      }
 
       parsedWarnings.error = RubicApiParser.parseRubicApiErrors(warning);
     }
