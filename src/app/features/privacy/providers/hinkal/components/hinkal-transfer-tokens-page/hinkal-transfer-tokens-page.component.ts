@@ -16,6 +16,8 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
+import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
+import { HINKAL_PRIVATE_OPERATION } from '../../models/hinkal-private-operations';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -51,7 +53,8 @@ export class HinkalTransferTokensPageComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly transferWindowService: PrivateTransferWindowService
+    private readonly transferWindowService: PrivateTransferWindowService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {}
 
   ngOnInit(): void {
@@ -103,15 +106,23 @@ export class HinkalTransferTokensPageComponent {
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const fromToken = token as TokenAmount<EvmBlockchainName>;
+
+      const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
+        fromToken,
+        HINKAL_PRIVATE_OPERATION.TRANSFER
+      );
+
       const steps = this.hinkalFacadeService.prepareTransferSteps(
-        token as TokenAmount<EvmBlockchainName>,
-        this.receiverCtrl.value
+        fromToken,
+        this.receiverCtrl.value,
+        () => this.gasTokenService.selectedGasToken
       );
       const preview$ = openPreview({
         steps,
         warnings: HINKAL_WARNINGS,
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed(),
-        hideFeeInfo: true
+        gasTokens
       });
 
       await firstValueFrom(preview$);

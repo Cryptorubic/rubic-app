@@ -16,6 +16,7 @@ import { HinkalUtils } from '../../utils/hinkal-utils';
 import { ContractTransaction } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
+import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerSwapService {
   private readonly hinkal: Hinkal<unknown>;
@@ -30,6 +31,31 @@ export class HinkalWorkerSwapService {
   private getPrivateTxContract(chainId: number): string {
     return networkRegistry[chainId].contractData.emporiumAddress;
   }
+
+  public async getGasPrice(): Promise<BigNumber> {
+    try {
+      const hinkalInstance = this.hinkal;
+      const result = await hinkalInstance.getGasPrice();
+
+      return new BigNumber(result.toString());
+    } catch (err) {
+      console.log('FAILED TO GET GAS PRICE', err);
+      throw err;
+    }
+  }
+
+  // public async estimateFee(params: EstimateFeeStructureParams): Promise<FeeStructure> {
+  //   const { operation, fromToken, chainId, feeTokenAddress } = params;
+
+  //   if (operation !== HINKAL_PRIVATE_OPERATION.SWAP) {
+  //     return getFeeStructure(
+  //       chainId,
+  //       feeTokenAddress,
+  //       [fromToken.address],
+  //       ExternalActionId.Transact
+  //     );
+  //   }
+  // }
 
   public async deposit(token: PureTokenAmount<EvmBlockchainName>): Promise<EvmTransactionConfig> {
     try {
@@ -58,6 +84,7 @@ export class HinkalWorkerSwapService {
 
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     receiver?: string
   ): Promise<string> {
     try {
@@ -70,7 +97,7 @@ export class HinkalWorkerSwapService {
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
         false,
-        undefined,
+        feeToken,
         undefined,
         undefined,
         false
@@ -86,6 +113,7 @@ export class HinkalWorkerSwapService {
 
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     recipientStealthAddress: string
   ): Promise<string> {
     try {
@@ -96,7 +124,7 @@ export class HinkalWorkerSwapService {
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
         recipientStealthAddress,
-        undefined,
+        feeToken,
         undefined,
         undefined,
         false
@@ -111,8 +139,9 @@ export class HinkalWorkerSwapService {
 
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
-    toToken: PureTokenAmount<EvmBlockchainName>
-  ): Promise<string> {
+    toToken: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string
+  ): Promise<string | BigNumber> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');
@@ -184,8 +213,18 @@ export class HinkalWorkerSwapService {
         [false, true],
         ops,
         [fromTokenChanges, toTokenChanges],
-        subAccount
-      )) as RelayerTransaction;
+        subAccount,
+        feeToken,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        false
+      )) as RelayerTransaction | bigint;
+
+      if (typeof res === 'bigint') return new BigNumber(res.toString());
 
       return res.transactionHash;
     } catch (err) {

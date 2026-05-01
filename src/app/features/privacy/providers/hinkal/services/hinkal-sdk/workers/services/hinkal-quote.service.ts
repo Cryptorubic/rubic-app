@@ -39,6 +39,7 @@ export class HinkalWorkerQuoteService {
     this._lastQuoteId = id;
     this._lastQuoteParams = params;
 
+    // console.log(estimate);
     return estimate.destinationWeiAmount;
   }
 
