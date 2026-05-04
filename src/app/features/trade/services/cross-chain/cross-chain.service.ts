@@ -92,8 +92,7 @@ export class CrossChainService {
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
-    const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
-      this.swapFormService.inputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
       this.tokensFacade.getLatestPrice(fromToken),
       this.tokensFacade.getLatestPrice(toToken)
@@ -107,11 +106,7 @@ export class CrossChainService {
       price: toPrice
     });
 
-    const disabledProviders = this.getDisabledProviders(
-      disabledTradeTypes,
-      fromBlockchain,
-      toBlockchain
-    );
+    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
     const options = await this.getOptions(
       disabledProviders,
       fromSdkCompatibleToken,
@@ -398,8 +393,7 @@ export class CrossChainService {
 
   private getDisabledProviders(
     disabledTradesTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
+    fromBlockchain: BlockchainName
   ): CrossChainTradeType[] {
     const isNonEvmCNChain = (
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
@@ -415,18 +409,6 @@ export class CrossChainService {
     }
 
     const referral = this.sessionStorage.getItem('referral');
-
-    // @TODO remove after birthday promo
-    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      disabledProviders = [
-        ...disabledProviders
-        // CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-        // CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-        // CROSS_CHAIN_TRADE_TYPE.EXOLIX,
-        // CROSS_CHAIN_TRADE_TYPE.CHANGENOW
-      ];
-    }
-
     if (referral) {
       const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
 
