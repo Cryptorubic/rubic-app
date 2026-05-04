@@ -23,6 +23,9 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "prerender": {
+              "discoverRoutes": true
+            },
             "aot": true,
             "customWebpackConfig": {
               "path": "./sentry-webpack.config.ts"
