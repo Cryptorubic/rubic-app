@@ -125,7 +125,7 @@
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^16.0.0",
+    "@angular-builders/custom-webpack": "^17.0.0",
     "@angular-devkit/architect": "^0.1601.3",
     "@angular-devkit/build-angular": "^17.3.17",
     "@angular-eslint/builder": "^16.0.3",
@@ -133,7 +133,7 @@
     "@angular-eslint/eslint-plugin-template": "^16.0.3",
     "@angular-eslint/schematics": "^16.0.3",
     "@angular-eslint/template-parser": "^16.0.3",
-    "@angular/cli": "17",
+    "@angular/cli": "^17.3.17",
     "@angular/compiler-cli": "^17.3.12",
     "@angular/language-service": "^17.3.12",
     "@compodoc/compodoc": "^1.1.15",
