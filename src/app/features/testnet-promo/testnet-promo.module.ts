@@ -1,5 +1,5 @@
 import { TuiAccordion } from '@taiga-ui/kit';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestnetPromoRoutingModule } from '@features/testnet-promo/testnet-promo-routing.module';
 import { PromoPageComponent } from './components/promo-page/promo-page.component';
@@ -48,6 +48,7 @@ import { PromoInfoComponent } from './components/promo-info/promo-info.component
     TuiScrollable,
     TuiLoader
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     TestnetPromoStateService,
     TestnetPromoApiService,

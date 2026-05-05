@@ -11,7 +11,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { SettingsService } from '../settings-service/settings.service';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { TUI_PLATFORM } from '@taiga-ui/cdk/tokens';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
@@ -34,7 +34,7 @@ export class OnChainApiService {
     private readonly sessionStorage: SessionStorageService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
+    @Inject(TUI_PLATFORM) private readonly _platform: string
   ) {}
 
   public notifyInstantTradesBot(body: {
@@ -82,7 +82,7 @@ export class OnChainApiService {
     const tradeInfo: OnChainTradeCreationToBackend = {
       price_impact: trade.getTradeInfo().priceImpact,
       walletName: this.walletConnectorService.provider.walletName,
-      deviceType: this.isMobile ? 'mobile' : 'desktop',
+      deviceType: this._platform !== 'web' ? 'mobile' : 'desktop',
       slippage,
       expected_amount: trade.lastTo.stringWeiAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
@@ -125,7 +125,7 @@ export class OnChainApiService {
     const preTradeInfo: Omit<OnChainTradeCreationToBackend, 'pretrade_id'> = {
       price_impact: trade.getTradeInfo().priceImpact,
       walletName: this.walletConnectorService.provider.walletName,
-      deviceType: this.isMobile ? 'mobile' : 'desktop',
+      deviceType: this._platform !== 'web' ? 'mobile' : 'desktop',
       slippage,
       expected_amount: trade.to.stringWeiAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,

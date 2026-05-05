@@ -21,7 +21,7 @@
         <th *tuiHead="'provider'" [sorter]="null" tuiTh>Provider</th>
       </tr>
     </thead>
-    <tbody *tuiLet="state.data | tuiTableSort as sortedData" tuiTbody [data]="sortedData">
+    <tbody *ngLet="state.data | tuiTableSort as sortedData" tuiTbody [data]="sortedData">
       <tr *ngFor="let innerItem of sortedData" tuiTr>
         <ng-container *ngLet="getItem(innerItem) as item">
           <td *tuiCell="'from'" tuiTd>

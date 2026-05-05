@@ -30,7 +30,7 @@ export class SwapDataElementComponent {
 
   @Input() hintAppearance: HintAppearance = '';
 
-  @Input() hintDirection: HintDirection = 'bottom-right';
+  @Input() hintDirection: HintDirection = 'bottom-end';
 
   @Input({ required: true }) set feeInfoChange(value: {
     fee: FeeInfo | null;

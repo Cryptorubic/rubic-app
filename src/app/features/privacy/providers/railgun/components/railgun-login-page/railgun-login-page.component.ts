@@ -12,7 +12,7 @@ import { PublicAccount } from '@features/privacy/providers/railgun/models/public
 import { StoreService } from '@core/services/store/store.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { distinctUntilChanged, firstValueFrom } from 'rxjs';
-import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
+import { TUI_VALIDATION_ERRORS } from '@taiga-ui/core';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { ModalService } from '@core/modals/services/modal.service';
 import { RailgunWalletImportComponent } from '@features/privacy/providers/railgun/components/railgun-wallet-import/railgun-wallet-import.component';

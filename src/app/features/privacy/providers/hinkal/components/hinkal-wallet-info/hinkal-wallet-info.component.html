@@ -7,10 +7,9 @@
     <div class="info-container__text" (click)="copyToClipboard(info)">
       <span>{{ info | shortAddress : 8 : 8 }}</span>
     </div>
-    <tui-notification size="m"
+    <div tuiNotification size="m"
       >Reusing it lowers privacy. A new randomized address is generated after each page
-      reload.</tui-notification
-    >
+      reload.</div>
     <button tuiButton type="button" size="m" appearance="primary" (click)="copyToClipboard(info)">
       {{ addressCopied ? 'Copied' : 'Copy stealth address' }}
     </button>

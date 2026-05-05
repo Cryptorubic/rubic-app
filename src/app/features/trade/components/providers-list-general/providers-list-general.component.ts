@@ -8,7 +8,6 @@ import {
   Injector,
   Input,
   Output,
-  Self,
   ViewChild,
   DestroyRef,
   inject
@@ -20,7 +19,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { debounceTime, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
@@ -28,6 +27,7 @@ import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/
 import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -166,7 +166,7 @@ export class ProvidersListGeneralComponent {
   ngAfterViewInit(): void {
     // @TODO optimise scroll handler
     if (!this.isMobile) {
-      fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
+      fromEvent((this.scrollBarElement as RubicAny)['browserScrollRef'].nativeElement, 'scroll')
         .pipe(
           tap(() => this.hideProviderHintOnScroll(true)),
           debounceTime(500),

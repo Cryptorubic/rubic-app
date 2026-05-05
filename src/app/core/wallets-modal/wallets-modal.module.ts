@@ -1,4 +1,4 @@
-import { TuiCheckbox } from '@taiga-ui/kit';
+import { TuiCheckbox } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WalletsModalComponent } from 'src/app/core/wallets-modal/components/wallets-modal/wallets-modal.component';

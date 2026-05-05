@@ -54,14 +54,14 @@
       </div>
     </app-transaction-details-element>
   </div>
-  <tui-notification
+  <div tuiNotification
     size="m"
     *ngIf="state.extraField"
     appearance="warning"
     class="tui-space_vertical-4"
   >
     {{ state.extraField.text }}
-  </tui-notification>
+  </div>
 
   <ng-template></ng-template>
 </app-window-container>

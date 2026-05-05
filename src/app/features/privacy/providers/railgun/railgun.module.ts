@@ -1,17 +1,10 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/legacy';
-import { NgModule } from '@angular/core';
+import { TuiInput } from '@taiga-ui/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RailgunFormComponent } from '@features/privacy/providers/railgun/components/railgun-form/railgun-form.component';
 import { SharedModule } from '@shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  TuiStepper,
-  TuiFieldErrorPipe,
-  TuiFieldErrorContentPipe,
-  TuiSwitch,
-  TuiProgress
-} from '@taiga-ui/kit';
+import { TuiStepper, TuiSwitch, TuiProgress, TuiPassword } from '@taiga-ui/kit';
 import { TuiNotification, TuiError, TuiLoader, TuiLabel, TuiButton, TuiHint } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
@@ -57,15 +50,13 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     RouterModule.forChild([{ path: '', component: RailgunMainPageComponent }]),
     SharedModule,
     ReactiveFormsModule,
-    TuiInputModule,
-    TuiInputPasswordModule,
-    TuiError,
-    TuiFieldErrorPipe,
-    TuiFieldErrorContentPipe,
+    ...TuiInput,
+    TuiPassword,
+    ...TuiError,
     TuiButton,
     ...TuiStepper,
     SharedPrivacyProvidersModule,
-    TuiNotification,
+    ...TuiNotification,
     ...TuiProgress,
     TuiLabel,
     TuiSwitch,
@@ -74,6 +65,7 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     ...TuiHint,
     TuiLoader
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     RailgunFacadeService,
     HideService,

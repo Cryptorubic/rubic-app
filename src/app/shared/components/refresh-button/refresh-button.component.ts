@@ -8,14 +8,13 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   ViewChild,
   DestroyRef,
   inject
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
-import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { mergeMap, take, tap, pairwise } from 'rxjs/operators';
+import { TUI_PLATFORM } from '@taiga-ui/cdk/tokens';
 
 @Component({
   selector: 'app-refresh-button',
@@ -36,7 +35,11 @@ export class RefreshButtonComponent implements OnInit {
   @ViewChild('refreshIcon', { static: true })
   refreshIconElement: ElementRef;
 
-  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
+  constructor(@Inject(TUI_PLATFORM) private readonly _platform: string) {}
+
+  public get isMobile(): boolean {
+    return this._platform !== 'web';
+  }
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe

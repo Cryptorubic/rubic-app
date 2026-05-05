@@ -1,5 +1,5 @@
 <ng-container>
-  <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="dropdownIsOpened">
+  <div [tuiDropdown]="dropdown" tuiDropdownAlign="end" [(tuiDropdownOpen)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
         <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">

@@ -1,10 +1,6 @@
-import {
-  TuiTextfieldControllerModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule
-} from '@taiga-ui/legacy';
-import { NgModule } from '@angular/core';
+import { TuiInput, TuiCarousel } from '@taiga-ui/core';
+import { TuiInputNumber } from '@taiga-ui/kit';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -21,7 +17,7 @@ import {
   TuiHint,
   TuiAppearance
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -156,27 +152,26 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
   imports: [
     CommonModule,
     SharedModule,
-    ...TuiExpand,
+    TuiExpand,
     TuiScrollbar,
     TuiScrollable,
-    TuiTagModule,
     InlineSVGModule,
     TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
     ...TuiHint,
     FormsModule,
-    TuiTextfieldControllerModule,
-    TuiInputNumberModule,
+    ...TuiInputNumber,
     TuiSwitch,
     ...TuiDropdown,
-    TuiInputModule,
+    ...TuiInput,
     TuiLoader,
     AssetsSelectorModule,
-    TuiNotification,
+    ...TuiNotification,
     ...TuiCarousel,
     TuiAppearance
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     SwapsStateService,
     SwapsControllerService,

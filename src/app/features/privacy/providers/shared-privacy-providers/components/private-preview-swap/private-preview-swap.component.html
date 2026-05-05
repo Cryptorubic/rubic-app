@@ -184,7 +184,7 @@
     </div>
 
     <ng-container *ngIf="warnings?.length">
-      <tui-notification
+      <div tuiNotification
         size="m"
         class="notification"
         appearance="warning"
@@ -194,8 +194,7 @@
           <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
             >Learn more</a
           >
-        </div></tui-notification
-      >
+        </div></div>
     </ng-container>
 
     <ng-container *ngLet="currentStep$ | async as currentStep">

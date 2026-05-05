@@ -29,7 +29,7 @@
     'tokens-container__all-chains': isUtility && assetsSelectorConfig.withTokensFilter
   }"
 >
-  <tui-loader [showLoader]="loading" [overlay]="true">
+  <tui-loader [loading]="loading" [overlay]="true">
     <ng-container *ngIf="customToken === null; else customTokenTmpl">
       <!--standard mode -->
       <div class="tokens-container__empty-list" *ngIf="!_tokensToShow?.length; else tokenList">
@@ -60,7 +60,7 @@
               [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
               [tuiHint]="!token.available ? disabledTokenHint : null"
               tuiHintAppearance="error"
-              tuiHintDirection="bottom-right"
+              tuiHintDirection="bottom-end"
             >
               <app-tokens-list-element
                 [token]="token"

@@ -1,10 +1,9 @@
 <!-- TODO: (Taiga UI migration) tuiButton "whiteblock-active" appearance is no longer available. Use 'appearance="outline-grayscale" tuiAppearanceMode="checked"' -->
-<tui-loader [showLoader]="loading" [overlay]="true">
+<tui-loader [loading]="loading" [overlay]="true">
   <!-- TODO: (Taiga UI migration) [shape] input has been removed. Please use border-radius css property for rounding borders https://taiga-ui.dev/components/button -->
   <button
     [tuiAppearanceState]="pseudoHovered ? 'hover' : null"
     tuiButton
-    [shape]="'rounded'"
     type="button"
     [size]="size"
     [appearance]="appearance"

@@ -15,7 +15,7 @@ export class LoginWindowComponent {
 
   @Input({ required: true }) supportedWallets: WALLET_NAME[];
 
-  @Input() showLoader: boolean = false;
+  @Input() loading: boolean = false;
 
   @Output() handleClick = new EventEmitter();
 

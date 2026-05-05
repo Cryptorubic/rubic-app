@@ -1,10 +1,5 @@
-import {
-  TuiTextfieldControllerModule,
-  TuiTooltipModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule
-} from '@taiga-ui/legacy';
+import { TuiInput } from '@taiga-ui/core';
+import { TuiInputNumber, TuiTooltip } from '@taiga-ui/kit';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -153,9 +148,9 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     ScrollingModule,
     InlineSVGModule.forRoot(),
     TuiIcon,
-    TuiTooltipModule,
+    TuiTooltip,
     ...TuiHint,
-    TuiInputModule,
+    ...TuiInput,
     TuiButton,
     ...TuiDataList,
     TuiActiveZone,
@@ -163,17 +158,15 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     TuiSwitch,
     ...TuiProgress,
     ...TuiTabs,
-    TuiInputNumberModule,
+    ...TuiInputNumber,
     ...TuiDataListWrapper,
     TuiLoader,
     TuiBadge,
-    TuiTagModule,
-    TuiTextfieldControllerModule,
     TuiScrollbar,
     TuiScrollable,
     TuiHovered,
     NgOptimizedImage,
-    TuiNotification,
+    ...TuiNotification,
     TuiNumberFormat
   ],
   exports: [

@@ -16,10 +16,7 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsContainerComponent implements OnInit {
-  public settingsComponent: PolymorpheusComponent<
-    SettingsItComponent | SettingsCcrComponent,
-    Injector
-  >;
+  public settingsComponent: PolymorpheusComponent<SettingsItComponent | SettingsCcrComponent>;
 
   public open: boolean;
 

@@ -1,10 +1,10 @@
 <app-window-container>
   <ng-container header>Create account</ng-container>
   <form [formGroup]="secretForm" (ngSubmit)="handleConfirm()">
-    <tui-notification size="m" class="notification" appearance="warning">
+    <div tuiNotification size="m" class="notification" appearance="warning">
       Store your seed phrase in order to recover this wallet. If you clear your browser cache or
       forget your password, your local wallets will be deleted.
-    </tui-notification>
+    </div>
 
     <div class="switcher">
       <input tuiSwitch type="checkbox" size="m" formControlName="agreement" [showIcons]="false" />
@@ -14,7 +14,7 @@
     </div>
     <tui-error
       formControlName="agreement"
-      [error]="['required'] | tuiFieldError | async"
+      [order]="['required']"
     ></tui-error>
 
     <ng-container *ngLet="showWords$ | async as showWord">
@@ -55,7 +55,7 @@
     </tui-input-password>
     <tui-error
       formControlName="password"
-      [error]="['required'] | tuiFieldError | async"
+      [order]="['required']"
     ></tui-error>
 
     <div class="buttons">

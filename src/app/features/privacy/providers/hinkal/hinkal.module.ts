@@ -40,7 +40,7 @@ import { HinkalHideFacadeService } from './services/token-facades/hinkal-hide-fa
     SharedPrivacyProvidersModule,
     SharedModule,
     TuiButton,
-    TuiNotification
+    ...TuiNotification
   ],
   providers: [
     HinkalInstanceService,

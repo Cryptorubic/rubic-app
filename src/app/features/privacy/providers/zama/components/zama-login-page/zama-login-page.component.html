@@ -1,6 +1,6 @@
 <app-login-window
   [authorized]="authorized$ | async"
-  [showLoader]="sdkLoading$ | async"
+  [loading]="sdkLoading$ | async"
   [supportedWallets]="supportedWallets"
   (handleClick)="handleClick()"
 ></app-login-window>

@@ -20,7 +20,7 @@
 <ng-template #item let-chain>
   <div class="item" *ngIf="getChainInfo(chain) as chainInfo" (click)="handleSwitchChain(chain)">
     <tui-avatar
-      [src]="chainInfo.img || null | tuiFallbackSrc : (chainInfo.name | tuiInitials) | async"
+      [src]="chainInfo.img || (chainInfo.name | tuiInitials)"
       [round]="false"
       size="s"
       class="avatar"

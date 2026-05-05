@@ -9,10 +9,11 @@ import {
   DestroyRef,
   inject
 } from '@angular/core';
-import { TuiSwipe, TuiPopover } from '@taiga-ui/cdk';
+import { TuiPortalContext } from '@taiga-ui/cdk/portals';
+import { TuiSwipeEvent } from '@taiga-ui/cdk/directives/swipe';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { ModalStates } from '../../models/modal-states.enum';
-import { takeUntil, delay, tap } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { IMobileNativeOptions } from '../../models/mobile-native-options';
@@ -38,7 +39,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    readonly context: TuiPopover<IMobileNativeOptions, void>,
+    readonly context: TuiPortalContext<IMobileNativeOptions, void>,
     private readonly modalService: ModalService,
     private readonly el: ElementRef<HTMLElement>,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -126,7 +127,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     animationTimeout(this.context.completeWith);
   }
 
-  public onSwipe(swipe: TuiSwipe, title: string, place: string): void {
+  public onSwipe(swipe: TuiSwipeEvent, title: string, place: string): void {
     if (
       swipe.direction === 'top' &&
       this.state === ModalStates.MEDIUM &&

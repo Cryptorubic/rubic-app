@@ -6,7 +6,7 @@ import { FromAssetsService } from '@features/trade/components/assets-selector/se
 import { RailgunPublicAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-public-assets.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { distinctUntilKeyChanged, firstValueFrom, takeUntil } from 'rxjs';
+import { distinctUntilKeyChanged, firstValueFrom } from 'rxjs';
 import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
@@ -50,6 +50,7 @@ export class RailgunHideTokensPageComponent {
   private readonly storeService = inject(StoreService);
 
   private readonly hideWindowService = inject(HideWindowService);
+
   private readonly authService = inject(AuthService);
 
   private readonly privateStatisticsService = inject(PrivateStatisticsService);
@@ -64,11 +65,10 @@ export class RailgunHideTokensPageComponent {
             `This transaction will automatically wrap your ${token.symbol} into W${token.symbol} (1:1) and shield the wrapped tokens in RAILGUN.`,
             {
               label: 'RAILGUN does not support shielding native tokens',
-              status: 'info',
+              appearance: 'info',
               autoClose: 10_000,
               data: null,
-              icon: 'info',
-              defaultAutoCloseTime: 0
+              icon: 'info'
             }
           );
         }
@@ -109,11 +109,9 @@ export class RailgunHideTokensPageComponent {
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
                 {
-                  status: 'info',
+                  appearance: 'info',
                   autoClose: 15_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
+                  data: null
                 }
               );
             }

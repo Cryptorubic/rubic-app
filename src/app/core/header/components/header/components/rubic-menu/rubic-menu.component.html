@@ -41,7 +41,7 @@
   </ng-template>
 
   <ng-template #mobileMenu>
-    <tui-accordion [closeOthers]="false" [rounded]="false">
+    <tui-accordion [closeOthers]="false">
       <tui-accordion-item
         *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder; index as i"
         [open]="i === 0"

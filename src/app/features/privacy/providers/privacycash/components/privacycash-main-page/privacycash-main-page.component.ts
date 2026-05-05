@@ -4,11 +4,10 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  Self,
   inject,
   DestroyRef
 } from '@angular/core';
-import { Observable, combineLatestWith, filter, first, map, takeUntil } from 'rxjs';
+import { Observable, combineLatestWith, filter, first, map } from 'rxjs';
 import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
@@ -48,6 +47,8 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
 
   private readonly privateLocalStorageService = inject(PrivateLocalStorageService);
 
+  private readonly destroyRef = inject(DestroyRef);
+
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = PRIVACYCASH_PAGES;
@@ -82,7 +83,10 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.parseQueryParams();
 
-    this.privacycashTokensService.workerOutMsg$(this.destroy$).subscribe();
+    this.privacycashTokensService
+      .workerOutMsg$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
 
     this.walletConnectorService.addressChange$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -143,6 +147,4 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   public onPageSelect(page: PageType): void {
     this.privatePageTypeService.activePage = page;
   }
-
-  readonly destroyRef = inject(DestroyRef);
 }

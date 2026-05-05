@@ -12,7 +12,7 @@
       <span appTokenAmount [decimals]="18">{{ round.amount }}</span>
       <span>RBC</span>
     </div>
-    <tui-loader [showLoader]="data.buttonState === 'loading'" [overlay]="true">
+    <tui-loader [loading]="data.buttonState === 'loading'" [overlay]="true">
       <button
         tuiButton
         class="round__button"

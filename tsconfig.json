@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "typeRoots": ["node_modules/@types"],
+    "types": ["node", "jasmine"],
     "lib": ["es2018", "dom", "esnext"],
     "skipLibCheck": true,
     "paths": {

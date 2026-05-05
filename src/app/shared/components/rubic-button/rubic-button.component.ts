@@ -7,15 +7,12 @@ import {
   EventEmitter,
   HostBinding,
   OnInit,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
-import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rubic-button',
@@ -27,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
 export class RubicButtonComponent implements OnInit {
   @HostBinding('class') @Input('class') classList: string;
 
-  @Input() appearance: TuiAppearance | string = 'primary';
+  @Input() appearance: string = 'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
 

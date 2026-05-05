@@ -1,6 +1,7 @@
-import { TuiTextfieldControllerModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/legacy';
+import { TuiInput } from '@taiga-ui/core';
+import { TuiSelect } from '@taiga-ui/kit';
 import { TuiActiveZone } from '@taiga-ui/cdk';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { SharedModule } from '@shared/shared.module';
@@ -12,10 +13,9 @@ import {
   TuiDropdown,
   TuiButton,
   TuiHint,
-  TuiAppearance,
-  TuiFallbackSrcPipe,
-  TuiInitialsPipe
+  TuiAppearance
 } from '@taiga-ui/core';
+import { TuiInitialsPipe } from '@taiga-ui/kit';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
 import { HideTokensWindowComponent } from '@features/privacy/providers/shared-privacy-providers/components/hide-tokens-window/hide-tokens-window.component';
@@ -105,18 +105,16 @@ import { RouterModule } from '@angular/router';
     InlineSVGModule,
     ...TuiHint,
     TuiActiveZone,
-    TuiInputModule,
+    ...TuiInput,
     ReactiveFormsModule,
-    TuiTextfieldControllerModule,
-    TuiNotification,
+    ...TuiNotification,
     ...TuiDataListWrapper,
     TuiAvatar,
-    TuiSelectModule,
+    ...TuiSelect,
     ClipboardModule,
     RouterModule,
     TuiButtonLoading,
     TuiAppearance,
-    TuiFallbackSrcPipe,
     TuiInitialsPipe
   ],
   exports: [
@@ -135,6 +133,7 @@ import { RouterModule } from '@angular/router';
     DepositPrivateTradeInfoComponent,
     MobileStubComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     SwapsFormService,
     PreviewSwapService,

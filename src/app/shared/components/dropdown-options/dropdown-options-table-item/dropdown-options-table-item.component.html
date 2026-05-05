@@ -6,7 +6,7 @@
     tuiIconButton
     type="button"
     [size]="'xs'"
-    [tuiAppearanceState]="dropdown.open || null ? 'hover' : null"
+    [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
   ></button>
 </div>
 
@@ -22,7 +22,7 @@
               (click)="copyToClipboard()"
               [tuiHint]="copyHint"
               [tuiHintShowDelay]="50"
-              tuiHintDirection="top-right"
+              tuiHintDirection="top-end"
               [tuiHintHideDelay]="100"
             ></span>
 

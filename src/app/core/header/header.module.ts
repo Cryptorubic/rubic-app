@@ -1,6 +1,5 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PolymorpheusTemplate, PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,7 +17,8 @@ import {
   TuiButton,
   TuiHint
 } from '@taiga-ui/core';
-import { TuiAccordion, TuiCarousel, TuiBadge, TuiSwitch } from '@taiga-ui/kit';
+import { TuiAccordion, TuiBadge, TuiSwitch } from '@taiga-ui/kit';
+import { TuiCarousel } from '@taiga-ui/core';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -82,6 +82,7 @@ import { BannersService } from './services/banners.service';
     TuiButton,
     ...TuiCarousel
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [BannersService],
   exports: [HeaderComponent, UserProfileComponent]
 })

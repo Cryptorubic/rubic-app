@@ -10,7 +10,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Mnemonic } from 'ethers';
-import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
+import { TUI_VALIDATION_ERRORS } from '@taiga-ui/core';
 
 type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
 

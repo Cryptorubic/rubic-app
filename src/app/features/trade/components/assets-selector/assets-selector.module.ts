@@ -1,5 +1,5 @@
-import { TuiTextfieldControllerModule, TuiInputModule } from '@taiga-ui/legacy';
-import { NgModule } from '@angular/core';
+import { TuiInput, TuiCarousel } from '@taiga-ui/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TuiDataList,
@@ -11,7 +11,7 @@ import {
   TuiButton,
   TuiHint
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiDataListDropdownManager } from '@taiga-ui/kit';
+import { TuiDataListDropdownManager } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -59,9 +59,8 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
     SharedModule,
     TuiScrollbar,
     TuiScrollable,
-    TuiInputModule,
+    ...TuiInput,
     FormsModule,
-    TuiTextfieldControllerModule,
     TuiIcon,
     TuiButton,
     ScrollingModule,
@@ -75,6 +74,7 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
     ...TuiDataList,
     ...TuiCarousel
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [AssetsSelectorPageComponent],
   providers: [FormsTogglerService]
 })

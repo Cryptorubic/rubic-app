@@ -16,7 +16,7 @@
       tuiIconButton
       type="button"
       [size]="isMobile ? 'm' : 's'"
-      [tuiAppearanceState]="dropdown.open || null ? 'hover' : null"
+      [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
     ></button>
   </div>
 
@@ -31,7 +31,7 @@
               [tuiHint]="copyHint"
               tuiHintAppearance="dark"
               [tuiHintShowDelay]="50"
-              tuiHintDirection="top-right"
+              tuiHintDirection="top-end"
               [tuiHintHideDelay]="100"
             >
               <ng-container *ngIf="!isCopyClicked; else copyClicked">
@@ -59,7 +59,7 @@
             <tui-loader
               (click.stop)="toggleFavorite()"
               class="dropdown-content__favorite-container"
-              [showLoader]="loadingFavoriteToken"
+              [loading]="loadingFavoriteToken"
               [overlay]="true"
               [size]="'s'"
             >
@@ -88,7 +88,7 @@
                     'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
                   "
                   tuiHintAppearance="dark"
-                  tuiHintDirection="top-right"
+                  tuiHintDirection="top-end"
                   rel="noopener noreferrer"
                   target="_blank"
                   (click)="$event.stopPropagation()"

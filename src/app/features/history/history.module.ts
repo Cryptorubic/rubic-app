@@ -1,6 +1,5 @@
-import { TuiLet } from '@taiga-ui/cdk';
-import { TuiTextfieldControllerModule, TuiSelectModule } from '@taiga-ui/legacy';
-import { NgModule } from '@angular/core';
+import { TuiSelect } from '@taiga-ui/kit';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HistoryViewComponent } from './components/history-view/history-view.component';
 import { HistoryRoutingModule } from '@features/history/history-routing.module';
@@ -39,16 +38,15 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     ...TuiTable,
     TuiLoader,
     TuiTablePagination,
-    TuiLet,
     TuiBadge,
     TuiPagination,
-    TuiSelectModule,
-    TuiTextfieldControllerModule,
+    ...TuiSelect,
     ...TuiDataListWrapper,
     ReactiveFormsModule,
     TuiButton,
     ...TuiHint
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [CommonTableService, CrossChainTableService, OnChainTableService, DepositTableService]
 })
 export class HistoryModule {}

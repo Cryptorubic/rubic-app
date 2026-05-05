@@ -4,7 +4,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { Mnemonic, randomBytes } from 'ethers';
-import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
+import { TUI_VALIDATION_ERRORS } from '@taiga-ui/core';
 import { BehaviorSubject } from 'rxjs';
 type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
 

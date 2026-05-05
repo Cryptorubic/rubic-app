@@ -6,12 +6,10 @@ import {
   Input,
   OnInit,
   Output,
-  Renderer2,
-  ViewChild
+  Renderer2
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ShortenAmountPipe } from '@app/shared/pipes/shorten-amount.pipe';
-import { TuiInputNumberComponent } from '@taiga-ui/kit';
 import BigNumber from 'bignumber.js';
 
 @Component({
@@ -46,8 +44,6 @@ export class InputNumberComponent implements OnInit {
 
   public readonly TUI_PRECISION: number = Infinity;
 
-  @ViewChild(TuiInputNumberComponent) tuiInput: TuiInputNumberComponent;
-
   @Output() inputChanged: EventEmitter<number> = new EventEmitter();
 
   private _value: number = 0;
@@ -63,7 +59,7 @@ export class InputNumberComponent implements OnInit {
   }
 
   public onWrapperClick(): void {
-    this.tuiInput.nativeFocusableElement.focus();
+    this.elRef.nativeElement.querySelector('input')?.focus();
   }
 
   public emitValue(): void {

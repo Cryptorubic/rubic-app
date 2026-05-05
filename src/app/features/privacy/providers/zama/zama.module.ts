@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ZamaRoutingModule } from './zama-routing.module';
@@ -36,8 +36,9 @@ import { ZamaActionButtonService } from './services/zama-action-button.service';
     SharedModule,
     TuiLoader,
     TuiButton,
-    TuiNotification
+    ...TuiNotification
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     ZamaPrivateAssetsService,
     ZamaHideTokensFacadeService,

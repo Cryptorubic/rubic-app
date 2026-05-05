@@ -1,9 +1,5 @@
-import {
-  TuiTextfieldControllerModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule
-} from '@taiga-ui/legacy';
+import { TuiInput, TuiCarousel } from '@taiga-ui/core';
+import { TuiInputNumber } from '@taiga-ui/kit';
 import { NgModule } from '@angular/core';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
@@ -23,7 +19,7 @@ import {
   TuiButton,
   TuiHint
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,24 +46,22 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     TradeRoutingModule,
     CommonModule,
     SharedModule,
-    ...TuiExpand,
+    TuiExpand,
     TuiScrollbar,
     TuiScrollable,
-    TuiTagModule,
     InlineSVGModule,
     TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
     ...TuiHint,
     FormsModule,
-    TuiTextfieldControllerModule,
-    TuiInputNumberModule,
+    ...TuiInputNumber,
     TuiSwitch,
     ...TuiDropdown,
-    TuiInputModule,
+    ...TuiInput,
     TuiLoader,
     AssetsSelectorModule,
-    TuiNotification,
+    ...TuiNotification,
     ...TuiCarousel,
     SharedTradeModule
   ],

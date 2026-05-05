@@ -50,10 +50,8 @@ export class CommonTableService {
     //     {
     //       label: this.translateService.instant('notifications.tradeInProgress'),
     //       status: TuiNotification.Info,
-    //       autoClose: false,
+    //       autoClose: 0,
     //       data: null,
-    //       icon: '',
-    //       defaultAutoCloseTime: 0
     //     }
     //   );
     // };
@@ -70,8 +68,6 @@ export class CommonTableService {
     //     status: TuiNotification.Success,
     //     autoClose: 15000,
     //     data: null,
-    //     icon: '',
-    //     defaultAutoCloseTime: 0
     //   });
     // } catch (error) {
     //   console.debug('[ArbitrumBridge] Transaction claim error: ', error);
@@ -112,11 +108,9 @@ export class CommonTableService {
         this.translateService.instant('bridgePage.progressMessage'),
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
-          status: 'info',
-          autoClose: false,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
+          appearance: 'info',
+          autoClose: 0,
+          data: null
         }
       );
     };
@@ -133,11 +127,9 @@ export class CommonTableService {
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: 'success',
+        appearance: 'success',
         autoClose: 15000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);
@@ -169,10 +161,8 @@ export class CommonTableService {
     //     {
     //       label: this.translateService.instant('notifications.tradeInProgress'),
     //       status: TuiNotification.Info,
-    //       autoClose: false,
+    //       autoClose: 0,
     //       data: null,
-    //       icon: '',
-    //       defaultAutoCloseTime: 0
     //     }
     //   );
     // };
@@ -190,8 +180,6 @@ export class CommonTableService {
     //     status: TuiNotification.Success,
     //     autoClose: 15000,
     //     data: null,
-    //     icon: '',
-    //     defaultAutoCloseTime: 0
     //   });
     // } catch (error) {
     //   console.debug('[Cbridge] Transaction revert error: ', error);
@@ -208,11 +196,9 @@ export class CommonTableService {
 
     this.notificationsService.show(this.translateService.instant('bridgePage.progressMessage'), {
       label: this.translateService.instant('notifications.tradeInProgress'),
-      status: 'info',
+      appearance: 'info',
       autoClose: 15000,
-      data: null,
-      icon: '',
-      defaultAutoCloseTime: 0
+      data: null
     });
 
     try {
@@ -223,11 +209,9 @@ export class CommonTableService {
       evmConfig = resp.transaction as EvmTransactionConfig;
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: 'success',
+        appearance: 'success',
         autoClose: 15000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       });
     } catch (error) {
       console.debug('[Cbridge] Transaction revert error: ', error);

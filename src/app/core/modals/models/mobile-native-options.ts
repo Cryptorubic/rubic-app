@@ -1,4 +1,4 @@
-import { TuiPopover } from '@taiga-ui/cdk';
+import { TuiPortalContext } from '@taiga-ui/cdk/portals';
 import { Injector, Component, Type, ElementRef } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
@@ -47,5 +47,5 @@ export type ModalName =
 export interface ModalStruct {
   name: ModalName;
   elRef: ElementRef<HTMLElement>;
-  context: TuiPopover<IMobileNativeOptions, void> | TuiDialogContext<void, object>;
+  context: TuiPortalContext<IMobileNativeOptions, void> | TuiDialogContext<void, object>;
 }
