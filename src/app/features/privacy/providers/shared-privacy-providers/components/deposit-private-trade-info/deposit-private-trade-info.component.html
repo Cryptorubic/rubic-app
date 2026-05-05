@@ -53,7 +53,12 @@
       </app-transaction-details-element>
     </ng-container>
   </div>
-  <tui-notification *ngIf="tradeInfo?.extraField" status="warning" class="tui-space_vertical-4">
+  <tui-notification
+    size="m"
+    *ngIf="tradeInfo?.extraField"
+    appearance="warning"
+    class="tui-space_vertical-4"
+  >
     {{ tradeInfo.extraField.text }}
   </tui-notification>
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
-import { TuiNotification } from '@taiga-ui/core';
 import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -113,7 +112,7 @@ export class CommonTableService {
         this.translateService.instant('bridgePage.progressMessage'),
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
+          status: 'info',
           autoClose: false,
           data: null,
           icon: '',
@@ -134,7 +133,7 @@ export class CommonTableService {
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
+        status: 'success',
         autoClose: 15000,
         data: null,
         icon: '',
@@ -209,7 +208,7 @@ export class CommonTableService {
 
     this.notificationsService.show(this.translateService.instant('bridgePage.progressMessage'), {
       label: this.translateService.instant('notifications.tradeInProgress'),
-      status: TuiNotification.Info,
+      status: 'info',
       autoClose: 15000,
       data: null,
       icon: '',
@@ -224,7 +223,7 @@ export class CommonTableService {
       evmConfig = resp.transaction as EvmTransactionConfig;
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
+        status: 'success',
         autoClose: 15000,
         data: null,
         icon: '',

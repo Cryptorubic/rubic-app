@@ -23,7 +23,7 @@ app-form-switcher {
   border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
 
   &__title {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-weight: 400;
     font-size: 15px;
   }
@@ -33,7 +33,7 @@ app-form-switcher {
     gap: var(--tui-padding-s);
     align-items: center;
 
-    color: var(--tui-text-01);
+    color: var(--tui-text-primary);
     font-weight: 700;
     font-size: 18px;
   }
@@ -59,7 +59,6 @@ app-form-switcher {
     border-radius: var(--tui-radius-m);
   }
 }
-
 
 .row {
   display: flex;
@@ -115,7 +114,7 @@ app-form-switcher {
     width: 16px;
     height: 16px;
 
-    border: 1px solid var(--tui-text-02);
+    border: 1px solid var(--tui-text-secondary);
     border-radius: 50%;
 
     &_complete {
@@ -125,8 +124,8 @@ app-form-switcher {
       width: 16px;
       height: 16px;
 
-      background-color: var(--tui-primary);
-      border-color: var(--tui-primary);
+      background-color: var(--tui-background-accent-1);
+      border-color: var(--tui-background-accent-1);
       border-radius: 50%;
 
       &::before {
@@ -185,7 +184,7 @@ app-form-switcher {
     }
 
     &::after {
-      color: var(--tui-primary);
+      color: var(--tui-background-accent-1);
 
       transform: rotateY(70deg) rotateZ(180deg);
     }
@@ -194,14 +193,14 @@ app-form-switcher {
   &__value {
     margin-top: var(--tui-padding-xs);
 
-    color: var(--tui-text-01);
+    color: var(--tui-text-primary);
     font-weight: 400;
     font-size: 12px;
     line-height: 120%;
     white-space: nowrap;
 
     &_completed {
-      color: var(--tui-primary);
+      color: var(--tui-background-accent-1);
     }
 
     &_failed {
@@ -229,13 +228,11 @@ app-form-switcher {
   &_green {
     ::ng-deep svg {
       path {
-        stroke: var(--tui-primary);
+        stroke: var(--tui-background-accent-1);
       }
     }
   }
 }
-
-
 
 @keyframes dual-ring {
   0% {

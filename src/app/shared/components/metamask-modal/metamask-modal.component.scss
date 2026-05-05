@@ -1,7 +1,7 @@
 @use '../../../../scss/core' as *;
 
 .modals {
-  --tui-secondary: var(--tui-secondary-hover);
+  --tui-background-neutral-1: var(--tui-background-neutral-1-hover);
   position: relative;
 
   @include b(650) {
@@ -72,7 +72,7 @@
     }
 
     &:hover {
-      background-color: var(--tui-secondary);
+      background-color: var(--tui-background-neutral-1);
     }
   }
 
@@ -86,7 +86,6 @@
     &:hover {
       scale: 1.05;
     }
-
 
     ::ng-deep {
       .t-wrapper {
@@ -109,7 +108,7 @@
   }
 
   &__link {
-    color: var(--tui-primary);
+    color: var(--tui-background-accent-1);
   }
 
   &__text {

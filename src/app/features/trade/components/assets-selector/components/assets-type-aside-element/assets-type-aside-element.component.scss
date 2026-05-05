@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 :host {
-
   @include b($mobile-md) {
     .asset-types-aside__list-element {
       width: 80px;
@@ -30,7 +29,7 @@
     cursor: pointer;
 
     &:hover {
-      background: var(--tui-secondary-hover);
+      background: var(--tui-background-neutral-1-hover);
     }
 
     app-blockchains-promo-badge {
@@ -41,14 +40,14 @@
   }
 
   .disabled {
-    background: var(--tui-secondary-hover);
+    background: var(--tui-background-neutral-1-hover);
     cursor: not-allowed;
   }
 
   .selected {
     ::ng-deep {
       .t-wrapper {
-        background: var(--tui-secondary-hover);
+        background: var(--tui-background-neutral-1-hover);
         border-radius: 8px;
       }
     }

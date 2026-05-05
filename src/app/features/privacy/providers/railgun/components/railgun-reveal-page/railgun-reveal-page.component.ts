@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, Input, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -11,7 +12,6 @@ import { PrivateEvent } from '@features/privacy/providers/shared-privacy-provide
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -28,7 +28,6 @@ import { RevealWindowService } from '@features/privacy/providers/shared-privacy-
     RailgunPrivateAssetsService,
     { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService,
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
@@ -59,16 +58,13 @@ export class RailgunRevealPageComponent {
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
 
   private readonly authService = inject(AuthService);
-
-  private readonly destroy$ = inject(TuiDestroyService);
-
   private readonly windowService = inject(RevealWindowService);
 
   private readonly tokensBalanceService = inject(TokensBalanceService);
 
   ngOnInit() {
     this.railgunFacade.completedChains$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
@@ -136,4 +132,6 @@ export class RailgunRevealPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

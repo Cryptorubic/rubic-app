@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -11,7 +12,6 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-zama-hide-tokens-page',
@@ -19,7 +19,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   styleUrls: ['./zama-hide-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     {
       provide: FromAssetsService,
       useClass: ZamaPrivateAssetsService
@@ -43,8 +42,7 @@ export class ZamaHideTokensPageComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
-    private readonly hideWindowService: HideWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly hideWindowService: HideWindowService
   ) {}
 
   ngOnInit() {
@@ -53,7 +51,7 @@ export class ZamaHideTokensPageComponent {
         filter(() => !!this.hideWindowService.hideAsset?.address),
         map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
         filter(Boolean),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(token => {
         this.hideWindowService.setHideAsset({
@@ -76,4 +74,6 @@ export class ZamaHideTokensPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

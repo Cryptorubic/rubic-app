@@ -3,7 +3,7 @@
 :host ::ng-deep {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-focus: transparent;
+  --tui-border-focus: transparent;
 
   [tuiButton] {
     font-weight: 400 !important;

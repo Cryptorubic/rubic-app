@@ -1,5 +1,5 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
-import { WINDOW } from '@ng-web-apis/common';
 import { BehaviorSubject, fromEvent } from 'rxjs';
 import {
   laptop,
@@ -22,7 +22,7 @@ export class WindowWidthService {
     return this._windowSize$.value;
   }
 
-  constructor(@Inject(WINDOW) private readonly window: Window) {
+  constructor(@Inject(WA_WINDOW) private readonly window: Window) {
     this.subscribeOnWindowWidthChange();
   }
 

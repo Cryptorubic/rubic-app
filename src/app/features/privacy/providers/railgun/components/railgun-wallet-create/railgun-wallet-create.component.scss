@@ -9,7 +9,6 @@ form {
     max-height: 65vh;
     overflow: auto;
   }
-
 }
 
 button {
@@ -22,8 +21,7 @@ tui-notification {
 }
 
 tui-toggle {
-
-  --tui-secondary: var(--tui-secondary-hover);
+  --tui-background-neutral-1: var(--tui-background-neutral-1-hover);
   overflow: inherit;
 }
 

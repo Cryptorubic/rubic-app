@@ -21,7 +21,7 @@
   padding: var(--tui-padding-s);
 
   &:hover {
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: var(--tui-radius-s);
   }
 
@@ -84,7 +84,7 @@
   }
 
   &__description {
-    color: var(--tui-text-02);
+    color: var(--tui-text-secondary);
   }
 
   &__actions {
@@ -110,12 +110,11 @@
 
   &__name,
   &__dollar-amount {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-size: 12px;
     line-height: 12px;
     white-space: nowrap;
   }
-
 
   .green {
     background: #1aa773;
@@ -140,7 +139,6 @@
     width: 100%;
     padding: var(--tui-padding-s);
 
-
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
 
@@ -149,7 +147,7 @@
     }
 
     &:hover {
-      background: var(--tui-base-01);
+      background: var(--tui-background-base);
     }
 
     &__image-container {

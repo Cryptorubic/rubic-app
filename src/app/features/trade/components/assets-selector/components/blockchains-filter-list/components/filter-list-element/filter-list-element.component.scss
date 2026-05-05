@@ -1,13 +1,12 @@
 @use 'src/scss/core' as *;
 
-
 .filter-list-element {
   ::ng-deep {
     .t-wrapper {
       width: 90px;
       padding: 0 !important;
 
-      background: var(--tui-base-01);
+      background: var(--tui-background-base);
     }
   }
 
@@ -30,10 +29,10 @@
       .t-wrapper {
         color: black;
 
-        background: var(--tui-primary);
+        background: var(--tui-background-accent-1);
 
         &:hover {
-          background-color: var(--tui-primary);
+          background-color: var(--tui-background-accent-1);
         }
       }
     }
@@ -43,4 +42,3 @@
     }
   }
 }
-

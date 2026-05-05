@@ -1,7 +1,7 @@
 <div
   *ngLet="isMobile$ | async as mobile"
   class="chart-toggler"
-  tuiHintAppearance="onDark"
+  tuiHintAppearance="dark"
   [tuiHint]="mobile ? '' : tooltip"
 >
   <div class="chart-toggler__icon" [inlineSVG]="icon" (click)="handleClick.emit()"></div>

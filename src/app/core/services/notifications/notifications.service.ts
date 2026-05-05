@@ -1,9 +1,9 @@
+import { TuiPopoverContext } from '@taiga-ui/cdk';
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { TuiAlertOptions, TuiAlertService } from '@taiga-ui/core';
 import { Observable, Subscription } from 'rxjs';
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
-import { TuiBaseDialogContext } from '@taiga-ui/cdk/interfaces';
 import { ErrorInterface } from '@cryptorubic/core';
 
 type DialogOptions<I> = Omit<TuiAlertOptions<I>, 'label' | 'hasCloseButton' | 'hasIcon'> &
@@ -28,11 +28,11 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
         .open(msg, {
-          status: 'success',
+          appearance: 'success',
           autoClose: 10_000,
           data: null,
           icon: '',
-          defaultAutoCloseTime: 0
+          autoClose: 0
         })
         .subscribe()
     );
@@ -42,11 +42,11 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
         .open(msg, {
-          status: 'error',
+          appearance: 'error',
           autoClose: 10_000,
           data: null,
           icon: '',
-          defaultAutoCloseTime: 0
+          autoClose: 0
         })
         .subscribe()
     );
@@ -56,11 +56,11 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
         .open(msg, {
-          status: 'warning',
+          appearance: 'warning',
           autoClose: 10_000,
           data: null,
           icon: '',
-          defaultAutoCloseTime: 0
+          autoClose: 0
         })
         .subscribe()
     );
@@ -70,11 +70,11 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
         .open(msg, {
-          status: 'info',
+          appearance: 'info',
           autoClose: 10_000,
           data: null,
           icon: '',
-          defaultAutoCloseTime: 0
+          autoClose: 0
         })
         .subscribe()
     );
@@ -84,18 +84,18 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
         .open(error.reason, {
-          status: 'info',
+          appearance: 'info',
           autoClose: 10_000,
           data: null,
           icon: '',
-          defaultAutoCloseTime: 0
+          autoClose: 0
         })
         .subscribe()
     );
   }
 
   public show<I = unknown, O = undefined>(
-    content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
+    content: PolymorpheusContent<I & TuiPopoverContext<O>>,
     options: DialogOptions<I>
   ): Subscription {
     return this.ngZone.run(() =>
@@ -114,7 +114,7 @@ export class NotificationsService {
   }
 
   public showWithoutSubscribe<I = unknown, O = undefined>(
-    content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
+    content: PolymorpheusContent<I & TuiPopoverContext<O>>,
     options: DialogOptions<I>
   ): Observable<O> {
     return this.ngZone.run(() => this.tuiNotificationsService.open(content, { ...options }));

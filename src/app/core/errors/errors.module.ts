@@ -1,4 +1,4 @@
-import { TuiHintModule } from '@taiga-ui/core';
+import { TuiHint } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -50,6 +50,6 @@ import { WrongReceiverErrorComponent } from './components/wrong-receiver-error/w
     SimulationFailedErrorComponent,
     WrongReceiverErrorComponent
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, ...TuiHint]
 })
 export class ErrorsModule {}

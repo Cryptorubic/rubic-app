@@ -22,7 +22,11 @@
         [formControl]="statusFilter"
       >
         Status
-        <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
+        <input
+          [tuiTextfieldLabelOutside]="true"
+          placeholder="Choose your hero"
+          tuiTextfieldLegacy
+        />
         <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
       </tui-select>
     </form>

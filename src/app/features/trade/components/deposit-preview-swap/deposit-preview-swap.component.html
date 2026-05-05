@@ -273,9 +273,10 @@
   </ng-container>
   <ng-container footer *ngIf="state.status === 'failed'">
     <tui-notification
+      size="m"
       class="failed-notification"
       *ngIf="state.spesificStatusText; else defaultFailedStatusText"
-      status="error"
+      appearance="error"
     >
       {{ state.spesificStatusText }}
     </tui-notification>
@@ -292,12 +293,14 @@
 <ng-template #template>Address copied on clipboard!</ng-template>
 
 <ng-template #defaultFailedStatusText>
-  <tui-notification status="error">
-    The transaction failed, please contact our Support Team at
-    <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
-      >support&#64;rubic.exchange</a
-    >
-  </tui-notification>
+  <tui-notification size="m" appearance="error"
+    ><div>
+      The transaction failed, please contact our Support Team at
+      <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
+        >support&#64;rubic.exchange</a
+      >
+    </div></tui-notification
+  >
 </ng-template>
 
 <ng-template #failedStatus>

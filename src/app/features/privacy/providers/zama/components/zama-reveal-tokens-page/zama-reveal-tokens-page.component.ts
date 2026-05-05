@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.service';
@@ -9,7 +10,6 @@ import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@crypto
 
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { ZamaBalanceService } from '../../services/zama-sdk/zama-balance.service';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
@@ -22,7 +22,6 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
   styleUrls: ['./zama-reveal-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: ZamaPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ZamaRevealFacadeService }
   ]
@@ -42,7 +41,6 @@ export class ZamaRevealTokensPageComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly privateActionButtonService: PrivateActionButtonService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaBalanceService: ZamaBalanceService,
     private readonly revealWindowService: RevealWindowService
   ) {}
@@ -54,7 +52,7 @@ export class ZamaRevealTokensPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
     this.subscribeOnPrivateBalanceChanges();
@@ -75,7 +73,7 @@ export class ZamaRevealTokensPageComponent {
             )
           );
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(shieldBalance => {
         const revealAsset = this.revealWindowService.revealAsset;
@@ -100,4 +98,6 @@ export class ZamaRevealTokensPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

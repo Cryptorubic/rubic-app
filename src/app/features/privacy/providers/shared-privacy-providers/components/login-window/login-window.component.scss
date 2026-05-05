@@ -9,7 +9,7 @@
     font-size: 16px;
     text-align: center;
 
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: var(--tui-radius-m);
     @include b($mobile-md) {
       width: 100%;
@@ -27,5 +27,4 @@
       width: 100%;
     }
   }
-  
 }

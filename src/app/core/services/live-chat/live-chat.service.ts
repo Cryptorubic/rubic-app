@@ -1,5 +1,5 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
@@ -19,7 +19,7 @@ export class LiveChatService {
   }
 
   constructor(
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     private readonly windowWidth: WindowWidthService,
     private readonly modalService: ModalService,
     private readonly googleTagManagerService: GoogleTagManagerService

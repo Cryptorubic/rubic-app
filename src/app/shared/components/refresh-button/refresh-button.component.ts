@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,18 +9,20 @@ import {
   OnInit,
   Output,
   Self,
-  ViewChild
+  ViewChild,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
 import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
-import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-refresh-button',
   templateUrl: './refresh-button.component.html',
   styleUrls: ['./refresh-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class RefreshButtonComponent implements OnInit {
   @Input() isRotating$: Observable<boolean>;
@@ -33,10 +36,7 @@ export class RefreshButtonComponent implements OnInit {
   @ViewChild('refreshIcon', { static: true })
   refreshIconElement: ElementRef;
 
-  constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
-    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
-  ) {}
+  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
@@ -63,7 +63,7 @@ export class RefreshButtonComponent implements OnInit {
             );
           }
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -71,4 +71,6 @@ export class RefreshButtonComponent implements OnInit {
   public toggleClick(): void {
     this.onRefresh.emit();
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

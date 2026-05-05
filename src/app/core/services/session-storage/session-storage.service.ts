@@ -1,11 +1,11 @@
+import { WA_SESSION_STORAGE } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
-import { SESSION_STORAGE } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionStorageService {
-  constructor(@Inject(SESSION_STORAGE) private sessionStorage: Storage) {}
+  constructor(@Inject(WA_SESSION_STORAGE) private sessionStorage: Storage) {}
 
   public setItem(key: string, value: string): void {
     try {

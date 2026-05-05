@@ -1,6 +1,6 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
@@ -22,11 +22,11 @@ export class RefundService {
     return this.refundAddressCtrl.value;
   }
 
-  constructor(private readonly destroy$: TuiDestroyService) {
+  constructor() {
     this.refundAddressCtrl.statusChanges
       .pipe(
         map(status => status === 'VALID'),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe(isValid => {
         this._isValidRefundAddress$.next(isValid);

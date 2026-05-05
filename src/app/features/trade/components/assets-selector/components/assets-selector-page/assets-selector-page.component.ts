@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -13,7 +14,6 @@ import {
 import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   distinctUntilChanged,
   filter,
@@ -44,7 +44,7 @@ import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   private lastDefaultMode: AssetListType = 'allChains';
@@ -105,7 +105,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly formService: SwapsFormService,

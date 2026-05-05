@@ -1,3 +1,5 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WA_WINDOW } from '@ng-web-apis/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,19 +12,19 @@ import {
   QueryList,
   Self,
   TemplateRef,
-  ViewChildren
+  ViewChildren,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
-import { WINDOW } from '@ng-web-apis/common';
 import {
   MOBILE_NAVIGATION_LIST,
   NAVIGATION_LIST
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
@@ -36,7 +38,7 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
   templateUrl: './rubic-menu.component.html',
   styleUrls: ['./rubic-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class RubicMenuComponent implements AfterViewInit {
   @Input() public swapActive: boolean;
@@ -71,14 +73,13 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly router: Router,
-    @Inject(WINDOW) private readonly window: Window,
-    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(WA_WINDOW) private readonly window: Window,
     private readonly gtmService: GoogleTagManagerService
   ) {}
 
   public ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(blockchainName => {
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         this.cdr.markForCheck();
@@ -121,4 +122,6 @@ export class RubicMenuComponent implements AfterViewInit {
       this.gtmService.fireSwitchModeEvent('testnets');
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

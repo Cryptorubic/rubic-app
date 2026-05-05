@@ -8,11 +8,13 @@
   <div class="providers-switcher-wrapper">
     <div class="providers-switcher-container">
       Show all {{ selectedTab$ | async | lowercase }} providers
-      <tui-toggle
-        size="m"
+      <input
+        tuiSwitch
+        type="checkbox"
+        size="s"
         [ngModel]="state.showAllProviders"
         (ngModelChange)="switchShowAllProviders($event)"
-      ></tui-toggle>
+      />
     </div>
   </div>
 

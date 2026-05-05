@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Self,
+  inject,
+  DestroyRef
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -18,7 +26,6 @@ import {
 } from '@cryptorubic/core';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 
 @Component({
@@ -27,7 +34,6 @@ import { HideWindowService } from '../../../shared-privacy-providers/services/hi
   styleUrls: ['./privacycash-hide-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useExisting: PrivacycashPublicAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
   ]
@@ -52,7 +58,7 @@ export class PrivacycashHidePageComponent implements OnInit {
 
   public readonly receiverCtrl = new FormControl<string>('');
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -61,7 +67,7 @@ export class PrivacycashHidePageComponent implements OnInit {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -112,4 +118,6 @@ export class PrivacycashHidePageComponent implements OnInit {
       amount: balance
     });
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

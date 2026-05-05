@@ -20,7 +20,7 @@
           type="button"
           size="m"
           (click)="sign()"
-          [showLoader]="!!(isSdkLoading$ | async)"
+          [loading]="!!(isSdkLoading$ | async)"
         >
           Sign
         </button>

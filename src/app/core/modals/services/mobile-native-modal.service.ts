@@ -1,6 +1,6 @@
+import { TuiPopoverService } from '@taiga-ui/cdk';
 import { Injectable, Injector, Type, Component } from '@angular/core';
-import { AbstractTuiDialogService } from '@taiga-ui/cdk';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { Subject } from 'rxjs';
 import { MobileNativeModalComponent } from '../components/mobile-native-modal/mobile-native-modal.component';
 import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
@@ -8,7 +8,7 @@ import { IMobileNativeOptions, INextModal } from '../models/mobile-native-option
 @Injectable({
   providedIn: 'root'
 })
-export class MobileNativeModalService extends AbstractTuiDialogService<IMobileNativeOptions> {
+export class MobileNativeModalService extends TuiPopoverService<IMobileNativeOptions> {
   private readonly _forceClose$ = new Subject<void>();
 
   public readonly forceClose$ = this._forceClose$.asObservable();

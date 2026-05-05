@@ -9,17 +9,16 @@
   &__title {
     margin-bottom: var(--tui-padding-s);
 
-    color: var(--tui-primary);
+    color: var(--tui-background-accent-1);
     font-weight: 500;
     font-size: 1.25rem;
   }
 
   &__content {
-
     margin-bottom: var(--tui-padding-s);
 
     span {
-      color: var(--tui-primary);
+      color: var(--tui-background-accent-1);
     }
   }
 }

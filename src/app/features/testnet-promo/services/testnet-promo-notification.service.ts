@@ -1,4 +1,3 @@
-import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -22,7 +21,7 @@ export class TestnetPromoNotificationService {
       this.wrongWalletTypeSubscription = this.notificationsService.show(
         'Wrong wallet. You should connect EVM wallet to participate in the Promo.',
         {
-          status: TuiNotification.Error,
+          status: 'error',
           autoClose: 10000,
           data: null,
           icon: '',
@@ -36,7 +35,7 @@ export class TestnetPromoNotificationService {
     return this.notificationsService.show(
       this.translateService.instant(`testnetPromo.notification.progress`),
       {
-        status: TuiNotification.Info,
+        status: 'info',
         autoClose: false,
         data: null,
         icon: '',
@@ -49,7 +48,7 @@ export class TestnetPromoNotificationService {
     return this.notificationsService.show(
       this.translateService.instant(`testnetPromo.notification.success`),
       {
-        status: TuiNotification.Success,
+        status: 'success',
         autoClose: 10000,
         data: null,
         icon: '',
@@ -61,34 +60,34 @@ export class TestnetPromoNotificationService {
   public showErrorNotification(err: unknown): void {
     if (err instanceof Error) {
       let label: string;
-      let status: TuiNotification;
+      let status;
 
       if (err.message === 'paused') {
         label = this.translateService.instant('testnetPromo.notification.paused');
-        status = TuiNotification.Warning;
+        status = 'warning';
       } else if (err.message === 'claimed') {
         label = this.translateService.instant('testnetPromo.notification.claimed');
-        status = TuiNotification.Warning;
+        status = 'warning';
       } else if (err.message.includes('User denied transaction signature')) {
         label = this.translateService.instant('testnetPromo.notification.reject');
-        status = TuiNotification.Error;
+        status = 'error';
       } else if (err.message === 'wrong chain') {
         label =
           'Please make sure to select the Arbitrum network in your wallet. Other networks are not supported.';
-        status = TuiNotification.Error;
+        status = 'error';
       } else {
         label = this.translateService.instant('testnetPromo.notification.unknown');
-        status = TuiNotification.Error;
+        status = 'error';
       }
 
       if (err instanceof UserRejectError) {
         label = this.translateService.instant('testnetPromo.notification.reject');
-        status = TuiNotification.Error;
+        status = 'error';
       }
 
       if (err instanceof SdkInsufficientFundsGasPriceValueError) {
         label = this.translateService.instant('testnetPromo.notification.notEnoughBalance');
-        status = TuiNotification.Error;
+        status = 'error';
       }
 
       this.notificationsService.show(label, {

@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -6,7 +7,6 @@ import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { HeaderStore } from '@core/header/services/header.store';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import {
   BlockchainName,
@@ -92,7 +92,7 @@ export class QueryParamsService {
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
     private readonly sessionStorage: SessionStorageService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {}
 
   public setupQueryParams(queryParams: QueryParams): void {

@@ -57,7 +57,7 @@ import {
   throttleTime
 } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
-import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
+import { WA_WINDOW, WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
@@ -90,8 +90,8 @@ export class RubicApiService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly turnstileService: TurnstileService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {}
 
   public setSocket(): void {

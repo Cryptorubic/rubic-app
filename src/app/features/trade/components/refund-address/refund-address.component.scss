@@ -13,7 +13,7 @@
     .refund-address__input {
       background: var(--primary-background);
     }
-    
+
     .refund-address__title {
       @include flex(row, flex-start, normal);
       gap: 7px;
@@ -34,7 +34,7 @@
         margin-top: 2px;
       }
     }
-  
+
     .refund-address__input {
       position: relative;
 
@@ -48,4 +48,3 @@
     }
   }
 }
-

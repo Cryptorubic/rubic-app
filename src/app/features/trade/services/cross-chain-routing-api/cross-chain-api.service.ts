@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -6,7 +7,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { WINDOW } from '@ng-web-apis/common';
 import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
@@ -29,7 +29,7 @@ export class CrossChainApiService {
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WA_WINDOW) private readonly window: RubicWindow
   ) {}
 
   public saveProvidersStatistics(data: ProviderCcrStatistic): Observable<void> {

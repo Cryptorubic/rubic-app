@@ -1,7 +1,7 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { inject, Injectable, Injector, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Turnstile } from '@core/services/turnstile/turnstile.models';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
@@ -40,7 +40,7 @@ export class TurnstileService {
     return this._token$.value;
   }
 
-  private readonly window: RubicWindow = inject(WINDOW);
+  private readonly window: RubicWindow = inject(WA_WINDOW);
 
   private readonly zone = inject(NgZone);
 

@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { TuiNotification } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
@@ -61,7 +60,7 @@ export class ErrorsService {
 
     const options = {
       label: this.translateService.instant(isWarning ? 'common.warning' : 'common.error'),
-      status: isWarning ? TuiNotification.Warning : TuiNotification.Error,
+      status: isWarning ? 'warning' : 'error',
       data: {},
       autoClose: 7000,
       icon: '',

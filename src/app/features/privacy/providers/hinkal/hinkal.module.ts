@@ -15,7 +15,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { HinkalTransferTokensPageComponent } from './components/hinkal-transfer-tokens-page/hinkal-transfer-tokens-page.component';
 import { HinkalSwapTokensPageComponent } from './components/hinkal-swap-tokens-page/hinkal-swap-tokens-page.component';
 import { HinkalWalletInfoComponent } from './components/hinkal-wallet-info/hinkal-wallet-info.component';
-import { TuiButtonModule, TuiNotificationModule } from '@taiga-ui/core';
+import { TuiNotification, TuiButton } from '@taiga-ui/core';
 import { HinkalWorkerService } from './services/hinkal-sdk/hinkal-worker.service';
 import { HinkalLoginPageComponent } from './components/hinkal-login-page/hinkal-login-page.component';
 import { HinkalActionButtonService } from './services/hinkal-action-button.service';
@@ -39,8 +39,8 @@ import { HinkalHideFacadeService } from './services/token-facades/hinkal-hide-fa
     HinkalRoutingModule,
     SharedPrivacyProvidersModule,
     SharedModule,
-    TuiButtonModule,
-    TuiNotificationModule
+    TuiButton,
+    TuiNotification
   ],
   providers: [
     HinkalInstanceService,
