@@ -36,6 +36,11 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
       this.contractSpender
     );
 
+    console.log('%cALLOWANCE_DATA =>', 'color: aqua; font-size: 20px;', {
+      allowance: allowance.allowanceWei.toNumber(),
+      amountWei: this.from.weiAmount.toNumber()
+    });
+
     return this.from.weiAmount.gt(allowance.allowanceWei);
   }
 
