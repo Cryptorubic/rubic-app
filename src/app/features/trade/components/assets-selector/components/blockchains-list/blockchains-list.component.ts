@@ -12,7 +12,7 @@ import { BlockchainName } from '@cryptorubic/core';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetListType } from '@features/trade/models/asset';
@@ -24,7 +24,8 @@ import { Observable } from 'rxjs';
   selector: 'app-blockchains-list',
   templateUrl: './blockchains-list.component.html',
   styleUrls: ['./blockchains-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BlockchainsListComponent {
   @PolymorpheusInput()

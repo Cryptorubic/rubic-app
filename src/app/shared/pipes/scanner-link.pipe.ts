@@ -4,7 +4,10 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { Web3Pure } from '@cryptorubic/web3';
 
-@Pipe({ name: 'scannerLink' })
+@Pipe({
+  name: 'scannerLink',
+  standalone: false
+})
 export class ScannerLinkPipe implements PipeTransform {
   constructor() {}
 

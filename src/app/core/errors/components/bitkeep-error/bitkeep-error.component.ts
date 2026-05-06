@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-bitkeep-error',
   templateUrl: './bitkeep-error.component.html',
   styleUrls: ['./bitkeep-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BitKeepErrorComponent {
   constructor() {}

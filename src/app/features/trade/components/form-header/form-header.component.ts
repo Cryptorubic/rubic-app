@@ -8,7 +8,8 @@ import { ChartService } from '../../services/chart-service/chart.service';
   selector: 'app-form-header',
   templateUrl: './form-header.component.html',
   styleUrls: ['./form-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FormHeaderComponent {
   public readonly isRefreshRotating$ = this.refreshService.status$.pipe(

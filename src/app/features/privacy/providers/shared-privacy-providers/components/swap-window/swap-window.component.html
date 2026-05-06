@@ -72,7 +72,7 @@
   >
     <app-private-action-button
       *ngIf="creationConfig.withActionButton"
-      [showLoader]="state.loading"
+      [loading]="state.loading"
       (onClick)="swap()"
     ></app-private-action-button>
     <app-receiver-address-button

@@ -8,7 +8,8 @@ import { HINKAL_SUPPORTED_WALLETS } from '../../constants/hinkal-supported-walle
   selector: 'app-hinkal-login-page',
   templateUrl: './hinkal-login-page.component.html',
   styleUrls: ['./hinkal-login-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HinkalLoginPageComponent {
   public readonly authorized$ = this.hinkalInstanceService.currSignature$.pipe(

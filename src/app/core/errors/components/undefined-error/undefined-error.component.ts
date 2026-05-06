@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-undefined-error',
   templateUrl: './undefined-error.component.html',
   styleUrls: ['./undefined-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UndefinedErrorComponent {
   constructor() {}

@@ -6,7 +6,8 @@ import { ThemeService } from '@core/services/theme/theme.service';
   selector: 'app-rubic-volume',
   templateUrl: './rubic-volume.component.html',
   styleUrls: ['./rubic-volume.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RubicVolumeComponent {
   public readonly volume$ = this.volumeApiService.tradingVolume$;

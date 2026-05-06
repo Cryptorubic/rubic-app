@@ -1,16 +1,15 @@
+import { TuiButton } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HoudiniRoutingModule } from './houdini-routing.module';
 import { HoudiniMainPageComponent } from './components/houdini-main-page/houdini-main-page.component';
 import { SharedPrivacyProvidersModule } from '../shared-privacy-providers/shared-privacy-providers.module';
 import { SharedModule } from '@app/shared/shared.module';
-import { TuiButtonModule } from '@taiga-ui/core';
 import { HoudiniPrivateAssetsService } from './services/houdini-private-assets.service';
 import { HoudiniTokensFacadeService } from './services/houdini-tokens-facade.service';
 import { HoudiniSwapService } from './services/houdini-swap.service';
 import { HoudiniPrivateActionButtonService } from './services/houdini-private-action-button.service';
 import { HoudiniErrorService } from './services/houdini-error.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @NgModule({
   declarations: [HoudiniMainPageComponent],
@@ -19,10 +18,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
     HoudiniRoutingModule,
     SharedPrivacyProvidersModule,
     SharedModule,
-    TuiButtonModule
+    TuiButton
   ],
   providers: [
-    TuiDestroyService,
     HoudiniPrivateAssetsService,
     HoudiniTokensFacadeService,
     HoudiniSwapService,

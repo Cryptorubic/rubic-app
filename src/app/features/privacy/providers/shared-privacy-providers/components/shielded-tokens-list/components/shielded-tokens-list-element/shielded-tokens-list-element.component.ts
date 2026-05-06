@@ -9,7 +9,8 @@ import { takeWhile } from 'rxjs/operators';
   selector: 'app-shielded-tokens-list-element',
   templateUrl: './shielded-tokens-list-element.component.html',
   styleUrls: ['./shielded-tokens-list-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ShieldedTokensListElementComponent implements OnInit {
   @Input({ required: true }) token: ShieldedBalanceToken;

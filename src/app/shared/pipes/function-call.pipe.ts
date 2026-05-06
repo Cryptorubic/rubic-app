@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'functionCall'
+  name: 'functionCall',
+  standalone: false
 })
 export class FunctionCallPipe implements PipeTransform {
   public transform<T = unknown>(

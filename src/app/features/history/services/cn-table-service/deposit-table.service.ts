@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, filter, map, share, startWith, switchMap } from 'rxjs/operators';
-import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
@@ -43,7 +43,7 @@ export class DepositTableService extends TableService<
     share()
   );
 
-  public readonly loading$ = this.request$.pipe(map(tuiIsFalsy));
+  public readonly loading$ = this.request$.pipe(map(v => !v));
 
   public readonly total$ = this.request$.pipe(
     filter(tuiIsPresent),

@@ -1,4 +1,4 @@
-<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+<div [tuiDropdown]="dropdown" tuiDropdownAlign="end" [(tuiDropdownOpen)]="isOpened">
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
       <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
@@ -15,8 +15,8 @@
       ></app-notification-badge>
     </button>
   </div>
-</tui-hosted-dropdown>
+</div>
 
-<ng-template #dropdown let-activeZone>
+<ng-template #dropdown>
   <ng-content></ng-content>
 </ng-template>

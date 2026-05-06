@@ -8,7 +8,8 @@ import { CookieService } from 'ngx-cookie-service';
   selector: 'app-language-selector',
   templateUrl: './language-selector.component.html',
   styleUrls: ['./language-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LanguageSelectorComponent {
   public readonly languages = LANGUAGES_LIST;

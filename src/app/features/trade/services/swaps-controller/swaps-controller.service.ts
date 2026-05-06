@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { inject, Inject, Injectable } from '@angular/core';
 import {
   combineLatestWith,
@@ -77,7 +78,6 @@ import { UserRejectError } from '@app/core/errors/models/provider/user-reject-er
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
-import { WINDOW } from '@ng-web-apis/common';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
@@ -133,7 +133,7 @@ export class SwapsControllerService {
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
     private readonly trustlineService: TrustlineService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();

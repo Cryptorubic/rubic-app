@@ -12,7 +12,8 @@ import { TokenAmountDirective } from '@shared/directives/token-amount/token-amou
   selector: 'app-amount-transput',
   templateUrl: './amount-transput.component.html',
   styleUrls: ['./amount-transput.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AmountTransputComponent {
   public readonly inputPlaceholder$ = this.translateService.get('errors.noEnteredAmount');

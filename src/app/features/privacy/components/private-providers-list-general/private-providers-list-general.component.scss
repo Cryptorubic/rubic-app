@@ -32,7 +32,7 @@ h5 {
   border-radius: var(--tui-radius-m);
 
   &__text {
-    @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+    @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
   }
 }
 

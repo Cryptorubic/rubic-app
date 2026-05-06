@@ -8,7 +8,8 @@ import { TuiSizeL, TuiSizeS, TuiSizeXS } from '@taiga-ui/core';
   selector: 'app-notification-badge',
   templateUrl: './notification-badge.component.html',
   styleUrls: ['./notification-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NotificationBadgeComponent {
   /**

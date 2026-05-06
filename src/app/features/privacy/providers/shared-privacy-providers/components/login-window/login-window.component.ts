@@ -8,14 +8,15 @@ import { map } from 'rxjs';
   selector: 'app-login-window',
   templateUrl: './login-window.component.html',
   styleUrls: ['./login-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LoginWindowComponent {
   @Input({ required: true }) authorized: boolean;
 
   @Input({ required: true }) supportedWallets: WALLET_NAME[];
 
-  @Input() showLoader: boolean = false;
+  @Input() loading: boolean = false;
 
   @Output() handleClick = new EventEmitter();
 

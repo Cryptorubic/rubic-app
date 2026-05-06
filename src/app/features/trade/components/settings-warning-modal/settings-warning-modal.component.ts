@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-settings-warning-modal',
   templateUrl: './settings-warning-modal.component.html',
   styleUrls: ['./settings-warning-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SettingsWarningModalComponent {
   public readonly highSlippage: number;

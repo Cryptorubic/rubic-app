@@ -12,7 +12,6 @@ import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
@@ -40,7 +39,8 @@ import { DOCUMENT } from '@angular/common';
         animate('0.25s ease-in-out', style({ opacity: 0, width: 0, scale: 0 }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class TradeViewContainerComponent {
   public readonly formContent$ = this.tradePageService.formContent$;
@@ -108,11 +108,9 @@ export class TradeViewContainerComponent {
       buttonStatus.action();
     } else if (buttonStatus.type === 'error' || buttonStatus.text === 'Connect wallet') {
       this.notificationsService.show(buttonStatus.text, {
-        status: TuiNotification.Warning,
+        appearance: 'warning',
         autoClose: 5_000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       });
     }
   }

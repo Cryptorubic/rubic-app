@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-rpc-error',
   templateUrl: './rpc-error.component.html',
   styleUrls: ['./rpc-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RpcErrorComponent {
   public readonly questionId: string;

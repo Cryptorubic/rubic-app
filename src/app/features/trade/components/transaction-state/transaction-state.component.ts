@@ -6,7 +6,8 @@ import { StepsType } from './models/types';
   selector: 'app-transaction-state',
   templateUrl: './transaction-state.component.html',
   styleUrls: ['./transaction-state.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TransactionStateComponent {
   public steps: StepsType[];

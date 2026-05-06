@@ -272,32 +272,36 @@
     </div>
   </ng-container>
   <ng-container footer *ngIf="state.status === 'failed'">
-    <tui-notification
+    <div
+      tuiNotification
+      size="m"
       class="failed-notification"
       *ngIf="state.spesificStatusText; else defaultFailedStatusText"
-      status="error"
+      appearance="error"
     >
       {{ state.spesificStatusText }}
-    </tui-notification>
+    </div>
   </ng-container>
 </app-window-container>
 
 <ng-template #contactSupportHint>
   <div class="contact-support-hint">
     If your transaction seems to be taking longer than normal (more than 10 minutes), please contact
-    our Support Team at <span class="primary-text">support@rubic.exchange</span>.
+    our Support Team at <span class="primary-text">support&#64;rubic.exchange</span>.
   </div>
 </ng-template>
 
 <ng-template #template>Address copied on clipboard!</ng-template>
 
 <ng-template #defaultFailedStatusText>
-  <tui-notification status="error">
-    The transaction failed, please contact our Support Team at
-    <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
-      >support@rubic.exchange</a
-    >
-  </tui-notification>
+  <div tuiNotification size="m" appearance="error">
+    <div>
+      The transaction failed, please contact our Support Team at
+      <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
+        >support&#64;rubic.exchange</a
+      >
+    </div>
+  </div>
 </ng-template>
 
 <ng-template #failedStatus>

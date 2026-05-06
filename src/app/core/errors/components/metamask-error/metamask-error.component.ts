@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-metamask-error',
   templateUrl: './metamask-error.component.html',
   styleUrls: ['./metamask-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MetamaskErrorComponent {
   constructor() {}

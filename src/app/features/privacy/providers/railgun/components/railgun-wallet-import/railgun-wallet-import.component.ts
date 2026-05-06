@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import {
   AbstractControl,
@@ -10,7 +10,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Mnemonic } from 'ethers';
-import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
+import { TUI_VALIDATION_ERRORS } from '@taiga-ui/core';
 
 type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
 
@@ -54,7 +54,8 @@ export function mnemonicValidator(): ValidatorFn {
             : 'Invalid seed phrase. Please check the words and order.'
       }
     }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunWalletImportComponent {
   private readonly context: ContextParams = inject(POLYMORPHEUS_CONTEXT) as ContextParams;

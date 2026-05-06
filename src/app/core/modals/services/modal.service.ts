@@ -1,7 +1,7 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -56,6 +56,7 @@ import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/pri
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Injectable({
   providedIn: 'root'
@@ -388,7 +389,7 @@ export class ModalService {
           title: 'Verifying you are human...',
           size: 's',
           fitContent: true,
-          closeable: false,
+          closable: false,
           dismissible: false
         },
         injector
@@ -424,7 +425,7 @@ export class ModalService {
    */
   public showDialog<Component, Output>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<Output> {
     //@ts-ignore
@@ -442,7 +443,7 @@ export class ModalService {
 
   public openClosableDialog<Component, ClosableDialogOutput>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<ClosableDialogOutput> {
     return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(
@@ -464,7 +465,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(DepositRateChangedModalComponent, {
         size: 's',
-        closeable: false,
+        closable: false,
         required: true,
         data: { trade }
       }).pipe(catchError(() => of(false))) as Observable<boolean>
@@ -476,7 +477,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(TrustlineModalComponent, {
         size: 's',
-        closeable: true,
+        closable: true,
         dismissible: false,
         fitContent: true,
         data: options
@@ -521,7 +522,7 @@ export class ModalService {
       this.showDialog(TonSlippageWarnModalComponent, {
         size: 'm',
         data: { trade },
-        closeable: false
+        closable: false
       })
     );
   }
@@ -529,8 +530,8 @@ export class ModalService {
   public openMetamaskModal(): Promise<WALLET_NAME> {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
-        size: 'auto',
-        closeable: true,
+        size: 'm',
+        closable: true,
         fitContent: true
       })
     );
@@ -540,7 +541,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
         PrivacyAuthWindowComponent,
-        { size: 'page' }
+        { size: 'l' }
       )
     );
   }

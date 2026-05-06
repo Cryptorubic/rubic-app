@@ -1,17 +1,17 @@
 export type HintAppearance = 'onDark' | '' | 'error';
 export type HintDirection =
-  | 'bottom-left'
+  | 'bottom-start'
   | 'bottom'
-  | 'bottom-right'
-  | 'top-left'
+  | 'bottom-end'
+  | 'top-start'
   | 'top'
-  | 'top-right'
-  | 'left-top'
-  | 'left'
-  | 'left-bottom'
-  | 'right-top'
-  | 'right'
-  | 'right-bottom';
+  | 'top-end'
+  | 'start-bottom'
+  | 'start'
+  | 'start-top'
+  | 'end-top'
+  | 'end'
+  | 'end-bottom';
 
 export interface SwapDataElementConfig {
   feeIcon: string;

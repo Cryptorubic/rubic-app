@@ -46,7 +46,7 @@
   >
     <app-private-action-button
       *ngIf="creationConfig.withActionButton"
-      [showLoader]="state.loading"
+      [loading]="state.loading"
       (onClick)="hide()"
     ></app-private-action-button>
 

@@ -30,10 +30,9 @@
   background: transparent !important;
 }
 
-
 // Close icons for dialogs
 tui-dialog-host .t-close {
-  background: var(--tui-secondary) !important;
+  background: var(--tui-background-neutral-1) !important;
   opacity: 0.75;
 
   transition: 0.2s ease-in-out;

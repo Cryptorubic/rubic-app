@@ -6,7 +6,8 @@ import { HeaderStore } from 'src/app/core/header/services/header.store';
   selector: 'app-mobile-menu-toggler',
   templateUrl: './mobile-menu-toggler.component.html',
   styleUrls: ['./mobile-menu-toggler.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MobileMenuTogglerComponent {
   public readonly isMobileMenuOpened$: Observable<boolean>;

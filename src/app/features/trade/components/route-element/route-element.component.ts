@@ -20,7 +20,8 @@ interface ProviderStep {
   selector: 'app-route-element',
   templateUrl: './route-element.component.html',
   styleUrls: ['./route-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RouteElementComponent {
   public steps: ProviderStep[] = [];

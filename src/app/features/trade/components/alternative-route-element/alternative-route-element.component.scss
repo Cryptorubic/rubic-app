@@ -25,7 +25,7 @@
     align-items: center;
     justify-content: space-between;
     width: 80%;
-    
+
     &_arrow-image {
       filter: sepia(1) saturate(0) brightness(0.5);
     }
@@ -92,8 +92,8 @@
     &__assets-container {
       ::ng-deep {
         .selector__main-image {
-          background-color: var(--tui-secondary);
-          border: 5px solid var(--tui-secondary);
+          background-color: var(--tui-background-neutral-1);
+          border: 5px solid var(--tui-background-neutral-1);
         }
       }
 

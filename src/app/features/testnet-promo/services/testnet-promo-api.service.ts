@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import {
@@ -10,7 +11,6 @@ import {
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { Token } from '@cryptorubic/core';
 
@@ -28,7 +28,7 @@ export class TestnetPromoApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    @Inject(WINDOW) private window: RubicWindow
+    @Inject(WA_WINDOW) private window: RubicWindow
   ) {}
 
   public fetchPrizePool(): Observable<PrizePool> {

@@ -5,7 +5,8 @@ import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
   selector: 'app-total-rbc',
   templateUrl: './total-rbc.component.html',
   styleUrls: ['./total-rbc.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TotalRbcComponent {
   @Input({ required: true }) public readonly weekInfo: WeekInfo;

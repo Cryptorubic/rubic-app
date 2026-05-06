@@ -5,7 +5,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-switch-list-type-button',
   templateUrl: './switch-tokens-list-type-button.component.html',
   styleUrls: ['./switch-tokens-list-type-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SwitchTokensListTypeButtonComponent {
   public icon = '';

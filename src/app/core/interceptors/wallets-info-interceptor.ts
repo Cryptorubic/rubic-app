@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { TUI_PLATFORM } from '@taiga-ui/cdk/tokens';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -26,7 +26,7 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
   private readonly endpoints: EndpointData[];
 
   constructor(
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
+    @Inject(TUI_PLATFORM) private readonly platform: string,
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.endpoints = [
@@ -79,7 +79,7 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
   private addWalletInfoToRequest(request: HttpRequest<object>): HttpRequest<object> {
     const walletsInfo: WalletInfo = {
       walletName: this.walletConnectorService.provider.detailedWalletName,
-      deviceType: this.isMobile ? 'mobile' : 'desktop'
+      deviceType: this.platform !== 'web' ? 'mobile' : 'desktop'
     };
     return request.clone({
       body: { ...request.body, ...walletsInfo }

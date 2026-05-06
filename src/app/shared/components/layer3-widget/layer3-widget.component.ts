@@ -1,5 +1,5 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HeaderStore } from '@core/header/services/header.store';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
@@ -8,7 +8,8 @@ import { CalculationStatus } from '@features/trade/models/calculation-status';
   selector: 'app-layer3-widget',
   templateUrl: './layer3-widget.component.html',
   styleUrls: ['./layer3-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class Layer3WidgetComponent {
   @Input({ required: true }) calculationStatus: CalculationStatus;
@@ -19,7 +20,7 @@ export class Layer3WidgetComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WA_WINDOW) private readonly window: RubicWindow
   ) {
     this.isMobile = headerStore.isMobile;
   }

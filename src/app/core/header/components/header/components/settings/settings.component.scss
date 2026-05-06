@@ -22,11 +22,11 @@
     }
 
     &-title {
-      @include font(16px, 16px, 500, var(--tui-text-01), 0.45px);
+      @include font(16px, 16px, 500, var(--tui-text-primary), 0.45px);
     }
 
     &-subtitle {
-      @include font(14px, 14px, 400, var(--tui-text-03), 0.45px);
+      @include font(14px, 14px, 400, var(--tui-text-tertiary), 0.45px);
     }
   }
 

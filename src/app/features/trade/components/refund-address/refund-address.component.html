@@ -22,11 +22,11 @@
       "
       tuiTextfieldSize="l"
       [formControl]="refundAddressCtrl"
-      [pseudoFocus]="refundAddressCtrl.invalid"
+      [tuiAppearanceFocus]="refundAddressCtrl.invalid"
       [pseudoInvalid]="refundAddressCtrl.invalid"
       [tuiTextfieldCleaner]="!!refundAddressCtrl.value"
       [tuiTextfieldLabelOutside]="false"
-      (focusedChange)="onFocusChange($event)"
+      (focusedChange)="onFocusChange($any($event))"
     >
       <label [@moveLabel]="isActiveInput" class="refund-address__input-label">
         {{ labetText }}

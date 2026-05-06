@@ -6,7 +6,7 @@ import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import BigNumber from 'bignumber.js';
 
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
@@ -23,7 +23,8 @@ interface ContextData {
 @Component({
   selector: 'app-mobile-user-profile',
   templateUrl: './mobile-user-profile.component.html',
-  styleUrls: ['./mobile-user-profile.component.scss']
+  styleUrls: ['./mobile-user-profile.component.scss'],
+  standalone: false
 })
 export class MobileUserProfileComponent {
   public readonly currentBalance$: Observable<{ balance: BigNumber; symbol: string }>;

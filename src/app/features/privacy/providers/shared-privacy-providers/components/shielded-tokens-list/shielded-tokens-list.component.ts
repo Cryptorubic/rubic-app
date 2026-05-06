@@ -5,7 +5,8 @@ import { ShieldedBalanceToken } from './models/shielded-balance-token';
   selector: 'app-shielded-tokens-list',
   templateUrl: './shielded-tokens-list.component.html',
   styleUrls: ['./shielded-tokens-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ShieldedTokensListComponent {
   @Input({ required: true }) public readonly tokens: ShieldedBalanceToken[];

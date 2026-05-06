@@ -1,6 +1,6 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { WINDOW } from '@ng-web-apis/common';
 import { map } from 'rxjs/operators';
 import { combineLatestWith, of } from 'rxjs';
 import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
@@ -13,7 +13,8 @@ import { ModalService } from '@core/modals/services/modal.service';
   selector: 'app-history-table',
   templateUrl: './history-table.component.html',
   styleUrls: ['./history-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HistoryTableComponent {
   public readonly isUserActive$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));
@@ -43,7 +44,7 @@ export class HistoryTableComponent {
   );
 
   constructor(
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     private readonly commonTableService: CommonTableService,
     private readonly crossChainTableService: CrossChainTableService,
     private readonly onChainTableService: OnChainTableService,

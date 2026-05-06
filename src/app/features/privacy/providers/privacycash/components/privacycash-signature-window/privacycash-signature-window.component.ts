@@ -8,7 +8,8 @@ import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/mo
   selector: 'app-privacycash-signature-window',
   templateUrl: './privacycash-signature-window.component.html',
   styleUrls: ['./privacycash-signature-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivacycashSignatureWindowComponent {
   public readonly authorized$ = this.privacycashSignatureService.signature$.pipe(

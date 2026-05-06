@@ -1,6 +1,6 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { catchError, map, Observable, of } from 'rxjs';
 import { HttpService } from '@core/services/http/http.service';
@@ -12,7 +12,7 @@ export class TimeGuard {
   private readonly isMobile = this.headerStore.isMobile;
 
   constructor(
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService
   ) {}

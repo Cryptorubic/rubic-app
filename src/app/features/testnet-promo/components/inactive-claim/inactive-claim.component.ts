@@ -5,7 +5,8 @@ import { ProofInfo } from '@features/testnet-promo/interfaces/api-models';
   selector: 'app-inactive-claim',
   templateUrl: './inactive-claim.component.html',
   styleUrls: ['./inactive-claim.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class InactiveClaimComponent {
   @Input({ required: true }) round: ProofInfo;

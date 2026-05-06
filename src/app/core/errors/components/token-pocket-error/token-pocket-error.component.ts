@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-token-pocket-error',
   templateUrl: './token-pocket-error.component.html',
   styleUrls: ['./token-pocket-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokenPocketErrorComponent {
   constructor() {}

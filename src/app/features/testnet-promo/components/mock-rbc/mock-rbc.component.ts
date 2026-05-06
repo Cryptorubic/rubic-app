@@ -5,7 +5,8 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
   selector: 'app-mock-rbc',
   templateUrl: './mock-rbc.component.html',
   styleUrls: ['./mock-rbc.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MockRbcComponent {
   constructor(private readonly googleTagManagerService: GoogleTagManagerService) {}

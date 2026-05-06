@@ -3,11 +3,11 @@
     [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
     tuiTextfieldSize="l"
     [formControl]="addressCtrl"
-    [pseudoFocus]="addressCtrl.invalid"
+    [tuiAppearanceFocus]="addressCtrl.invalid"
     [pseudoInvalid]="addressCtrl.invalid"
     [tuiTextfieldCleaner]="false"
     [tuiTextfieldLabelOutside]="false"
-    (focusedChange)="onFocusChange($event)"
+    (focusedChange)="onFocusChange($any($event))"
   >
     <div [@moveLabel]="isActiveInput" class="network-container__row">
       <label class="network-container__label">

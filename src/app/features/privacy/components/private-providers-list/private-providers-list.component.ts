@@ -11,7 +11,7 @@ import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { Router } from '@angular/router';
 import { PolymorpheusInput } from '@app/shared/decorators/polymorpheus-input';
 import { PrivateTradeType } from '../../constants/private-trade-types';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -20,7 +20,8 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
   selector: 'app-private-providers-list',
   templateUrl: './private-providers-list.component.html',
   styleUrls: ['./private-providers-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateProvidersListComponent {
   @PolymorpheusInput()

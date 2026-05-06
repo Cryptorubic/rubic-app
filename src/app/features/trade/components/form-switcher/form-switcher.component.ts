@@ -13,7 +13,8 @@ import { map } from 'rxjs';
   selector: 'app-form-switcher',
   templateUrl: './form-switcher.component.html',
   styleUrls: ['./form-switcher.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FormSwitcherComponent {
   @Input() set isDisabled(value: boolean) {

@@ -1,10 +1,10 @@
-import { Injectable, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Injectable } from '@angular/core';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { ErrorInterface } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, tap } from 'rxjs';
 
 @Injectable()
 export class HoudiniErrorService {
@@ -14,8 +14,7 @@ export class HoudiniErrorService {
 
   constructor(
     protected readonly privatePageTypeService: PrivatePageTypeService,
-    protected readonly privateSwapWindowService: PrivateSwapWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    protected readonly privateSwapWindowService: PrivateSwapWindowService
   ) {
     combineLatest([
       this.privatePageTypeService.activePage$,
@@ -34,7 +33,7 @@ export class HoudiniErrorService {
         tap(() => {
           this._tradeError$.next(null);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe();
   }

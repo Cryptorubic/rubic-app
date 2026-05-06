@@ -15,34 +15,34 @@
   }
 
   &_error {
-    background: var(--tui-error-bg);
+    background: var(--tui-status-negative-pale);
 
     .badge__dot {
-      background: var(--tui-error-fill);
+      background: var(--tui-status-negative);
     }
   }
 
   &_warning {
-    background: var(--tui-warning-bg);
+    background: var(--tui-status-warning-pale);
 
     .badge__dot {
-      background: var(--tui-warning-fill);
+      background: var(--tui-status-warning);
     }
   }
 
   &_success {
-    background: var(--tui-success-bg);
+    background: var(--tui-status-positive-pale);
 
     .badge__dot {
-      background: var(--tui-success-fill);
+      background: var(--tui-status-positive);
     }
   }
 
   &_info {
-    background: var(--tui-info-bg);
+    background: var(--tui-status-info-pale);
 
     .badge__dot {
-      background: var(--tui-info-fill);
+      background: var(--tui-status-info);
     }
   }
 

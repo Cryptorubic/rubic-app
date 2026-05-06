@@ -16,7 +16,8 @@ import { StoreService } from '@core/services/store/store.service';
   selector: 'app-railgun-form',
   templateUrl: './railgun-form.component.html',
   styleUrls: ['./railgun-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RailgunFormComponent {
   @Input({ required: true }) public readonly railgunId: string;

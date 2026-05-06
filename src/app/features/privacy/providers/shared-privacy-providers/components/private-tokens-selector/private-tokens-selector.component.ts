@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { Asset } from '@features/trade/models/asset';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 
@@ -7,7 +7,8 @@ import { AssetsSelectorConfig } from '@app/features/trade/components/assets-sele
   selector: 'app-private-tokens-selector',
   templateUrl: './private-tokens-selector.component.html',
   styleUrls: ['./private-tokens-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateTokensSelectorComponent {
   private readonly context = inject(POLYMORPHEUS_CONTEXT);

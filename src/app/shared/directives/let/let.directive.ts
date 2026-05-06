@@ -5,7 +5,8 @@ interface LetContext<T> {
 }
 
 @Directive({
-  selector: '[ngLet]'
+  selector: '[ngLet]',
+  standalone: false
 })
 export class LetDirective<T> {
   private _context: LetContext<T> = { ngLet: null };

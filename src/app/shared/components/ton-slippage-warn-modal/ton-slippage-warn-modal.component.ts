@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { compareAddresses, Token, TokenAmount } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -15,7 +15,8 @@ interface TxStep {
   selector: 'app-ton-slippage-warn-modal',
   templateUrl: './ton-slippage-warn-modal.component.html',
   styleUrls: ['./ton-slippage-warn-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TonSlippageWarnModalComponent {
   public readonly slippagePercent: number;

@@ -15,43 +15,41 @@ $secondary-color: #271e34;
 $transparent-black: rgba(0, 0, 0, 0.1);
 $transparent-white: rgba(255, 255, 255, 0.1);
 
-
 // ***** vars *****
 :root {
   --app-background: #282935;
-  --primary-background: var(--tui-base-01);
-  --secondary-background: var(--tui-secondary);
+  --primary-background: var(--tui-background-base);
+  --secondary-background: var(--tui-background-neutral-1);
   --dropdpwn-background: rgba(60, 61, 68, 0.85);
 
   --io-background: #222331;
 
+  --tui-background-accent-1: #00e28d;
+  --tui-background-accent-1-hover: #02b774;
+  --tui-background-accent-1-pressed: #02b774;
+  --tui-text-primary-on-accent-1: #14141d;
 
-  --tui-primary: #00e28d;
-  --tui-primary-hover: #02b774;
-  --tui-primary-active: #02b774;
-  --tui-primary-text: #14141d;
+  --tui-background-neutral-1: #3b3d4f;
+  --tui-background-neutral-1-hover: #4c4e67;
+  --tui-background-neutral-1-pressed: #4c4e67;
 
-  --tui-secondary: #3b3d4f;
-  --tui-secondary-hover: #4c4e67;
-  --tui-secondary-active: #4c4e67;
+  --tui-background-elevation-1: var(--tui-background-neutral-1);
+  --tui-background-elevation-2: var(--tui-background-neutral-1);
+  --tui-background-neutral-1: var(--primary-background);
 
-  --tui-elevation-01: var(--tui-secondary);
-  --tui-elevation-02: var(--tui-secondary);
-  --tui-clear: var(--primary-background);
-
-  --tui-link: white;
-  --tui-link-hover: white;
+  --tui-text-action: white;
+  --tui-text-action-hover: white;
 
   --tui-warn: #cfa200;
 
-  --tui-base-01: #2c2d3e;
-  --tui-base-02: #2c2d3e;
-  --tui-base-03: #2c2d3e;
-  --tui-base-04: #4d4d59;
+  --tui-background-base: #2c2d3e;
+  --tui-background-base-alt: #2c2d3e;
+  --tui-background-neutral-1-hover: #2c2d3e;
+  --tui-border-normal: #4d4d59;
 
-  --tui-text-01: white;
-  --tui-text-02: #9a9ab0;
-  --tui-text-03: #9a9ab0;
+  --tui-text-primary: white;
+  --tui-text-secondary: #9a9ab0;
+  --tui-text-tertiary: #9a9ab0;
 
   --tui-padding-xs: 0.25rem;
   --tui-padding-s: 0.5rem;
@@ -88,20 +86,20 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   //--primary-text-invert: rgb(255, 255, 255);
   //--secondary-text: rgba(0, 0, 0, 0.5);
   //
-  //--tui-primary: #{$primary-color};
-  //--tui-primary-hover: #{darken($primary-color, 10%)};
-  //--tui-primary-active: #{darken($primary-color, 10%)};
-  //--tui-primary-text: var(--primary-text-invert);
+  //--tui-background-accent-1: #{$primary-color};
+  //--tui-background-accent-1-hover: #{darken($primary-color, 10%)};
+  //--tui-background-accent-1-pressed: #{darken($primary-color, 10%)};
+  //--tui-text-primary-on-accent-1: var(--primary-text-invert);
   //
-  //--tui-secondary: rgba(255, 255, 255, 1);
-  //--tui-secondary-hover: rgba(255, 255, 255, 0.5);
-  //--tui-secondary-active: rgba(255, 255, 255, 0.5);
-  //--tui-secondary-text: var(--primary-text);
-  //--tui-link: var(--primary-text);
-  //--tui-link-hover: var(--primary-text);
+  //--tui-background-neutral-1: rgba(255, 255, 255, 1);
+  //--tui-background-neutral-1-hover: rgba(255, 255, 255, 0.5);
+  //--tui-background-neutral-1-pressed: rgba(255, 255, 255, 0.5);
+  //--tui-background-neutral-1-text: var(--primary-text);
+  //--tui-text-action: var(--primary-text);
+  //--tui-text-action-hover: var(--primary-text);
   //
-  //--tui-text-02: #3b3a3a;
-  //--tui-text-03: var(--tui-text-02);
+  //--tui-text-secondary: #3b3a3a;
+  //--tui-text-tertiary: var(--tui-text-secondary);
   //
   //--selection-color: rgb(243 249 243);
   //

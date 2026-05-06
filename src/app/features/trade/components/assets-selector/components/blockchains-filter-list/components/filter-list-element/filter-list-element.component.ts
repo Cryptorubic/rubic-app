@@ -5,7 +5,8 @@ import { BlockchainFilters } from '../../models/BlockchainFilters';
   selector: 'app-filter-list-element',
   templateUrl: './filter-list-element.component.html',
   styleUrls: ['./filter-list-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FilterListElementComponent {
   @Input({ required: true }) blockchainFilter!: BlockchainFilters;

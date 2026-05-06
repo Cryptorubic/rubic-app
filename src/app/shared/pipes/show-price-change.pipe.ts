@@ -5,7 +5,8 @@ import { AssetListType } from '@app/features/trade/models/asset';
 import { isTokenAmountWithPriceChange } from '../utils/is-token';
 
 @Pipe({
-  name: 'showPriceChange'
+  name: 'showPriceChange',
+  standalone: false
 })
 export class ShowPriceChangePipe implements PipeTransform {
   transform(token: BalanceToken, listType: AssetListType): number {

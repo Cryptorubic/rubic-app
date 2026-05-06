@@ -1,9 +1,9 @@
-import { Inject, Injectable, Renderer2 } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Inject, Injectable, Renderer2, DestroyRef, inject } from '@angular/core';
+import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DOCUMENT } from '@angular/common';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { compareAssets } from '../../utils/compare-assets';
 import { TradePageService } from '../trade-page/trade-page.service';
@@ -38,8 +38,7 @@ export class ChartService {
     private readonly headerStore: HeaderStore,
     private readonly tradePageService: TradePageService,
     private readonly gtmService: GoogleTagManagerService,
-    @Inject(DOCUMENT) private readonly document: Document,
-    private readonly destroy$: TuiDestroyService
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   /* Invoke only once on app init in any component to get access to renderer object in ChartService */
@@ -92,7 +91,7 @@ export class ChartService {
             compareAssets(prev.fromToken, next.fromToken) &&
             compareTokens(prev.toToken, next.toToken)
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(inputValue => {
         const container = this.document.getElementById(
@@ -106,7 +105,7 @@ export class ChartService {
 
     this.headerStore
       .getMobileDisplayStatus()
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe(mobile => {
         this.setChartSize(mobile ? { height: 250, width: 360 } : { height: 250, width: 600 });
         const inputValue = swapsFormService.inputValue;
@@ -120,7 +119,7 @@ export class ChartService {
       });
 
     this.tradePageService.formContent$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe(formContent => {
         if (formContent === 'form' && this.chartInfo.status.lastOpened) {
           this.setChartOpened(true, { rewriteLastOpened: true, forceClosed: false });
@@ -129,7 +128,7 @@ export class ChartService {
         }
       });
 
-    this.chartVisibile$.pipe(takeUntil(this.destroy$)).subscribe(opened => {
+    this.chartVisibile$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(opened => {
       if (opened)
         this.gtmService.fireOpenChart(
           swapsFormService.inputValue.fromToken,
@@ -244,4 +243,6 @@ export class ChartService {
     });
     observer.observe(parentNode, { childList: true });
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

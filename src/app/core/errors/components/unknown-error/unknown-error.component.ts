@@ -1,8 +1,8 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { timer } from 'rxjs';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 
@@ -10,7 +10,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
   selector: 'polymorpheus-unknown-error',
   templateUrl: './unknown-error.component.html',
   styleUrls: ['./unknown-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UnknownErrorComponent {
   public error: RubicError<ERROR_TYPE>;
@@ -21,7 +22,7 @@ export class UnknownErrorComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, RubicError<ERROR_TYPE>>,
     private readonly cdr: ChangeDetectorRef,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator
   ) {
     this.error = context.data;
   }

@@ -5,10 +5,10 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
+import { WA_WINDOW, WA_USER_AGENT } from '@ng-web-apis/common';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
@@ -19,7 +19,6 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
-import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
@@ -33,7 +32,8 @@ import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [],
+  standalone: false
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -43,11 +43,11 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get isChromium(): boolean {
-    if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
+    const ua = this.userAgent;
+    if (/Edg\//.test(ua)) {
       return false;
     }
-
-    return !tuiIsFirefox(this.userAgent);
+    return !/Firefox\//.test(ua);
   }
 
   public get providers(): ReadonlyArray<WalletProvider> {
@@ -81,8 +81,8 @@ export class WalletsModalComponent implements OnInit {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
-    @Inject(WINDOW) private readonly window: RubicWindow,
-    @Inject(USER_AGENT) private readonly userAgent: string,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_USER_AGENT) private readonly userAgent: string,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,

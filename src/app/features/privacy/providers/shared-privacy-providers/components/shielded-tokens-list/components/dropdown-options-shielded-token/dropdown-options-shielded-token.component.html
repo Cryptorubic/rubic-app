@@ -1,18 +1,19 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
-  <tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen" *ngIf="showDropdown">
+  <!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
+  <div #dropdown [tuiDropdown]="content" [(tuiDropdownOpen)]="isDropdownOpen" *ngIf="showDropdown">
     <button
       class="dropdown-button"
       appearance="flat"
-      icon="tuiIconMoreVertical"
+      iconStart="@tui.ellipsis-vertical"
       tuiIconButton
       type="button"
       [size]="isMobile ? 'm' : 's'"
-      [pseudoHover]="dropdown.open || null"
+      [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
     ></button>
-  </tui-hosted-dropdown>
+  </div>
 
-  <ng-template #content let-activeZone>
-    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+  <ng-template #content>
+    <tui-data-list tuiDataListDropdownManager size="m">
       <div class="dropdown-content__wrapper">
         <ng-container *ngIf="token.shieldTxHash">
           <a [href]="getTxLink(token)" target="_blank">

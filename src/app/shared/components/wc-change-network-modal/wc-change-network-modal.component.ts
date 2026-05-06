@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { takeUntil, timer } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { timer } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
@@ -11,7 +11,8 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   templateUrl: './wc-change-network-modal.component.html',
   styleUrls: ['./wc-change-network-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [],
+  standalone: false
 })
 export class WcChangeNetworkModalComponent {
   public readonly oldNetwork: string;
@@ -23,13 +24,12 @@ export class WcChangeNetworkModalComponent {
     private readonly context: TuiDialogContext<
       boolean,
       { oldNetwork: BlockchainName; newNetwork: BlockchainName }
-    >,
-    @Self() private readonly destroyed$: TuiDestroyService
+    >
   ) {
     this.oldNetwork = blockchainLabel[context.data.oldNetwork];
     this.newNetwork = blockchainLabel[context.data.newNetwork];
     timer(60_000)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe(() => this.onCancel());
   }
 

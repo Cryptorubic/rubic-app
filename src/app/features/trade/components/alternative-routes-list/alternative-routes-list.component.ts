@@ -6,7 +6,8 @@ import { AlternativeRoutesService } from '../../services/alternative-route-api-s
   selector: 'app-alternative-routes-list',
   templateUrl: './alternative-routes-list.component.html',
   styleUrls: ['./alternative-routes-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AlternativeRoutesListComponent {
   @Input({ required: true }) alternativeRoutes: AlternativeRoute[];

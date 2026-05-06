@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, Input, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -6,12 +7,11 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -28,10 +28,10 @@ import { RevealWindowService } from '@features/privacy/providers/shared-privacy-
     RailgunPrivateAssetsService,
     { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService,
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunRevealPageComponent {
   @Input({ required: true }) public readonly railgunId: string;
@@ -60,15 +60,13 @@ export class RailgunRevealPageComponent {
 
   private readonly authService = inject(AuthService);
 
-  private readonly destroy$ = inject(TuiDestroyService);
-
   private readonly windowService = inject(RevealWindowService);
 
   private readonly tokensBalanceService = inject(TokensBalanceService);
 
   ngOnInit() {
     this.railgunFacade.completedChains$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
@@ -82,11 +80,9 @@ export class RailgunRevealPageComponent {
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
-                status: 'info',
+                appearance: 'info',
                 autoClose: 10_000,
-                data: null,
-                icon: '',
-                defaultAutoCloseTime: 0
+                data: null
               });
               await this.revealService.unshield(
                 token.address,
@@ -97,11 +93,9 @@ export class RailgunRevealPageComponent {
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',
                 {
-                  status: 'success',
+                  appearance: 'success',
                   autoClose: 5_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
+                  data: null
                 }
               );
               this.privateStatisticsService.saveAction(
@@ -136,4 +130,6 @@ export class RailgunRevealPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

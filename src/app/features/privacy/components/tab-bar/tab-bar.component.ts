@@ -7,7 +7,8 @@ import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@core/services/google-tag-manage
   selector: 'app-tab-bar',
   templateUrl: './tab-bar.component.html',
   styleUrls: ['./tab-bar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TabBarComponent {
   @Input({ required: true }) tabs: PrivateModeTab[] = [];

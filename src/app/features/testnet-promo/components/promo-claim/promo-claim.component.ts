@@ -5,7 +5,8 @@ import { UserProofs } from '@features/testnet-promo/interfaces/api-models';
   selector: 'app-promo-claim',
   templateUrl: './promo-claim.component.html',
   styleUrls: ['./promo-claim.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PromoClaimComponent {
   @Input({ required: true }) public readonly proofs: UserProofs;

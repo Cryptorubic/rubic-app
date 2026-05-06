@@ -1,16 +1,17 @@
-<tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen">
+<!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
+<div #dropdown [tuiDropdown]="content" [(tuiDropdownOpen)]="isDropdownOpen">
   <button
     appearance="flat"
-    icon="tuiIconMoreVertical"
+    iconStart="@tui.ellipsis-vertical"
     tuiIconButton
     type="button"
     [size]="'xs'"
-    [pseudoHover]="dropdown.open || null"
+    [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
   ></button>
-</tui-hosted-dropdown>
+</div>
 
-<ng-template #content let-activeZone>
-  <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+<ng-template #content>
+  <tui-data-list tuiDataListDropdownManager size="m">
     <div class="dropdown-content-wrapper">
       <div class="dropdown-content__actions">
         <ng-container>
@@ -21,7 +22,7 @@
               (click)="copyToClipboard()"
               [tuiHint]="copyHint"
               [tuiHintShowDelay]="50"
-              tuiHintDirection="top-right"
+              tuiHintDirection="top-end"
               [tuiHintHideDelay]="100"
             ></span>
 

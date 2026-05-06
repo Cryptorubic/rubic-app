@@ -5,7 +5,8 @@ import { PrivateActivityItem } from '../../models/activity-item';
   selector: 'app-last-private-activity',
   templateUrl: './last-private-activity.component.html',
   styleUrls: ['./last-private-activity.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LastPrivateActivityComponent {
   @Input() activityList: PrivateActivityItem[] = [];

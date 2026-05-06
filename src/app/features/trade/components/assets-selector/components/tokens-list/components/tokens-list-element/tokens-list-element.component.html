@@ -62,8 +62,8 @@
         <div class="token-card__amount" *ngIf="token.amount.gt(0) || balanceLoading">
           <span
             [tuiHint]="tokenAmountTooltip"
-            tuiHintDirection="top-left"
-            tuiHintAppearance="onDark"
+            tuiHintDirection="top-start"
+            tuiHintAppearance="dark"
             >{{ token.amount | bigNumberFormat | shortenAmount : 6 : 4 }}</span
           >
           <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>

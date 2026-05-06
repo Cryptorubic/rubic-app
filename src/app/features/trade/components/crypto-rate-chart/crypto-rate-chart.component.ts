@@ -5,7 +5,8 @@ import { ChartService } from '../../services/chart-service/chart.service';
   selector: 'app-crypto-rate-chart',
   templateUrl: './crypto-rate-chart.component.html',
   styleUrls: ['./crypto-rate-chart.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CryptoRateChartComponent {
   public readonly chartInfo$ = this.chartService.chartInfo$;

@@ -1,16 +1,21 @@
-import { NgModule } from '@angular/core';
+import { TuiInput } from '@taiga-ui/core';
+import { TuiSelect } from '@taiga-ui/kit';
+import { TuiActiveZone } from '@taiga-ui/cdk';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { SharedModule } from '@shared/shared.module';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule,
-  TuiNotificationModule
+  TuiNotification,
+  TuiDataList,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint,
+  TuiAppearance
 } from '@taiga-ui/core';
+import { TuiInitialsPipe } from '@taiga-ui/kit';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
 import { HideTokensWindowComponent } from '@features/privacy/providers/shared-privacy-providers/components/hide-tokens-window/hide-tokens-window.component';
@@ -43,13 +48,7 @@ import { ShieldedTokensListElementComponent } from './components/shielded-tokens
 import { DropdownOptionsShieldedTokenComponent } from './components/shielded-tokens-list/components/dropdown-options-shielded-token/dropdown-options-shielded-token.component';
 import { PasswordVerificationModalComponent } from './components/password-verification-modal/password-verification-modal.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import {
-  TuiAvatarModule,
-  TuiDataListWrapperModule,
-  TuiInputModule,
-  TuiSelectModule
-} from '@taiga-ui/kit';
+import { TuiDataListWrapper, TuiAvatar, TuiButtonLoading } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
@@ -98,22 +97,25 @@ import { RouterModule } from '@angular/router';
     AssetsSelectorModule,
     SharedTradeModule,
     SharedModule,
-    TuiButtonModule,
-    TuiScrollbarModule,
-    TuiHostedDropdownModule,
-    TuiDataListModule,
+    TuiButton,
+    TuiScrollbar,
+    TuiScrollable,
+    ...TuiDropdown,
+    ...TuiDataList,
     InlineSVGModule,
-    TuiHintModule,
-    TuiActiveZoneModule,
-    TuiInputModule,
+    ...TuiHint,
+    TuiActiveZone,
+    ...TuiInput,
     ReactiveFormsModule,
-    TuiTextfieldControllerModule,
-    TuiNotificationModule,
-    TuiDataListWrapperModule,
-    TuiAvatarModule,
-    TuiSelectModule,
+    ...TuiNotification,
+    ...TuiDataListWrapper,
+    TuiAvatar,
+    ...TuiSelect,
     ClipboardModule,
-    RouterModule
+    RouterModule,
+    TuiButtonLoading,
+    TuiAppearance,
+    TuiInitialsPipe
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -131,6 +133,7 @@ import { RouterModule } from '@angular/router';
     DepositPrivateTradeInfoComponent,
     MobileStubComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     SwapsFormService,
     PreviewSwapService,

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
@@ -10,12 +11,11 @@ import {
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.service';
@@ -33,12 +33,11 @@ import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hink
   styleUrls: ['./hinkal-swap-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: ToAssetsService, useClass: HinkalToPrivateAssetsService },
-
     { provide: TokensFacadeService, useClass: HinkalSwapTokensFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class HinkalSwapTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
@@ -60,7 +59,6 @@ export class HinkalSwapTokensPageComponent {
     private readonly workerService: HinkalWorkerService,
     private readonly hinkalFacadeService: HinkalFacadeService,
     private readonly notificationsService: NotificationsService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
@@ -75,33 +73,37 @@ export class HinkalSwapTokensPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
-    this.fromAssetsService.assetListType$.pipe(takeUntil(this.destroy$)).subscribe(asset => {
-      const isFromChain = BlockchainsInfo.isBlockchainName(asset);
-      const isToChain = BlockchainsInfo.isBlockchainName(this.toAssetsService.assetListType);
+    this.fromAssetsService.assetListType$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(asset => {
+        const isFromChain = BlockchainsInfo.isBlockchainName(asset);
+        const isToChain = BlockchainsInfo.isBlockchainName(this.toAssetsService.assetListType);
 
-      if (isFromChain && isToChain && asset !== this.toAssetsService.assetListType) {
-        this.privateSwapWindowService.patchSwapInfo({ toAsset: null });
-      }
-    });
+        if (isFromChain && isToChain && asset !== this.toAssetsService.assetListType) {
+          this.privateSwapWindowService.patchSwapInfo({ toAsset: null });
+        }
+      });
 
-    this.toAssetsService.assetListType$.pipe(takeUntil(this.destroy$)).subscribe(asset => {
-      const isToChain = BlockchainsInfo.isBlockchainName(asset);
-      const isFromChain = BlockchainsInfo.isBlockchainName(this.fromAssetsService.assetListType);
+    this.toAssetsService.assetListType$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(asset => {
+        const isToChain = BlockchainsInfo.isBlockchainName(asset);
+        const isFromChain = BlockchainsInfo.isBlockchainName(this.fromAssetsService.assetListType);
 
-      if (isFromChain && isToChain && asset !== this.fromAssetsService.assetListType) {
-        this.privateSwapWindowService.patchSwapInfo({ fromAsset: null });
-      }
-    });
+        if (isFromChain && isToChain && asset !== this.fromAssetsService.assetListType) {
+          this.privateSwapWindowService.patchSwapInfo({ fromAsset: null });
+        }
+      });
     this.subscribeOnPrivateBalanceChanges();
   }
 
   private subscribeOnPrivateBalanceChanges(): void {
     this.hinkalBalanceService.balances$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(shieldedBalances => {
         const swapInfo = this.privateSwapWindowService.swapInfo;
 
@@ -159,4 +161,6 @@ export class HinkalSwapTokensPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

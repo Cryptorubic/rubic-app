@@ -25,7 +25,8 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
   templateUrl: './railgun-main-page.component.html',
   styleUrls: ['./railgun-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [fadeAnimation]
+  animations: [fadeAnimation],
+  standalone: false
 })
 export class RailgunMainPageComponent {
   private readonly privacyService = inject(PrivatePageTypeService);

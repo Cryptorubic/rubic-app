@@ -8,7 +8,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-tokens-list-filters',
   templateUrl: './tokens-list-filters.component.html',
   styleUrls: ['./tokens-list-filters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokensListFiltersComponent {
   @Output() onSelect: EventEmitter<AssetListType> = new EventEmitter();

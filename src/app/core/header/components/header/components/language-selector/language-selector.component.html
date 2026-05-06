@@ -1,4 +1,4 @@
-<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+<div [tuiDropdown]="dropdown" tuiDropdownAlign="end" [(tuiDropdownOpen)]="isOpened">
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
       <img
@@ -9,9 +9,9 @@
       />
     </button>
   </div>
-</tui-hosted-dropdown>
+</div>
 
-<ng-template #dropdown let-activeZone>
+<ng-template #dropdown>
   <div class="languages">
     <button
       *ngFor="let lang of languages"

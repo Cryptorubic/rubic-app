@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -5,22 +6,22 @@ import {
   EventEmitter,
   Input,
   Output,
-  Self,
   ViewChild,
   OnInit,
   ElementRef,
-  Inject
+  Inject,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { AnimationBuilder } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
@@ -33,7 +34,8 @@ import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // animations: [LIST_ANIMATION, LIST_ANIMATION_2, LIST_CHANGE_ANIMATION, containerAnim, innerAnim],
-  providers: [TuiDestroyService]
+  providers: [],
+  standalone: false
 })
 export class TokensListComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
@@ -102,7 +104,6 @@ export class TokensListComponent implements OnInit {
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly builder: AnimationBuilder,
@@ -145,7 +146,7 @@ export class TokensListComponent implements OnInit {
         filter(range => {
           return !this.skipTokensFetching(range.end);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         const assetType = this.listType;
@@ -203,4 +204,6 @@ export class TokensListComponent implements OnInit {
       );
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

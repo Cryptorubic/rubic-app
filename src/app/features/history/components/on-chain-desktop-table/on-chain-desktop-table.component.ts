@@ -11,7 +11,8 @@ const onChinCols = ['from', 'to', 'blockchain', 'date', 'status', 'provider'] as
   selector: 'app-on-chain-desktop-table',
   templateUrl: './on-chain-desktop-table.component.html',
   styleUrls: ['./on-chain-desktop-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class OnChainDesktopTableComponent {
   @Input({ required: true }) device: 'mobile' | 'desktop' | 'tablet';

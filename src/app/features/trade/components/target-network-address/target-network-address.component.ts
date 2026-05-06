@@ -14,7 +14,8 @@ import { FormControl } from '@angular/forms';
       state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
       transition(`true <=> false`, animate('0.2s ease-out'))
     ])
-  ]
+  ],
+  standalone: false
 })
 export class TargetNetworkAddressComponent {
   @Input({ required: true }) addressCtrl: FormControl<string>;

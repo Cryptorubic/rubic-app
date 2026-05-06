@@ -16,11 +16,11 @@
       font-size: var(--tui-font-text-s);
     }
   }
- 
+
   &__item {
     ::ng-deep {
       .t-wrapper {
-        background: var(--tui-secondary-active);
+        background: var(--tui-background-neutral-1-pressed);
 
         &:hover {
           background: var(--app-background);
@@ -31,12 +31,12 @@
     &-active {
       ::ng-deep {
         .t-wrapper {
-          color: var(--tui-primary-text);
+          color: var(--tui-text-primary-on-accent-1);
 
-          background: var(--tui-primary);
+          background: var(--tui-background-accent-1);
 
           &:hover {
-            background: var(--tui-primary);
+            background: var(--tui-background-accent-1);
           }
         }
       }
@@ -114,11 +114,10 @@
     }
 
     &-active {
-      background: var(--tui-primary);
+      background: var(--tui-background-accent-1);
     }
 
     &-disabled {
-
       pointer-events: none;
 
       > * {

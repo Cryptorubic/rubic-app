@@ -18,7 +18,8 @@ interface TokensRate {
   selector: 'app-tokens-rate',
   templateUrl: './tokens-rate.component.html',
   styleUrls: ['./tokens-rate.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokensRateComponent implements OnInit {
   public tokensRate$: Observable<TokensRate>;

@@ -1,7 +1,7 @@
 <div class="wrapper">
   <app-window-container *ngIf="!railgunId && !railgunAddress">
     <ng-container header>Log In</ng-container>
-    <tui-loader class="loader" [inheritColor]="true" [overlay]="true" [showLoader]="loading">
+    <tui-loader class="loader" [inheritColor]="true" [overlay]="true" [loading]="loading">
       <ng-container *ngIf="hasAccount; else actions">
         <p>Welcome back! Please enter your password to access your wallet.</p>
         <form [formGroup]="secretForm" (ngSubmit)="onSubmit()">
@@ -11,7 +11,7 @@
           </tui-input-password>
           <tui-error
             formControlName="password"
-            [error]="['required', 'minlength', 'invalid'] | tuiFieldError | async"
+            [order]="['required', 'minlength', 'invalid']"
           ></tui-error>
 
           <div class="buttons">

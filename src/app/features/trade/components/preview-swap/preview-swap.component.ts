@@ -42,7 +42,8 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
   selector: 'app-preview-swap',
   templateUrl: './preview-swap.component.html',
   styleUrls: ['./preview-swap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PreviewSwapComponent implements OnDestroy {
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;

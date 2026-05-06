@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { BlockchainName, BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -9,7 +9,8 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   selector: 'polymorpheus-coinbase-confirm-modal',
   templateUrl: './coinbase-confirm-modal.component.html',
   styleUrls: ['./coinbase-confirm-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CoinbaseConfirmModalComponent {
   public readonly availableBlockchains: BlockchainName[] = [

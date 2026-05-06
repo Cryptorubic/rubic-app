@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { combineLatest, combineLatestWith, Observable, timer } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
 import { debounceTime, filter, map, share, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Token } from '@cryptorubic/core';
@@ -44,7 +44,7 @@ export class OnChainTableService extends TableService<
     share()
   );
 
-  public readonly loading$ = this.request$.pipe(map(tuiIsFalsy));
+  public readonly loading$ = this.request$.pipe(map(v => !v));
 
   public readonly total$ = this.request$.pipe(
     filter(tuiIsPresent),

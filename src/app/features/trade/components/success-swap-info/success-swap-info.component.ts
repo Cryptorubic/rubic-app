@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-success-swap-info',
   templateUrl: './success-swap-info.component.html',
   styleUrls: ['./success-swap-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SuccessSwapInfoComponent {
   constructor() {}

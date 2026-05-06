@@ -5,7 +5,8 @@ import { HeaderStore } from '@app/core/header/services/header.store';
   selector: 'app-chart-toggler',
   templateUrl: './chart-toggler.component.html',
   styleUrls: ['./chart-toggler.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ChartTogglerComponent {
   @Input() showChart: boolean = false;

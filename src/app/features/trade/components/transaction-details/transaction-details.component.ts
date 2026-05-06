@@ -17,7 +17,8 @@ import { TradeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chai
   selector: 'app-transaction-details',
   templateUrl: './transaction-details.component.html',
   styleUrls: ['./transaction-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TransactionDetailsComponent {
   public readonly text = transactionInfoText;

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/token-security';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { TUI_PLATFORM } from '@taiga-ui/cdk/tokens';
 import { GO_PLUS_AVAILABLE_NETWORKS } from '../../../../constants/go-plus-available-networks';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import { compareAddresses } from '@cryptorubic/core';
@@ -25,7 +25,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-tokens-list-element',
   templateUrl: './tokens-list-element.component.html',
   styleUrls: ['./tokens-list-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokensListElementComponent {
   @Input({ required: true }) token: AvailableTokenAmount;
@@ -93,7 +94,7 @@ export class TokensListElementComponent {
     return TokenSecurityStatus.LOW_RISK;
   }
 
-  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
+  constructor(@Inject(TUI_PLATFORM) private readonly _platform: string) {}
 
   public onImageError($event: Event): void {
     TokensFacadeService.onTokenImageError($event);

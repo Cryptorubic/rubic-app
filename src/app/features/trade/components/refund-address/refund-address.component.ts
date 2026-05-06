@@ -15,7 +15,8 @@ import { tap } from 'rxjs';
       state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
       transition(`true <=> false`, animate('0.2s ease-out'))
     ])
-  ]
+  ],
+  standalone: false
 })
 export class RefundAddressComponent implements OnDestroy {
   public readonly refundAddressCtrl = this.refundService.refundAddressCtrl;

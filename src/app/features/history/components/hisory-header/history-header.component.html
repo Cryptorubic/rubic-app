@@ -1,5 +1,5 @@
 <div class="header">
-  <tui-tabs class="tabs" [underline]="false" size="s" [activeItemIndex]="activeItemIndex$ | async">
+  <tui-tabs class="tabs" [underline]="false" size="m" [activeItemIndex]="activeItemIndex$ | async">
     <button tuiTab (click)="onClick(0)">
       <div class="icon" inlineSVG="assets/images/icons/history/cross.svg"></div>
       Cross Chain
@@ -22,7 +22,7 @@
         [formControl]="statusFilter"
       >
         Status
-        <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
+        <input placeholder="Choose your hero" tuiTextfieldLegacy />
         <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
       </tui-select>
     </form>

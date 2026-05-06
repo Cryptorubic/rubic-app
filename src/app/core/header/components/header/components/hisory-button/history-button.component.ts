@@ -8,7 +8,8 @@ import { AuthService } from '@core/services/auth/auth.service';
   selector: 'app-history-button',
   templateUrl: './history-button.component.html',
   styleUrls: ['./history-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HistoryButtonComponent {
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;

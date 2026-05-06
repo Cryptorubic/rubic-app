@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Inject, Injector, Input } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TuiAppearance } from '@taiga-ui/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { Router } from '@angular/router';
@@ -16,10 +15,11 @@ import { HeaderStore } from '@core/header/services/header.store';
   selector: 'app-login-button',
   templateUrl: './login-button.component.html',
   styleUrls: ['./login-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LoginButtonComponent {
-  @Input() appearance: TuiAppearance | string = 'primary';
+  @Input() appearance: string = 'primary';
 
   @Input() buttonHierarchy?: 'header' | 'form';
 

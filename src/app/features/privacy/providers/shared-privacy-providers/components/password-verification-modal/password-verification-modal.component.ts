@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 
 @Component({
@@ -16,7 +16,8 @@ import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
       state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
       transition(`true <=> false`, animate('0.2s ease-out'))
     ])
-  ]
+  ],
+  standalone: false
 })
 export class PasswordVerificationModalComponent {
   public readonly passwordControl = new FormControl<string>('', {

@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,26 +7,25 @@ import {
   EventEmitter,
   HostBinding,
   OnInit,
-  Self
+  DestroyRef,
+  inject
 } from '@angular/core';
-import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-rubic-button',
   templateUrl: './rubic-button.component.html',
   styleUrls: ['./rubic-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [],
+  standalone: false
 })
 export class RubicButtonComponent implements OnInit {
   @HostBinding('class') @Input('class') classList: string;
 
-  @Input() appearance: TuiAppearance | string = 'primary';
+  @Input() appearance: string = 'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
 
@@ -57,10 +57,7 @@ export class RubicButtonComponent implements OnInit {
 
   public themeSubscription$: Subscription;
 
-  constructor(
-    private readonly themeService: ThemeService,
-    @Self() private readonly destroy$: TuiDestroyService
-  ) {
+  constructor(private readonly themeService: ThemeService) {
     this._fullWidth = true;
   }
 
@@ -69,7 +66,7 @@ export class RubicButtonComponent implements OnInit {
   }
 
   private handleThemeChange(): void {
-    this.themeService.theme$.pipe(takeUntil(this.destroy$)).subscribe(el => {
+    this.themeService.theme$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(el => {
       if (!this.classList) {
         this.classList = '';
       }
@@ -83,4 +80,6 @@ export class RubicButtonComponent implements OnInit {
       this.onClick.emit(event);
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

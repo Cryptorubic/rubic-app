@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Self, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
@@ -10,11 +11,10 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PriceTokenAmount, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivacycashPrivateSwapTokensFacadeService } from '../../services/common/token-facades/privacycash-private-swap-tokens-facade.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
@@ -26,11 +26,11 @@ import { PrivateSwapWindowService } from '../../../shared-privacy-providers/serv
   styleUrls: ['./privacycash-swap-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateSwapTokensFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
@@ -58,7 +58,7 @@ export class PrivacycashSwapPageComponent {
     this.notificationsService
   );
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -67,7 +67,7 @@ export class PrivacycashSwapPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
@@ -75,24 +75,26 @@ export class PrivacycashSwapPageComponent {
   }
 
   private subscribeOnPrivateBalanceChanges(): void {
-    this.privacycashTokensService.tokens$.pipe(takeUntil(this.destroy$)).subscribe(pcTokens => {
-      const swapInfo = this.privateSwapWindowService.swapInfo;
-      const foundSrcToken = pcTokens.find(pcToken => compareTokens(swapInfo.fromAsset, pcToken));
-      const foundDstToken = pcTokens.find(pcToken => compareTokens(swapInfo.toAsset, pcToken));
+    this.privacycashTokensService.tokens$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(pcTokens => {
+        const swapInfo = this.privateSwapWindowService.swapInfo;
+        const foundSrcToken = pcTokens.find(pcToken => compareTokens(swapInfo.fromAsset, pcToken));
+        const foundDstToken = pcTokens.find(pcToken => compareTokens(swapInfo.toAsset, pcToken));
 
-      if (swapInfo.fromAsset && foundSrcToken) {
-        const balance = Token.fromWei(foundSrcToken.balanceWei, swapInfo.fromAsset.decimals);
-        this.privateSwapWindowService.patchSwapInfo({
-          fromAsset: { ...swapInfo.fromAsset, amount: balance }
-        });
-      }
-      if (swapInfo.toAsset && foundDstToken) {
-        const balance = Token.fromWei(foundDstToken.balanceWei, swapInfo.toAsset.decimals);
-        this.privateSwapWindowService.patchSwapInfo({
-          toAsset: { ...swapInfo.toAsset, amount: balance }
-        });
-      }
-    });
+        if (swapInfo.fromAsset && foundSrcToken) {
+          const balance = Token.fromWei(foundSrcToken.balanceWei, swapInfo.fromAsset.decimals);
+          this.privateSwapWindowService.patchSwapInfo({
+            fromAsset: { ...swapInfo.fromAsset, amount: balance }
+          });
+        }
+        if (swapInfo.toAsset && foundDstToken) {
+          const balance = Token.fromWei(foundDstToken.balanceWei, swapInfo.toAsset.decimals);
+          this.privateSwapWindowService.patchSwapInfo({
+            toAsset: { ...swapInfo.toAsset, amount: balance }
+          });
+        }
+      });
   }
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
@@ -146,4 +148,6 @@ export class PrivacycashSwapPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

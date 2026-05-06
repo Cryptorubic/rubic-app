@@ -11,7 +11,7 @@ import { TradeState } from '@features/trade/models/trade-state';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
@@ -23,7 +23,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   selector: 'app-providers-list',
   templateUrl: './providers-list.component.html',
   styleUrls: ['./providers-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ProvidersListComponent {
   @PolymorpheusInput()

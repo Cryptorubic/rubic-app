@@ -4,7 +4,7 @@ import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { AssetSelector } from '@app/shared/models/asset-selector';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import {
   PreviewPrivateSwapOptions,
   PreviewSwapWarning,
@@ -28,7 +28,8 @@ import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-
   selector: 'app-private-preview-swap',
   templateUrl: './private-preview-swap.component.html',
   styleUrls: ['./private-preview-swap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivatePreviewSwapComponent {
   public readonly fromAsset: AssetSelector;

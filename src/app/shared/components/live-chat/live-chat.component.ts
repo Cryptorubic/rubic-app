@@ -5,7 +5,8 @@ import { LiveChatService } from '@core/services/live-chat/live-chat.service';
   selector: 'app-live-chat',
   templateUrl: './live-chat.component.html',
   styleUrls: ['./live-chat.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LiveChatComponent {
   constructor(private readonly liveChatService: LiveChatService) {}

@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { PrivacyAuthService } from '../../services/privacy-auth.service';
 import { waitFor } from '@cryptorubic/web3';
 import { Subject } from 'rxjs';
@@ -27,7 +27,8 @@ import { PrivateLocalStorageService } from '../../services/privacy-local-storage
     trigger('inOutAnimation', [
       transition(':leave', [style({ opacity: 1 }), animate('0.5s ease-in', style({ opacity: 0 }))])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class PrivacyAuthWindowComponent implements AfterViewInit {
   @HostListener('keydown.enter', ['$event'])

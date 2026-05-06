@@ -45,7 +45,8 @@ import {
         animate('0.25s ease-in-out', style({ opacity: 0, width: 0, scale: 0 }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class PrivacyPageViewComponent implements OnInit {
   public readonly swapWindowCreationConfig: PrivateSwapFormConfig = {

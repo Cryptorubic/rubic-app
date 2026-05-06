@@ -5,7 +5,8 @@ import { BlockchainName } from '@cryptorubic/core';
   selector: 'app-receiver-address-button',
   templateUrl: './receiver-address-button.component.html',
   styleUrls: ['./receiver-address-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ReceiverAddressButtonComponent {
   @Input({ required: true }) toBlockchain: BlockchainName;

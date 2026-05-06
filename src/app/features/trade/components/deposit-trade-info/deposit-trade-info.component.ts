@@ -11,7 +11,8 @@ import { depositInfoText } from './constants/cn-info-text';
   selector: 'app-deposit-trade-info',
   templateUrl: './deposit-trade-info.component.html',
   styleUrls: ['./deposit-trade-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DepositTradeInfoComponent {
   public readonly text = depositInfoText;

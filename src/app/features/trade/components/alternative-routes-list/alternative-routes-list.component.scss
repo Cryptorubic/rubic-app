@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 .alternative-routes-list {
-
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -13,8 +12,6 @@
       line-height: 15px;
     }
   }
-  
-
 }
 
 .hr-mobile {
@@ -26,7 +23,7 @@
   &__content {
     margin-right: 10px;
     padding: var(--tui-padding-l);
-  
+
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -38,7 +35,7 @@
     gap: 4px;
     padding: 15px;
 
-    background: var(--tui-secondary);  
+    background: var(--tui-background-neutral-1);
   }
 
   .alternative-routes-list {

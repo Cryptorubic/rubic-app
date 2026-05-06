@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
@@ -9,7 +10,6 @@ import {
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { CrossChainDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
 
 @Component({
@@ -24,7 +24,8 @@ import { timer } from 'rxjs';
         animate('0.3s ease-out', style({ height: '54px', padding: '1rem', 'margin-top': '1rem' }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class DepositStatusInfoComponent {
   public hintShown: boolean = false;
@@ -37,7 +38,7 @@ export class DepositStatusInfoComponent {
   @Input() paymentInfo: CrossChainPaymentInfo;
 
   constructor(
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef
   ) {

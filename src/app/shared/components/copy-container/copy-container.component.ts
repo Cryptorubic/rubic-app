@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -5,13 +6,13 @@ import {
   ChangeDetectorRef,
   Inject
 } from '@angular/core';
-import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-copy-container',
   templateUrl: './copy-container.component.html',
   styleUrls: ['./copy-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CopyContainerComponent {
   @Input({ required: true }) text: string;
@@ -20,7 +21,7 @@ export class CopyContainerComponent {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator
   ) {}
 
   public copyToClipboard(): void {

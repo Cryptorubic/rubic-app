@@ -34,7 +34,7 @@
   }
 
   &__logout {
-    color: var(--tui-negative);
+    color: var(--tui-text-negative);
   }
 }
 
@@ -54,7 +54,7 @@
 
 .arrow {
   ::ng-deep svg path {
-    fill: var(--tui-text-01);
+    fill: var(--tui-text-primary);
   }
 }
 
@@ -96,6 +96,6 @@
       .tui-group .t-wrapper {
         padding: 0 var(--tui-padding-l) !important;
       }
-    } 
+    }
   }
 }

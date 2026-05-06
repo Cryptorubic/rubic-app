@@ -1,14 +1,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDirs": [
-      "./",
-      "./node_modules/@cryptorubic"
-    ],
+    "rootDirs": ["./", "./node_modules/@cryptorubic"],
     "baseUrl": "./",
-    "downlevelIteration": true,
     "noImplicitAny": true,
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
     "module": "es2020",
@@ -20,6 +17,7 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "typeRoots": ["node_modules/@types"],
+    "types": ["node", "jasmine"],
     "lib": ["es2018", "dom", "esnext"],
     "skipLibCheck": true,
     "paths": {
@@ -37,8 +35,7 @@
       "@shared/*": ["./src/app/shared/*"],
       "zlib": ["node_modules/browserify-zlib"]
     },
-    "useDefineForClassFields": false,
-    "allowSyntheticDefaultImports": true
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "strictTemplates": true

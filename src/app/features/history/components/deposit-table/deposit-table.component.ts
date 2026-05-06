@@ -9,7 +9,8 @@ const cols = ['from', 'to', 'date', 'status', 'receiver', 'tradeType'] as const;
   selector: 'app-deposit-table',
   templateUrl: './deposit-table.component.html',
   styleUrls: ['./deposit-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DepositTableComponent {
   @Input({ required: true }) device: 'mobile' | 'desktop' | 'tablet';

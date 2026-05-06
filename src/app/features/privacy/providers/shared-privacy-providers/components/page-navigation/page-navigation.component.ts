@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,13 +10,13 @@ import {
 import { PageType } from './models/page-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
-import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-page-navigation',
   templateUrl: './page-navigation.component.html',
   styleUrls: ['./page-navigation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PageNavigationComponent {
   @Input({ required: true }) public readonly pages: PageType[];
@@ -30,7 +31,7 @@ export class PageNavigationComponent {
 
   private readonly headerStore = inject(HeaderStore);
 
-  private readonly window = inject(WINDOW);
+  private readonly window = inject(WA_WINDOW);
 
   public readonly isMobile = this.window.innerWidth <= 768;
 

@@ -184,12 +184,20 @@
     </div>
 
     <ng-container *ngIf="warnings?.length">
-      <tui-notification class="notification" status="warning" *ngFor="let warning of warnings">
-        {{ warning.text }}
-        <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
-          >Learn more</a
-        >
-      </tui-notification>
+      <div
+        tuiNotification
+        size="m"
+        class="notification"
+        appearance="warning"
+        *ngFor="let warning of warnings"
+      >
+        <div>
+          {{ warning.text }}
+          <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
+            >Learn more</a
+          >
+        </div>
+      </div>
     </ng-container>
 
     <ng-container *ngLet="currentStep$ | async as currentStep">

@@ -8,7 +8,8 @@ import { ZAMA_SUPPORTED_WALLETS } from '../../constants/zama-supported-wallets';
   selector: 'app-zama-login-page',
   templateUrl: './zama-login-page.component.html',
   styleUrls: ['./zama-login-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ZamaLoginPageComponent {
   public readonly authorized$ = this.zamaSignatureService.signatureInfo$.pipe(

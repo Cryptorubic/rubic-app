@@ -72,7 +72,7 @@ export class PrivateModalsService {
       {
         size: 's',
         fitContent: true,
-        closeable: false,
+        closable: false,
         dismissible: false,
         data: options
       },

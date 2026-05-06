@@ -42,7 +42,7 @@
 
   <app-private-action-button
     *ngIf="creationConfig.withActionButton"
-    [showLoader]="state.loading"
+    [loading]="state.loading"
     (onClick)="transfer()"
   ></app-private-action-button>
 </app-window-container>

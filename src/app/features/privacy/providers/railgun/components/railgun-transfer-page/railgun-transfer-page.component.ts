@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, Injector, Input, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Injector,
+  Input,
+  OnInit,
+  DestroyRef
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
-import { BehaviorSubject, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, startWith, tap } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
@@ -15,7 +24,6 @@ import { RailgunTransferService } from '@features/privacy/providers/railgun/serv
 
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -33,10 +41,10 @@ import { TokensBalanceService } from '@core/services/tokens/tokens-balance.servi
     RailgunPrivateAssetsService,
     { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService,
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunTransferPageComponent implements OnInit {
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
@@ -52,8 +60,6 @@ export class RailgunTransferPageComponent implements OnInit {
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
   private readonly actionButtonService = inject(PrivateActionButtonService);
-
-  private readonly destroy$ = inject(TuiDestroyService);
 
   private readonly windowService = inject(PrivateTransferWindowService);
 
@@ -105,11 +111,11 @@ export class RailgunTransferPageComponent implements OnInit {
         tap(address => {
           this.actionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
     this.railgunFacade.completedChains$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
@@ -142,11 +148,9 @@ export class RailgunTransferPageComponent implements OnInit {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',
                 {
-                  status: 'info',
+                  appearance: 'info',
                   autoClose: 10_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
+                  data: null
                 }
               );
               await this.transferService.transferTokens(
@@ -157,11 +161,9 @@ export class RailgunTransferPageComponent implements OnInit {
                 token.blockchain as RailgunSupportedChain
               );
               this.notificationService.show('Transfer successful.', {
-                status: 'success',
+                appearance: 'success',
                 autoClose: 5_000,
-                data: null,
-                icon: '',
-                defaultAutoCloseTime: 0
+                data: null
               });
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
@@ -198,4 +200,6 @@ export class RailgunTransferPageComponent implements OnInit {
   public toggleReceiver(): void {
     this._displayReceiver$.next(!this._displayReceiver$.value);
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

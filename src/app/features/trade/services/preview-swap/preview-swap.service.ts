@@ -585,11 +585,9 @@ export class PreviewSwapService {
   private async catchSwitchCancel(): Promise<void> {
     const warningText = this.translateService.instant('notifications.cancelRpcSwitch');
     this.notificationsService.show(warningText, {
-      status: 'warning',
-      autoClose: true,
-      data: null,
-      icon: '',
-      defaultAutoCloseTime: 0
+      appearance: 'warning',
+      autoClose: 5000,
+      data: null
     });
     this.resetTransactionState();
   }

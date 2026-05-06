@@ -13,7 +13,8 @@ import { TuiSizeS } from '@taiga-ui/core';
   selector: 'app-search-blockchains-bar',
   templateUrl: './search-bar-blockchains.component.html',
   styleUrls: ['./search-bar-blockchains.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SearchBarBlockchainsComponent {
   @Input() expandableField: boolean = false;

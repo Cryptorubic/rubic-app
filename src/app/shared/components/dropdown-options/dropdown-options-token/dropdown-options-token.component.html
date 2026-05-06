@@ -1,8 +1,9 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
-  <tui-hosted-dropdown
+  <!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
+  <div
     #dropdown
-    [content]="content"
-    [(open)]="isDropdownOpen"
+    [tuiDropdown]="content"
+    [(tuiDropdownOpen)]="isDropdownOpen"
     *ngIf="
       canBeAddedToFavorite ||
       showCopyToClipboardOption ||
@@ -11,16 +12,16 @@
   >
     <button
       appearance="flat"
-      icon="tuiIconMoreVertical"
+      iconStart="@tui.ellipsis-vertical"
       tuiIconButton
       type="button"
       [size]="isMobile ? 'm' : 's'"
-      [pseudoHover]="dropdown.open || null"
+      [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
     ></button>
-  </tui-hosted-dropdown>
+  </div>
 
-  <ng-template #content let-activeZone>
-    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+  <ng-template #content>
+    <tui-data-list tuiDataListDropdownManager size="m">
       <div class="dropdown-content__wrapper">
         <div class="dropdown-content">
           <ng-container *ngIf="showCopyToClipboardOption">
@@ -28,9 +29,9 @@
               class="dropdown-content__element"
               (click)="copyToClipboard()"
               [tuiHint]="copyHint"
-              tuiHintAppearance="onDark"
+              tuiHintAppearance="dark"
               [tuiHintShowDelay]="50"
-              tuiHintDirection="top-right"
+              tuiHintDirection="top-end"
               [tuiHintHideDelay]="100"
             >
               <ng-container *ngIf="!isCopyClicked; else copyClicked">
@@ -58,7 +59,7 @@
             <tui-loader
               (click.stop)="toggleFavorite()"
               class="dropdown-content__favorite-container"
-              [showLoader]="loadingFavoriteToken"
+              [loading]="loadingFavoriteToken"
               [overlay]="true"
               [size]="'s'"
             >
@@ -86,8 +87,8 @@
                   [inlineSVG]="
                     'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
                   "
-                  tuiHintAppearance="onDark"
-                  tuiHintDirection="top-right"
+                  tuiHintAppearance="dark"
+                  tuiHintDirection="top-end"
                   rel="noopener noreferrer"
                   target="_blank"
                   (click)="$event.stopPropagation()"
