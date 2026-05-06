@@ -18,5 +18,6 @@ export const defaultTradeState: SelectedTrade = {
   needTrustlineOptions: {
     needTrustlineAfterSwap: false,
     needTrustlineBeforeSwap: false
-  }
+  },
+  warnings: []
 };

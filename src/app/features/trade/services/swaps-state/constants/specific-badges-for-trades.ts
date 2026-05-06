@@ -82,7 +82,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       fromSdk: false,
       getBgColor: () => INFO_COLOR,
       getLabel: () => 'INFO',
-      getHint: () => `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
+      getHint: () => `Meson Provider allows swaps only for amounts with 6 or fewer decimal places.
       If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
       Example: 0.99999999999 ETH -> 0.999999 ETH`,
       showLabel: () => true
