@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiButton } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';

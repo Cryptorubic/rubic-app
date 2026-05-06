@@ -3,9 +3,9 @@
   "compilerOptions": {
     "rootDirs": ["./", "./node_modules/@cryptorubic"],
     "baseUrl": "./",
-    "downlevelIteration": true,
     "noImplicitAny": true,
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
     "module": "es2020",
@@ -35,8 +35,7 @@
       "@shared/*": ["./src/app/shared/*"],
       "zlib": ["node_modules/browserify-zlib"]
     },
-    "useDefineForClassFields": false,
-    "allowSyntheticDefaultImports": true
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "strictTemplates": true

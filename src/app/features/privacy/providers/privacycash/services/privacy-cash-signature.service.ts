@@ -6,7 +6,7 @@ import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { WalletNotConnectedError } from '@cryptorubic/web3';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { EncryptionService } from 'privacycash/utils';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
 
 @Injectable()

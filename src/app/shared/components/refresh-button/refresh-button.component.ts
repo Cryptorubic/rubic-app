@@ -21,7 +21,8 @@ import { TUI_PLATFORM } from '@taiga-ui/cdk/tokens';
   templateUrl: './refresh-button.component.html',
   styleUrls: ['./refresh-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class RefreshButtonComponent implements OnInit {
   @Input() isRotating$: Observable<boolean>;

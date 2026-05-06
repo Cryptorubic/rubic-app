@@ -8,7 +8,8 @@ import { ROUTE_PATH } from '@app/shared/constants/common/links';
 @Component({
   selector: 'app-mobile-navigation-menu',
   templateUrl: './mobile-navigation-menu.component.html',
-  styleUrls: ['./mobile-navigation-menu.component.scss']
+  styleUrls: ['./mobile-navigation-menu.component.scss'],
+  standalone: false
 })
 export class MobileNavigationMenuComponent {
   public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST.Trade.filter(

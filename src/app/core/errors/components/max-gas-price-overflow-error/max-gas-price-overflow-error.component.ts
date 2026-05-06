@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-max-gas-price-overflow-error',
   templateUrl: './max-gas-price-overflow-error.component.html',
   styleUrls: ['./max-gas-price-overflow-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MaxGasPriceOverflowErrorComponent {
   public readonly toBlockchain: string;

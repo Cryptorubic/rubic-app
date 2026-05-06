@@ -7,7 +7,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
   selector: 'app-settings-warning-modal',
   templateUrl: './settings-warning-modal.component.html',
   styleUrls: ['./settings-warning-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SettingsWarningModalComponent {
   public readonly highSlippage: number;

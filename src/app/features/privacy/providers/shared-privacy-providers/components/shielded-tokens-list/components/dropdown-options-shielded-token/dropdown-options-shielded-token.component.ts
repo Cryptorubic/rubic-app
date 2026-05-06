@@ -14,7 +14,8 @@ import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-s
   selector: 'app-dropdown-options-shielded-token',
   templateUrl: './dropdown-options-shielded-token.component.html',
   styleUrls: ['./dropdown-options-shielded-token.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DropdownOptionsShieldedTokenComponent {
   @Input({ required: true }) token: ShieldedBalanceToken;

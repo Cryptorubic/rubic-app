@@ -13,7 +13,8 @@ import { PrivacyMainPageService } from '../../services/privacy-main-page.service
   selector: 'app-private-provider-element',
   templateUrl: './private-provider-element.component.html',
   styleUrls: ['./private-provider-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateProviderElementComponent {
   @Input({ required: true }) providerInfo: PrivateProviderInfoUI;

@@ -13,7 +13,8 @@ import { FormControl } from '@angular/forms';
   selector: 'app-deposit-private-trade-info',
   templateUrl: './deposit-private-trade-info.component.html',
   styleUrls: ['./deposit-private-trade-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DepositPrivateTradeInfoComponent implements OnChanges {
   public readonly text = depositInfoText;

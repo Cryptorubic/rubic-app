@@ -8,7 +8,6 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   TemplateRef,
   DestroyRef,
   inject
@@ -17,7 +16,6 @@ import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { takeUntil } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -27,7 +25,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   templateUrl: './asset-selector.component.html',
   styleUrls: ['./asset-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class AssetSelectorComponent implements OnInit {
   @Input() isDisabled?: boolean = false;

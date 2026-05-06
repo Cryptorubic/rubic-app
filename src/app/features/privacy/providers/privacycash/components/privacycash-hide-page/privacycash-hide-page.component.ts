@@ -1,12 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Self,
-  inject,
-  DestroyRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -14,7 +7,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
 import {
@@ -36,7 +29,8 @@ import { HideWindowService } from '../../../shared-privacy-providers/services/hi
   providers: [
     { provide: FromAssetsService, useExisting: PrivacycashPublicAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class PrivacycashHidePageComponent implements OnInit {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);

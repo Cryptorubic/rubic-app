@@ -32,7 +32,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
     { provide: FromAssetsService, useExisting: RailgunPublicAssetsService },
     { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService },
     { provide: TokensFacadeService, useExisting: RailgunHideFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunHideTokensPageComponent {
   @Input({ required: true }) public readonly railgunWalletAddress: string;

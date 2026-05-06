@@ -9,7 +9,8 @@ import { BlockchainsInfo } from '@cryptorubic/core';
   selector: 'app-assets-type-aside-element',
   templateUrl: './assets-type-aside-element.component.html',
   styleUrls: ['./assets-type-aside-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AssetsTypeAsideElementComponent {
   @Input({ required: true }) blockchainItem: BlockchainItem;

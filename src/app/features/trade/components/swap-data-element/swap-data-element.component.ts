@@ -11,7 +11,8 @@ import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/
   selector: 'app-swap-data-element',
   templateUrl: './swap-data-element.component.html',
   styleUrls: ['./swap-data-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SwapDataElementComponent {
   /**

@@ -12,10 +12,7 @@
         I copied the seed phrase. If I forget it or the password, Rubic won't be able to help me.
       </span>
     </div>
-    <tui-error
-      formControlName="agreement"
-      [order]="['required']"
-    ></tui-error>
+    <tui-error formControlName="agreement" [order]="['required']"></tui-error>
 
     <ng-container *ngLet="showWords$ | async as showWord">
       <div class="phrase">
@@ -53,10 +50,7 @@
       Password
       <span class="tui-required"></span>
     </tui-input-password>
-    <tui-error
-      formControlName="password"
-      [order]="['required']"
-    ></tui-error>
+    <tui-error formControlName="password" [order]="['required']"></tui-error>
 
     <div class="buttons">
       <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>

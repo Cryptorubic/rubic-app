@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[appBanner]'
+  selector: '[appBanner]',
+  standalone: false
 })
 export class BannerDirective {
   @Input() set appBanner(value: string) {

@@ -5,7 +5,8 @@ import { PrizePool } from '@features/testnet-promo/interfaces/api-models';
   selector: 'app-promo-info',
   templateUrl: './promo-info.component.html',
   styleUrls: ['./promo-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PromoInfoComponent {
   @Input({ required: true }) readonly prizePool: PrizePool | null = null;

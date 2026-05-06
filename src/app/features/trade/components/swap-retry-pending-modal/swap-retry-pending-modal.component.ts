@@ -15,7 +15,8 @@ import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
   selector: 'app-swap-retry-pending-modal',
   templateUrl: './swap-retry-pending-modal.component.html',
   styleUrls: ['./swap-retry-pending-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SwapRetryPendingModalComponent implements OnDestroy {
   public readonly swapRetryModalInput$: Observable<SwapRetryModalInput>;

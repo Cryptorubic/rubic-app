@@ -10,7 +10,6 @@ import {
   Input,
   Output,
   QueryList,
-  Self,
   TemplateRef,
   ViewChildren,
   DestroyRef,
@@ -25,7 +24,6 @@ import {
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { KeyValue } from '@angular/common';
@@ -38,7 +36,8 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
   templateUrl: './rubic-menu.component.html',
   styleUrls: ['./rubic-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class RubicMenuComponent implements AfterViewInit {
   @Input() public swapActive: boolean;

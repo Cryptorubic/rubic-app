@@ -32,7 +32,8 @@ import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();

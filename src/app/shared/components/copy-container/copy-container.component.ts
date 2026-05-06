@@ -11,7 +11,8 @@ import {
   selector: 'app-copy-container',
   templateUrl: './copy-container.component.html',
   styleUrls: ['./copy-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CopyContainerComponent {
   @Input({ required: true }) text: string;

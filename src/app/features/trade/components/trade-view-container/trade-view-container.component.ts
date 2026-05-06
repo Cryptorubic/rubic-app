@@ -39,7 +39,8 @@ import { DOCUMENT } from '@angular/common';
         animate('0.25s ease-in-out', style({ opacity: 0, width: 0, scale: 0 }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class TradeViewContainerComponent {
   public readonly formContent$ = this.tradePageService.formContent$;

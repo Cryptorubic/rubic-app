@@ -1,7 +1,7 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';

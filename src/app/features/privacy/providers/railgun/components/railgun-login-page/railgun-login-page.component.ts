@@ -31,7 +31,8 @@ import { RailgunWalletCreateComponent } from '@features/privacy/providers/railgu
         invalid: 'Incorrect password. Please try again.'
       }
     }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunLoginPageComponent {
   @Input({ required: true }) public readonly railgunId: string;

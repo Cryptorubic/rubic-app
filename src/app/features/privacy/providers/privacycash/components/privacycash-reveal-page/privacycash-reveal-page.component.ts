@@ -1,12 +1,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
@@ -27,7 +27,8 @@ import { compareTokens } from '@app/shared/utils/utils';
   providers: [
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateUnshieldTokensFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class PrivacycashRevealPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);

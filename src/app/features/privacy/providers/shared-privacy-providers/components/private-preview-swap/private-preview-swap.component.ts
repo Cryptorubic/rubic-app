@@ -28,7 +28,8 @@ import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-
   selector: 'app-private-preview-swap',
   templateUrl: './private-preview-swap.component.html',
   styleUrls: ['./private-preview-swap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivatePreviewSwapComponent {
   public readonly fromAsset: AssetSelector;

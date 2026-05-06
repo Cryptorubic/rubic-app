@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   selector: 'app-sign-message-modal',
   templateUrl: './sign-message-modal.component.html',
   styleUrls: ['./sign-message-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SignMessageModalComponent {
   public readonly isSdkLoading$: Observable<boolean>;

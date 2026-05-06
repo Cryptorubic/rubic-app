@@ -8,7 +8,8 @@ import { distinctUntilChanged, map, timer } from 'rxjs';
   selector: 'app-hinkal-wallet-info',
   templateUrl: './hinkal-wallet-info.component.html',
   styleUrls: ['./hinkal-wallet-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HinkalWalletInfoComponent {
   public readonly walletPrivateReceiverInfo$ = this.hinkalInstanceService.currSignature$.pipe(

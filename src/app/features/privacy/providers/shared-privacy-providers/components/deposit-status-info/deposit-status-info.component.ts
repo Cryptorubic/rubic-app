@@ -24,7 +24,8 @@ import { timer } from 'rxjs';
         animate('0.3s ease-out', style({ height: '54px', padding: '1rem', 'margin-top': '1rem' }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class DepositStatusInfoComponent {
   public hintShown: boolean = false;

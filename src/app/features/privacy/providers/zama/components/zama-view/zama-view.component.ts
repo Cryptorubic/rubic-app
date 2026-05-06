@@ -1,11 +1,11 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ZamaActionButtonService } from '../../services/zama-action-button.service';
@@ -26,7 +26,8 @@ import { PrivateLocalStorageService } from '@app/features/privacy/services/priva
       provide: PrivateActionButtonService,
       useClass: ZamaActionButtonService
     }
-  ]
+  ],
+  standalone: false
 })
 export class ZamaViewComponent {
   public readonly activePage$ = this.privatePageTypeService.activePage$;

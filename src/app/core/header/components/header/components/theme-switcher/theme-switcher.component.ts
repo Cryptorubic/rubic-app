@@ -8,7 +8,8 @@ import { HeaderStore } from '@core/header/services/header.store';
   selector: 'app-theme-switcher',
   templateUrl: './theme-switcher.component.html',
   styleUrls: ['./theme-switcher.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ThemeSwitcherComponent {
   public readonly isDark$: Observable<boolean>;

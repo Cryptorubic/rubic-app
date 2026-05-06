@@ -9,7 +9,8 @@ import { SwapErrorResponseInterface } from '@cryptorubic/web3';
   selector: 'app-simulation-failed-error',
   templateUrl: './simulation-failed-error.component.html',
   styleUrls: ['./simulation-failed-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SimulationFailedErrorComponent {
   public apiError: SwapErrorResponseInterface;

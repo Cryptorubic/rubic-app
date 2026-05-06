@@ -25,7 +25,8 @@ import { RailgunSupportedChain } from '@features/privacy/providers/railgun/const
     { provide: TokensFacadeService, useClass: RailgunTokensFacadeService },
     { provide: FromAssetsService, useClass: RailgunPrivateAssetsService },
     { provide: ToAssetsService, useClass: RailgunPrivateAssetsService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunSwapPageComponent {
   @Input({ required: true }) public readonly railgunWalletInfo: RailgunWalletInfo;

@@ -1,11 +1,11 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
@@ -15,7 +15,8 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class UserProfileComponent {
   constructor(

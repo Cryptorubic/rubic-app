@@ -43,7 +43,8 @@ import { TokensBalanceService } from '@core/services/tokens/tokens-balance.servi
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunTransferPageComponent implements OnInit {
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;

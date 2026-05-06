@@ -54,7 +54,8 @@ export function mnemonicValidator(): ValidatorFn {
             : 'Invalid seed phrase. Please check the words and order.'
       }
     }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunWalletImportComponent {
   private readonly context: ContextParams = inject(POLYMORPHEUS_CONTEXT) as ContextParams;

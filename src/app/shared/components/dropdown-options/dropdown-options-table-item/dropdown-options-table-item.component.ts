@@ -11,7 +11,8 @@ import {
   selector: 'app-dropdown-options-table-item',
   templateUrl: './dropdown-options-table-item.component.html',
   styleUrls: ['./dropdown-options-table-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DropdownOptionsTableItemComponent {
   @Input() copyValue: string = '';

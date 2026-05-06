@@ -6,7 +6,8 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
   selector: 'polymorpheus-auto-slippage-warning-modal',
   templateUrl: './auto-slippage-warning-modal.component.html',
   styleUrls: ['./auto-slippage-warning-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AutoSlippageWarningModalComponent {
   constructor(

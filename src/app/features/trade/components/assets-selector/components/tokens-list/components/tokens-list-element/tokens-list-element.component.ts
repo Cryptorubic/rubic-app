@@ -25,7 +25,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-tokens-list-element',
   templateUrl: './tokens-list-element.component.html',
   styleUrls: ['./tokens-list-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokensListElementComponent {
   @Input({ required: true }) token: AvailableTokenAmount;

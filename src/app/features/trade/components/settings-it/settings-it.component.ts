@@ -8,7 +8,8 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
   selector: 'app-settings-it',
   templateUrl: './settings-it.component.html',
   styleUrls: ['./settings-it.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SettingsItComponent {
   private get defaultSlippageTolerance(): number {

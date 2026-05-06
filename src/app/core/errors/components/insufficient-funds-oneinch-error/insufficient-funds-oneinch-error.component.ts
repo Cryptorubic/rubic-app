@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-insufficient-funds-oneinch-error',
   templateUrl: './insufficient-funds-oneinch-error.component.html',
   styleUrls: ['./insufficient-funds-oneinch-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class InsufficientFundsOneinchErrorComponent {
   public readonly nativeToken: string;

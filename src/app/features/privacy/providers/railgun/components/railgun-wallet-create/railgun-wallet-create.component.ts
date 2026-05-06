@@ -20,7 +20,8 @@ type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
         required: 'This field is required'
       }
     }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunWalletCreateComponent {
   public hintShown = false;

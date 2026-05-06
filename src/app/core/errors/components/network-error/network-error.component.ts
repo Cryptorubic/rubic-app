@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-network-error',
   templateUrl: './network-error.component.html',
   styleUrls: ['./network-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NetworkErrorComponent {
   public networkToChoose: string;

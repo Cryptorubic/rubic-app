@@ -6,7 +6,8 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
 @Component({
   selector: 'app-rubic-menu-toggler',
   templateUrl: './rubic-menu-toggler.component.html',
-  styleUrls: ['./rubic-menu-toggler.component.scss']
+  styleUrls: ['./rubic-menu-toggler.component.scss'],
+  standalone: false
 })
 export class RubicMenuTogglerComponent {
   public readonly isMobile = this.headerStore.isMobile;

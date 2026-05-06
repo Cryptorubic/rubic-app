@@ -23,7 +23,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   selector: 'app-providers-list',
   templateUrl: './providers-list.component.html',
   styleUrls: ['./providers-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ProvidersListComponent {
   @PolymorpheusInput()

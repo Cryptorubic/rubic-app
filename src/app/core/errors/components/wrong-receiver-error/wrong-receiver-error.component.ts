@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-wrong-receiver-error',
   templateUrl: './wrong-receiver-error.component.html',
   styleUrls: ['./wrong-receiver-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class WrongReceiverErrorComponent {}

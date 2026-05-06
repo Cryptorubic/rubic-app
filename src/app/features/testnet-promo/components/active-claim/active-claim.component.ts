@@ -7,7 +7,8 @@ import { Token } from '@cryptorubic/core';
   selector: 'app-active-claim',
   templateUrl: './active-claim.component.html',
   styleUrls: ['./active-claim.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ActiveClaimComponent implements AfterViewInit {
   public readonly buttonState$ = this.claimService.buttonState$;

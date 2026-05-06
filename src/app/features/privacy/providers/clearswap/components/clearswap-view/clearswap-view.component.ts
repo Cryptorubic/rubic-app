@@ -26,7 +26,8 @@ import { HeaderStore } from '@app/core/header/services/header.store';
     { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService },
     { provide: PrivateActionButtonService, useClass: ClearswapPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class ClearswapViewComponent implements OnInit {
   private readonly privateQueryParamsService = inject(PrivateQueryParamsService);

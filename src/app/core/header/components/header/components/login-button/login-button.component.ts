@@ -15,7 +15,8 @@ import { HeaderStore } from '@core/header/services/header.store';
   selector: 'app-login-button',
   templateUrl: './login-button.component.html',
   styleUrls: ['./login-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LoginButtonComponent {
   @Input() appearance: string = 'primary';

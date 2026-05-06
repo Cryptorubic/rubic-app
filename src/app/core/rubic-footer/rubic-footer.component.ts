@@ -7,7 +7,8 @@ import { ThemeService } from '@core/services/theme/theme.service';
   selector: 'app-rubic-footer',
   templateUrl: './rubic-footer.component.html',
   styleUrls: ['./rubic-footer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RubicFooterComponent {
   public readonly footerLinks = FOOTER_LINKS;

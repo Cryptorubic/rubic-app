@@ -15,7 +15,8 @@ interface TxStep {
   selector: 'app-ton-slippage-warn-modal',
   templateUrl: './ton-slippage-warn-modal.component.html',
   styleUrls: ['./ton-slippage-warn-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TonSlippageWarnModalComponent {
   public readonly slippagePercent: number;

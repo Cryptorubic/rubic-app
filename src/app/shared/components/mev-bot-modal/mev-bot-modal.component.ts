@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-mev-bot-modal',
   templateUrl: './mev-bot-modal.component.html',
   styleUrls: ['./mev-bot-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MevBotModalComponent {
   constructor(@Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext) {}

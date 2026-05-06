@@ -1,5 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
@@ -11,7 +11,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PriceTokenAmount, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -29,7 +29,8 @@ import { PrivateSwapWindowService } from '../../../shared-privacy-providers/serv
     { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateSwapTokensFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class PrivacycashSwapPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);

@@ -12,7 +12,8 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
   selector: 'polymorpheus-success-withdraw-modal',
   templateUrl: './success-withdraw-modal.component.html',
   styleUrls: ['./success-withdraw-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SuccessWithdrawModalComponent implements AfterViewInit, OnDestroy {
   public points: number;

@@ -25,7 +25,8 @@ import { PrivateShieldFormConfig } from '@features/privacy/providers/shared-priv
   templateUrl: './reveal-window.component.html',
   styleUrls: ['./reveal-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [receiverAnimation()]
+  animations: [receiverAnimation()],
+  standalone: false
 })
 export class RevealWindowComponent {
   @Input() receiverCtrl: FormControl<string>;

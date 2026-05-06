@@ -15,7 +15,8 @@ import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-prov
   selector: 'app-page-navigation',
   templateUrl: './page-navigation.component.html',
   styleUrls: ['./page-navigation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PageNavigationComponent {
   @Input({ required: true }) public readonly pages: PageType[];

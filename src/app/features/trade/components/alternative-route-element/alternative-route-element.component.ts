@@ -5,7 +5,8 @@ import { AlternativeRoute } from '../../services/alternative-route-api-service/m
   selector: 'app-alternative-route-element',
   templateUrl: './alternative-route-element.component.html',
   styleUrls: ['./alternative-route-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AlternativeRouteElementComponent {
   @Input({ required: true }) route: AlternativeRoute;

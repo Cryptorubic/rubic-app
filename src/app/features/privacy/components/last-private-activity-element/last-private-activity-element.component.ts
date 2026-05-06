@@ -6,7 +6,8 @@ import { HeaderStore } from '@app/core/header/services/header.store';
   selector: 'app-last-private-activity-element',
   templateUrl: './last-private-activity-element.component.html',
   styleUrls: ['./last-private-activity-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LastPrivateActivityElementComponent {
   @Input({ required: true }) activityItem: PrivateActivityItem;

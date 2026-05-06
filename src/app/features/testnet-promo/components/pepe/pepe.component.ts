@@ -7,7 +7,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   selector: 'app-pepe',
   templateUrl: './pepe.component.html',
   styleUrls: ['./pepe.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PepeComponent {
   @Input({ required: true }) readonly state: PageState;

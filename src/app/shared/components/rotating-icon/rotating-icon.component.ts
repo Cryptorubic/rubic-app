@@ -19,7 +19,8 @@ import { NgChanges } from '@shared/models/utility-types/ng-changes';
   selector: 'app-rotating-icon',
   templateUrl: './rotating-icon.component.html',
   styleUrls: ['./rotating-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RotatingIconComponent implements OnChanges {
   /**

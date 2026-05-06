@@ -6,7 +6,6 @@ import {
   Component,
   Inject,
   OnDestroy,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -14,7 +13,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, filter, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -50,7 +49,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
         animate('0.3s ease-out', style({ height: '54px', padding: '1rem', 'margin-top': '1rem' }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly status$ = combineLatest([

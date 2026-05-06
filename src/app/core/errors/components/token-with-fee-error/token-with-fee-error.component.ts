@@ -4,7 +4,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-token-with-fee-error',
   templateUrl: './token-with-fee-error.component.html',
   styleUrls: ['./token-with-fee-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokenWithFeeErrorComponent {
   constructor() {}

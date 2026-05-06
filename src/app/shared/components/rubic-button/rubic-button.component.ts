@@ -19,7 +19,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './rubic-button.component.html',
   styleUrls: ['./rubic-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class RubicButtonComponent implements OnInit {
   @HostBinding('class') @Input('class') classList: string;

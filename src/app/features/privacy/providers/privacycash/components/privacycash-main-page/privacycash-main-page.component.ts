@@ -30,7 +30,8 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
   templateUrl: './privacycash-main-page.component.html',
   styleUrls: ['./privacycash-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }]
+  providers: [{ provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }],
+  standalone: false
 })
 export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
   private readonly privacycashTokensService = inject(PrivacycashTokensService);

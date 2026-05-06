@@ -13,7 +13,8 @@ import { timer } from 'rxjs';
   selector: 'app-rubic-badge-with-copy-btn',
   templateUrl: './rubic-badge-with-copy-btn.component.html',
   styleUrls: ['./rubic-badge-with-copy-btn.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RubicBadgeWithCopyBtnComponent {
   @Input({ required: true }) item: DepositTableData;

@@ -17,7 +17,8 @@ import { TrustlineComponentOptions } from './models/trustline-component-options'
   selector: 'app-trustline',
   templateUrl: './trustline.component.html',
   styleUrls: ['./trustline.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TrustlineComponent implements OnInit {
   @Input({ required: true }) options: TrustlineComponentOptions;

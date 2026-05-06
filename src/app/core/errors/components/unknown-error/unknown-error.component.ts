@@ -10,7 +10,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
   selector: 'polymorpheus-unknown-error',
   templateUrl: './unknown-error.component.html',
   styleUrls: ['./unknown-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UnknownErrorComponent {
   public error: RubicError<ERROR_TYPE>;

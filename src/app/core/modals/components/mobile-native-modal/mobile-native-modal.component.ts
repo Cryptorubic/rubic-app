@@ -26,7 +26,8 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
   templateUrl: './mobile-native-modal.component.html',
   styleUrls: ['./mobile-native-modal.component.scss'],
   providers: [],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
+  standalone: false
 })
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
   public title: string = this.context.title;

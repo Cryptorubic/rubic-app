@@ -6,7 +6,8 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
 @Component({
   selector: 'app-profile-menu-toggler',
   templateUrl: './profile-menu-toggler.component.html',
-  styleUrls: ['./profile-menu-toggler.component.scss']
+  styleUrls: ['./profile-menu-toggler.component.scss'],
+  standalone: false
 })
 export class ProfileMenuTogglerComponent {
   public readonly isMobile = this.headerStore.isMobile;

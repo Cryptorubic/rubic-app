@@ -1,11 +1,9 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiDropdownOpen } from '@taiga-ui/core';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Output,
-  Self,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -18,7 +16,8 @@ import { map, startWith } from 'rxjs/operators';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class SettingsComponent {
   @ViewChild(TuiDropdownOpen) component?: TuiDropdownOpen;

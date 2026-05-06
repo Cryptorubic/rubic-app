@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-rpc-error',
   templateUrl: './rpc-error.component.html',
   styleUrls: ['./rpc-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RpcErrorComponent {
   public readonly questionId: string;

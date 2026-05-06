@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-no-linked-account-error',
   templateUrl: './no-linked-account-error.component.html',
   styleUrls: ['./no-linked-account-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NoLinkedAccountErrorComponent {}

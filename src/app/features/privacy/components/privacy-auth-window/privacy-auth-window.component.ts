@@ -27,7 +27,8 @@ import { PrivateLocalStorageService } from '../../services/privacy-local-storage
     trigger('inOutAnimation', [
       transition(':leave', [style({ opacity: 1 }), animate('0.5s ease-in', style({ opacity: 0 }))])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class PrivacyAuthWindowComponent implements AfterViewInit {
   @HostListener('keydown.enter', ['$event'])

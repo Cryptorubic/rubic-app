@@ -6,7 +6,8 @@ import { TestnetPromoStateService } from '@features/testnet-promo/services/testn
   templateUrl: './promo-page.component.html',
   styleUrls: ['./promo-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class PromoPageComponent {
   public readonly pageState$ = this.stateService.pageState$;

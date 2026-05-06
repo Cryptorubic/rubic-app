@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-over-query-limit-error',
   templateUrl: './over-query-limit-error.component.html',
   styleUrls: ['./over-query-limit-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class OverQueryLimitErrorComponent {
   constructor() {}

@@ -30,7 +30,8 @@ import { RevealWindowService } from '@features/privacy/providers/shared-privacy-
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class RailgunRevealPageComponent {
   @Input({ required: true }) public readonly railgunId: string;

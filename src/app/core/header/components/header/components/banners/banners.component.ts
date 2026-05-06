@@ -8,7 +8,8 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
   selector: 'app-banners',
   templateUrl: './banners.component.html',
   styleUrls: ['./banners.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BannersComponent {
   public readonly banners$ = this.bannersService.banners$;

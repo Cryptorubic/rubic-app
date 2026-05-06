@@ -9,7 +9,8 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   selector: 'polymorpheus-coinbase-confirm-modal',
   templateUrl: './coinbase-confirm-modal.component.html',
   styleUrls: ['./coinbase-confirm-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CoinbaseConfirmModalComponent {
   public readonly availableBlockchains: BlockchainName[] = [

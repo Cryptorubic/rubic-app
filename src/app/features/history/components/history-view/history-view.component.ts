@@ -5,7 +5,8 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
   selector: 'app-history-view',
   templateUrl: './history-view.component.html',
   styleUrls: ['./history-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HistoryViewComponent {
   constructor(private readonly recentTradesStoreService: UnreadTradesService) {

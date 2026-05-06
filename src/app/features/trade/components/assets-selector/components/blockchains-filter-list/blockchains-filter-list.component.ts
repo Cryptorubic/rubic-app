@@ -5,7 +5,8 @@ import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters
   selector: 'app-blockchains-filter-list',
   templateUrl: './blockchains-filter-list.component.html',
   styleUrls: ['./blockchains-filter-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BlockchainsFilterListComponent {
   public readonly BLOCKCHAIN_FILTERS = blockchainFilters;

@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-insufficient-funds-error',
   templateUrl: './insufficient-funds-error.component.html',
   styleUrls: ['./insufficient-funds-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class InsufficientFundsErrorComponent {
   public readonly tokenSymbol: string;

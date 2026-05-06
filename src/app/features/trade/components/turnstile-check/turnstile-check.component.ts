@@ -7,7 +7,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-turnstile-check',
   templateUrl: './turnstile-check.component.html',
   styleUrls: ['./turnstile-check.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TurnstileCheckComponent implements AfterViewInit {
   public readonly title: string = this.context.title;

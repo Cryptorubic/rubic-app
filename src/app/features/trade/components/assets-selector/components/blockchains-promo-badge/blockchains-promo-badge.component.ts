@@ -7,7 +7,8 @@ import { blockchainsPromoLinks } from './constants/blockchains-promo-links';
   selector: 'app-blockchains-promo-badge',
   templateUrl: './blockchains-promo-badge.component.html',
   styleUrls: ['./blockchains-promo-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BlockchainsPromoBadgeComponent {
   @Input({ required: true }) tag!: string;

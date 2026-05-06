@@ -13,7 +13,8 @@ import { ModalService } from '@core/modals/services/modal.service';
   selector: 'app-history-table',
   templateUrl: './history-table.component.html',
   styleUrls: ['./history-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HistoryTableComponent {
   public readonly isUserActive$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));

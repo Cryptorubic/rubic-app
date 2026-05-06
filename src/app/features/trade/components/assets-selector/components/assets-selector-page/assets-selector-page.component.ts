@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,8 +7,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
-  Self
+  Output
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
@@ -44,7 +42,8 @@ import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   private lastDefaultMode: AssetListType = 'allChains';

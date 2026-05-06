@@ -16,7 +16,8 @@ import BigNumber from 'bignumber.js';
   selector: 'app-input-number',
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class InputNumberComponent implements OnInit {
   /**

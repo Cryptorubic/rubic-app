@@ -6,7 +6,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-small-blockchain-button',
   templateUrl: './small-blockchain-button.component.html',
   styleUrls: ['./small-blockchain-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SmallBlockchainButtonComponent {
   @Input({ required: true }) blockchainItem: BlockchainItem;

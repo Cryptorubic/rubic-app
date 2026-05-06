@@ -6,7 +6,8 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
   selector: 'app-privacy-disclaimer-modal',
   templateUrl: './privacy-disclaimer-modal.component.html',
   styleUrls: ['./privacy-disclaimer-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivacyDisclaimerModalComponent {
   constructor(

@@ -8,7 +8,8 @@ import { AssetListType } from '@features/trade/models/asset';
   templateUrl: './custom-token.component.html',
   styleUrls: ['./custom-token.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [CustomTokenService]
+  providers: [CustomTokenService],
+  standalone: false
 })
 export class CustomTokenComponent {
   @Input({ required: true }) customToken: AvailableTokenAmount;

@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'app-rubic-badge',
   templateUrl: './rubic-badge.component.html',
   styleUrls: ['./rubic-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RubicBadgeComponent {
   @Input({ required: true }) status: string;

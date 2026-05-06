@@ -7,7 +7,6 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   inject,
   DestroyRef
 } from '@angular/core';
@@ -24,7 +23,6 @@ import {
   Observable,
   startWith,
   switchMap,
-  takeUntil,
   tap
 } from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -51,7 +49,8 @@ import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/feature
   styleUrls: ['./swap-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [],
-  animations: [receiverAnimation()]
+  animations: [receiverAnimation()],
+  standalone: false
 })
 export class SwapWindowComponent implements OnInit {
   @Input() receiverCtrl: FormControl<string>;

@@ -18,7 +18,8 @@ const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provide
   selector: 'app-cross-chain-desktop-table',
   templateUrl: './cross-chain-desktop-table.component.html',
   styleUrls: ['./cross-chain-desktop-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CrossChainDesktopTableComponent {
   @Input({ required: true }) device: 'mobile' | 'desktop' | 'tablet';

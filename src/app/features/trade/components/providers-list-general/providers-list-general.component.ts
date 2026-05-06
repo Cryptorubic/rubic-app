@@ -46,7 +46,8 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
         animate('0.2s ease-in', style({ height: '0px', opacity: 0 }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class ProvidersListGeneralComponent {
   @Input({ required: true }) states: TradeState[] = [];

@@ -11,7 +11,8 @@ import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
   selector: 'app-provider-element',
   templateUrl: './provider-element.component.html',
   styleUrls: ['./provider-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ProviderElementComponent {
   @Input({ required: true }) tradeState: TradeState;

@@ -1,5 +1,5 @@
 import { provideEventPlugins } from '@taiga-ui/event-plugins';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -36,12 +36,10 @@ import { ModalsModule } from './modals/modals.module';
     },
     provideEventPlugins(),
     SdkLoaderService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: sdkLoader,
-      deps: [SdkLoaderService],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const initializerFn = sdkLoader(inject(SdkLoaderService));
+      return initializerFn();
+    }),
     SdkService
   ],
   imports: [

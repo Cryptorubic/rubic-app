@@ -11,7 +11,8 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
   selector: 'app-user-balance-container',
   templateUrl: './user-balance-container.component.html',
   styleUrls: ['./user-balance-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UserBalanceContainerComponent {
   @Input() set fromToken$(fromToken$: Observable<BalanceToken>) {

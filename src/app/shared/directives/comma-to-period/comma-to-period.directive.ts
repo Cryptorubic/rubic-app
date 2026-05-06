@@ -1,7 +1,8 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Directive({
-  selector: '[appCommaToPeriod]'
+  selector: '[appCommaToPeriod]',
+  standalone: false
 })
 export class CommaToPeriodDirective {
   @Output() amountChange = new EventEmitter<number>();

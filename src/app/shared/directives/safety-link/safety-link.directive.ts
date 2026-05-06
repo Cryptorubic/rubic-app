@@ -2,7 +2,8 @@ import { Directive, HostBinding, HostListener, Inject, Input, PLATFORM_ID } from
 import { Router } from '@angular/router';
 
 @Directive({
-  selector: '[safetyLink]'
+  selector: '[safetyLink]',
+  standalone: false
 })
 export class SafetyLinkDirective {
   @HostBinding('attr.rel') relAttr: string = null;

@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-not-supported-network-error',
   templateUrl: './not-supported-network-error.component.html',
   styleUrls: ['./not-supported-network-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NotSupportedNetworkErrorComponent {
   public networkToChoose: string;

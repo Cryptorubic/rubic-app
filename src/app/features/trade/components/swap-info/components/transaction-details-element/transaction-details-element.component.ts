@@ -4,7 +4,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'app-transaction-details-element',
   templateUrl: './transaction-details-element.component.html',
   styleUrls: ['./transaction-details-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TransactionDetailsElementComponent {
   @Input() public title: string;

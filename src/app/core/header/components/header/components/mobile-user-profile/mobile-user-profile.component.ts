@@ -23,7 +23,8 @@ interface ContextData {
 @Component({
   selector: 'app-mobile-user-profile',
   templateUrl: './mobile-user-profile.component.html',
-  styleUrls: ['./mobile-user-profile.component.scss']
+  styleUrls: ['./mobile-user-profile.component.scss'],
+  standalone: false
 })
 export class MobileUserProfileComponent {
   public readonly currentBalance$: Observable<{ balance: BigNumber; symbol: string }>;

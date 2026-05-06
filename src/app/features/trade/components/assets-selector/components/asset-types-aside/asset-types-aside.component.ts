@@ -13,7 +13,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AssetTypesAsideComponent {
   @Input({ required: true }) type: 'from' | 'to';

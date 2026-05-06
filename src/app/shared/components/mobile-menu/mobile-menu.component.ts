@@ -10,7 +10,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
   selector: 'app-mobile-menu',
   templateUrl: './mobile-menu.component.html',
   styleUrls: ['./mobile-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MobileMenuComponent {
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;

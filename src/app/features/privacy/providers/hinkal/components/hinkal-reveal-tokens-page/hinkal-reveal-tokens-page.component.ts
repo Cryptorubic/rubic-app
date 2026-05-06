@@ -1,12 +1,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
@@ -24,7 +24,8 @@ import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-r
   providers: [
     { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
-  ]
+  ],
+  standalone: false
 })
 export class HinkalRevealTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');

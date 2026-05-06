@@ -16,7 +16,8 @@ import { ModalService } from '@app/core/modals/services/modal.service';
   selector: 'app-private-providers-list-general',
   templateUrl: './private-providers-list-general.component.html',
   styleUrls: ['./private-providers-list-general.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateProvidersListGeneralComponent {
   @Input({ required: true }) states: PrivateProviderInfoUI[] = [];

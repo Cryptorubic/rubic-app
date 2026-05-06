@@ -5,7 +5,8 @@ import { BadgeInfoForComponent } from '@app/features/trade/models/trade-state';
   selector: 'app-promotion-badge',
   templateUrl: './promotion-badge.component.html',
   styleUrls: ['./promotion-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PromotionBadgeComponent {
   @Input() data: BadgeInfoForComponent;

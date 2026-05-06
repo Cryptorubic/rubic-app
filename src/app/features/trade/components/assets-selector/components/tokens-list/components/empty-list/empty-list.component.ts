@@ -15,7 +15,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-empty-list',
   templateUrl: './empty-list.component.html',
   styleUrls: ['./empty-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class EmptyListComponent {
   @Input({ required: true }) hasQuery: boolean;

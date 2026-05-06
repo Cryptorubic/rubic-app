@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 
 @Pipe({
-  name: 'getUsdPrice'
+  name: 'getUsdPrice',
+  standalone: false
 })
 export class GetUsdPricePipe implements PipeTransform {
   /**

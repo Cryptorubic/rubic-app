@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-insufficient-funds-ccr-error',
   templateUrl: './insufficient-funds-ccr-error.component.html',
   styleUrls: ['./insufficient-funds-ccr-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class InsufficientFundsCcrErrorComponent {
   public readonly nativeToken: string;

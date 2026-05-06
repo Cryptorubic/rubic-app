@@ -24,7 +24,8 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: EphemeralWalletTokensFacadeService },
     { provide: PrivateTransferWindowService, useExisting: PrivateRefundWindowService }
-  ]
+  ],
+  standalone: false
 })
 export class PrivacycashRefundPageComponent {
   private readonly privacycashRefundService = inject(PrivacycashRefundService);

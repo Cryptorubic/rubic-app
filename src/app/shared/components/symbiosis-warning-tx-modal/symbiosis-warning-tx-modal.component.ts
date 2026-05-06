@@ -8,7 +8,8 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
   selector: 'polymorpheus-symbiosis-warning-tx-modal',
   templateUrl: './symbiosis-warning-tx-modal.component.html',
   styleUrls: ['./symbiosis-warning-tx-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SymbiosisWarningTxModalComponent {
   public readonly amount: string;

@@ -17,7 +17,8 @@ import { HeaderStore } from '@core/header/services/header.store';
   selector: 'app-token-selector-page',
   templateUrl: './token-selector-page.component.html',
   styleUrls: ['./token-selector-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokenSelectorPageComponent {
   @Input({ required: true }) formType: FormType = 'from';

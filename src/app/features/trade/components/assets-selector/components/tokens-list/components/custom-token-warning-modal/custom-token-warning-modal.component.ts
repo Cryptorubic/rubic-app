@@ -8,7 +8,8 @@ import { MobileNativeModalService } from '@core/modals/services/mobile-native-mo
   selector: 'polymorpheus-custom-token-warning-modal',
   templateUrl: './custom-token-warning-modal.component.html',
   styleUrls: ['./custom-token-warning-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CustomTokenWarningModalComponent {
   public token: BalanceToken;

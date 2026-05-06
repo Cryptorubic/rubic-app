@@ -1,8 +1,8 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { takeUntil, timer } from 'rxjs';
+import { timer } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
@@ -11,7 +11,8 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   templateUrl: './wc-change-network-modal.component.html',
   styleUrls: ['./wc-change-network-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class WcChangeNetworkModalComponent {
   public readonly oldNetwork: string;

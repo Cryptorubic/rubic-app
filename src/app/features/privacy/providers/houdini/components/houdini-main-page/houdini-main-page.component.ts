@@ -4,7 +4,6 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -27,7 +26,6 @@ import {
   lastValueFrom,
   retry,
   startWith,
-  takeUntil,
   tap,
   throwError,
   timer
@@ -57,7 +55,8 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
     { provide: ToAssetsService, useClass: HoudiniPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HoudiniTokensFacadeService },
     { provide: PrivateActionButtonService, useClass: HoudiniPrivateActionButtonService }
-  ]
+  ],
+  standalone: false
 })
 export class HoudiniMainPageComponent implements OnInit, OnDestroy {
   public readonly receiverCtrl = new FormControl<string>('');

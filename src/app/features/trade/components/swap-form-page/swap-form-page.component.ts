@@ -1,17 +1,9 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -44,7 +36,8 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
         animate('0.2s ease-in', style({ height: '0px', opacity: 0 }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class SwapFormPageComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();

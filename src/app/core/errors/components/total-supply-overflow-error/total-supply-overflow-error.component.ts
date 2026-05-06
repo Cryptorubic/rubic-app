@@ -6,7 +6,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
   selector: 'app-total-supply-overflow-error',
   templateUrl: './total-supply-overflow-error.component.html',
   styleUrls: ['./total-supply-overflow-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TotalSupplyOverflowErrorComponent {
   public readonly tokenSymbol: string;

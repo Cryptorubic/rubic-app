@@ -6,7 +6,8 @@ import { TestnetPromoStateService } from '@features/testnet-promo/services/testn
   selector: 'app-rules',
   templateUrl: './rules.component.html',
   styleUrls: ['./rules.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RulesComponent {
   @Input({ required: true }) prizePool: PrizePool;

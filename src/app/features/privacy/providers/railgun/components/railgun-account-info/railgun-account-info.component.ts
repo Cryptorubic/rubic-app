@@ -18,7 +18,8 @@ import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/
   selector: 'app-railgun-account-info',
   templateUrl: './railgun-account-info.component.html',
   styleUrls: ['./railgun-account-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class RailgunAccountInfoComponent {
   @Input({ required: true }) accountId: string;

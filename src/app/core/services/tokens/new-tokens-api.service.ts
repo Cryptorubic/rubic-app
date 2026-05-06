@@ -302,7 +302,7 @@ export class NewTokensApiService {
       .pipe(
         map(resp => {
           const supportedChainObject = Object.fromEntries(
-            resp.supported_networks.map(chain => [chain, []])
+            resp.supported_networks.map(chain => [chain, []] as [BlockchainName, RubicAny[]])
           );
           const resultTokens = Object.entries(resp.tokens as RubicAny).reduce(
             (acc, [blockchain, tokens]) => ({

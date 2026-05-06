@@ -10,7 +10,8 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
   selector: 'app-metamask-modal',
   templateUrl: './metamask-modal.component.html',
   styleUrls: ['./metamask-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MetamaskModalComponent {
   // Hardcoded only 2 blockchains

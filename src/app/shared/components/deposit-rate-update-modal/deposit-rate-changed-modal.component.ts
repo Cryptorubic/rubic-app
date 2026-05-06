@@ -8,7 +8,8 @@ import { CrossChainTradeType } from '@cryptorubic/core';
   selector: 'app-deposit-rate-update-modal',
   templateUrl: './deposit-rate-changed-modal.component.html',
   styleUrls: ['./deposit-rate-changed-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DepositRateChangedModalComponent {
   public readonly tradeType: CrossChainTradeType;

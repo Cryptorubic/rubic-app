@@ -9,7 +9,8 @@ import { CommonTableService } from '@features/history/services/common-table-serv
   selector: 'app-history-header',
   templateUrl: './history-header.component.html',
   styleUrls: ['./history-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HistoryHeaderComponent {
   public readonly activeItemIndex$ = this.commonTableService.activeItemIndex$;

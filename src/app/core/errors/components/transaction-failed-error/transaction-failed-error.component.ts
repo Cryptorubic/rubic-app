@@ -8,7 +8,8 @@ import { BlockchainName } from '@cryptorubic/core';
   selector: 'app-transaction-failed-error',
   templateUrl: './transaction-failed-error.component.html',
   styleUrls: ['./transaction-failed-error.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TransactionFailedErrorComponent {
   public readonly txHash: string;

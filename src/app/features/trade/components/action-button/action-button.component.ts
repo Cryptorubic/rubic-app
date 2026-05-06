@@ -5,7 +5,8 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
   selector: 'app-action-button',
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ActionButtonComponent {
   public readonly buttonState$ = this.actionButtonService.buttonState$;

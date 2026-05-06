@@ -1,11 +1,11 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { HINKAL_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
@@ -28,7 +28,8 @@ import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hid
       provide: PrivateActionButtonService,
       useClass: HinkalActionButtonService
     }
-  ]
+  ],
+  standalone: false
 })
 export class HinkalViewComponent {
   public readonly activePage$ = this.privatePageTypeService.activePage$;

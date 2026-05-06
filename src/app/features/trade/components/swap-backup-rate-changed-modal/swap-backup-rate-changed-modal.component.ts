@@ -13,7 +13,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   selector: 'app-swap-backup-rate-changed-modal',
   templateUrl: './swap-backup-rate-changed-modal.component.html',
   styleUrls: ['./swap-backup-rate-changed-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SwapBackupRateChangedModalComponent {
   public readonly tradeState: SelectedTrade;

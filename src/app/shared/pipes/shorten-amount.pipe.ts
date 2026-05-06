@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 
 @Pipe({
-  name: 'shortenAmount'
+  name: 'shortenAmount',
+  standalone: false
 })
 export class ShortenAmountPipe implements PipeTransform {
   /**

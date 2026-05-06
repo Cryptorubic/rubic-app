@@ -184,17 +184,20 @@
     </div>
 
     <ng-container *ngIf="warnings?.length">
-      <div tuiNotification
+      <div
+        tuiNotification
         size="m"
         class="notification"
         appearance="warning"
         *ngFor="let warning of warnings"
-        ><div>
+      >
+        <div>
           {{ warning.text }}
           <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
             >Learn more</a
           >
-        </div></div>
+        </div>
+      </div>
     </ng-container>
 
     <ng-container *ngLet="currentStep$ | async as currentStep">

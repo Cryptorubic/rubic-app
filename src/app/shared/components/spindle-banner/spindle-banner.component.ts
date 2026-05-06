@@ -8,7 +8,8 @@ import { combineLatestWith, map, Observable } from 'rxjs';
   selector: 'app-spindle-banner',
   templateUrl: './spindle-banner.component.html',
   styleUrls: ['./spindle-banner.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SpindleBannerComponent {
   public readonly iframeSrc$ = this.headerStore.getMobileDisplayStatus().pipe(

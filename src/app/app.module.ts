@@ -1,6 +1,6 @@
 import { provideEventPlugins } from '@taiga-ui/event-plugins';
 import { BrowserModule, Meta } from '@angular/platform-browser';
-import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
+import { ErrorHandler, Inject, NgModule, provideAppInitializer, inject } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiRoot } from '@taiga-ui/core';
@@ -35,12 +35,10 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
   ],
   providers: [
     MOBILE_NATIVE_MODAL_PROVIDER,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (() => () => {})();
+      return initializerFn();
+    }),
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler()
@@ -49,18 +47,16 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
       provide: Sentry.TraceService,
       deps: [Router]
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [Sentry.TraceService],
-      multi: true
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: privacyInitializer,
-      deps: [PrivateLocalStorageService],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const initializerFn = ((_traceSrv: Sentry.TraceService) => () => {})(
+        inject(Sentry.TraceService)
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = privacyInitializer(inject(PrivateLocalStorageService));
+      return initializerFn();
+    }),
     provideEventPlugins()
   ],
   bootstrap: [AppComponent]

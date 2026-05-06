@@ -33,7 +33,8 @@ import { AssetListType } from '@features/trade/models/asset';
   selector: 'app-dropdown-options-token',
   templateUrl: './dropdown-options-token.component.html',
   styleUrls: ['./dropdown-options-token.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DropdownOptionsTokenComponent {
   @Input({ required: true }) token: AvailableTokenAmount;

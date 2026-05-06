@@ -7,7 +7,8 @@ import { TrustlineComponentOptions } from '@app/features/trade/components/trustl
   selector: 'app-trustline-modal',
   templateUrl: './trustline-modal.component.html',
   styleUrls: ['./trustline-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TrustlineModalComponent {
   public readonly options: TrustlineComponentOptions;

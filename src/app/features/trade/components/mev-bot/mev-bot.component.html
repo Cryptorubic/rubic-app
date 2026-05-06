@@ -1,5 +1,6 @@
 <ng-container *ngLet="routingForm$ | async as routingForm">
-  <div tuiNotification
+  <div
+    tuiNotification
     size="m"
     *ngIf="displayMev"
     [appearance]="routingForm.value.useMevBotProtection ? 'success' : 'warning'"
@@ -9,7 +10,8 @@
     "
     [tuiHintManual]="!routingForm.value.useMevBotProtection"
     tuiHintDirection="end"
-    ><div>
+  >
+    <div>
       <div class="tui-text_body-l-2">
         <strong>MEV bot protection</strong>
       </div>
@@ -24,6 +26,7 @@
             formControlName="useMevBotProtection"
           />
         </form>
-      </div></div
-  ></div>
+      </div>
+    </div>
+  </div>
 </ng-container>

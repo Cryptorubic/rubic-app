@@ -1,10 +1,10 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
@@ -29,7 +29,8 @@ import { compareTokens } from '@app/shared/utils/utils';
       provide: TokensFacadeService,
       useClass: HinkalHideFacadeService
     }
-  ]
+  ],
+  standalone: false
 })
 export class HinkalHideTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');

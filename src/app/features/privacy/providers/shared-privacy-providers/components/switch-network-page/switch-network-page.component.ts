@@ -7,7 +7,8 @@ import { BlockchainName } from '@cryptorubic/core';
   selector: 'app-switch-network-page',
   templateUrl: './switch-network-page.component.html',
   styleUrls: ['./switch-network-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SwitchNetworkPageComponent {
   @Input({ required: true }) supportedChains: BlockchainName[];

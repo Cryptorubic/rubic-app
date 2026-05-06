@@ -5,7 +5,8 @@ import { PrivateActionButtonService } from '@app/features/privacy/providers/shar
   selector: 'app-private-action-button',
   templateUrl: './private-action-button.component.html',
   styleUrls: ['./private-action-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateActionButtonComponent {
   @Input() showLoader = false;

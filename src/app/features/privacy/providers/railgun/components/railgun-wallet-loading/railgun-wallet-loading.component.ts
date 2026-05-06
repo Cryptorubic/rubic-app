@@ -25,7 +25,8 @@ interface UtxoChain {
   templateUrl: './railgun-wallet-loading.component.html',
   styleUrls: ['./railgun-wallet-loading.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [fadeAnimation]
+  animations: [fadeAnimation],
+  standalone: false
 })
 export class RailgunWalletLoadingComponent {
   public utxoChains: UtxoChain[] = [];

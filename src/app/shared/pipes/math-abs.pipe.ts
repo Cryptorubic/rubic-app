@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'mathAbs'
+  name: 'mathAbs',
+  standalone: false
 })
 export class MathAbsPipe implements PipeTransform {
   transform(value: number | string): string {

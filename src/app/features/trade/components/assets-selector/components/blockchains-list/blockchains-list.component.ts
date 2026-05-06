@@ -24,7 +24,8 @@ import { Observable } from 'rxjs';
   selector: 'app-blockchains-list',
   templateUrl: './blockchains-list.component.html',
   styleUrls: ['./blockchains-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BlockchainsListComponent {
   @PolymorpheusInput()

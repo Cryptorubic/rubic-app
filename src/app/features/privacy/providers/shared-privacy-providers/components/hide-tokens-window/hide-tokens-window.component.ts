@@ -26,7 +26,8 @@ import { HideWindowService } from '../../services/hide-window-service/hide-windo
   templateUrl: './hide-tokens-window.component.html',
   styleUrls: ['./hide-tokens-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [receiverAnimation()]
+  animations: [receiverAnimation()],
+  standalone: false
 })
 export class HideTokensWindowComponent {
   @Input() creationConfig: PrivateShieldFormConfig = {
