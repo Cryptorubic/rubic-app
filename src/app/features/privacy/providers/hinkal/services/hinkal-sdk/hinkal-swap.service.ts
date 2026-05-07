@@ -52,7 +52,8 @@ export class HinkalSwapService {
       const params: DepositParams = {
         token: {
           ...token,
-          stringWeiAmount: token.stringWeiAmount
+          stringWeiAmount: token.stringWeiAmount,
+          isNative: token.isNative
         }
       };
 
@@ -82,7 +83,8 @@ export class HinkalSwapService {
       const params: WithdrawParams = {
         token: {
           ...token,
-          stringWeiAmount: token.stringWeiAmount
+          stringWeiAmount: token.stringWeiAmount,
+          isNative: token.isNative
         },
         receiver
       };
@@ -107,7 +109,8 @@ export class HinkalSwapService {
       const params: TransferParams = {
         token: {
           ...token,
-          stringWeiAmount: token.stringWeiAmount
+          stringWeiAmount: token.stringWeiAmount,
+          isNative: token.isNative
         },
         receiver: recipientStealthAddress
       };
@@ -135,11 +138,13 @@ export class HinkalSwapService {
       const params: SwapParams = {
         fromToken: {
           ...fromToken,
-          stringWeiAmount: fromToken.stringWeiAmount
+          stringWeiAmount: fromToken.stringWeiAmount,
+          isNative: fromToken.isNative
         },
         toToken: {
           ...toToken,
-          stringWeiAmount: toToken.stringWeiAmount
+          stringWeiAmount: toToken.stringWeiAmount,
+          isNative: toToken.isNative
         }
       };
 
