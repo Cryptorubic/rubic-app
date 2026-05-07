@@ -86,6 +86,7 @@ export class TransactionDetailsComponent {
   }
 
   public showSlippageInfo(trade: CrossChainTrade | OnChainTrade): boolean {
+    if (!trade) return false;
     return !trade.warnings.some(warning => warning.code === 7002);
   }
 }

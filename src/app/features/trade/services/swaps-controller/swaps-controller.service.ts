@@ -622,11 +622,7 @@ export class SwapsControllerService {
               wrappedTrade.trade = null;
             }
 
-            const needApprove$ =
-              wrappedTrade?.trade?.needApprove().catch(err => {
-                console.log('%cERROR:', 'color: aqua; font-size: 20px;', err);
-                return false;
-              }) || of(false);
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
               wrappedTrade?.error
