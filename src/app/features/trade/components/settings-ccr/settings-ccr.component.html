@@ -69,11 +69,11 @@
         tuiHintAppearance="onDark"
       ></div>
       <label>{{ 'settings.crossChainRouting.showReceiverAddressTitle' | translate }}</label>
-      <tui-toggle
+      <input type="checkbox" tuiSwitch
         class="settings__toggle"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
-      ></tui-toggle>
+      />
     </div>
   </form>
 </div>

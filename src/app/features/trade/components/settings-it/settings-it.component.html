@@ -96,11 +96,11 @@
       ></div>
       <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
 
-      <tui-toggle
+      <input type="checkbox" tuiSwitch
         class="settings__toggle"
         id="disableMultihops"
         formControlName="disableMultihops"
-      ></tui-toggle>
+      />
     </div>
 
     <div class="settings__row">
@@ -112,11 +112,11 @@
       ></div>
       <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
 
-      <tui-toggle
+      <input type="checkbox" tuiSwitch
         class="settings__toggle"
         id="autoRefresh"
         formControlName="autoRefresh"
-      ></tui-toggle>
+      />
     </div>
 
     <div class="settings__row">
@@ -127,11 +127,11 @@
         tuiHintAppearance="onDark"
       ></div>
       <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
-      <tui-toggle
+      <input type="checkbox" tuiSwitch
         class="settings__toggle"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
-      ></tui-toggle>
+      />
     </div>
   </form>
 </div>

@@ -9,7 +9,7 @@ import {
   TuiBadge,
   TuiDataListWrapper,
   TuiInputNumber,
-  TuiProgressBar,
+  TuiProgress,
   TuiTabs,
   TuiSwitch
 } from '@taiga-ui/kit';
@@ -158,7 +158,7 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     TuiActiveZone,
     ...TuiDropdown,
     TuiSwitch,
-    TuiProgressBar,
+    ...TuiProgress,
     ...TuiTabs,
     ...TuiDataListWrapper,
     TuiLoader,

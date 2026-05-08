@@ -7,17 +7,11 @@ import {
   TuiCheckbox,
   TuiFieldErrorPipe,
   TuiInputPassword,
-  TuiProgressBar,
+  TuiProgress,
   TuiStepper,
   TuiSwitch
 } from '@taiga-ui/kit';
-import {
-  TuiButton,
-  TuiError,
-  TuiHint,
-  TuiLoader,
-  TuiNotification
-} from '@taiga-ui/core';
+import { TuiButton, TuiError, TuiHint, TuiLoader, TuiNotification } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunHideTokensPageComponent } from '@features/privacy/providers/railgun/components/railgun-hide-tokens-page/railgun-hide-tokens-page.component';
@@ -67,16 +61,16 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     TuiError,
     TuiFieldErrorPipe,
     TuiButton,
-    ...(TuiStepper as unknown as any[]),
+    ...TuiStepper,
     SharedPrivacyProvidersModule,
     TuiNotification,
-    TuiProgressBar,
     TuiCheckbox,
     TuiSwitch,
     InlineSVGModule,
     ClipboardModule,
-    ...(TuiHint as unknown as any[]),
-    TuiLoader
+    ...TuiHint,
+    TuiLoader,
+    ...TuiProgress
   ],
   providers: [
     RailgunFacadeService,

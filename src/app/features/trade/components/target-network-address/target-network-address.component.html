@@ -1,24 +1,14 @@
 <div class="network-container">
-  <tui-input
-    [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
-    tuiTextfieldSize="l"
-    [formControl]="addressCtrl"
-    [pseudoFocus]="addressCtrl.invalid"
-    [pseudoInvalid]="addressCtrl.invalid"
-    [tuiTextfieldCleaner]="false"
-    [tuiTextfieldLabelOutside]="false"
-    (focusedChange)="onFocusChange($event)"
-  >
-    <div [@moveLabel]="isActiveInput" class="network-container__row">
-      <label class="network-container__label">
-        {{
-          isIntegratorWidget
-            ? 'You must be the owner and have access to this wallet'
-            : placeholderText
-        }}
-      </label>
-    </div>
-  </tui-input>
+  <tui-textfield tuiTextfieldSize="l" [tuiTextfieldCleaner]="false">
+    <label tuiLabel>
+      {{ isIntegratorWidget ? 'You must be the owner and have access to this wallet' : placeholderText }}
+    </label>
+    <input tuiTextfield [formControl]="addressCtrl" [invalid]="addressCtrl.invalid" (focus)="onFocusChange(true)" (blur)="onFocusChange(false)" />
+    <tui-icon
+      *ngIf="!!addressCtrl.value"
+      [icon]="addressCtrl.valid ? 'assets/images/icons/forms/success-input.svg' : 'assets/images/icons/forms/error-input.svg'"
+    ></tui-icon>
+  </tui-textfield>
 
   <span
     *ngIf="!!addressCtrl.value"
@@ -26,17 +16,4 @@
     [inlineSVG]="'assets/images/icons/close.svg'"
     (click)="clear()"
   ></span>
-
-  <ng-template #success>
-    <div
-      class="network-container__input-status-icon"
-      [inlineSVG]="'assets/images/icons/forms/success-input.svg'"
-    ></div>
-  </ng-template>
-  <ng-template #error>
-    <div
-      class="network-container__input-status-icon"
-      [inlineSVG]="'assets/images/icons/forms/error-input.svg'"
-    ></div>
-  </ng-template>
 </div>

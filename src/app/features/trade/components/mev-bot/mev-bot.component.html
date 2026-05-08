@@ -15,11 +15,11 @@
     <div class="mev-bot__row">
       Use private RPC to protect your trades
       <form [formGroup]="routingForm" class="settings__form">
-        <tui-toggle
+        <input type="checkbox" tuiSwitch
           class="mev-bot__toggle"
           id="useMevBotProtection"
           formControlName="useMevBotProtection"
-        ></tui-toggle>
+        />
       </form>
     </div>
   </tui-notification>

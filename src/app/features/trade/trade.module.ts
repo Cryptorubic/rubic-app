@@ -15,7 +15,8 @@ import {
   TuiLoader,
   TuiNotification,
   TuiScrollbar,
-  TuiTextfield
+  TuiTextfield,
+  TuiIcon
 } from '@taiga-ui/core';
 import { TuiCarousel, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -60,6 +61,7 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     AssetsSelectorModule,
     TuiNotification,
     ...TuiCarousel,
+    TuiIcon,
     SharedTradeModule
   ],
   providers: [
