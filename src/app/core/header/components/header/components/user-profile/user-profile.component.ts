@@ -56,7 +56,7 @@ export class UserProfileComponent {
 
   public currentBlockchainIcon: string;
 
-  public dropdownIsOpened = false;
+  public isOpened = false;
 
   public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
     map(user => (user?.name ? user.name : user?.address)),
@@ -76,10 +76,6 @@ export class UserProfileComponent {
 
   public logout(): void {
     this.authService.disconnectWallet();
-  }
-
-  public getDropdownStatus(status: boolean): void {
-    this.dropdownIsOpened = status;
   }
 
   public openLimitOrdersModal(): void {}

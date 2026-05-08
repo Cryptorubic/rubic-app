@@ -3,7 +3,8 @@
     class="user-profile"
     [tuiDropdown]="dropdown"
     tuiDropdownAlign="right"
-    [(open)]="dropdownIsOpened"
+    [tuiDropdownManual]="isOpened"
+    (click)="isOpened = !isOpened"
   >
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">

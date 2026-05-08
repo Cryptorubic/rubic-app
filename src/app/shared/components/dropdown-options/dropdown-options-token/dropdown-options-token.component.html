@@ -11,8 +11,9 @@
     type="button"
     [size]="isMobile ? 'm' : 's'"
     [tuiDropdown]="content"
-    [(tuiDropdownOpen)]="isDropdownOpen"
-    [pseudoHover]="isDropdownOpen || null"
+    [tuiDropdownManual]="isDropdownOpen"
+    (click)="isDropdownOpen = !isDropdownOpen"
+    (tuiActiveZoneChange)="isDropdownOpen = $event"
   ></button>
 
   <ng-template #content>

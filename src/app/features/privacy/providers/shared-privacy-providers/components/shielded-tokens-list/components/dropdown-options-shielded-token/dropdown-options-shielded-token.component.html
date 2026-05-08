@@ -1,10 +1,9 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
   <div
-    #dropdown
+    *ngIf="showDropdown"
     [tuiDropdown]="content"
     [tuiDropdownManual]="isDropdownOpen"
-    [(open)]="isDropdownOpen"
-    *ngIf="showDropdown"
+    (click)="isDropdownOpen = !isDropdownOpen"
   >
     <button
       class="dropdown-button"
@@ -13,12 +12,11 @@
       tuiIconButton
       type="button"
       [size]="isMobile ? 'm' : 's'"
-      [pseudoHover]="dropdown.open || null"
     ></button>
   </div>
 
-  <ng-template #content let-activeZone>
-    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+  <ng-template #content>
+    <tui-data-list tuiDataListDropdownManager size="m">
       <div class="dropdown-content__wrapper">
         <ng-container *ngIf="token.shieldTxHash">
           <a [href]="getTxLink(token)" target="_blank">

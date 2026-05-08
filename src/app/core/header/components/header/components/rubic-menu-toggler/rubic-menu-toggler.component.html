@@ -1,4 +1,9 @@
-<div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+<div
+  [tuiDropdown]="dropdown"
+  tuiDropdownAlign="right"
+  [tuiDropdownManual]="isOpened"
+  (click)="isOpened = !isOpened"
+>
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
       <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
