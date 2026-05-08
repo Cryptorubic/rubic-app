@@ -19,6 +19,7 @@ export interface PureTokenAmount<T extends BlockchainName = BlockchainName> {
   decimals: number;
   name: string;
   symbol: string;
+  isNative: boolean;
 }
 export interface WorkerParams<T extends object = object> {
   type: HinkalWorkerType;

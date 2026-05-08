@@ -10,10 +10,9 @@ export class HinkalWorkerBalanceService {
   }
 
   public async getBalances(): Promise<{ balances: HinkalPrivateBalance; chainId: number }> {
-    const chainId = this.hinkal.getCurrentChainId();
+    const chainId = this.hinkal.getProviderAdapter().getChainId();
 
     try {
-      await this.hinkal.getEventsFromHinkal();
       const ethAddress = await this.hinkal.getEthereumAddress();
       const balances = await this.fetchBalances(chainId, ethAddress);
       const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
@@ -31,7 +30,7 @@ export class HinkalWorkerBalanceService {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      const approvedUtxos = await getApprovedUtxos(this.hinkal, false);
+      const approvedUtxos = await getApprovedUtxos(this.hinkal, chainId, false);
 
       const { inputUtxos } = await getInputUtxoAndBalance({
         hinkal: this.hinkal,
