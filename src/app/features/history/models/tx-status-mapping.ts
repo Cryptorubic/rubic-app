@@ -2,7 +2,7 @@ import { SourceTxStatus } from '@features/history/models/source-tx-status';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
 
 export interface TxStatus {
-  appearance: string;
+  appearance: 'error' | 'warning' | 'success' | 'info' | 'primary';
   label: string;
 }
 

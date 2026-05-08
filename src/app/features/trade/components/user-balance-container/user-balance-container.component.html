@@ -10,14 +10,13 @@
       </span>
     </span>
 
-    <tui-tag
+    <tui-chip
       *ngIf="hide !== 'maxButton'"
       size="s"
-      status="custom"
-      value="MAX"
+      appearance="custom"
       class="user-balance-container__max-button"
       (click)="maxButtonClickEvent.emit()"
-    >
-    </tui-tag>
+      >MAX
+    </tui-chip>
   </ng-container>
 </div>

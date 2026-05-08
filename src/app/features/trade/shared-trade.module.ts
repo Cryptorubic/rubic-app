@@ -14,7 +14,7 @@ import {
   TuiScrollbar,
   TuiTextfield
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
+import { TuiCarousel, TuiChip, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -160,6 +160,7 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     ...TuiTextfield,
     ...TuiInputNumber,
     TuiSwitch,
+    TuiChip,
     ...TuiDropdown,
     TuiLoader,
     AssetsSelectorModule,

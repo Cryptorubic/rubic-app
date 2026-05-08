@@ -42,28 +42,28 @@
           </div>
           <div class="element__row">
             <div class="element__row-badges">
-              <tui-tag
+              <tui-chip
                 *ngIf="isBest"
                 class="element__best-badge"
                 size="s"
-                status="custom"
-                value="Best"
+                appearance="custom"
                 [tuiHint]="'The most profitable trade according to our calculations'"
                 [tuiHintHideDelay]="hideHint ? 0 : 200"
-              ></tui-tag>
+                >Best
+              </tui-chip>
               <app-promotion-badge
                 *ngFor="let badge of tradeState.badges"
                 [data]="badge"
                 [hideHint]="hideHint"
               ></app-promotion-badge>
-              <tui-tag
+              <tui-chip
                 *ngIf="tradeState?.error"
                 class="element__warning-badge"
                 size="s"
-                status="custom"
-                value="Warn"
+                appearance="custom"
                 [tuiHint]="tradeState.error?.message"
-              ></tui-tag>
+                >Warn
+              </tui-chip>
             </div>
 
             <div

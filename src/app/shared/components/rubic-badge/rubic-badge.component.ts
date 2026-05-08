@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TuiStatus } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-rubic-badge',
@@ -8,7 +7,7 @@ import { TuiStatus } from '@taiga-ui/kit';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicBadgeComponent {
-  @Input({ required: true }) status: TuiStatus;
+  @Input({ required: true }) status: 'error' | 'warning' | 'success' | 'info' | 'primary';
 
   @Input({ required: true }) label: string;
 }

@@ -1,12 +1,11 @@
 <a [skipDefault]="!!data.href === false" [href]="data?.href" target="_blank">
-  <tui-tag
+  <tui-chip
     class="element__gas-refund-badge"
     [style.background]="data.bgColor && data.bgColor"
     size="s"
-    status="custom"
-    [value]="data.label"
+    appearance="custom"
     [tuiHint]="data?.hint || null"
     [tuiHintHideDelay]="hideHint ? 0 : 200"
-  >
-  </tui-tag>
+    >{{ data.label }}
+  </tui-chip>
 </a>
