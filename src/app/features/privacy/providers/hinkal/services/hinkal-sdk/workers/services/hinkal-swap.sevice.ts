@@ -3,6 +3,7 @@ import {
   generateFundAndApproveOps,
   Hinkal,
   networkRegistry,
+  SubAccount,
   TokenChanges,
   WRAPPER_TOKEN_EXCHANGE_ADDRESSES
 } from '@hinkal/common';
@@ -157,13 +158,27 @@ export class HinkalWorkerSwapService {
         })
       );
 
+      const ethAddress = await hinkalInstance.getEthereumAddress();
+      const subAccount: SubAccount = {
+        index: 0,
+        ethAddress: ethAddress,
+        privateKey: keys.getShieldedPrivateKey(),
+        name: '',
+        createdAt: new Date().toISOString(),
+        isHidden: false,
+        isImported: false,
+        iconIndex: 0,
+        isFavorite: false
+      };
+
       const hash = await hinkalInstance.actionPrivateWallet(
         fromChainId,
         [fromHinkalToken, toHinkalToken],
         [fromTokenChanges.amount, toTokenChanges.amount],
         [false, true],
         ops,
-        [fromTokenChanges, toTokenChanges]
+        [fromTokenChanges, toTokenChanges],
+        subAccount
       );
 
       return hash;
