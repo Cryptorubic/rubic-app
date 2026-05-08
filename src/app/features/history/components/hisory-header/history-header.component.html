@@ -15,15 +15,16 @@
   </tui-tabs>
   <div class="filter">
     <form class="b-form">
-      <tui-select
+      <tui-textfield
         *ngIf="isCrossChain$ | async"
         class="filter__select"
         tuiTextfieldSize="m"
-        [formControl]="statusFilter"
+        tuiChevron
       >
-        Status
-        <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
-      </tui-select>
+        <label tuiLabel>Status</label>
+        <input tuiSelect [formControl]="statusFilter" />
+        <tui-data-list-wrapper *tuiTextfieldDropdown [items]="items"></tui-data-list-wrapper>
+      </tui-textfield>
     </form>
   </div>
 </div>

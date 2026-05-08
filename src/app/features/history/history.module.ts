@@ -6,18 +6,13 @@ import { SharedModule } from '@shared/shared.module';
 import { HistoryHeaderComponent } from './components/hisory-header/history-header.component';
 import {
   TuiBadge,
+  TuiChevron,
   TuiDataListWrapper,
   TuiPagination,
   TuiSelect,
   TuiTabs
 } from '@taiga-ui/kit';
-import {
-  TuiButton,
-  TuiLoader,
-  TuiIcon,
-  TuiTextfield,
-  TuiHint
-} from '@taiga-ui/core';
+import { TuiButton, TuiLoader, TuiIcon, TuiTextfield, TuiHint } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
 import { TuiTable, TuiTablePagination } from '@taiga-ui/addon-table';
@@ -53,12 +48,13 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     TuiLet,
     TuiBadge,
     TuiPagination,
-    ...(TuiSelect as unknown as any[]),
-    ...(TuiTextfield as unknown as any[]),
-    ...(TuiDataListWrapper as unknown as any[]),
+    TuiChevron,
+    ...TuiSelect,
+    ...TuiTextfield,
+    ...TuiDataListWrapper,
     ReactiveFormsModule,
     TuiButton,
-    ...(TuiHint as unknown as any[])
+    ...TuiHint
   ],
   providers: [CommonTableService, CrossChainTableService, OnChainTableService, DepositTableService]
 })

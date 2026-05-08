@@ -1,18 +1,19 @@
 <app-window-container>
   <ng-container header>Switch chain</ng-container>
   <div>
-    <tui-select
+    <tui-textfield
       class="b-form"
+      tuiChevron
+      [content]="chainControl.value && item"
       tuiTextfieldSize="m"
-      [formControl]="chainControl"
-      [valueContent]="item"
     >
+      <input tuiSelect [formControl]="chainControl" />
       <tui-data-list-wrapper
-        *tuiDataList
+        *tuiTextfieldDropdown
         [items]="supportedChains"
         [itemContent]="item"
       ></tui-data-list-wrapper>
-    </tui-select>
+    </tui-textfield>
   </div>
 </app-window-container>
 
