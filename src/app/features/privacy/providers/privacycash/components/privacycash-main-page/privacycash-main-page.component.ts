@@ -4,7 +4,7 @@ import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { EphemeralWalletTokensService } from '../../services/common/token-facades/ephemeral-wallet-tokens.service';
 import { PrivacycashSignatureService } from '../../services/privacy-cash-signature.service';
 import { isNil } from '@app/shared/utils/utils';

@@ -20,8 +20,8 @@ import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operato
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
-import { TuiScrollbarComponent } from '@taiga-ui/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiScrollbar } from '@taiga-ui/core';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
 import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
@@ -60,7 +60,7 @@ export class ProvidersListGeneralComponent {
     }
   }
 
-  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
+  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
   private _calculationStatus: CalculationStatus;
 
@@ -165,7 +165,8 @@ export class ProvidersListGeneralComponent {
   ngAfterViewInit(): void {
     // @TODO optimise scroll handler
     if (!this.isMobile) {
-      fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      fromEvent((this.scrollBarElement as any).browserScrollRef.nativeElement, 'scroll')
         .pipe(
           tap(() => this.hideProviderHintOnScroll(true)),
           debounceTime(500),

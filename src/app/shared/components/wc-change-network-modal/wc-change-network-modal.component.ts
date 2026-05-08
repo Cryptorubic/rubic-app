@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { takeUntil, timer } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../core/services/destroy/destroy.service';
 import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 

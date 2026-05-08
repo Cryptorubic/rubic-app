@@ -9,7 +9,7 @@ import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';

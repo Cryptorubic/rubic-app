@@ -9,7 +9,7 @@ import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';

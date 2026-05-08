@@ -9,7 +9,7 @@ import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@crypto
 
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { ZamaBalanceService } from '../../services/zama-sdk/zama-balance.service';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';

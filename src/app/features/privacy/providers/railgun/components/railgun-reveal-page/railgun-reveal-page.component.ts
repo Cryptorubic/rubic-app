@@ -11,7 +11,7 @@ import { PrivateEvent } from '@features/privacy/providers/shared-privacy-provide
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -82,11 +82,10 @@ export class RailgunRevealPageComponent {
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
-                status: 'info',
+                appearance: 'info',
                 autoClose: 10_000,
                 data: null,
                 icon: '',
-                defaultAutoCloseTime: 0
               });
               await this.revealService.unshield(
                 token.address,
@@ -97,11 +96,10 @@ export class RailgunRevealPageComponent {
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',
                 {
-                  status: 'success',
+                  appearance: 'success',
                   autoClose: 5_000,
                   data: null,
                   icon: '',
-                  defaultAutoCloseTime: 0
                 }
               );
               this.privateStatisticsService.saveAction(

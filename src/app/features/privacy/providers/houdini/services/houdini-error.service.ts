@@ -3,7 +3,7 @@ import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-p
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { ErrorInterface } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../core/services/destroy/destroy.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, takeUntil, tap } from 'rxjs';
 
 @Injectable()

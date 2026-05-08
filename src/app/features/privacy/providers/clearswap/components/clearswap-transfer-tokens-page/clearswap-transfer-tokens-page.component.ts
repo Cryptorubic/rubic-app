@@ -23,7 +23,7 @@ import {
 } from 'rxjs';
 import { ClearswapErrorService } from '../../services/clearswap-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';

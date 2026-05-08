@@ -30,7 +30,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { PrivateSwapEvent } from '../../models/private-event';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateQuoteAdapter } from '../../models/quote-adapter';
 import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';

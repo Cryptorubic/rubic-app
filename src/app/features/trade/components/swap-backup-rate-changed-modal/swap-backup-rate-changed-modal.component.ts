@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import BigNumber from 'bignumber.js';
 import { Observable } from 'rxjs';
 import { RateChangeInfo } from '../../models/rate-change-info';

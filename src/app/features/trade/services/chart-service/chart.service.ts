@@ -3,7 +3,7 @@ import { BehaviorSubject, distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DOCUMENT } from '@angular/common';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { compareAssets } from '../../utils/compare-assets';
 import { TradePageService } from '../trade-page/trade-page.service';

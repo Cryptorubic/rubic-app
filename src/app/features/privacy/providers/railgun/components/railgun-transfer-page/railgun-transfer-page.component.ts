@@ -15,7 +15,7 @@ import { RailgunTransferService } from '@features/privacy/providers/railgun/serv
 
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -142,11 +142,10 @@ export class RailgunTransferPageComponent implements OnInit {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',
                 {
-                  status: 'info',
+                  appearance: 'info',
                   autoClose: 10_000,
                   data: null,
                   icon: '',
-                  defaultAutoCloseTime: 0
                 }
               );
               await this.transferService.transferTokens(
@@ -157,11 +156,10 @@ export class RailgunTransferPageComponent implements OnInit {
                 token.blockchain as RailgunSupportedChain
               );
               this.notificationService.show('Transfer successful.', {
-                status: 'success',
+                appearance: 'success',
                 autoClose: 5_000,
                 data: null,
                 icon: '',
-                defaultAutoCloseTime: 0
               });
               this.privateStatisticsService.saveAction(
                 'TRANSFER',

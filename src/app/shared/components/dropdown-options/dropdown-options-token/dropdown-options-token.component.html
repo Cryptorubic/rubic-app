@@ -1,26 +1,22 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
-  <tui-hosted-dropdown
-    #dropdown
-    [content]="content"
-    [(open)]="isDropdownOpen"
+  <button
     *ngIf="
       canBeAddedToFavorite ||
       showCopyToClipboardOption ||
       securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
     "
-  >
-    <button
-      appearance="flat"
-      icon="tuiIconMoreVertical"
-      tuiIconButton
-      type="button"
-      [size]="isMobile ? 'm' : 's'"
-      [pseudoHover]="dropdown.open || null"
-    ></button>
-  </tui-hosted-dropdown>
+    appearance="flat"
+    icon="tuiIconMoreVertical"
+    tuiIconButton
+    type="button"
+    [size]="isMobile ? 'm' : 's'"
+    [tuiDropdown]="content"
+    [(tuiDropdownOpen)]="isDropdownOpen"
+    [pseudoHover]="isDropdownOpen || null"
+  ></button>
 
-  <ng-template #content let-activeZone>
-    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+  <ng-template #content>
+    <tui-data-list tuiDataListDropdownManager size="m">
       <div class="dropdown-content__wrapper">
         <div class="dropdown-content">
           <ng-container *ngIf="showCopyToClipboardOption">

@@ -8,23 +8,16 @@ import { CrossChainService } from '@features/trade/services/cross-chain/cross-ch
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 import {
-  TuiButtonModule,
-  TuiExpandModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiModeModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiButton,
+  TuiExpand,
+  TuiHint,
+  TuiDropdown,
+  TuiLoader,
+  TuiNotification,
+  TuiScrollbar,
+  TuiTextfield
 } from '@taiga-ui/core';
-import {
-  TuiCarouselModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiCarousel, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -51,25 +44,22 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     TradeRoutingModule,
     CommonModule,
     SharedModule,
-    TuiExpandModule,
-    TuiScrollbarModule,
-    TuiTagModule,
+    ...TuiExpand,
+    TuiScrollbar,
     InlineSVGModule,
-    TuiButtonModule,
+    TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
-    TuiHintModule,
+    ...TuiHint,
     FormsModule,
-    TuiTextfieldControllerModule,
-    TuiInputNumberModule,
-    TuiToggleModule,
-    TuiHostedDropdownModule,
-    TuiInputModule,
-    TuiLoaderModule,
+    ...TuiTextfield,
+    ...TuiInputNumber,
+    TuiSwitch,
+    ...TuiDropdown,
+    TuiLoader,
     AssetsSelectorModule,
-    TuiNotificationModule,
-    TuiModeModule,
-    TuiCarouselModule,
+    TuiNotification,
+    ...TuiCarousel,
     SharedTradeModule
   ],
   providers: [

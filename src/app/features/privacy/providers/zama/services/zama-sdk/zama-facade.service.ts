@@ -74,11 +74,10 @@ export class ZamaFacadeService {
 
   private showSuccessNotification(message: string): void {
     this.notificationService.show(message, {
-      status: 'info',
+      appearance: 'info',
       autoClose: 15_000,
       data: null,
       icon: '',
-      defaultAutoCloseTime: 0
     });
   }
 

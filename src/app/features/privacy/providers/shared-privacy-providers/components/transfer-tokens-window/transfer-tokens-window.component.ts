@@ -18,7 +18,7 @@ import { Token, TokenAmount } from '@cryptorubic/core';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { PrivateTransferInfo } from '../../models/transfer-info';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { SwapAmount } from '../../models/swap-info';
 import { PrivateTransferFormConfig } from '../../models/swap-form-types';
 import { FormControl } from '@angular/forms';

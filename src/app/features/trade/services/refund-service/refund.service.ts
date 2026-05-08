@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';

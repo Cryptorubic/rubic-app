@@ -22,7 +22,7 @@ import {
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../services/destroy/destroy.service';
 import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';

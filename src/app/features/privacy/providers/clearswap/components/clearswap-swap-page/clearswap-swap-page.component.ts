@@ -9,7 +9,7 @@ import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';

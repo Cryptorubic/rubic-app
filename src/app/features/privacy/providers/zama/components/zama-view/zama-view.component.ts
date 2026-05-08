@@ -4,7 +4,7 @@ import { PageType } from '../../../shared-privacy-providers/components/page-navi
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';

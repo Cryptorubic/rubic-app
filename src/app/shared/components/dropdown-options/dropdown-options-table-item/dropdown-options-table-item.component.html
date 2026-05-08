@@ -1,16 +1,16 @@
-<tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen">
-  <button
-    appearance="flat"
-    icon="tuiIconMoreVertical"
-    tuiIconButton
-    type="button"
-    [size]="'xs'"
-    [pseudoHover]="dropdown.open || null"
-  ></button>
-</tui-hosted-dropdown>
+<button
+  appearance="flat"
+  icon="tuiIconMoreVertical"
+  tuiIconButton
+  type="button"
+  [size]="'xs'"
+  [tuiDropdown]="content"
+  [(tuiDropdownOpen)]="isDropdownOpen"
+  [pseudoHover]="isDropdownOpen || null"
+></button>
 
-<ng-template #content let-activeZone>
-  <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+<ng-template #content>
+  <tui-data-list tuiDataListDropdownManager size="m">
     <div class="dropdown-content-wrapper">
       <div class="dropdown-content__actions">
         <ng-container>

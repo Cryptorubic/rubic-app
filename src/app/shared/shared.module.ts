@@ -6,30 +6,25 @@ import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiBadgeModule,
-  TuiDataListWrapperModule,
-  TuiInputCountModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiProgressModule,
-  TuiTabsModule,
-  TuiTagModule,
-  TuiToggleModule
+  TuiBadge,
+  TuiDataListWrapper,
+  TuiInputNumber,
+  TuiProgressBar,
+  TuiTabs,
+  TuiSwitch
 } from '@taiga-ui/kit';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDropdownModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiScrollbarModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-  TuiTooltipModule
+  TuiButton,
+  TuiDataList,
+  TuiDropdown,
+  TuiHint,
+  TuiLoader,
+  TuiNotification,
+  TuiScrollbar,
+  TuiIcon,
+  TuiTextfield
 } from '@taiga-ui/core';
-import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
+import { TuiActiveZone, TuiHovered } from '@taiga-ui/cdk';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -156,33 +151,24 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     RouterModule,
     ScrollingModule,
     InlineSVGModule.forRoot(),
-    TuiSvgModule,
-    TuiTooltipModule,
-    TuiHintModule,
-    TuiInputModule,
-    TuiButtonModule,
-    TuiDataListModule,
-    TuiActiveZoneModule,
-    TuiDropdownModule,
-    TuiHostedDropdownModule,
-    TuiToggleModule,
-    TuiProgressModule,
-    TuiSvgModule,
-    TuiHintModule,
-    TuiToggleModule,
-    TuiTabsModule,
-    TuiInputCountModule,
-    TuiDataListWrapperModule,
-    TuiLoaderModule,
-    TuiBadgeModule,
-    TuiHintModule,
-    TuiTagModule,
-    TuiTextfieldControllerModule,
-    TuiScrollbarModule,
-    TuiHoveredModule,
+    TuiIcon,
+    ...TuiHint,
+    TuiButton,
+    ...TuiDataList,
+    TuiActiveZone,
+    ...TuiDropdown,
+    TuiSwitch,
+    TuiProgressBar,
+    ...TuiTabs,
+    ...TuiDataListWrapper,
+    TuiLoader,
+    TuiBadge,
+    ...TuiTextfield,
+    TuiScrollbar,
+    TuiHovered,
     NgOptimizedImage,
-    TuiInputNumberModule,
-    TuiNotificationModule
+    ...TuiInputNumber,
+    TuiNotification
   ],
   exports: [
     BigNumberFormatPipe,

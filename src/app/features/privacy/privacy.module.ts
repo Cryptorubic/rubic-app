@@ -8,7 +8,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { PrivateProvidersListGeneralComponent } from './components/private-providers-list-general/private-providers-list-general.component';
 import { PrivateProvidersListComponent } from './components/private-providers-list/private-providers-list.component';
 import { PrivateProviderElementComponent } from './components/private-provider-element/private-provider-element.component';
-import { TuiButtonModule, TuiHintModule, TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiButton, TuiHint, TuiScrollbar } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
 import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
@@ -20,7 +20,7 @@ import { SharedPrivacyProvidersModule } from './providers/shared-privacy-provide
 import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
 import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
-import { TuiToggleModule } from '@taiga-ui/kit';
+import { TuiSwitch } from '@taiga-ui/kit';
 import { PrivacyMainPageTokensFacadeService } from './services/privacy-main-page-tokens-facade.service';
 import { PrivacyMainPageFromPrivateAssetsService } from './services/privacy-main-page-from-private-assets.service';
 import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-page-to-private-assets.service';
@@ -41,16 +41,16 @@ import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-p
     CommonModule,
     SharedModule,
     PrivacyRoutingModule,
-    TuiScrollbarModule,
+    TuiScrollbar,
     InlineSVGModule,
     FormsModule,
     ReactiveFormsModule,
     HeaderModule,
-    TuiButtonModule,
+    TuiButton,
     SharedTradeModule,
     SharedPrivacyProvidersModule,
-    TuiHintModule,
-    TuiToggleModule
+    ...(TuiHint as unknown as any[]),
+    TuiSwitch
   ],
   providers: [
     PrivacyMainPageService,

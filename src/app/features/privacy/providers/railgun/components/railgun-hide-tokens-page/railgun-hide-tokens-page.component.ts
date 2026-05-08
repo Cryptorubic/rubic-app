@@ -13,7 +13,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { HideWindowService } from '@features/privacy/providers/shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
@@ -68,11 +68,10 @@ export class RailgunHideTokensPageComponent {
             `This transaction will automatically wrap your ${token.symbol} into W${token.symbol} (1:1) and shield the wrapped tokens in RAILGUN.`,
             {
               label: 'RAILGUN does not support shielding native tokens',
-              status: 'info',
+              appearance: 'info',
               autoClose: 10_000,
               data: null,
               icon: 'info',
-              defaultAutoCloseTime: 0
             }
           );
         }
@@ -113,11 +112,10 @@ export class RailgunHideTokensPageComponent {
               this.notificationService.show(
                 'Waiting for your Private Proof of Innocence. Estimated time 1 hour. Come back soon.',
                 {
-                  status: 'info',
+                  appearance: 'info',
                   autoClose: 15_000,
                   data: null,
                   icon: '',
-                  defaultAutoCloseTime: 0
                 }
               );
             }

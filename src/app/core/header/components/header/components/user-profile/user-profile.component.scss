@@ -92,10 +92,10 @@
   }
 
   ::ng-deep {
-    tui-hosted-dropdown {
+    .user-profile {
       .tui-group .t-wrapper {
         padding: 0 var(--tui-padding-l) !important;
       }
-    } 
+    }
   }
 }

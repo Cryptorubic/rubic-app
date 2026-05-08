@@ -1,5 +1,11 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
-  <tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen" *ngIf="showDropdown">
+  <div
+    #dropdown
+    [tuiDropdown]="content"
+    [tuiDropdownManual]="isDropdownOpen"
+    [(open)]="isDropdownOpen"
+    *ngIf="showDropdown"
+  >
     <button
       class="dropdown-button"
       appearance="flat"
@@ -9,7 +15,7 @@
       [size]="isMobile ? 'm' : 's'"
       [pseudoHover]="dropdown.open || null"
     ></button>
-  </tui-hosted-dropdown>
+  </div>
 
   <ng-template #content let-activeZone>
     <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">

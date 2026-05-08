@@ -12,7 +12,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 
 @Component({
   selector: 'app-search-tokens-bar',

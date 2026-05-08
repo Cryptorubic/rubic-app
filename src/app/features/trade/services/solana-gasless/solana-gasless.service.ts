@@ -4,7 +4,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { SolanaGaslessStateService } from './solana-gasless-state.service';
 import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom, takeUntil } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE } from '@cryptorubic/core';
 

@@ -1,5 +1,10 @@
 <ng-container>
-  <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
+  <div
+    class="user-profile"
+    [tuiDropdown]="dropdown"
+    tuiDropdownAlign="right"
+    [(open)]="dropdownIsOpened"
+  >
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
         <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
@@ -15,7 +20,7 @@
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>
     </div>
-  </tui-hosted-dropdown>
+  </div>
 
   <ng-template #dropdown let-activeZone>
     <tui-data-list class="data-list" size="m" role="menu">

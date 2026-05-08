@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormType } from '@features/trade/models/form-type';
 import { Asset } from '@features/trade/models/asset';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
 

@@ -7,7 +7,7 @@ import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';

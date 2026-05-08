@@ -8,7 +8,7 @@ import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@crypto
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';

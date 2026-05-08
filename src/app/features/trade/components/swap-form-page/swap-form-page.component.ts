@@ -24,7 +24,7 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 
 @Component({

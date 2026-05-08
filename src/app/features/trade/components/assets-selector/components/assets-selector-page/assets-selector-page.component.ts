@@ -13,7 +13,7 @@ import {
 import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import {
   distinctUntilChanged,
   filter,

@@ -4,7 +4,7 @@ import { HINKAL_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';

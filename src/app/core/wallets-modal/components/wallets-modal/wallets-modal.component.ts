@@ -8,7 +8,7 @@ import {
 import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
@@ -19,7 +19,8 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
-import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../services/destroy/destroy.service';
+import { tuiIsEdge, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
@@ -43,7 +44,7 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get isChromium(): boolean {
-    if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
+    if (tuiIsEdge(this.userAgent)) {
       return false;
     }
 

@@ -21,7 +21,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';

@@ -1,22 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDropdownModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiScrollbarModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiButton,
+  TuiDataList,
+  TuiDropdown,
+  TuiHint,
+  TuiLoader,
+  TuiScrollbar,
+  TuiIcon,
+  TuiTextfield
 } from '@taiga-ui/core';
-import { TuiCarouselModule, TuiDataListDropdownManagerModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiCarousel, TuiDataListDropdownManager } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { SharedModule } from '@shared/shared.module';
-import { TuiActiveZoneModule, TuiAutoFocusModule } from '@taiga-ui/cdk';
+import { TuiActiveZone, TuiAutoFocus } from '@taiga-ui/cdk';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { AssetTypesAsideComponent } from '@features/trade/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
 import { SearchBarTokensComponent } from '@features/trade/components/assets-selector/components/search-bar/search-bar-tokens.component';
@@ -57,24 +56,21 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
   imports: [
     CommonModule,
     SharedModule,
-    TuiScrollbarModule,
-    TuiInputModule,
+    TuiScrollbar,
     FormsModule,
-    TuiTextfieldControllerModule,
-    TuiSvgModule,
-    TuiButtonModule,
+    ...(TuiTextfield as unknown as any[]),
+    TuiIcon,
+    TuiButton,
     ScrollingModule,
-    TuiHintModule,
-    TuiHintModule,
-    TuiLoaderModule,
+    ...(TuiHint as unknown as any[]),
+    TuiLoader,
     InlineSVGModule,
-    TuiAutoFocusModule,
-    TuiHostedDropdownModule,
-    TuiDataListDropdownManagerModule,
-    TuiActiveZoneModule,
-    TuiDropdownModule,
-    TuiDataListModule,
-    TuiCarouselModule
+    TuiAutoFocus,
+    ...(TuiDropdown as unknown as any[]),
+    TuiDataListDropdownManager,
+    TuiActiveZone,
+    ...(TuiDataList as unknown as any[]),
+    ...(TuiCarousel as unknown as any[])
   ],
   exports: [AssetsSelectorPageComponent],
   providers: [FormsTogglerService]

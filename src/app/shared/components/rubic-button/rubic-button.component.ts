@@ -13,7 +13,7 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../core/services/destroy/destroy.service';
 
 @Component({
   selector: 'app-rubic-button',

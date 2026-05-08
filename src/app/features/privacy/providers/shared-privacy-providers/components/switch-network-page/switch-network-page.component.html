@@ -19,12 +19,7 @@
 
 <ng-template #item let-chain>
   <div class="item" *ngIf="getChainInfo(chain) as chainInfo" (click)="handleSwitchChain(chain)">
-    <tui-avatar
-      size="xs"
-      class="avatar"
-      [avatarUrl]="chainInfo.img || null"
-      [text]="chainInfo.name"
-    ></tui-avatar>
+    <tui-avatar class="avatar" size="xs" [src]="chainInfo.img || null"></tui-avatar>
     <div class="name">{{ chainInfo.name }}</div>
   </div>
 </ng-template>

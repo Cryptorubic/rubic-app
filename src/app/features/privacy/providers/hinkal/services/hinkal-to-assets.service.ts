@@ -1,7 +1,7 @@
 import { Injectable, Self } from '@angular/core';
 import { PrivateAssetsService } from '../../shared-privacy-providers/services/private-assets/private-assets.service';
 import { HINKAL_SUPPORTED_CHAINS } from '../constants/hinkal-supported-chains';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../core/services/destroy/destroy.service';
 import { takeUntil } from 'rxjs';
 import { HinkalFacadeService } from './hinkal-sdk/hinkal-facade.service';
 

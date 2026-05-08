@@ -17,7 +17,7 @@ import { IsActiveMatchOptions, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { map, startWith } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../services/destroy/destroy.service';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 
 @Component({
   selector: 'polymorpheus-auto-slippage-warning-modal',

@@ -7,7 +7,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import BigNumber from 'bignumber.js';
 import { PrivacycashSignatureService } from '../../privacy-cash-signature.service';
 import { PrivacycashInWorkerMsg, PrivacycashOutWorkerMsg } from './worker/models/worker-models';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../../core/services/destroy/destroy.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../../../utils/converter';
 

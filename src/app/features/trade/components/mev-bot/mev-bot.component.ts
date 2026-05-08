@@ -9,7 +9,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';
 import { BehaviorSubject } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 

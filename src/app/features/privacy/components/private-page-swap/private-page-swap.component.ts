@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, skip, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';

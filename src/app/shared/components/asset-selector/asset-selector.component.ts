@@ -15,7 +15,7 @@ import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../core/services/destroy/destroy.service';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';

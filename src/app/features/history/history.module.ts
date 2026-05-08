@@ -5,23 +5,23 @@ import { HistoryRoutingModule } from '@features/history/history-routing.module';
 import { SharedModule } from '@shared/shared.module';
 import { HistoryHeaderComponent } from './components/hisory-header/history-header.component';
 import {
-  TuiBadgeModule,
-  TuiDataListWrapperModule,
-  TuiPaginationModule,
-  TuiSelectModule,
-  TuiTabsModule
+  TuiBadge,
+  TuiDataListWrapper,
+  TuiPagination,
+  TuiSelect,
+  TuiTabs
 } from '@taiga-ui/kit';
 import {
-  TuiButtonModule,
-  TuiLoaderModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-  TuiHintModule
+  TuiButton,
+  TuiLoader,
+  TuiIcon,
+  TuiTextfield,
+  TuiHint
 } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
-import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
-import { TuiLetModule } from '@taiga-ui/cdk';
+import { TuiTable, TuiTablePagination } from '@taiga-ui/addon-table';
+import { TuiLet } from '@taiga-ui/cdk';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CrossChainDesktopTableComponent } from '@features/history/components/cross-chain-desktop-table/cross-chain-desktop-table.component';
 import { OnChainDesktopTableComponent } from '@features/history/components/on-chain-desktop-table/on-chain-desktop-table.component';
@@ -44,21 +44,21 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     CommonModule,
     HistoryRoutingModule,
     SharedModule,
-    TuiTabsModule,
-    TuiSvgModule,
+    ...(TuiTabs as unknown as any[]),
+    TuiIcon,
     InlineSVGModule,
-    TuiTableModule,
-    TuiLoaderModule,
-    TuiTablePaginationModule,
-    TuiLetModule,
-    TuiBadgeModule,
-    TuiPaginationModule,
-    TuiSelectModule,
-    TuiTextfieldControllerModule,
-    TuiDataListWrapperModule,
+    ...(TuiTable as unknown as any[]),
+    TuiLoader,
+    TuiTablePagination,
+    TuiLet,
+    TuiBadge,
+    TuiPagination,
+    ...(TuiSelect as unknown as any[]),
+    ...(TuiTextfield as unknown as any[]),
+    ...(TuiDataListWrapper as unknown as any[]),
     ReactiveFormsModule,
-    TuiButtonModule,
-    TuiHintModule
+    TuiButton,
+    ...(TuiHint as unknown as any[])
   ],
   providers: [CommonTableService, CrossChainTableService, OnChainTableService, DepositTableService]
 })

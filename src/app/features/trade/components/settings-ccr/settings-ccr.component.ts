@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../core/services/destroy/destroy.service';
 import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../services/destroy/destroy.service';
 import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';

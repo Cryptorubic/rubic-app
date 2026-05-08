@@ -11,7 +11,7 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 
 @Component({
   selector: 'app-zama-hide-tokens-page',

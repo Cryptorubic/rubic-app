@@ -4,7 +4,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { WalletNotConnectedError } from '@cryptorubic/web3';
 import { Keypair, PublicKey } from '@solana/web3.js';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../core/services/destroy/destroy.service';
 import { EncryptionService } from 'privacycash/utils';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';

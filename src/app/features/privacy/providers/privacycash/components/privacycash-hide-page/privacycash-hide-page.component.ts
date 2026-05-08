@@ -18,7 +18,7 @@ import {
 } from '@cryptorubic/core';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 
 @Component({

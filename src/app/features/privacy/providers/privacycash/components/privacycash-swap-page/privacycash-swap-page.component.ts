@@ -14,7 +14,7 @@ import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivateSwapFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivacycashPrivateSwapTokensFacadeService } from '../../services/common/token-facades/privacycash-private-swap-tokens-facade.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';

@@ -15,7 +15,7 @@ import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalWorkerService } from '../../services/hinkal-sdk/hinkal-worker.service';

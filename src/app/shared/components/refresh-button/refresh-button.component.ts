@@ -12,7 +12,8 @@ import {
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
 import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
-import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../core/services/destroy/destroy.service';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-refresh-button',

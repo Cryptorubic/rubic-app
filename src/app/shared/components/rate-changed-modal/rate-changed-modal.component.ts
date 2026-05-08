@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { takeUntil, timer } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../core/services/destroy/destroy.service';
 
 @Component({
   selector: 'app-rate-changed-modal',

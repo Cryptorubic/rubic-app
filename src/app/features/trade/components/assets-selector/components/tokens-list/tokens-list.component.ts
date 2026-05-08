@@ -16,7 +16,7 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService } from '../../../../../../core/services/destroy/destroy.service';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
