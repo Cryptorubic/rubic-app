@@ -158,12 +158,11 @@ export class HinkalWorkerSwapService {
         })
       );
 
-      const ethAddress = await hinkalInstance.getEthereumAddress();
       const subAccount: SubAccount = {
         index: 0,
-        ethAddress: ethAddress,
+        ethAddress: hinkalShieldedSignerAddress,
         privateKey: keys.getShieldedPrivateKey(),
-        name: '',
+        name: 'user',
         createdAt: new Date().toISOString(),
         isHidden: false,
         isImported: false,
