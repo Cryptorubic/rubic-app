@@ -123,7 +123,6 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
         BLOCKCHAIN_NAME.BITCOIN
       );
       publicKey = await btcAdapter.getPublicKey(this.walletAddress);
-      // publicKey = '304402206b65963eb417c0a5c2b73cb3f75160d1a6e21bc2d8ba47efddf2a61170f840730220258963aaa88456116e9d81f1a4c480d0ee16c857ede2bcc1dfaa4330e570332f01';
     }
 
     const swapRequestData: SwapRequestInterface = {
