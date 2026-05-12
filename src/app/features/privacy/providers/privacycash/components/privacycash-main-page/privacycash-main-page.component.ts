@@ -54,12 +54,11 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
       ),
       map(([signature, alreadyMadeShielding]) => {
         if (isNil(signature) || !signature.length) {
-          return this.pages.filter(page => page.type !== 'login');
+          return this.pages.filter(page => page.type !== 'hide');
         }
         if (!alreadyMadeShielding) {
           return this.pages.filter(page => page.type !== 'hide');
         }
-        return this.pages.filter(page => page.type === 'login');
       })
     );
 
@@ -69,8 +68,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privatePageTypeService: PrivatePageTypeService
   ) {
-    this.privatePageTypeService.activePage =
-      this.pages.find(page => page.type === 'login') || this.pages[0];
+    this.privatePageTypeService.activePage = this.pages[0];
   }
 
   ngOnDestroy(): void {

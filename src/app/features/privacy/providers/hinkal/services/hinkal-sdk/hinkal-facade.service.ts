@@ -249,7 +249,7 @@ export class HinkalFacadeService {
       );
 
       if (isSuccess) {
-        this.privatePageTypeService.activePage = { type: 'walletInfo', label: 'Wallet' };
+        this.privatePageTypeService.activePage = { type: 'hide', label: 'Deposit' };
       }
     } catch {}
   }
@@ -278,10 +278,7 @@ export class HinkalFacadeService {
 
   private subscribeOnInstanceChanged(): Subscription {
     return this.hinkalInstanceService.currSignature$
-      .pipe(
-        distinctUntilChanged(),
-        filter(signature => signature && !this._balanceLoading$.value)
-      )
+      .pipe(filter(Boolean), distinctUntilChanged())
       .subscribe(() => {
         this._balanceLoading$.next(true);
         this.hinkalBalanceService.updateBalance();

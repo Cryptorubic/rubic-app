@@ -5,7 +5,7 @@ import { QueryParams } from '@app/core/services/query-params/models/query-params
 import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { SwapFormQueryService } from '@app/features/trade/services/swap-form-query/swap-form-query.service';
 import { List } from 'immutable';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, compareAddresses } from '@cryptorubic/core';
 import { compareTokens } from '@app/shared/utils/utils';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { HideWindowService } from '../hide-window-service/hide-window.service';
@@ -103,6 +103,10 @@ export class PrivateQueryParamsService {
                   Web3Pure.isNativeAddress(BLOCKCHAIN_NAME.ETHEREUM, token.address)
               ) || null;
             this.privacyMainPageService.patchFormValue({ fromAsset });
+          } else if (swapInfo.fromAsset?.blockchain === swapInfo.toAsset?.blockchain) {
+            if (!compareAddresses(swapInfo.fromAsset.address, swapInfo.toAsset.address)) {
+              this.privacyMainPageService.patchFormValue({ fromAsset, toAsset: fromAsset });
+            }
           } else {
             this.privacyMainPageService.patchFormValue(swapInfo);
           }

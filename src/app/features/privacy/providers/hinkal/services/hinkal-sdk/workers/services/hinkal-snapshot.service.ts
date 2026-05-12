@@ -20,10 +20,12 @@ export class HinkalWorkerSnapshotService {
   }
 
   public async switchNetwork(chainId: number, address: string): Promise<void> {
-    if (this.hinkal.getProviderAdapter().chainId !== chainId) {
-      this.hinkal.snapshotsClearInterval();
-      await this.updateInstance(address, chainId, this._currSignature);
-    }
+    try {
+      if (this.hinkal.getProviderAdapter().chainId !== chainId) {
+        this.hinkal.snapshotsClearInterval();
+        await this.updateInstance(address, chainId, this._currSignature);
+      }
+    } catch {}
   }
 
   public async clearSnapshotsInterval(): Promise<void> {

@@ -126,12 +126,14 @@ export class PrivatePageSwapComponent implements OnInit {
           this.patchSwapInfo({ fromAsset: selectedToken });
         }
 
-        this.gtmService.firePrivateFormSelectTokenEvent(
-          'from',
-          selectedToken.blockchain,
-          selectedToken.symbol,
-          selectedToken.address
-        );
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'from',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 
@@ -152,12 +154,14 @@ export class PrivatePageSwapComponent implements OnInit {
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
 
-        this.gtmService.firePrivateFormSelectTokenEvent(
-          'to',
-          selectedToken.blockchain,
-          selectedToken.symbol,
-          selectedToken.address
-        );
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'to',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 

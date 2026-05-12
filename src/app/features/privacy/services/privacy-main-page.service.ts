@@ -47,7 +47,7 @@ export class PrivacyMainPageService {
     )
   );
 
-  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
+  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.TRANSFER);
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 

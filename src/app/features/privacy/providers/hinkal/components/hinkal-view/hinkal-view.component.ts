@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { HINKAL_PAGES } from '../../constants/hinkal-pages';
+import { HINKAL_LIGTH_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
@@ -38,7 +38,7 @@ export class HinkalViewComponent {
 
   public readonly supportedChains = HINKAL_SUPPORTED_CHAINS;
 
-  public readonly pages = HINKAL_PAGES;
+  public readonly pages = HINKAL_LIGTH_PAGES;
 
   public readonly disabledPages$ = this.hinkalInstanceService.currSignature$.pipe(
     combineLatestWith(
@@ -46,12 +46,11 @@ export class HinkalViewComponent {
     ),
     map(([signature, alreadyMadeShielding]) => {
       if (!signature) {
-        return this.pages.filter(page => page.type !== 'login');
+        return this.pages.filter(page => page.type !== 'hide');
       }
       if (!alreadyMadeShielding) {
-        return this.pages.filter(page => page.type !== 'hide' && page.type !== 'walletInfo');
+        return this.pages.filter(page => page.type !== 'hide');
       }
-      return this.pages.filter(page => page.type === 'login');
     })
   );
 
@@ -66,8 +65,7 @@ export class HinkalViewComponent {
     private readonly privateLocalStorageService: PrivateLocalStorageService,
     private readonly activatedRoute: ActivatedRoute
   ) {
-    this.privatePageTypeService.activePage =
-      this.pages.find(page => page.type === 'login') || this.pages[0];
+    this.privatePageTypeService.activePage = this.pages[0];
   }
 
   ngOnInit(): void {
@@ -77,7 +75,7 @@ export class HinkalViewComponent {
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.hinkalFacadeService.logout();
-        this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
+        this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
       });
 
     this.activatedRoute.queryParams

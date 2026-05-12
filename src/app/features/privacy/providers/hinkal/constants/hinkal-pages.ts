@@ -26,3 +26,14 @@ export const HINKAL_PAGES: PageType[] = [
     label: 'Unshield'
   }
 ];
+
+export const HINKAL_LIGTH_PAGES: PageType[] = [
+  {
+    type: 'hide',
+    label: 'Deposit'
+  },
+  {
+    type: 'reveal',
+    label: 'Stealth Send'
+  }
+];

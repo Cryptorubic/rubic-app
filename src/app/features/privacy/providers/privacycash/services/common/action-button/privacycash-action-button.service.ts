@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import {
   PrivateSwapInfo,
@@ -11,9 +11,12 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { Observable, combineLatest, filter, switchMap } from 'rxjs';
 import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../../constants/wallets';
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { PrivacycashSignatureService } from '../../privacy-cash-signature.service';
 
 @Injectable()
 export class PrivacycashActionButtonService extends PrivateActionButtonService {
+  private readonly signatureService = inject(PrivacycashSignatureService);
+
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
       filter(page => !!page),
@@ -36,7 +39,8 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
             return combineLatest([
               this.walletConnector.networkChange$,
               this.hideWindowService.hideAsset$,
-              this.hideWindowService.hideAmount$
+              this.hideWindowService.hideAmount$,
+              this.signatureService.signature$
             ]).pipe(switchMap(params => this.getHideState(...params)));
           case 'reveal':
             return combineLatest([
@@ -252,19 +256,29 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
   private async getHideState(
     network: BlockchainName | null,
     hideAsset: BalanceToken | null,
-    hideAmount: SwapAmount | null
+    hideAmount: SwapAmount | null,
+    signature: Uint8Array | null
   ): Promise<PrivateActionButtonState> {
-    if (!hideAsset) {
-      return {
-        type: 'error',
-        text: 'Select token'
-      };
-    }
-    if (!network || network !== hideAsset.blockchain) {
+    if (!network || (hideAsset?.blockchain && network !== hideAsset.blockchain)) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+
+    if (!signature) {
+      return {
+        type: 'action',
+        text: 'Login',
+        action: () => this.signatureService.makeSignature()
+      };
+    }
+
+    if (!hideAsset) {
+      return {
+        type: 'error',
+        text: 'Select token'
       };
     }
     if (isNaN(hideAmount?.actualValue.toNumber()) || hideAmount?.actualValue.isZero()) {
