@@ -43,12 +43,7 @@ export class HinkalInstanceService {
       const adapter = this.adapterFactory.getAdapter(blockchain);
       const signature = await adapter.signer.signMessage(this.hinkalInstance.signingMessage);
 
-      await prepareHinkalWithSignature(
-        this._hinkalInstance,
-        address,
-        blockchainId[blockchain],
-        signature
-      );
+      await prepareHinkalWithSignature(this._hinkalInstance, address, signature);
 
       this._currSignature$.next(signature);
 
