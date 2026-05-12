@@ -15,7 +15,19 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
 export class MetamaskModalComponent {
   // Hardcoded only 2 blockchains
   public readonly metamasks = PROVIDERS_LIST.filter(el => el.name === 'MetaMask').map(el => {
-    const chainType = el.value === WALLET_NAME.METAMASK ? CHAIN_TYPE.EVM : CHAIN_TYPE.SOLANA;
+    let chainType;
+    switch (el.value) {
+      case WALLET_NAME.METAMASK_SOLANA:
+        chainType = CHAIN_TYPE.SOLANA;
+        break;
+      case WALLET_NAME.METAMASK_BITCOIN:
+        chainType = CHAIN_TYPE.BITCOIN;
+        break;
+      case WALLET_NAME.METAMASK_SOLANA:
+      default:
+        chainType = CHAIN_TYPE.EVM;
+        break;
+    }
     const walletMapping: Record<
       typeof chainType,
       { label: string; icon: string; value: WALLET_NAME }
@@ -25,6 +37,11 @@ export class MetamaskModalComponent {
         label: 'Solana',
         icon: blockchainIcon.SOLANA,
         value: WALLET_NAME.METAMASK_SOLANA
+      },
+      [CHAIN_TYPE.BITCOIN]: {
+        label: 'Bitcoin',
+        icon: blockchainIcon.BITCOIN,
+        value: WALLET_NAME.METAMASK_BITCOIN
       }
     };
     return walletMapping[chainType];

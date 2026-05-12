@@ -14,7 +14,7 @@ import {
 import { NgZone } from '@angular/core';
 
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BtcWallet } from '@core/services/wallets/wallets-adapters/solana/models/btc-wallet';
+import { BtcWallet } from '@core/services/wallets/wallets-adapters/bitcoin/models/btc-wallet';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 

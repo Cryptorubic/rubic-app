@@ -21,6 +21,7 @@ export enum WALLET_NAME {
   BEST_WALLET = 'best_wallet',
   SUI_WALLET = 'sui_wallet',
   METAMASK_SOLANA = 'metamask_solana',
+  METAMASK_BITCOIN = 'metamask_bitcoin',
   BINANCE_WALLET = 'binance_wallet',
   BACKPACK = 'backpack',
   LOBSTR = 'lobstr',

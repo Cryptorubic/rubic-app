@@ -82,7 +82,8 @@ export class TransformUtils {
     let trade: CrossChainTrade | null = null;
 
     const needProvidePubKey =
-      tradeType === CROSS_CHAIN_TRADE_TYPE.TELE_SWAP &&
+      (tradeType === CROSS_CHAIN_TRADE_TYPE.TELE_SWAP ||
+        tradeType === CROSS_CHAIN_TRADE_TYPE.RELAY) &&
       tradeParams.from.blockchain === BLOCKCHAIN_NAME.BITCOIN;
 
     const isTransferTrade =

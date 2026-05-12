@@ -34,7 +34,7 @@ import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
-import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
+import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/bitcoin/ctrl-wallet-adapter';
 import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
@@ -54,6 +54,7 @@ import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
+import { MetamaskBitcoinWalletAdapter } from '../wallets-adapters/bitcoin/metamask-bitcoin-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -142,6 +143,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
       return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
+    }
+
+    if (walletName === WALLET_NAME.METAMASK_BITCOIN) {
+      return new MetamaskBitcoinWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
