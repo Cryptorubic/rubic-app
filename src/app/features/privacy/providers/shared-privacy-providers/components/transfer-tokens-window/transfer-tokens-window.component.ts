@@ -46,6 +46,10 @@ export class TransferTokensWindowComponent implements OnInit {
 
   @Output() public formChanged = new EventEmitter<PrivateTransferInfo>();
 
+  @Input() private customHandleMaxButton = false;
+
+  @Output() public maxButtonClick = new EventEmitter<void>();
+
   public readonly transferAsset$ = this.privateTransferWindowService.transferAsset$;
 
   public readonly transferAmount$ = this.privateTransferWindowService.transferAmount$;
@@ -92,6 +96,11 @@ export class TransferTokensWindowComponent implements OnInit {
   }
 
   public handleMaxButton(): void {
+    if (this.customHandleMaxButton) {
+      this.maxButtonClick.emit();
+      return;
+    }
+
     const token = this.privateTransferWindowService.transferAsset;
     this.privateTransferWindowService.setTransferAmount({
       visibleValue: token.amount.toString(),

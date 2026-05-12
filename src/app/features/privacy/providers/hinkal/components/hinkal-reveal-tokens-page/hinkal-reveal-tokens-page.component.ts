@@ -95,6 +95,47 @@ export class HinkalRevealTokensPageComponent {
       });
   }
 
+  public async handleMaxButton(): Promise<void> {
+    const token = this.revealWindowService.revealAsset;
+    const estimatedFees = this.hinkalFacadeService.getEstimatedFeesByChain(token.blockchain);
+
+    const privateBalances = await firstValueFrom(this.hinkalBalanceService.balances$);
+
+    const balances = privateBalances[token.blockchain as EvmBlockchainName];
+
+    const isTokenWithEnoughBalanceExist = balances.some(tokenBalance => {
+      const estimatedFee = estimatedFees
+        .filter(t => !compareAddresses(t.feeToken, token.address))
+        .find(({ feeToken }) => compareAddresses(feeToken, tokenBalance.tokenAddress));
+
+      if (!estimatedFee) return false;
+
+      return tokenBalance.amount.minus(estimatedFee.fee).gte(0);
+    });
+
+    if (isTokenWithEnoughBalanceExist) {
+      this.revealWindowService.setRevealAmount({
+        visibleValue: token.amount.toFixed(),
+        actualValue: token.amount
+      });
+
+      return;
+    }
+
+    const tokenFee =
+      estimatedFees.find(({ feeToken }) => compareAddresses(feeToken, token.address))?.fee ||
+      new BigNumber(0);
+
+    const maxAmountWithoutFee = token.amount.minus(Token.fromWei(tokenFee, token.decimals));
+
+    const finalMaxAmount = maxAmountWithoutFee.lte(0) ? new BigNumber(0) : maxAmountWithoutFee;
+
+    this.revealWindowService.setRevealAmount({
+      visibleValue: finalMaxAmount.toFixed(),
+      actualValue: finalMaxAmount
+    });
+  }
+
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
       const steps = this.hinkalFacadeService.prepareWithdrawSteps(

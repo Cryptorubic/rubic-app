@@ -153,7 +153,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    if (!fromAsset.amount.isFinite() || fromAsset.amount.lt(assetAmount.visibleValue)) {
+    if (!fromAsset.amount?.isFinite() || fromAsset.amount.lt(assetAmount?.actualValue)) {
       return {
         type: 'error',
         text: 'Insufficient balance'

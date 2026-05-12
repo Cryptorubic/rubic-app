@@ -3,13 +3,23 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import { BehaviorSubject, distinctUntilChanged, filter, skip, Subscription, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  skip,
+  Subscription,
+  switchMap
+} from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
   BlockchainName,
   BlockchainsInfo,
+  compareAddresses,
   EvmBlockchainName,
+  Token,
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalWorkerService } from './hinkal-worker.service';
@@ -23,6 +33,17 @@ import { PrivateStatisticsService } from '../../../shared-privacy-providers/serv
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import BigNumber from 'bignumber.js';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import {
+  HINKAL_PRIVATE_OPERATION,
+  HinkalPrivateOperation
+} from '../../models/hinkal-private-operations';
+import { HinkalSwapTokensFacadeService } from '../token-facades/hinkal-swap-tokens-facade.service';
+import { HINKAL_SUPPORTED_GAS_TOKENS } from '../../constants/hinkal-supported-gas-tokens';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -33,6 +54,44 @@ export class HinkalFacadeService {
   private readonly _balanceLoading$ = new BehaviorSubject<boolean>(false);
 
   public readonly balanceLoading$ = this._balanceLoading$.asObservable();
+
+  private readonly _estimatedFeeMapping: Partial<
+    Record<BlockchainName, { feeToken: string; fee: BigNumber }[]>
+  > = {};
+
+  public getEstimatedFeesByChain(
+    blockchain: BlockchainName
+  ): { feeToken: string; fee: BigNumber }[] {
+    return this._estimatedFeeMapping[blockchain] || [];
+  }
+
+  private async updateActiveChainFees(blockchain: BlockchainName): Promise<void> {
+    try {
+      if (this._estimatedFeeMapping[blockchain]) return;
+
+      const supportedTokens = PRIVATE_MODE_SUPPORTED_TOKENS[blockchain];
+
+      const estimatedFees = await Promise.all(
+        supportedTokens.map(token =>
+          this.hinkalSwapService.estimateFee({
+            fromToken: {
+              address: token,
+              blockchain
+            },
+            operation: HINKAL_PRIVATE_OPERATION.TRANSFER,
+            feeTokenAddress: token
+          })
+        )
+      );
+
+      this._estimatedFeeMapping[blockchain] = supportedTokens.map((token, i) => ({
+        feeToken: token,
+        fee: estimatedFees[i]
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   public switchChain(asset: AssetListType): void {
     const isChain = BlockchainsInfo.isBlockchainName(asset);
@@ -57,7 +116,8 @@ export class HinkalFacadeService {
     private readonly privatePageTypeService: PrivatePageTypeService,
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly hideWindowService: HideWindowService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly privateTokensFacade: HinkalSwapTokensFacadeService
   ) {}
 
   public initSubs(): void {
@@ -69,8 +129,11 @@ export class HinkalFacadeService {
       .subscribe(() => this._balanceLoading$.next(false));
 
     const instanceSub = this.subscribeOnInstanceChanged();
+    const estimateFeeSub = this.activeChain$
+      .pipe(filter(Boolean))
+      .subscribe(chain => this.updateActiveChainFees(chain));
 
-    this.subs.push(activeNetworkSub, pollSub, balanceSub, instanceSub);
+    this.subs.push(activeNetworkSub, pollSub, balanceSub, instanceSub, estimateFeeSub);
   }
 
   private showSuccessNotification(message: string): void {
@@ -89,6 +152,31 @@ export class HinkalFacadeService {
         label: 'Switch network',
         action: () => this.walletConnectorService.switchChain(fromBlockchain)
       });
+    }
+  }
+
+  private async getGasTokens(fromToken: TokenAmount): Promise<BalanceToken[]> {
+    try {
+      const tokens = await firstValueFrom(
+        this.privateTokensFacade.getTokensList(
+          fromToken.blockchain,
+          '',
+          'from',
+          getEmptySwapFormInput()
+        )
+      );
+
+      return tokens.filter(fetchedToken => {
+        const gasTokens = HINKAL_SUPPORTED_GAS_TOKENS[fetchedToken.blockchain] || [];
+
+        return gasTokens.some(
+          gasToken =>
+            compareAddresses(gasToken, fetchedToken.address) ||
+            compareAddresses(fromToken.address, fetchedToken.address)
+        );
+      });
+    } catch {
+      return [];
     }
   }
 
@@ -178,7 +266,7 @@ export class HinkalFacadeService {
       label: 'Transfer tokens',
       action: () => {
         return this.hinkalSwapService
-          .privateTransfer(token, receiverPrivateShieldedKey)
+          .privateTransfer(token, '', receiverPrivateShieldedKey)
           .then(isSuccess => {
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
@@ -200,6 +288,37 @@ export class HinkalFacadeService {
     return steps;
   }
 
+  public async prepareGasTokens(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    operation: HinkalPrivateOperation,
+    toToken?: TokenAmount<EvmBlockchainName>
+  ): Promise<GasToken[]> {
+    const availableGasTokens = await this.getGasTokens(fromToken);
+
+    const estimates = await Promise.all(
+      availableGasTokens.map(async token => ({
+        ...token,
+        estimatedFee: await this.hinkalSwapService.estimateFee({
+          feeTokenAddress: token.address,
+          fromToken,
+          toToken,
+          operation
+        })
+      }))
+    );
+
+    return estimates.map(({ estimatedFee, ...token }) => {
+      const feeAmount = Token.fromWei(estimatedFee, token.decimals);
+      const gasFeeUsd = feeAmount.multipliedBy(token.price);
+
+      return {
+        ...token,
+        gasFee: feeAmount.decimalPlaces(6, BigNumber.ROUND_HALF_UP),
+        gasFeeUsd: gasFeeUsd.decimalPlaces(2, BigNumber.ROUND_HALF_UP)
+      };
+    });
+  }
+
   public prepareSwapSteps(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>
@@ -211,7 +330,7 @@ export class HinkalFacadeService {
     steps.push({
       label: 'Swap',
       action: () => {
-        return this.hinkalSwapService.privateSwap(fromToken, toToken).then(isSuccess => {
+        return this.hinkalSwapService.privateSwap(fromToken, toToken, '').then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'PRIVATE_ONCHAIN_SWAP',

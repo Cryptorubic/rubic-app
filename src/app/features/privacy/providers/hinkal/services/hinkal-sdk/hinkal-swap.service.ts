@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import { blockchainId, EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { HinkalWorkerService } from './hinkal-worker.service';
 import {
@@ -12,6 +12,10 @@ import {
 } from './workers/models/worker-params';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
+import { ExternalActionId, getFeeStructure } from '@hinkal/common';
+import BigNumber from 'bignumber.js';
+import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
+import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
 
 @Injectable()
 export class HinkalSwapService {
@@ -77,6 +81,7 @@ export class HinkalSwapService {
 
   public async withdraw(
     token: TokenAmount<EvmBlockchainName>,
+    feeToken: string,
     receiver?: string
   ): Promise<boolean> {
     try {
@@ -86,7 +91,8 @@ export class HinkalSwapService {
           stringWeiAmount: token.stringWeiAmount,
           isNative: token.isNative
         },
-        receiver
+        receiver,
+        feeToken
       };
 
       await this.hinkalWorker.request({
@@ -103,7 +109,8 @@ export class HinkalSwapService {
 
   public async privateTransfer(
     token: TokenAmount<EvmBlockchainName>,
-    recipientStealthAddress: string
+    recipientStealthAddress: string,
+    feeToken: string
   ): Promise<boolean> {
     try {
       const params: TransferParams = {
@@ -112,7 +119,8 @@ export class HinkalSwapService {
           stringWeiAmount: token.stringWeiAmount,
           isNative: token.isNative
         },
-        receiver: recipientStealthAddress
+        receiver: recipientStealthAddress,
+        feeToken
       };
 
       await this.hinkalWorker.request({
@@ -129,7 +137,8 @@ export class HinkalSwapService {
 
   public async privateSwap(
     fromToken: TokenAmount<EvmBlockchainName>,
-    toToken: TokenAmount<EvmBlockchainName>
+    toToken: TokenAmount<EvmBlockchainName>,
+    feeToken: string
   ): Promise<boolean> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
@@ -145,7 +154,8 @@ export class HinkalSwapService {
           ...toToken,
           stringWeiAmount: toToken.stringWeiAmount,
           isNative: toToken.isNative
-        }
+        },
+        feeToken
       };
 
       await this.hinkalWorker.request({
@@ -158,6 +168,27 @@ export class HinkalSwapService {
       console.log('FAILED TO SWAP', err);
       this.errorService.catch(err);
       return false;
+    }
+  }
+
+  public async estimateFee(params: EstimateFeeStructureParams): Promise<BigNumber> {
+    const { operation, feeTokenAddress, fromToken } = params;
+
+    const chainId = blockchainId[fromToken.blockchain];
+    try {
+      const isSwap = operation === HINKAL_PRIVATE_OPERATION.SWAP;
+
+      const fee = await getFeeStructure(
+        chainId,
+        feeTokenAddress,
+        [fromToken.address, ...(isSwap ? [params.toToken.address] : [])],
+        isSwap ? ExternalActionId.Emporium : ExternalActionId.Transact
+      );
+
+      return new BigNumber(fee.flatFee.toString());
+    } catch (err) {
+      console.log(err);
+      return new BigNumber(0);
     }
   }
 }

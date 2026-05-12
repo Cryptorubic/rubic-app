@@ -40,6 +40,10 @@ export class RevealWindowComponent {
 
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
+  @Input() private customHandleMaxButton = false;
+
+  @Output() public maxButtonClick = new EventEmitter<void>();
+
   private readonly revealWindowService = inject(RevealWindowService);
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
@@ -75,6 +79,10 @@ export class RevealWindowComponent {
   }
 
   public handleMaxButton(): void {
+    if (this.customHandleMaxButton) {
+      this.maxButtonClick.emit();
+      return;
+    }
     const token = this.revealWindowService.revealAsset;
     this.revealWindowService.setRevealAmount({
       visibleValue: token.amount.toString(),

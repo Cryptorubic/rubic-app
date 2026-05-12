@@ -45,6 +45,7 @@ export type InitParams = {
 
 export type WithdrawParams = {
   token: PureTokenAmount<EvmBlockchainName>;
+  feeToken: string;
   receiver?: string;
 };
 
@@ -59,8 +60,11 @@ export type QuoteParams = {
 export type SwapParams = {
   fromToken: PureTokenAmount<EvmBlockchainName>;
   toToken: PureTokenAmount<EvmBlockchainName>;
+  feeToken: string;
 };
 
-export type DepositParams = Omit<WithdrawParams, 'receiver'>;
+export type DepositParams = Omit<WithdrawParams, 'receiver' | 'feeToken'>;
 
 export type SwitchNetworkParams = Omit<InitParams, 'signature'>;
+
+export type BalanceParams = { chainId: number };

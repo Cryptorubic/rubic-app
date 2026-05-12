@@ -21,6 +21,7 @@
         inputMode="input"
         (amountUpdated)="updateInputValue($event)"
         [amountValue]="state.revealAmount"
+        [allowManualInputClear]="true"
       ></app-amount-transput>
       <app-user-balance-container
         [fromToken$]="revealAsset$"
