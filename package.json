@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "scripts": {
     "postinstall": "node scripts/patch-webpack.js && patch-package",
-    "start:base": "npm run prebuild && node --max_old_space_size=8196 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all --configuration=dev2",
+    "start:base": "npm run prebuild && node --max_old_space_size=8196 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all",
     "start": "npm run start:base --",
     "start:local": "npm run start:base -- --configuration=local",
     "start:dev": "npm run start:base -- --configuration=dev",
