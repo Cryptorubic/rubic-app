@@ -245,6 +245,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Owlto'
   },
   //PPPPPPPPPPPPPPP
+  pact_swap: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}pactswap.svg`,
+    name: 'PactSwap'
+  },
   polygon: {
     averageTime: 5,
     color: '#5d25ba',

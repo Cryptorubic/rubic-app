@@ -122,7 +122,7 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
       const btcAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         BLOCKCHAIN_NAME.BITCOIN
       );
-      publicKey = await btcAdapter.getPublicKey(this.walletAddress);
+      publicKey = await btcAdapter.getPublicKeyFromWallet();
     }
 
     const swapRequestData: SwapRequestInterface = {
