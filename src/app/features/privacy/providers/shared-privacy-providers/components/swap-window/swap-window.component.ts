@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,7 +8,8 @@ import {
   OnInit,
   Output,
   Self,
-  inject
+  inject,
+  DestroyRef
 } from '@angular/core';
 import {
   BehaviorSubject,
@@ -30,7 +32,6 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { PrivateSwapEvent } from '../../models/private-event';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateQuoteAdapter } from '../../models/quote-adapter';
 import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
@@ -49,7 +50,7 @@ import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/feature
   templateUrl: './swap-window.component.html',
   styleUrls: ['./swap-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
+  providers: [],
   animations: [receiverAnimation()]
 })
 export class SwapWindowComponent implements OnInit {
@@ -133,10 +134,7 @@ export class SwapWindowComponent implements OnInit {
       : 'openPublicTokensModal';
   }
 
-  constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privateSwapWindowService: PrivateSwapWindowService
-  ) {}
+  constructor(private readonly privateSwapWindowService: PrivateSwapWindowService) {}
 
   private createPreviewModal(): PreviewSwapModalFactory {
     const injector = this.injector;
@@ -182,14 +180,14 @@ export class SwapWindowComponent implements OnInit {
           }
           return this.calculate(swapInfo);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
@@ -310,4 +308,6 @@ export class SwapWindowComponent implements OnInit {
       tradeId: null
     });
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

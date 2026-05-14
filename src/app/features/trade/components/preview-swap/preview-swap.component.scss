@@ -90,11 +90,11 @@
   }
 
   &__fiat-amount {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   &__token-info {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   &__action-container {
@@ -165,7 +165,7 @@ app-swap-data-element ::ng-deep {
           width: 2px;
           height: calc(100% - 70px);
 
-          background: var(--tui-base-04);
+          background: var(--tui-border-normal);
 
           content: '';
         }
@@ -201,7 +201,7 @@ app-swap-data-element ::ng-deep {
     }
 
     &__token-amount {
-      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+      @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
     }
 
     &__main-image {

@@ -23,7 +23,7 @@
       width: 100%;
       padding: 15px 16px;
 
-      background-color: var(--tui-base-02);
+      background-color: var(--tui-background-base-alt);
     }
 
     .top {
@@ -57,7 +57,7 @@
           @include flex(row, center, start);
           gap: 10px;
 
-          color: var(--tui-text-02);
+          color: var(--tui-text-secondary);
         }
       }
     }
@@ -98,7 +98,6 @@
       .min-amount {
         @include flex(row, center, start);
         gap: 2px;
-
       }
 
       .security-percent {
@@ -112,8 +111,7 @@
 
             ::ng-deep svg path {
               clip-path: inset(0 var(--security-offset) 0 0);
-              fill: var(--tui-primary);
-
+              fill: var(--tui-background-accent-1);
             }
           }
 
@@ -133,7 +131,7 @@
   .provider-element {
     .top,
     .bottom {
-      background: var(--tui-secondary) !important;
+      background: var(--tui-background-neutral-1) !important;
     }
   }
 }
@@ -142,7 +140,7 @@
   .bottom {
     .execution-time {
       ::ng-deep svg path {
-        stroke: var(--tui-base-02);
+        stroke: var(--tui-background-base-alt);
       }
     }
 
@@ -150,7 +148,7 @@
     .fee-size {
       @include b($mobile-md) {
         ::ng-deep svg path {
-          fill: var(--tui-base-02);
+          fill: var(--tui-background-base-alt);
         }
       }
     }

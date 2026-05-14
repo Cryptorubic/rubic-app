@@ -1,12 +1,11 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { Mnemonic, randomBytes } from 'ethers';
 import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
 import { BehaviorSubject } from 'rxjs';
-import { NAVIGATOR } from '@ng-web-apis/common';
-
 type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
 
 @Component({
@@ -28,7 +27,7 @@ export class RailgunWalletCreateComponent {
 
   private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly navigator = inject(NAVIGATOR);
+  private readonly navigator = inject(WA_NAVIGATOR);
 
   private readonly _showWords$ = new BehaviorSubject(false);
 

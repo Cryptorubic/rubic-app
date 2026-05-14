@@ -1,10 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDirs": [
-      "./",
-      "./node_modules/@cryptorubic"
-    ],
+    "rootDirs": ["./", "./node_modules/@cryptorubic"],
     "baseUrl": "./",
     "downlevelIteration": true,
     "noImplicitAny": true,

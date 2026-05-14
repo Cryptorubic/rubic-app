@@ -3,7 +3,7 @@
     {{ 'modals.walletsModal.title' | translate }}
   </ng-container>
   <form class="modal__form">
-    <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
+    <input tuiCheckbox type="checkbox" [formControl]="rulesCheckbox" class="modal__checkbox" />
     <span
       >I read and accept
       <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">

@@ -1,3 +1,9 @@
+import {
+  TuiTextfieldControllerModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule
+} from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
@@ -8,23 +14,16 @@ import { CrossChainService } from '@features/trade/services/cross-chain/cross-ch
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 import {
-  TuiButtonModule,
-  TuiExpandModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiModeModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiNotification,
+  TuiExpand,
+  TuiLoader,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint
 } from '@taiga-ui/core';
-import {
-  TuiCarouselModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -51,25 +50,25 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     TradeRoutingModule,
     CommonModule,
     SharedModule,
-    TuiExpandModule,
-    TuiScrollbarModule,
+    ...TuiExpand,
+    TuiScrollbar,
+    TuiScrollable,
     TuiTagModule,
     InlineSVGModule,
-    TuiButtonModule,
+    TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
-    TuiHintModule,
+    ...TuiHint,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,
-    TuiToggleModule,
-    TuiHostedDropdownModule,
+    TuiSwitch,
+    ...TuiDropdown,
     TuiInputModule,
-    TuiLoaderModule,
+    TuiLoader,
     AssetsSelectorModule,
-    TuiNotificationModule,
-    TuiModeModule,
-    TuiCarouselModule,
+    TuiNotification,
+    ...TuiCarousel,
     SharedTradeModule
   ],
   providers: [

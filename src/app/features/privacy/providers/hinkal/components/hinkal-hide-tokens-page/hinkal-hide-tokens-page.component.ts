@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -7,7 +8,6 @@ import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -21,7 +21,6 @@ import { compareTokens } from '@app/shared/utils/utils';
   styleUrls: ['./hinkal-hide-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     {
       provide: FromAssetsService,
       useClass: HinkalPrivateAssetsService
@@ -50,7 +49,6 @@ export class HinkalHideTokensPageComponent {
 
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalHideFacadeService: HinkalHideFacadeService,
     private readonly hideWindowService: HideWindowService
@@ -63,7 +61,7 @@ export class HinkalHideTokensPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
@@ -72,7 +70,7 @@ export class HinkalHideTokensPageComponent {
         filter(() => !!this.hideWindowService.hideAsset?.address),
         map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
         filter(Boolean),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(token => {
         this.hideWindowService.setHideAsset({
@@ -94,4 +92,6 @@ export class HinkalHideTokensPageComponent {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

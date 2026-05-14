@@ -1,3 +1,9 @@
+import {
+  TuiTextfieldControllerModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule
+} from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
@@ -5,23 +11,17 @@ import { CommonModule } from '@angular/common';
 import { ProvidersListGeneralComponent } from '@features/trade/components/providers-list-general/providers-list-general.component';
 import { ProviderElementComponent } from './components/provider-element/provider-element.component';
 import {
-  TuiButtonModule,
-  TuiExpandModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiModeModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiNotification,
+  TuiExpand,
+  TuiLoader,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint,
+  TuiAppearance
 } from '@taiga-ui/core';
-import {
-  TuiCarouselModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -156,25 +156,26 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
   imports: [
     CommonModule,
     SharedModule,
-    TuiExpandModule,
-    TuiScrollbarModule,
+    ...TuiExpand,
+    TuiScrollbar,
+    TuiScrollable,
     TuiTagModule,
     InlineSVGModule,
-    TuiButtonModule,
+    TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
-    TuiHintModule,
+    ...TuiHint,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,
-    TuiToggleModule,
-    TuiHostedDropdownModule,
+    TuiSwitch,
+    ...TuiDropdown,
     TuiInputModule,
-    TuiLoaderModule,
+    TuiLoader,
     AssetsSelectorModule,
-    TuiNotificationModule,
-    TuiModeModule,
-    TuiCarouselModule
+    TuiNotification,
+    ...TuiCarousel,
+    TuiAppearance
   ],
   providers: [
     SwapsStateService,

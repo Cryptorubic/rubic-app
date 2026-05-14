@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit, Type } from '@angular/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';

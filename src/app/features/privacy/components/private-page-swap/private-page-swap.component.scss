@@ -9,7 +9,7 @@
     justify-content: end;
     padding: 18px 28px 17px 0;
 
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: 20px 20px 0 0;
 
     @include b($mobile-sm-middle) {
@@ -24,7 +24,7 @@
     display: flex;
     gap: 8px;
 
-    color: var(--tui-text-02);
+    color: var(--tui-text-secondary);
     font-weight: 500;
 
     tui-toggle {
@@ -50,7 +50,7 @@
   .selectors-wrapper {
     padding: 0 12px;
 
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
 
     @include b($mobile-sm-middle) {
       order: 1;
@@ -133,7 +133,7 @@
         &:first-child {
           padding: 16px 16px 32px;
         }
-        
+
         &:nth-child(3) {
           justify-content: start;
           padding: 32px 16px 16px;
@@ -144,7 +144,7 @@
           padding: 24px 20px;
         }
       }
-      
+
       &.without-output {
         app-asset-selector {
           &:first-child {
@@ -162,7 +162,7 @@
   .instruction-wrapper {
     padding: 12px;
 
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: 0 0 20px 20px;
 
     @include b($mobile-sm-middle) {
@@ -187,7 +187,7 @@
     border-radius: 17px;
 
     @include b($mobile-sm-middle) {
-      border-color: var(--tui-secondary);
+      border-color: var(--tui-background-neutral-1);
     }
   }
 }

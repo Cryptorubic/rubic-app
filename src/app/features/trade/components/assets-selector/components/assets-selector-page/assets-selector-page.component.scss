@@ -96,7 +96,7 @@ app-search-blockchains-bar {
       padding: 0 1rem;
 
       &-label {
-        @include font(18px, 18px, 400, var(--tui-text-01), 0.54px);
+        @include font(18px, 18px, 400, var(--tui-text-primary), 0.54px);
       }
     }
   }

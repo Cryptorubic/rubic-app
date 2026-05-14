@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
@@ -13,7 +14,6 @@ import { StoreService } from '@core/services/store/store.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { HideWindowService } from '@features/privacy/providers/shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { Web3Pure } from '@cryptorubic/web3';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
@@ -30,7 +30,6 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   providers: [
     RailgunPublicAssetsService,
     { provide: FromAssetsService, useExisting: RailgunPublicAssetsService },
-    TuiDestroyService,
     { provide: PrivateActionButtonService, useClass: RailgunPublicActionButtonService },
     { provide: TokensFacadeService, useExisting: RailgunHideFacadeService }
   ]
@@ -51,16 +50,13 @@ export class RailgunHideTokensPageComponent {
   private readonly storeService = inject(StoreService);
 
   private readonly hideWindowService = inject(HideWindowService);
-
-  private readonly destroy$ = inject(TuiDestroyService);
-
   private readonly authService = inject(AuthService);
 
   private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
   constructor() {
     this.hideWindowService.hideAsset$
-      .pipe(filter(Boolean), distinctUntilKeyChanged('symbol'), takeUntil(this.destroy$))
+      .pipe(filter(Boolean), distinctUntilKeyChanged('symbol'), takeUntilDestroyed())
       .subscribe(token => {
         const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
         if (isNative) {

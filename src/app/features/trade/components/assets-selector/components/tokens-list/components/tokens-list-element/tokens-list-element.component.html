@@ -63,7 +63,7 @@
           <span
             [tuiHint]="tokenAmountTooltip"
             tuiHintDirection="top-left"
-            tuiHintAppearance="onDark"
+            tuiHintAppearance="dark"
             >{{ token.amount | bigNumberFormat | shortenAmount : 6 : 4 }}</span
           >
           <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>

@@ -1,13 +1,13 @@
 <app-window-container>
   <ng-container header>Create account</ng-container>
   <form [formGroup]="secretForm" (ngSubmit)="handleConfirm()">
-    <tui-notification class="notification" status="warning">
+    <tui-notification size="m" class="notification" appearance="warning">
       Store your seed phrase in order to recover this wallet. If you clear your browser cache or
       forget your password, your local wallets will be deleted.
     </tui-notification>
 
     <div class="switcher">
-      <tui-toggle size="l" formControlName="agreement" [showIcons]="false"></tui-toggle>
+      <input tuiSwitch type="checkbox" size="m" formControlName="agreement" [showIcons]="false" />
       <span>
         I copied the seed phrase. If I forget it or the password, Rubic won't be able to help me.
       </span>

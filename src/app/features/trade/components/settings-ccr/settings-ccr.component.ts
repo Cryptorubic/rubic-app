@@ -1,5 +1,5 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
@@ -10,7 +10,7 @@ import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
   templateUrl: './settings-ccr.component.html',
   styleUrls: ['./settings-ccr.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class SettingsCcrComponent {
   private get defaultSlippageTolerance(): number {

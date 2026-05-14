@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,7 +7,6 @@ import {
   Input
 } from '@angular/core';
 import { ShieldedBalanceToken } from '../../models/shielded-balance-token';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-scanner';
 
@@ -26,7 +26,7 @@ export class DropdownOptionsShieldedTokenComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore
   ) {}

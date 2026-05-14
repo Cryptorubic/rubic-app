@@ -42,7 +42,7 @@
   ::ng-deep .t-wrapper {
     color: black;
 
-    background: var(--tui-primary);
+    background: var(--tui-background-accent-1);
   }
 
   .icon {
@@ -76,7 +76,7 @@
   .rubic-header {
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
-  
+
   .swap-button,
   .private-mode-button {
     height: 40px !important;

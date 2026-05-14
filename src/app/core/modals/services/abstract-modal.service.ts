@@ -1,4 +1,4 @@
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { Observable } from 'rxjs';
 
 /**

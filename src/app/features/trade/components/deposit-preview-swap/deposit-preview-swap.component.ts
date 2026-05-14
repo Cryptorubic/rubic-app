@@ -1,10 +1,14 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
   OnDestroy,
-  Self
+  Self,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
@@ -18,10 +22,8 @@ import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -39,7 +41,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],
-  providers: [TuiDestroyService],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('showDepositAddressAnimation', [
@@ -164,9 +166,8 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     private readonly depositService: DepositService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly refundService: RefundService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
     private readonly tokensFacade: TokensFacadeService
   ) {
@@ -286,7 +287,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
       .pipe(
         map(([isValidRefund, needTrustline]) => isValidRefund && !needTrustline),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(isValid => {
         if (isValid) {
@@ -300,4 +301,6 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   public onTrustlineAdd(): void {
     this.previewSwapService.handleTrustline();
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

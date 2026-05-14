@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,7 +7,6 @@ import {
   Input
 } from '@angular/core';
 import { DepositTableData } from '@app/features/history/models/deposit-table-data';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
 
 @Component({
@@ -22,7 +22,7 @@ export class RubicBadgeWithCopyBtnComponent {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator
   ) {}
 
   public copyToClipboard(txId: string): void {

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Self,
+  inject,
+  DestroyRef
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
@@ -9,7 +17,6 @@ import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
@@ -25,7 +32,6 @@ import { PrivacycashTokensService } from '../../services/common/token-facades/pr
   styleUrls: ['./privacycash-transfer-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateTransferTokensFacadeService }
   ]
@@ -54,7 +60,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
     direction: 'from'
   };
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -63,12 +69,12 @@ export class PrivacycashTransferPageComponent implements OnInit {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
     this.privateTransferWindowService.transferAsset$
-      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
       .subscribe(token => {
         this.receiverCtrl.clearAsyncValidators();
         this.receiverCtrl.setAsyncValidators(
@@ -96,7 +102,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
           )
         ),
         filter(Boolean),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(pcToken => {
         const transferAsset = this.privateTransferWindowService.transferAsset;
@@ -144,4 +150,6 @@ export class PrivacycashTransferPageComponent implements OnInit {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

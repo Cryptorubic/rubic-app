@@ -1,5 +1,5 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HeaderStore } from '@core/header/services/header.store';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
@@ -19,7 +19,7 @@ export class Layer3WidgetComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WA_WINDOW) private readonly window: RubicWindow
   ) {
     this.isMobile = headerStore.isMobile;
   }

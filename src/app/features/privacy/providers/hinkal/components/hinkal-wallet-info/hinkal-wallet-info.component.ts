@@ -1,8 +1,8 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { getRecipientInfoFromUserKeys } from '@hinkal/common';
 import { distinctUntilChanged, map, timer } from 'rxjs';
-import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-hinkal-wallet-info',
@@ -20,7 +20,7 @@ export class HinkalWalletInfoComponent {
 
   constructor(
     private readonly hinkalInstanceService: HinkalInstanceService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef
   ) {}
 

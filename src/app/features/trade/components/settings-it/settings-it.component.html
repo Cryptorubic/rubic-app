@@ -1,3 +1,4 @@
+<!-- TODO: (Taiga UI migration) tuiButton "whiteblock-active" appearance is no longer available. Use 'appearance="outline-grayscale" tuiAppearanceMode="checked"' -->
 <div class="settings">
   <form [formGroup]="instantTradeForm" class="settings__form">
     <div class="settings__row">
@@ -5,7 +6,7 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.slippage' | translate"
-        tuiHintAppearance="onDark"
+        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
     </div>
@@ -68,17 +69,17 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.deadline' | translate"
-        tuiHintAppearance="onDark"
+        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.deadlineTitle' | translate }}</label>
     </div>
 
     <div class="settings__row">
       <tui-input-number
+        [tuiNumberFormat]="{ precision: 0 }"
         id="deadline"
         class="settings__deadline-input"
         formControlName="deadline"
-        decimal="never"
         [max]="240"
         [min]="1"
         tuiTextfieldSize="s"
@@ -92,15 +93,17 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.multihops' | translate"
-        tuiHintAppearance="onDark"
+        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
 
-      <tui-toggle
+      <input
+        tuiSwitch
+        type="checkbox"
         class="settings__toggle"
         id="disableMultihops"
         formControlName="disableMultihops"
-      ></tui-toggle>
+      />
     </div>
 
     <div class="settings__row">
@@ -108,15 +111,17 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
-        tuiHintAppearance="onDark"
+        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
 
-      <tui-toggle
+      <input
+        tuiSwitch
+        type="checkbox"
         class="settings__toggle"
         id="autoRefresh"
         formControlName="autoRefresh"
-      ></tui-toggle>
+      />
     </div>
 
     <div class="settings__row">
@@ -124,14 +129,16 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
-        tuiHintAppearance="onDark"
+        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
-      <tui-toggle
+      <input
+        tuiSwitch
+        type="checkbox"
         class="settings__toggle"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
-      ></tui-toggle>
+      />
     </div>
   </form>
 </div>
