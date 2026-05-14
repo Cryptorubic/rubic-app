@@ -6,10 +6,14 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { TuiButtonModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiCheckboxModule } from '@taiga-ui/kit';
-import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
+import { MultichainWalletModalComponent } from '@shared/components/multichain-wallet-modal/multichain-wallet-modal.component';
 
 @NgModule({
-  declarations: [WalletsModalComponent, CoinbaseConfirmModalComponent, MetamaskModalComponent],
+  declarations: [
+    WalletsModalComponent,
+    CoinbaseConfirmModalComponent,
+    MultichainWalletModalComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

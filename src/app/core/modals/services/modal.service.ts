@@ -35,7 +35,7 @@ import { DepositRateChangedModalComponent } from '@app/shared/components/deposit
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
+import { MultichainWalletModalComponent } from '@shared/components/multichain-wallet-modal/multichain-wallet-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
@@ -526,12 +526,13 @@ export class ModalService {
     );
   }
 
-  public openMetamaskModal(): Promise<WALLET_NAME> {
+  public openMultichainWalletModal(walletName: WALLET_NAME): Promise<WALLET_NAME> {
     return firstValueFrom(
-      this.showDialog(MetamaskModalComponent, {
+      this.showDialog(MultichainWalletModalComponent, {
         size: 'auto',
         closeable: true,
-        fitContent: true
+        fitContent: true,
+        data: { walletName }
       })
     );
   }

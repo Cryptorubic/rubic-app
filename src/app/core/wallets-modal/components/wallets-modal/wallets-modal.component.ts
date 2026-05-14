@@ -27,6 +27,7 @@ import { IframeService } from '@app/core/services/iframe-service/iframe.service'
 import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
+import { MULTICHAIN_OPTIONS_MAPPING } from './models/multichain-options-mapping';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -130,8 +131,10 @@ export class WalletsModalComponent implements OnInit {
   public async connectProvider(providerName: WALLET_NAME): Promise<void> {
     if (this.rulesCheckbox.value) {
       let provider = providerName;
-      if (provider === WALLET_NAME.METAMASK) {
-        provider = await this.getMetamaskBasedOnNetwork();
+
+      const availableMultichainProviders = Object.keys(MULTICHAIN_OPTIONS_MAPPING);
+      if (availableMultichainProviders.includes(provider)) {
+        provider = await this.getMultichainWalletBasedOnNetwork(provider);
         if (!provider) {
           return;
         }
@@ -169,9 +172,11 @@ export class WalletsModalComponent implements OnInit {
     this.context.completeWith();
   }
 
-  public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
+  public async getMultichainWalletBasedOnNetwork(
+    walletName: WALLET_NAME
+  ): Promise<WALLET_NAME | null> {
     try {
-      return this.modalService.openMetamaskModal();
+      return this.modalService.openMultichainWalletModal(walletName);
     } catch {
       return null;
     }

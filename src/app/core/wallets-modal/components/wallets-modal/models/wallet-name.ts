@@ -7,6 +7,7 @@ export enum WALLET_NAME {
   ARGENT = 'argent',
   BITGET = 'bitget',
   PHANTOM = 'phantom',
+  PHANTOM_BITCOIN = 'phantom_bitcoin',
   SOLFLARE = 'solflare',
   SAFE = 'safe',
   TOKEN_POCKET = 'tokenpocket',
