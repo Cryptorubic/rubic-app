@@ -1,4 +1,5 @@
 import {
+  ErrorInterface,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
@@ -13,7 +14,6 @@ import { RubicStep } from '../../../../../cross-chain/calculation-manager/provid
 import { IsDeflationToken } from '../../../../../common/models/is-deflation-token';
 import { GasFeeInfo } from '../evm-on-chain-trade/models/gas-fee-info';
 import { OnChainTrade } from '../on-chain-trade';
-import { EvmEncodedConfigAndToAmount } from '../../../models/aggregator-on-chain-types';
 import { SolanaOnChainTradeStruct } from './models/solana-on-chain-trade-struct';
 import {
   EvmBasicTransactionOptions,
@@ -27,7 +27,7 @@ import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.s
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class SolanaOnChainTrade extends OnChainTrade {
-  protected lastTransactionConfig: EvmTransactionConfig | null = null;
+  protected lastTransactionConfig: { data: string; warnings: ErrorInterface[] } | null = null;
 
   public readonly from: PriceTokenAmount<SolanaBlockchainName>;
 
@@ -177,7 +177,9 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     }
   }
 
-  public async encode(options: EncodeTransactionOptions): Promise<EvmTransactionConfig> {
+  public async encode(
+    options: EncodeTransactionOptions
+  ): Promise<{ data: string; warnings: ErrorInterface[] }> {
     await this.checkFromAddress(options.fromAddress, true);
     await this.checkReceiverAddress(options.receiverAddress);
 
@@ -186,7 +188,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
 
   protected async getTransactionConfigAndAmount(
     options?: EncodeTransactionOptions
-  ): Promise<EvmEncodedConfigAndToAmount> {
+  ): Promise<{ data: string; warnings: ErrorInterface[]; toAmount: string }> {
     if (!this.apiResponse || !this.apiQuote) {
       throw new Error('Failed to load api response');
     }
@@ -202,29 +204,24 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
 
-    const config = {
-      data: swapData.transaction.data!,
-      value: swapData.transaction.value!,
-      to: swapData.transaction.to!,
-      warnings: swapData.warnings
+    return {
+      data: swapData.transaction.data,
+      warnings: swapData.warnings,
+      toAmount: swapData.estimate.destinationWeiAmount
     };
-
-    const amount = swapData.estimate.destinationWeiAmount;
-
-    return { tx: config, toAmount: amount };
   }
 
   protected async setTransactionConfig(
     options: EncodeTransactionOptions
-  ): Promise<EvmTransactionConfig> {
+  ): Promise<{ data: string; warnings: ErrorInterface[] }> {
     if (this.lastTransactionConfig && options.useCacheData) {
       return this.lastTransactionConfig;
     }
 
-    const { tx, toAmount } = await this.getTransactionConfigAndAmount(options);
+    const { data, warnings, toAmount } = await this.getTransactionConfigAndAmount(options);
 
     this._lastTo = this.to.clone({ weiAmount: new BigNumber(toAmount) });
-    this.lastTransactionConfig = tx;
+    this.lastTransactionConfig = { data, warnings };
 
     setTimeout(() => {
       this.lastTransactionConfig = null;
@@ -233,6 +230,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     if (!options.skipAmountCheck) {
       this.checkAmountChange(toAmount, this.to.stringWeiAmount);
     }
-    return tx;
+    return { data, warnings };
   }
 }

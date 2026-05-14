@@ -37,6 +37,6 @@ export class TokenSelectorPageComponent {
 
   public handleTokenSelect(asset: Asset): void {
     this.tokenSelected.emit(asset);
-    this.context.completeWith(asset);
+    this.context?.completeWith(asset);
   }
 }

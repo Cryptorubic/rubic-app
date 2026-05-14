@@ -190,7 +190,8 @@ export class SwapsStateService {
           needTrustlineOptions: {
             needTrustlineAfterSwap: false,
             needTrustlineBeforeSwap: false
-          }
+          },
+          warnings: []
         }
       : {
           error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
@@ -202,7 +203,8 @@ export class SwapsStateService {
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade),
-          centralizationStatus: this.setCentralizationStatus(trade)
+          centralizationStatus: this.setCentralizationStatus(trade),
+          warnings: trade.warnings
         };
 
     let currentTrades = this._tradesStore$.getValue();

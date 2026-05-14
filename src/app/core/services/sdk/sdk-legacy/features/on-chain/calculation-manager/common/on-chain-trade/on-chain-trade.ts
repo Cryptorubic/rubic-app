@@ -1,6 +1,7 @@
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  ErrorInterface,
   Cache as Memo,
   OnChainTradeType,
   PriceTokenAmount,
@@ -118,12 +119,15 @@ export abstract class OnChainTrade<T = unknown> {
 
   public readonly rubicId: string;
 
+  public readonly warnings: ErrorInterface[];
+
   protected constructor(
     apiResponse: QuoteResponseInterface,
     protected readonly sdkLegacyService: SdkLegacyService,
     private readonly rubicApiService: RubicApiService
   ) {
     this.rubicId = apiResponse.id;
+    this.warnings = apiResponse.warnings;
   }
 
   /**
