@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -6,7 +6,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { firstValueFrom, startWith, tap } from 'rxjs';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
 import {
@@ -18,8 +18,8 @@ import {
 } from '@cryptorubic/core';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -27,13 +27,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./privacycash-hide-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: FromAssetsService, useExisting: PrivacycashPublicAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
   ]
 })
 export class PrivacycashHidePageComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
@@ -53,7 +52,7 @@ export class PrivacycashHidePageComponent implements OnInit {
 
   public readonly receiverCtrl = new FormControl<string>('');
 
-  constructor() {}
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -62,7 +61,7 @@ export class PrivacycashHidePageComponent implements OnInit {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

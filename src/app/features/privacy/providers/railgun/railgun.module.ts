@@ -3,9 +3,22 @@ import { CommonModule } from '@angular/common';
 import { RailgunFormComponent } from '@features/privacy/providers/railgun/components/railgun-form/railgun-form.component';
 import { SharedModule } from '@shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TuiFieldErrorPipe, TuiProgress, TuiStepper, TuiSwitch, TuiCheckbox } from '@taiga-ui/kit';
-import { TuiError } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/legacy';
+import {
+  TuiCheckboxLabeledModule,
+  TuiFieldErrorPipeModule,
+  TuiInputModule,
+  TuiInputPasswordModule,
+  TuiProgressModule,
+  TuiStepperModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiErrorModule,
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiNotificationModule
+} from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunHideTokensPageComponent } from '@features/privacy/providers/railgun/components/railgun-hide-tokens-page/railgun-hide-tokens-page.component';
@@ -23,6 +36,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
 import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
 import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -52,19 +66,19 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     ReactiveFormsModule,
     TuiInputModule,
     TuiInputPasswordModule,
-    TuiError,
-    TuiFieldErrorPipe,
-    TuiButton,
-    ...TuiStepper,
+    TuiErrorModule,
+    TuiFieldErrorPipeModule,
+    TuiButtonModule,
+    TuiStepperModule,
     SharedPrivacyProvidersModule,
-    TuiNotification,
-    ...TuiProgress,
-    TuiCheckbox,
-    TuiSwitch,
+    TuiNotificationModule,
+    TuiProgressModule,
+    TuiCheckboxLabeledModule,
+    TuiToggleModule,
     InlineSVGModule,
     ClipboardModule,
-    ...TuiHint,
-    TuiLoader
+    TuiHintModule,
+    TuiLoaderModule
   ],
   providers: [
     RailgunFacadeService,
@@ -73,6 +87,7 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     PrivateSwapService,
     RailgunTransferService,
     TargetNetworkAddressService,
+    TuiDestroyService,
     RailgunErrorService,
     RailgunHideFacadeService,
     { provide: TokensBootstrapService, useClass: RailgunTokensBootstrapService }

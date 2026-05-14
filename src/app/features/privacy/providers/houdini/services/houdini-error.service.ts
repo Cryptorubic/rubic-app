@@ -1,22 +1,21 @@
-import { Injectable, DestroyRef, inject } from '@angular/core';
+import { Injectable, Self } from '@angular/core';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { ErrorInterface } from '@cryptorubic/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, takeUntil, tap } from 'rxjs';
 
 @Injectable()
 export class HoudiniErrorService {
-  private readonly destroyRef = inject(DestroyRef);
-
   private readonly _tradeError$ = new BehaviorSubject<Partial<ErrorInterface> | null>(null);
 
   public readonly tradeError$ = this._tradeError$.asObservable();
 
   constructor(
     protected readonly privatePageTypeService: PrivatePageTypeService,
-    protected readonly privateSwapWindowService: PrivateSwapWindowService
+    protected readonly privateSwapWindowService: PrivateSwapWindowService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     combineLatest([
       this.privatePageTypeService.activePage$,
@@ -35,7 +34,7 @@ export class HoudiniErrorService {
         tap(() => {
           this._tradeError$.next(null);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

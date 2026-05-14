@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
-import { filter, firstValueFrom, map } from 'rxjs';
+import { filter, firstValueFrom, map, takeUntil } from 'rxjs';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-zama-hide-tokens-page',
@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./zama-hide-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     {
       provide: FromAssetsService,
       useClass: ZamaPrivateAssetsService
@@ -30,8 +31,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ]
 })
 export class ZamaHideTokensPageComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig: PrivateShieldFormConfig = {
@@ -44,7 +43,8 @@ export class ZamaHideTokensPageComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
-    private readonly hideWindowService: HideWindowService
+    private readonly hideWindowService: HideWindowService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
@@ -53,7 +53,7 @@ export class ZamaHideTokensPageComponent {
         filter(() => !!this.hideWindowService.hideAsset?.address),
         map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
         filter(Boolean),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(token => {
         this.hideWindowService.setHideAsset({

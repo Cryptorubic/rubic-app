@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { WalletsModalComponent } from 'src/app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { TuiButton, TuiScrollbar } from '@taiga-ui/core';
+import { TuiButtonModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiCheckbox } from '@taiga-ui/kit';
+import { TuiCheckboxModule } from '@taiga-ui/kit';
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 
 @NgModule({
@@ -13,10 +13,10 @@ import { MetamaskModalComponent } from '@shared/components/metamask-modal/metama
   imports: [
     CommonModule,
     SharedModule,
-    TuiScrollbar,
-    TuiButton,
+    TuiScrollbarModule,
+    TuiButtonModule,
     FormsModule,
-    TuiCheckbox,
+    TuiCheckboxModule,
     ReactiveFormsModule
   ],
   providers: []

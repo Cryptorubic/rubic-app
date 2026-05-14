@@ -6,6 +6,7 @@ import {
   Inject,
   NgZone,
   PLATFORM_ID,
+  Self,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -16,6 +17,7 @@ import { IsActiveMatchOptions, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { map, startWith } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
@@ -26,7 +28,8 @@ import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/go
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class HeaderComponent {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
@@ -103,6 +106,7 @@ export class HeaderComponent {
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone,
     private readonly themeService: ThemeService

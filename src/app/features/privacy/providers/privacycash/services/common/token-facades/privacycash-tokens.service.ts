@@ -1,5 +1,5 @@
-import { Injectable, inject, DestroyRef } from '@angular/core';
-import { BehaviorSubject, Observable, fromEvent, map, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, fromEvent, map, takeUntil, tap } from 'rxjs';
 import { getMinimalTokensByChain } from './utils/get-minimal-tokens-by-chain';
 import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { MinimalTokenWithBalance } from '../../../models/privacycash-tokens-facade-models';
@@ -7,14 +7,12 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import BigNumber from 'bignumber.js';
 import { PrivacycashSignatureService } from '../../privacy-cash-signature.service';
 import { PrivacycashInWorkerMsg, PrivacycashOutWorkerMsg } from './worker/models/worker-models';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../../../utils/converter';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class PrivacycashTokensService {
-  private readonly destroyRef = inject(DestroyRef);
-
   private readonly privacycashSignatureService = inject(PrivacycashSignatureService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
@@ -94,7 +92,7 @@ export class PrivacycashTokensService {
             console.debug(`[PrivacycashTokensService_workerOutMsg$] unknown msg`, msg.data);
         }
       }),
-      takeUntilDestroyed(this.destroyRef)
+      takeUntil(destroy$)
     );
   }
 

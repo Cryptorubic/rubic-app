@@ -1,41 +1,35 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class UserProfileComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
-    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(event => {
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe(event => {
       if (event instanceof NavigationStart) {
         this.headerStore.setMobileMenuOpeningStatus(false);
         this.headerStore.setConfirmModalOpeningStatus(false);
@@ -49,7 +43,7 @@ export class UserProfileComponent {
           this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         }),
         switchMap(() => this.authService.setUserData()),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.cdr.markForCheck();

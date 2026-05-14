@@ -6,9 +6,8 @@ import {
   Injector,
   Input,
   Output,
-  ViewChild,
-  DestroyRef,
-  inject
+  Self,
+  ViewChild
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -17,23 +16,23 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
-import { debounceTime, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
-import { TuiScrollbar } from '@taiga-ui/core';
+import { TuiScrollbarComponent } from '@taiga-ui/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
 import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-providers-list-general',
   templateUrl: './providers-list-general.component.html',
   styleUrls: ['./providers-list-general.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ProviderHintService],
+  providers: [TuiDestroyService, ProviderHintService],
   animations: [
     trigger('progress', [
       transition(':enter', [
@@ -48,8 +47,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ]
 })
 export class ProvidersListGeneralComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   @Input({ required: true }) states: TradeState[] = [];
 
   @Input({ required: true }) selectedTradeType: TradeProvider;
@@ -63,7 +60,7 @@ export class ProvidersListGeneralComponent {
     }
   }
 
-  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
+  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
 
   private _calculationStatus: CalculationStatus;
 
@@ -106,6 +103,7 @@ export class ProvidersListGeneralComponent {
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly alternativeRoutesService: AlternativeRoutesService
   ) {}
 
@@ -171,7 +169,7 @@ export class ProvidersListGeneralComponent {
         .pipe(
           tap(() => this.hideProviderHintOnScroll(true)),
           debounceTime(500),
-          takeUntilDestroyed(this.destroyRef)
+          takeUntil(this.destroy$)
         )
         .subscribe(() => this.hideProviderHintOnScroll(false));
     }

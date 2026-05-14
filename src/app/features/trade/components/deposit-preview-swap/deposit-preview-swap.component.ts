@@ -4,14 +4,13 @@ import {
   Component,
   Inject,
   OnDestroy,
-  DestroyRef,
-  inject
+  Self
 } from '@angular/core';
 import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, filter, first, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -22,6 +21,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -34,12 +34,12 @@ import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/featu
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],
+  providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('showDepositAddressAnimation', [
@@ -51,8 +51,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ]
 })
 export class DepositPreviewSwapComponent implements OnDestroy {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly status$ = combineLatest([
     this.depositService.status$.pipe(startWith(CROSS_CHAIN_DEPOSIT_STATUS.WAITING)),
     this.depositService.depositTrade$.pipe(startWith(null))
@@ -168,6 +166,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     private readonly refundService: RefundService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
     private readonly tokensFacade: TokensFacadeService
   ) {
@@ -287,7 +286,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
       .pipe(
         map(([isValidRefund, needTrustline]) => isValidRefund && !needTrustline),
         distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(isValid => {
         if (isValid) {

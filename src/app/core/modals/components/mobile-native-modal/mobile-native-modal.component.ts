@@ -1,19 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
   Inject,
   OnDestroy,
-  OnInit,
-  inject
+  OnInit
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TuiPopover } from '@taiga-ui/cdk';
-import { TuiSwipeEvent } from '@taiga-ui/cdk';
-import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
+import { TuiDestroyService, TuiDialog, TuiSwipe } from '@taiga-ui/cdk';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { ModalStates } from '../../models/modal-states.enum';
-import { delay, tap } from 'rxjs/operators';
+import { takeUntil, delay, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { IMobileNativeOptions } from '../../models/mobile-native-options';
@@ -25,6 +21,7 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
   selector: 'app-mobile-native-modal',
   templateUrl: './mobile-native-modal.component.html',
   styleUrls: ['./mobile-native-modal.component.scss'],
+  providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
@@ -36,15 +33,14 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
 
   public readonly isIframe$ = this.iframeService.isIframe$;
 
-  private readonly destroyRef = inject(DestroyRef);
-
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    readonly context: TuiPopover<IMobileNativeOptions, void>,
+    readonly context: TuiDialog<IMobileNativeOptions, void>,
+    private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
     private readonly el: ElementRef<HTMLElement>,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService // private readonly tokensListService: TokensListService
   ) {
     this.subscribeOnModal();
     this.modalService.setModalEl({ elRef: el, context: context });
@@ -70,7 +66,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnForceClose(): void {
-    this.context.forceClose$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.context.forceClose$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.state === ModalStates.HIDDEN) {
         this.state = ModalStates.FULL;
         this.show();
@@ -103,7 +99,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
           )
         ),
         tap(() => this.show()),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -128,7 +124,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     animationTimeout(this.context.completeWith);
   }
 
-  public onSwipe(swipe: TuiSwipeEvent, title: string, place: string): void {
+  public onSwipe(swipe: TuiSwipe, title: string, place: string): void {
     if (
       swipe.direction === 'top' &&
       this.state === ModalStates.MEDIUM &&

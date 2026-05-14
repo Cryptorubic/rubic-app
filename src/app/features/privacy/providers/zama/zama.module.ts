@@ -16,6 +16,7 @@ import { ZamaSwapService } from './services/zama-sdk/zama-swap.service';
 import { ZamaTokensService } from './services/zama-sdk/zama-tokens.service';
 import { ZamaSignatureService } from './services/zama-sdk/zama-signature.service';
 import { ZamaRevealFacadeService } from './services/zama-reveal-tokens-facade.service';
+import { TuiButtonModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
 import { ZamaTransferTokensPageComponent } from './components/zama-transfer-tokens-page/zama-transfer-tokens-page.component';
 import { ZamaLoginPageComponent } from './components/zama-login-page/zama-login-page.component';
 import { ZamaActionButtonService } from './services/zama-action-button.service';
@@ -33,9 +34,9 @@ import { ZamaActionButtonService } from './services/zama-action-button.service';
     ZamaRoutingModule,
     SharedPrivacyProvidersModule,
     SharedModule,
-    TuiLoader,
-    TuiButton,
-    TuiNotification
+    TuiLoaderModule,
+    TuiButtonModule,
+    TuiNotificationModule
   ],
   providers: [
     ZamaPrivateAssetsService,

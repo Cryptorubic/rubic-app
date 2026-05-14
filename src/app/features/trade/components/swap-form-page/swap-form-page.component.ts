@@ -1,15 +1,16 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Injector,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import { distinctUntilChanged, first, map, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  first,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -23,14 +24,15 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-swap-form-page',
   templateUrl: './swap-form-page.component.html',
   styleUrls: ['./swap-form-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
   animations: [
     trigger('receiverAnimation', [
       transition(':enter', [
@@ -45,8 +47,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ]
 })
 export class SwapFormPageComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly fromAsset$ = this.swapFormService.fromToken$;
@@ -100,10 +100,11 @@ export class SwapFormPageComponent {
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.swapFormService.inputValueDistinct$
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(inputValue => {
         this.refundService.onSwapFormInputChanged(inputValue);
         this.solanaGaslessService.onSwapFormInputChanged(inputValue);
@@ -123,7 +124,7 @@ export class SwapFormPageComponent {
             : of(new BigNumber(NaN));
           return forkJoin([srcBalance$, dstBalance$]);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(([srcBalance, dstBalance]) => {
         const srcToken = this.swapFormService.inputValue.fromToken;

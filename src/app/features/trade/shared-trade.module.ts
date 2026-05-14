@@ -4,9 +4,24 @@ import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { ProvidersListGeneralComponent } from '@features/trade/components/providers-list-general/providers-list-general.component';
 import { ProviderElementComponent } from './components/provider-element/provider-element.component';
-import { TuiExpand, TuiDropdown } from '@taiga-ui/core';
-import { TuiSwitch } from '@taiga-ui/kit';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule } from '@taiga-ui/legacy';
+import {
+  TuiButtonModule,
+  TuiExpandModule,
+  TuiHintModule,
+  TuiHostedDropdownModule,
+  TuiLoaderModule,
+  TuiNotificationModule,
+  TuiModeModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
+import {
+  TuiCarouselModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -141,24 +156,25 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
   imports: [
     CommonModule,
     SharedModule,
-    ...TuiExpand,
-    TuiScrollbar,
+    TuiExpandModule,
+    TuiScrollbarModule,
     TuiTagModule,
     InlineSVGModule,
-    TuiButton,
+    TuiButtonModule,
     ClipboardModule,
     ReactiveFormsModule,
-    ...TuiHint,
+    TuiHintModule,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,
-    TuiSwitch,
-    ...TuiDropdown,
+    TuiToggleModule,
+    TuiHostedDropdownModule,
     TuiInputModule,
-    TuiLoader,
+    TuiLoaderModule,
     AssetsSelectorModule,
-    TuiNotification,
-    ...TuiCarousel
+    TuiNotificationModule,
+    TuiModeModule,
+    TuiCarouselModule
   ],
   providers: [
     SwapsStateService,

@@ -7,24 +7,21 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild,
-  DestroyRef,
-  inject
+  Self,
+  ViewChild
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
-import { mergeMap, take, tap, pairwise } from 'rxjs/operators';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
+import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-refresh-button',
   templateUrl: './refresh-button.component.html',
   styleUrls: ['./refresh-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class RefreshButtonComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   @Input() isRotating$: Observable<boolean>;
 
   @Input() isRotating: () => boolean;
@@ -36,7 +33,10 @@ export class RefreshButtonComponent implements OnInit {
   @ViewChild('refreshIcon', { static: true })
   refreshIconElement: ElementRef;
 
-  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
+  ) {}
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
@@ -63,7 +63,7 @@ export class RefreshButtonComponent implements OnInit {
             );
           }
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

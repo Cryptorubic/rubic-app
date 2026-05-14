@@ -6,8 +6,8 @@ import {
   Input,
   OnInit,
   Output,
-  inject,
-  DestroyRef
+  Self,
+  inject
 } from '@angular/core';
 import {
   BehaviorSubject,
@@ -22,6 +22,7 @@ import {
   Observable,
   startWith,
   switchMap,
+  takeUntil,
   tap
 } from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -29,6 +30,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
 import { PrivateSwapEvent } from '../../models/private-event';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateQuoteAdapter } from '../../models/quote-adapter';
 import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
@@ -41,18 +43,16 @@ import BigNumber from 'bignumber.js';
 import { CrossChainDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-swap-window',
   templateUrl: './swap-window.component.html',
   styleUrls: ['./swap-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
   animations: [receiverAnimation()]
 })
 export class SwapWindowComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   @Input() receiverCtrl: FormControl<string>;
 
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
@@ -133,7 +133,10 @@ export class SwapWindowComponent implements OnInit {
       : 'openPublicTokensModal';
   }
 
-  constructor(private readonly privateSwapWindowService: PrivateSwapWindowService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privateSwapWindowService: PrivateSwapWindowService
+  ) {}
 
   private createPreviewModal(): PreviewSwapModalFactory {
     const injector = this.injector;
@@ -179,14 +182,14 @@ export class SwapWindowComponent implements OnInit {
           }
           return this.calculate(swapInfo);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
 
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 

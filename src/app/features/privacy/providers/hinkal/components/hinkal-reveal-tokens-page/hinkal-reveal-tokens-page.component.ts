@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
-import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HINKAL_DEFAULT_CREATION_CONFIG } from '../../constants/hinkal-default-creation-config';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
@@ -14,7 +15,6 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-hinkal-reveal-tokens-page',
@@ -22,13 +22,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./hinkal-reveal-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
   ]
 })
 export class HinkalRevealTokensPageComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(
@@ -48,6 +47,7 @@ export class HinkalRevealTokensPageComponent {
 
   constructor(
     private readonly hinkalFacadeService: HinkalFacadeService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly revealWindowService: RevealWindowService
@@ -60,7 +60,7 @@ export class HinkalRevealTokensPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
     this.subscribeOnPrivateBalanceChanges();
@@ -81,7 +81,7 @@ export class HinkalRevealTokensPageComponent {
             )
           );
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(shieldBalance => {
         const revealAsset = this.revealWindowService.revealAsset;

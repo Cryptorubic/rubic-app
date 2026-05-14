@@ -1,15 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  Injector,
-  Input,
-  OnInit,
-  DestroyRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Injector, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
-import { BehaviorSubject, firstValueFrom, startWith, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
@@ -23,6 +15,7 @@ import { RailgunTransferService } from '@features/privacy/providers/railgun/serv
 
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -30,7 +23,6 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -41,13 +33,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RailgunPrivateAssetsService,
     { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
+    TuiDestroyService,
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
 })
 export class RailgunTransferPageComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
 
   public readonly receiverCtrl = new FormControl<string>('');
@@ -114,11 +105,11 @@ export class RailgunTransferPageComponent implements OnInit {
         tap(address => {
           this.actionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
     this.railgunFacade.completedChains$
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 

@@ -6,14 +6,29 @@ import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
+  TuiBadgeModule,
+  TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
   TuiInputNumberModule,
   TuiProgressModule,
+  TuiTabsModule,
   TuiTagModule,
-  TuiSwitch
+  TuiToggleModule
 } from '@taiga-ui/kit';
-import { TuiTooltipModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiHintModule,
+  TuiHostedDropdownModule,
+  TuiLoaderModule,
+  TuiNotificationModule,
+  TuiScrollbarModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule,
+  TuiTooltipModule
+} from '@taiga-ui/core';
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
@@ -141,31 +156,33 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     RouterModule,
     ScrollingModule,
     InlineSVGModule.forRoot(),
+    TuiSvgModule,
     TuiTooltipModule,
-    ...TuiHint,
+    TuiHintModule,
     TuiInputModule,
-    TuiButton,
-    TuiDataList,
+    TuiButtonModule,
+    TuiDataListModule,
     TuiActiveZoneModule,
-    ...TuiDropdown,
-    ...TuiDropdown,
-    TuiSwitch,
+    TuiDropdownModule,
+    TuiHostedDropdownModule,
+    TuiToggleModule,
     TuiProgressModule,
-    ...TuiHint,
-    TuiSwitch,
-    ...TuiTabs,
+    TuiSvgModule,
+    TuiHintModule,
+    TuiToggleModule,
+    TuiTabsModule,
     TuiInputCountModule,
-    TuiDataListWrapper,
-    TuiLoader,
-    TuiBadge,
-    ...TuiHint,
+    TuiDataListWrapperModule,
+    TuiLoaderModule,
+    TuiBadgeModule,
+    TuiHintModule,
     TuiTagModule,
     TuiTextfieldControllerModule,
-    TuiScrollbar,
+    TuiScrollbarModule,
     TuiHoveredModule,
     NgOptimizedImage,
     TuiInputNumberModule,
-    TuiNotification
+    TuiNotificationModule
   ],
   exports: [
     BigNumberFormatPipe,

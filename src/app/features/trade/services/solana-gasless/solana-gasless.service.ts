@@ -1,21 +1,20 @@
-import { Injectable, DestroyRef, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SolanaGaslessStateService } from './solana-gasless-state.service';
 import { HttpService } from '@app/core/services/http/http.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE } from '@cryptorubic/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class SolanaGaslessService {
-  private readonly destroyRef = inject(DestroyRef);
-
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
     private readonly httpService: HttpService,
+    private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnUserAddressChange();
@@ -59,7 +58,7 @@ export class SolanaGaslessService {
 
   private subscribeOnUserAddressChange(): void {
     this.walletConnectorService.addressChange$
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(userAddress => {
         const chainType = this.walletConnectorService.chainType;
         if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();

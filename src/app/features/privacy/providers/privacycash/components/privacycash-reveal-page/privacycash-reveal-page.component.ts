@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
@@ -17,7 +18,6 @@ import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/co
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { compareTokens } from '@app/shared/utils/utils';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -25,13 +25,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./privacycash-reveal-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacycashPrivateUnshieldTokensFacadeService }
   ]
 })
 export class PrivacycashRevealPageComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
@@ -55,7 +54,7 @@ export class PrivacycashRevealPageComponent {
     direction: 'from'
   };
 
-  constructor() {}
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   ngOnInit(): void {
     this.receiverCtrl.valueChanges
@@ -64,12 +63,12 @@ export class PrivacycashRevealPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
     this.revealWindowService.revealAsset$
-      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
       .subscribe(token => {
         this.receiverCtrl.clearAsyncValidators();
         this.receiverCtrl.setAsyncValidators(
@@ -92,7 +91,7 @@ export class PrivacycashRevealPageComponent {
           pcTokens.find(pcToken => compareTokens(pcToken, this.revealWindowService.revealAsset))
         ),
         filter(Boolean),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(pcToken => {
         const revealAsset = this.revealWindowService.revealAsset;

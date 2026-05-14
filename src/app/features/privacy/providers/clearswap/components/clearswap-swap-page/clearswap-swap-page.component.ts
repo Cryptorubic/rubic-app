@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
@@ -9,7 +9,8 @@ import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, tap } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';
 
@@ -21,17 +22,15 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-clearswap-swap-page',
   templateUrl: './clearswap-swap-page.component.html',
   styleUrls: ['./clearswap-swap-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class ClearswapSwapPageComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly receiverCtrl = new FormControl<string>('', {
     asyncValidators: [isReceiverCorrect()]
   });
@@ -54,7 +53,8 @@ export class ClearswapSwapPageComponent implements OnInit {
     private readonly errorService: ErrorsService,
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly tokensBalanceService: TokensBalanceService,
-    private readonly privateSwapWindowService: PrivateSwapWindowService
+    private readonly privateSwapWindowService: PrivateSwapWindowService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

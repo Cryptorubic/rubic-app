@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { HINKAL_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
@@ -16,7 +17,6 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { ActivatedRoute } from '@angular/router';
 import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hide-facade.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-hinkal-view',
@@ -24,6 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./hinkal-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     {
       provide: PrivateActionButtonService,
       useClass: HinkalActionButtonService
@@ -31,8 +32,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ]
 })
 export class HinkalViewComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly activeChain$ = this.hinkalFacadeService.activeChain$;
@@ -60,6 +59,7 @@ export class HinkalViewComponent {
     private readonly hinkalFacadeService: HinkalFacadeService,
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly privatePageTypeService: PrivatePageTypeService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly hinkalHideFacade: HinkalHideFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -74,7 +74,7 @@ export class HinkalViewComponent {
     this.hinkalFacadeService.initSubs();
     this.parseQueryParams();
     this.walletConnectorService.addressChange$
-      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.hinkalFacadeService.logout();
         this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
@@ -83,7 +83,7 @@ export class HinkalViewComponent {
     this.activatedRoute.queryParams
       .pipe(
         filter(params => params.fromChain),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(params => {
         this.hinkalFacadeService.switchChain(params.fromChain);

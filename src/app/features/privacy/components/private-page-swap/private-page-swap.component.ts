@@ -6,11 +6,12 @@ import {
   Input,
   OnInit,
   Output,
-  inject,
-  DestroyRef
+  Self,
+  inject
 } from '@angular/core';
-import { BehaviorSubject, skip } from 'rxjs';
+import { BehaviorSubject, skip, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -26,7 +27,6 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
 import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@app/core/services/google-tag-manager/models/google-tag-manager';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-private-main-page-swap',
@@ -34,6 +34,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./private-page-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: FromAssetsService, useClass: PrivacyMainPageFromPrivateAssetsService },
     { provide: ToAssetsService, useClass: PrivacyMainPageToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacyMainPageTokensFacadeService }
@@ -41,8 +42,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   animations: [receiverAnimation()]
 })
 export class PrivatePageSwapComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   @Input() creationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
     withDstSelector: true,
@@ -80,6 +79,7 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly privacyMainPageService: PrivacyMainPageService,
     private readonly gtmService: GoogleTagManagerService
   ) {}
@@ -91,7 +91,7 @@ export class PrivatePageSwapComponent implements OnInit {
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
       // used skip(1) to prevent emitting formChanged with empty value and override existing queryParams
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 

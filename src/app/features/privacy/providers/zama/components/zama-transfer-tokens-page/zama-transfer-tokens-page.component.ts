@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -7,14 +7,14 @@ import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facad
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 
-import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { ZamaBalanceService } from '../../services/zama-sdk/zama-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import BigNumber from 'bignumber.js';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-zama-transfer-tokens-page',
@@ -22,13 +22,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./zama-transfer-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    TuiDestroyService,
     { provide: FromAssetsService, useClass: ZamaPrivateAssetsService },
     { provide: TokensFacadeService, useClass: ZamaRevealFacadeService }
   ]
 })
 export class ZamaTransferTokensPageComponent {
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig: PrivateTransferFormConfig = {
@@ -43,6 +42,7 @@ export class ZamaTransferTokensPageComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly privateActionButtonService: PrivateActionButtonService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaBalanceService: ZamaBalanceService,
     private readonly transferWindowService: PrivateTransferWindowService
   ) {}
@@ -54,7 +54,7 @@ export class ZamaTransferTokensPageComponent {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
@@ -81,7 +81,7 @@ export class ZamaTransferTokensPageComponent {
             )
           );
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntil(this.destroy$)
       )
       .subscribe(shieldBalance => {
         const transferAsset = this.transferWindowService.transferAsset;

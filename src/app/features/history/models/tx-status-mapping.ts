@@ -1,8 +1,9 @@
 import { SourceTxStatus } from '@features/history/models/source-tx-status';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
+import { TuiStatus } from '@taiga-ui/kit';
 
 export interface TxStatus {
-  appearance: string;
+  appearance: TuiStatus;
   label: string;
 }
 
