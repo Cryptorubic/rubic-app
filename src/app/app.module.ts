@@ -1,7 +1,11 @@
 import { provideEventPlugins } from '@taiga-ui/event-plugins';
 import { BrowserModule, Meta } from '@angular/platform-browser';
 import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXsrfConfiguration
+} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiRoot, TuiAlert, TuiDialog } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -18,6 +22,7 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -26,12 +31,7 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
     TuiRoot,
     TuiAlert,
     TuiDialog,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'csrftoken',
-      headerName: 'X-CSRFToken'
-    }),
     AppRoutingModule,
-    HttpClientModule,
     NgxGoogleAnalyticsModule
   ],
   providers: [
@@ -61,9 +61,15 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
       deps: [PrivateLocalStorageService],
       multi: true
     },
-    provideEventPlugins()
-  ],
-  bootstrap: [AppComponent]
+    provideEventPlugins(),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withXsrfConfiguration({
+        cookieName: 'csrftoken',
+        headerName: 'X-CSRFToken'
+      })
+    )
+  ]
 })
 export class AppModule {
   constructor(
