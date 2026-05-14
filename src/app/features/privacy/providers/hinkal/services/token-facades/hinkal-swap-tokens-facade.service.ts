@@ -28,66 +28,68 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
   ): Observable<AvailableTokenAmount[]> {
     return this.balanceService.balances$.pipe(
       switchMap(shieldedBalances => {
-        return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
-          map((tokens: BalanceToken[]) => {
-            return tokens.filter(token =>
-              HINKAL_SUPPORTED_CHAINS.includes(token.blockchain as EvmBlockchainName)
-            );
-          }),
-          map(tokens => {
-            const supportedTokens = tokens
-              .filter(token =>
-                PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
-              )
-              .map(token => {
-                const shieldedBalance = shieldedBalances[
-                  token.blockchain as EvmBlockchainName
-                ]?.find(balance => compareAddresses(balance.tokenAddress, token.address));
+        return this.tokensBuilderService
+          .getTokensList(type, _query, direction, inputValue, false)
+          .pipe(
+            map((tokens: BalanceToken[]) => {
+              return tokens.filter(token =>
+                HINKAL_SUPPORTED_CHAINS.includes(token.blockchain as EvmBlockchainName)
+              );
+            }),
+            map(tokens => {
+              const supportedTokens = tokens
+                .filter(token =>
+                  PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                )
+                .map(token => {
+                  const shieldedBalance = shieldedBalances[
+                    token.blockchain as EvmBlockchainName
+                  ]?.find(balance => compareAddresses(balance.tokenAddress, token.address));
 
+                  const oppositeToken =
+                    direction === 'from'
+                      ? this.privateSwapWindowService.swapInfo.toAsset
+                      : this.privateSwapWindowService.swapInfo.fromAsset;
+                  const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+
+                  return {
+                    ...token,
+                    available: isAvailable,
+                    amount: shieldedBalance
+                      ? Token.fromWei(shieldedBalance.amount, token.decimals)
+                      : new BigNumber(NaN)
+                  };
+                });
+
+              const sortedByOpposite = supportedTokens.sort((a, b) => {
                 const oppositeToken =
                   direction === 'from'
                     ? this.privateSwapWindowService.swapInfo.toAsset
                     : this.privateSwapWindowService.swapInfo.fromAsset;
-                const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+                if (oppositeToken) {
+                  if (
+                    compareAddresses(a.address, oppositeToken.address) &&
+                    a.blockchain === oppositeToken.blockchain
+                  ) {
+                    return 1;
+                  }
+                  if (
+                    compareAddresses(b.address, oppositeToken.address) &&
+                    b.blockchain === oppositeToken.blockchain
+                  ) {
+                    return -1;
+                  }
+                }
 
-                return {
-                  ...token,
-                  available: isAvailable,
-                  amount: shieldedBalance
-                    ? Token.fromWei(shieldedBalance.amount, token.decimals)
-                    : new BigNumber(NaN)
-                };
+                return 0;
               });
-
-            const sortedByOpposite = supportedTokens.sort((a, b) => {
-              const oppositeToken =
-                direction === 'from'
-                  ? this.privateSwapWindowService.swapInfo.toAsset
-                  : this.privateSwapWindowService.swapInfo.fromAsset;
-              if (oppositeToken) {
-                if (
-                  compareAddresses(a.address, oppositeToken.address) &&
-                  a.blockchain === oppositeToken.blockchain
-                ) {
-                  return 1;
-                }
-                if (
-                  compareAddresses(b.address, oppositeToken.address) &&
-                  b.blockchain === oppositeToken.blockchain
-                ) {
-                  return -1;
-                }
+              if (BlockchainsInfo.isBlockchainName(type)) {
+                return sortedByOpposite.sort(sorterByChain);
               }
 
-              return 0;
-            });
-            if (BlockchainsInfo.isBlockchainName(type)) {
-              return sortedByOpposite.sort(sorterByChain);
-            }
-
-            return sortedByOpposite;
-          })
-        );
+              return sortedByOpposite;
+            })
+          );
       })
     );
   }
