@@ -45,10 +45,7 @@ export class HinkalViewComponent {
       this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.HINKAL)
     ),
     map(([signature, alreadyMadeShielding]) => {
-      if (!signature) {
-        return this.pages.filter(page => page.type !== 'hide');
-      }
-      if (!alreadyMadeShielding) {
+      if (!signature || !alreadyMadeShielding) {
         return this.pages.filter(page => page.type !== 'hide');
       }
     })

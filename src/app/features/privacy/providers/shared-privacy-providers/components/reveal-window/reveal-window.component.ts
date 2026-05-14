@@ -133,4 +133,11 @@ export class RevealWindowComponent {
   public toggleReceiver(): void {
     this._displayReceiver$.next(!this._displayReceiver$.value);
   }
+
+  public handlePresetSelect(amount: string): void {
+    this.revealWindowService.setRevealAmount({
+      visibleValue: amount,
+      actualValue: new BigNumber(amount)
+    });
+  }
 }

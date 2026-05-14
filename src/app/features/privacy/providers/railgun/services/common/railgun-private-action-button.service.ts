@@ -90,6 +90,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.revealWindowService.revealAmount$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
+            this._receiverAddress$.asObservable(),
             this.revealWindowService.revealAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
@@ -178,6 +179,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     } | null,
     railgunWallet: { evmWalletAddress: string },
     user: UserInterface,
+    receiver: string,
     totalBalanceToken: BalanceToken
   ): Promise<PrivateActionButtonState> {
     if (!network) {
@@ -211,6 +213,21 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Insufficient balance'
       };
     }
+
+    if (!receiver) {
+      return {
+        type: 'error',
+        text: 'Enter receiver address'
+      };
+    }
+
+    if (compareAddresses(user.address, receiver)) {
+      return {
+        type: 'error',
+        text: 'Recipient address must be different'
+      };
+    }
+
     return {
       type: 'parent',
       text: 'Unshield'
@@ -224,7 +241,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
       visibleValue: string;
       actualValue: BigNumber;
     } | null,
-    receiver: string,
+    _receiver: string,
     tradeError: ErrorInterface,
     railgunWallet: { evmWalletAddress: string },
     user: UserInterface,
@@ -254,12 +271,6 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
       return {
         type: 'error',
         text: 'Enter amount'
-      };
-    }
-    if (!receiver) {
-      return {
-        type: 'error',
-        text: 'Enter receiver address'
       };
     }
     // const isAddressCorrect = await Web3Pure.getInstance(network).isAddressCorrect(receiver);

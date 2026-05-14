@@ -1,0 +1,24 @@
+@use 'src/scss/core' as *;
+
+.preset-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+
+  button {
+    flex: 1;
+    font-size: clamp(12px, 1.2vw + 8px, 15px);
+    height: 50px;
+    border-radius: 8px;
+
+    ::ng-deep .t-wrapper {
+        padding: 0;
+      }
+  }
+}
+
+.active{
+    ::ng-deep .t-wrapper {
+        background: var(--tui-primary)
+      }
+}

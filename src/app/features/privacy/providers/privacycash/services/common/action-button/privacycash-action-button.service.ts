@@ -178,7 +178,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (compareAddresses(userAddr, receiver)) {
       return {
         type: 'error',
-        text: 'Please enter a different wallet as the receiver.'
+        text: 'Recipient address must be different'
       };
     }
     const isAddressCorrect = await Web3Pure.getInstance(transferAsset.blockchain).isAddressCorrect(

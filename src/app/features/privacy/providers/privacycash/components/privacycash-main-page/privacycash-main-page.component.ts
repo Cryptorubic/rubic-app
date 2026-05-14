@@ -53,10 +53,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
         this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.PRIVACY_CASH)
       ),
       map(([signature, alreadyMadeShielding]) => {
-        if (isNil(signature) || !signature.length) {
-          return this.pages.filter(page => page.type !== 'hide');
-        }
-        if (!alreadyMadeShielding) {
+        if (isNil(signature) || !signature.length || !alreadyMadeShielding) {
           return this.pages.filter(page => page.type !== 'hide');
         }
       })

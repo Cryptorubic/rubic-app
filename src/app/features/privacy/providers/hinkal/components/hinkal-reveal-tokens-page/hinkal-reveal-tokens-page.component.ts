@@ -15,6 +15,8 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
+import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
+import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
 
 @Component({
   selector: 'app-hinkal-reveal-tokens-page',
@@ -50,7 +52,8 @@ export class HinkalRevealTokensPageComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly revealWindowService: RevealWindowService
+    private readonly revealWindowService: RevealWindowService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {}
 
   ngOnInit(): void {
@@ -128,7 +131,7 @@ export class HinkalRevealTokensPageComponent {
 
     const maxAmountWithoutFee = token.amount.minus(Token.fromWei(tokenFee, token.decimals));
 
-    const finalMaxAmount = maxAmountWithoutFee.lte(0) ? new BigNumber(0) : maxAmountWithoutFee;
+    const finalMaxAmount = maxAmountWithoutFee.lte(0) ? token.amount : maxAmountWithoutFee;
 
     this.revealWindowService.setRevealAmount({
       visibleValue: finalMaxAmount.toFixed(),
@@ -138,14 +141,23 @@ export class HinkalRevealTokensPageComponent {
 
   public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const fromToken = token as TokenAmount<EvmBlockchainName>;
+
+      const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
+        fromToken,
+        HINKAL_PRIVATE_OPERATION.UNSHIELD
+      );
+
       const steps = this.hinkalFacadeService.prepareWithdrawSteps(
-        token as TokenAmount<EvmBlockchainName>,
+        fromToken,
+        () => this.gasTokenService.selectedGasToken,
         this.receiverCtrl.value
       );
 
       const preview$ = openPreview({
         steps,
-        warnings: HINKAL_WARNINGS
+        warnings: HINKAL_WARNINGS,
+        gasTokens
       });
       await firstValueFrom(preview$);
     } finally {

@@ -16,6 +16,8 @@ export interface PrivateProviderInfoUI {
   executionTimeRate: number;
   feeInfo: { feeSize: string; feeRate: number };
   executionSteps: { steps: number; hint: string };
+  disconnectionRate: number;
+  disconnectionSteps: { steps: number; hint: string };
 }
 
 export interface PrivateProviderRawInfo {
@@ -27,7 +29,8 @@ export interface PrivateProviderRawInfo {
   url: PrivateProviderUrl;
   warning?: { message: string; hint: string };
   executionTimeRate: number;
-  //getMinAmountUsd: (tab: PrivateModeTab) => number;
+  disconnectionRate: number;
+  disconnectionSteps: { steps: number; hint: string };
   getExecutionStepsInfo: (tab: PrivateModeTab) => { steps: number; hint: string };
   getFeeInfo: (
     tab: PrivateModeTab,

@@ -1,8 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonService } from '../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { combineLatest, filter, Observable, switchMap } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, Observable, switchMap } from 'rxjs';
 import { PrivateActionButtonState } from '../../shared-privacy-providers/models/private-action-button-state';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, compareAddresses } from '@cryptorubic/core';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  compareAddresses,
+  EvmBlockchainName,
+  Token
+} from '@cryptorubic/core';
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
@@ -12,12 +19,15 @@ import { isValidPrivateAddress } from '@hinkal/common';
 import { HinkalInstanceService } from './hinkal-sdk/hinkal-instance.service';
 import { HinkalFacadeService } from './hinkal-sdk/hinkal-facade.service';
 import { HINKAL_SUPPORTED_WALLETS } from '../constants/hinkal-supported-wallets';
+import { HinkalBalanceService } from './hinkal-sdk/hinkal-balance.service';
 
 @Injectable()
 export class HinkalActionButtonService extends PrivateActionButtonService {
   private readonly hinkalFacadeService = inject(HinkalFacadeService);
 
   private readonly hinkalInstanceService = inject(HinkalInstanceService);
+
+  private readonly hinkalBalanceService = inject(HinkalBalanceService);
 
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
@@ -160,6 +170,41 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       };
     }
 
+    if (currPage.type !== 'hide' && currPage.type !== 'swap') {
+      const privateBalances = await firstValueFrom(this.hinkalBalanceService.balances$);
+
+      const balances = privateBalances[fromAsset.blockchain as EvmBlockchainName];
+
+      const estimatedFees = this.hinkalFacadeService.getEstimatedFeesByChain(fromAsset.blockchain);
+
+      const isTokenWithEnoughBalanceExist = balances.some(tokenBalance => {
+        const estimatedFee = estimatedFees
+          .filter(token => !compareAddresses(token.feeToken, fromAsset.address))
+          .find(({ feeToken }) => compareAddresses(feeToken, tokenBalance.tokenAddress));
+
+        if (!estimatedFee) return false;
+
+        return tokenBalance.amount.minus(estimatedFee.fee).gte(0);
+      });
+
+      if (!isTokenWithEnoughBalanceExist) {
+        const estimatedFee = estimatedFees.find(({ feeToken }) =>
+          compareAddresses(feeToken, fromAsset.address)
+        );
+
+        if (
+          Token.fromWei(estimatedFee.fee, fromAsset.decimals)
+            .plus(assetAmount.visibleValue)
+            .gt(fromAsset.amount)
+        ) {
+          return {
+            type: 'error',
+            text: 'Insufficient balance for fees'
+          };
+        }
+      }
+    }
+
     if (currPage.type !== 'hide' && !receiver) {
       return {
         type: 'error',
@@ -170,7 +215,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
     if (compareAddresses(userAddr, receiver)) {
       return {
         type: 'error',
-        text: 'Please enter a different wallet as the receiver.'
+        text: 'Recipient address must be different'
       };
     }
 

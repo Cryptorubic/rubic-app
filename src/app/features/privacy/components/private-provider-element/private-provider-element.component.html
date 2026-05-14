@@ -54,42 +54,25 @@
       ></div>
     </div>
 
-    <div class="steps" [tuiHint]="providerInfo.executionSteps.hint">
+    <div class="steps" [tuiHint]="providerInfo.disconnectionSteps.hint">
       <div
-        [inlineSVG]="
-          'assets/images/private-swaps/common/action-step-' +
-          providerInfo.executionSteps.steps +
-          '.svg'
-        "
+        [inlineSVG]="'assets/images/private-swaps/common/disconnection-steps.svg'"
         width="9"
         height="16"
       ></div>
     </div>
 
-    <!-- <div
-      *ngIf="providerInfo.minAmountUsd > 0"
-      class="min-amount"
-      [tuiHint]="
-        'Minimum amount required for a private swap. It may vary depending on the selected token.'
-      "
-    >
-      <b>min ${{ providerInfo.minAmountUsd }}</b>
-    </div> -->
-
     <div
       class="security-percent"
-      [tuiHint]="
-        'Privacy metric based on data from the Web3Privacy Explorer:
-https://explorer.web3privacy.info/'
-      "
+      [tuiHint]="'Indicates how effectively the sender and recipient are unlinked.'"
       (mouseenter)="handleMetricTooltipHover('privacy_score')"
     >
-      <img src="assets/images/private-swaps/common/lock.svg" width="15" height="15" />
+      <img src="assets/images/private-swaps/common/disconnection-rate.svg" width="15" height="21" />
       <div class="stars">
         <div
           *ngFor="let count of starsCount"
           inlineSVG="assets/images/private-swaps/common/star.svg"
-          [class.active]="providerInfo.security - count > -1"
+          [class.active]="providerInfo.disconnectionRate - count > -1"
           [style.--security-offset]="getSecurityOffset(count) + '%'"
           width="9"
           height="9"

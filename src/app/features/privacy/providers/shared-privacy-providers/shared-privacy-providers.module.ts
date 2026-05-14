@@ -70,6 +70,8 @@ import { PrivateQueryParamsService } from './services/query-params/private-query
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { MobileStubComponent } from './components/mobile-stub/mobile-stub.component';
 import { RouterModule } from '@angular/router';
+import { PrivateGasTokenService } from './services/gas-token-service/gas-token.service';
+import { PresetAmountListComponent } from './components/preset-amount-list/preset-amount-list.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +93,8 @@ import { RouterModule } from '@angular/router';
     LoginWindowComponent,
     DepositStatusInfoComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PresetAmountListComponent
   ],
   imports: [
     CommonModule,
@@ -161,7 +164,8 @@ import { RouterModule } from '@angular/router';
     RevealWindowService,
     PrivateRefundWindowService,
     PrivateQueryParamsService,
-    PrivateStatisticsService
+    PrivateStatisticsService,
+    PrivateGasTokenService
   ]
 })
 export class SharedPrivacyProvidersModule {}

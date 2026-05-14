@@ -13,6 +13,7 @@ import { HinkalUtils } from '../../utils/hinkal-utils';
 import { ContractTransaction, ethers, Wallet } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
+import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerSwapService {
   private readonly hinkal: Hinkal<unknown>;
@@ -55,6 +56,7 @@ export class HinkalWorkerSwapService {
 
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     receiver?: string
   ): Promise<string> {
     try {
@@ -65,7 +67,8 @@ export class HinkalWorkerSwapService {
         [withdrawToken],
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
-        false
+        false,
+        feeToken
       )) as ethers.TransactionResponse;
 
       console.log(resp);
@@ -78,6 +81,7 @@ export class HinkalWorkerSwapService {
 
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     recipientStealthAddress: string
   ): Promise<string> {
     try {
@@ -87,7 +91,8 @@ export class HinkalWorkerSwapService {
       const hash = await hinkalInstance.transfer(
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
-        recipientStealthAddress
+        recipientStealthAddress,
+        feeToken
       );
 
       return hash;
@@ -99,8 +104,9 @@ export class HinkalWorkerSwapService {
 
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
-    toToken: PureTokenAmount<EvmBlockchainName>
-  ): Promise<string> {
+    toToken: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string
+  ): Promise<string | BigNumber> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');
@@ -177,7 +183,8 @@ export class HinkalWorkerSwapService {
         [false, true],
         ops,
         [fromTokenChanges, toTokenChanges],
-        subAccount
+        subAccount,
+        feeToken
       );
 
       return hash;
