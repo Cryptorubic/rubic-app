@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { WalletsModalModule } from '@core/wallets-modal/wallets-modal.module';
-import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
+import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
 import { SharedModule } from '@shared/shared.module';
 import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-interceptor';

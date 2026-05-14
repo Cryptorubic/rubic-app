@@ -5,25 +5,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
-// import { BrowsernimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDialogModule,
-  TuiDropdownModule,
-  TuiGroupModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule
+  TuiButton,
+  TuiDataList,
+  TuiDialogs,
+  TuiDropdown,
+  TuiGroup,
+  TuiHint,
+  TuiLoader
 } from '@taiga-ui/core';
-import {
-  TuiAccordionModule,
-  TuiBadgeModule,
-  TuiCarouselModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
-import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
+import { TuiAccordion, TuiBadge, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -34,7 +27,6 @@ import { BannerDirective } from './components/header/directives/banner.directive
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { LogoComponent } from './components/header/components/logo/logo.component';
@@ -71,24 +63,23 @@ import { BannersService } from './services/banners.service';
     A11yModule,
     OverlayModule,
     InlineSVGModule.forRoot(),
-    TuiDataListModule,
-    TuiHintModule,
-    TuiHostedDropdownModule,
-    TuiGroupModule,
-    TuiBadgeModule,
-    PolymorpheusModule,
-    TuiDropdownModule,
-    TuiToggleModule,
+    TuiDataList,
+    TuiHint,
+    TuiGroup,
+    TuiBadge,
+    PolymorpheusOutlet,
+    TuiDropdown,
+    TuiSwitch,
     FormsModule,
-    TuiLoaderModule,
+    TuiLoader,
     ModalsModule,
     ClipboardModule,
-    TuiAccordionModule,
-    TuiDialogModule,
-    TuiButtonModule,
-    TuiCarouselModule
+    TuiAccordion,
+    TuiDialogs,
+    TuiButton,
+    TuiCarousel
   ],
-  providers: [TuiDestroyService, BannersService],
+  providers: [BannersService],
   exports: [HeaderComponent, UserProfileComponent]
 })
 export class HeaderModule {}

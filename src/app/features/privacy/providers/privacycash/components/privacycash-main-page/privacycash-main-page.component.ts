@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Self, inject } from '@angular/core';
-import { Observable, combineLatestWith, filter, first, map, takeUntil } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  DestroyRef
+} from '@angular/core';
+import { Observable, combineLatestWith, filter, first, map } from 'rxjs';
 import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EphemeralWalletTokensService } from '../../services/common/token-facades/ephemeral-wallet-tokens.service';
 import { PrivacycashSignatureService } from '../../services/privacy-cash-signature.service';
 import { isNil } from '@app/shared/utils/utils';
@@ -17,18 +23,18 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { List } from 'immutable';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-privacy-cash-view',
   templateUrl: './privacycash-main-page.component.html',
   styleUrls: ['./privacycash-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    TuiDestroyService,
-    { provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }
-  ]
+  providers: [{ provide: PrivateActionButtonService, useClass: PrivacycashActionButtonService }]
 })
 export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
+  private readonly destroyRef = inject(DestroyRef);
+
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
   private readonly ephemeralWalletTokensService = inject(EphemeralWalletTokensService);
@@ -65,10 +71,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
 
   public readonly privateBalanceLoading$ = this.privacycashTokensService.loading$;
 
-  constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privatePageTypeService: PrivatePageTypeService
-  ) {
+  constructor(private readonly privatePageTypeService: PrivatePageTypeService) {
     this.privatePageTypeService.activePage =
       this.pages.find(page => page.type === 'login') || this.pages[0];
   }
@@ -83,7 +86,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
     this.privacycashTokensService.workerOutMsg$(this.destroy$).subscribe();
 
     this.walletConnectorService.addressChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(userAddr => {
         if (!userAddr) {
           this.privacycashSignatureService.removeSignature();
@@ -92,7 +95,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
       });
 
     this.privacycashSignatureService.signature$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(signature => {
         if (!!signature && signature.length) {
           this.privacycashTokensService.initWorker();
@@ -109,7 +112,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
       .pipe(
         combineLatestWith(this.privacycashSignatureService.signature$),
         filter(([_, signature]) => !!signature && signature.length > 0),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this.privacycashTokensService.loadBalances();
@@ -119,7 +122,7 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
       .pipe(
         combineLatestWith(this.privacycashSignatureService.signature$),
         filter(([_, signature]) => !!signature && signature.length > 0),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this.ephemeralWalletTokensService.loadBalances();

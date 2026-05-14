@@ -1,6 +1,6 @@
 /* eslint-disable rxjs/no-exposed-subjects */
 import { FormControl } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { PrivateEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { Token } from '@app/shared/models/tokens/token';
@@ -16,14 +16,12 @@ import {
   startWith,
   Subject,
   switchMap,
-  takeUntil,
   tap,
   throwError,
   timer
 } from 'rxjs';
 import { ClearswapErrorService } from '../../services/clearswap-error.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
@@ -38,15 +36,17 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
   templateUrl: './clearswap-transfer-tokens-page.component.html',
   styleUrls: ['./clearswap-transfer-tokens-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClearswapTransferTokensPageComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
   public readonly receiverCtrl = new FormControl<string>('', {
@@ -67,15 +67,14 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
     private readonly errorService: ErrorsService,
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly tokensBalanceService: TokensBalanceService,
-    private readonly privateTransferWindowService: PrivateTransferWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly privateTransferWindowService: PrivateTransferWindowService
   ) {}
 
   ngOnInit(): void {
     this.nextTransfer$
       .pipe(
         switchMap(event => this.transfer(event)),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
@@ -85,7 +84,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }

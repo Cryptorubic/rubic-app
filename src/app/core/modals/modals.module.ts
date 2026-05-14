@@ -4,13 +4,13 @@ import { modalServiceFactory } from './modal-service-factory';
 import { WindowWidthService } from '../services/widnow-width-service/window-width.service';
 import { AbstractModalService } from './services/abstract-modal.service';
 import { MobileNativeModalComponent } from './components/mobile-native-modal/mobile-native-modal.component';
-import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiSwipeModule } from '@taiga-ui/cdk';
+import { TuiSwipe } from '@taiga-ui/cdk';
 import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, PolymorpheusModule, InlineSVGModule, TuiSwipeModule],
+  imports: [CommonModule, SharedModule, PolymorpheusOutlet, InlineSVGModule, TuiSwipe],
   declarations: [MobileNativeModalComponent],
   providers: [
     {

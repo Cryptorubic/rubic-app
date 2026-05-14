@@ -8,9 +8,10 @@ import {
   Input,
   Output,
   QueryList,
-  Self,
   TemplateRef,
-  ViewChildren
+  ViewChildren,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -22,23 +23,23 @@ import {
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { KeyValue } from '@angular/common';
 import { Router } from '@angular/router';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@app/shared/constants/common/links';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-rubic-menu',
   templateUrl: './rubic-menu.component.html',
   styleUrls: ['./rubic-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicMenuComponent implements AfterViewInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input() public swapActive: boolean;
 
   @Input() public crossChainActive: boolean;
@@ -72,13 +73,12 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly router: Router,
     @Inject(WINDOW) private readonly window: Window,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService
   ) {}
 
   public ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(blockchainName => {
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         this.cdr.markForCheck();

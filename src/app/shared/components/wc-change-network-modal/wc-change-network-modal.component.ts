@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { takeUntil, timer } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
@@ -10,8 +9,7 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   selector: 'polymorpheus-wc-change-network-modal',
   templateUrl: './wc-change-network-modal.component.html',
   styleUrls: ['./wc-change-network-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WcChangeNetworkModalComponent {
   public readonly oldNetwork: string;

@@ -7,27 +7,28 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
-  TemplateRef
+  TemplateRef,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-asset-selector',
   templateUrl: './asset-selector.component.html',
   styleUrls: ['./asset-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssetSelectorComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input() isDisabled?: boolean = false;
 
   @Input({ required: true }) selectorType: 'from' | 'to';
@@ -56,7 +57,6 @@ export class AssetSelectorComponent implements OnInit {
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -66,7 +66,7 @@ export class AssetSelectorComponent implements OnInit {
 
   private subOnHideSelectorQueryParamsChange(): void {
     this.queryParamsService.tokensSelectionDisabled$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
         if (this.selectorType === 'from') {
           this.isQueryDisabled = hideSelectionFrom;

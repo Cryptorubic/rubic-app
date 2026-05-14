@@ -1,7 +1,7 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';

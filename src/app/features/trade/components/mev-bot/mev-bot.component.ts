@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, DestroyRef, inject } from '@angular/core';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import {
   CcrSettingsFormControls,
@@ -6,21 +6,22 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
 import { HeaderStore } from '@core/header/services/header.store';
-import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, pairwise, startWith, switchMap } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';
 import { BehaviorSubject } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-mev-bot',
   templateUrl: './mev-bot.component.html',
   styleUrls: ['./mev-bot.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MevBotComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   private readonly _routingForm$ = new BehaviorSubject<
     FormGroup<ItSettingsFormControls | CcrSettingsFormControls>
   >(this.settingsService.crossChainRouting);
@@ -58,7 +59,6 @@ export class MevBotComponent {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore
   ) {
@@ -72,7 +72,7 @@ export class MevBotComponent {
         startWith(this.settingsService.crossChainRouting.value),
         distinctUntilChanged(),
         pairwise(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(([prev, curr]) => {
         if (prev.useMevBotProtection !== curr.useMevBotProtection && curr.useMevBotProtection) {

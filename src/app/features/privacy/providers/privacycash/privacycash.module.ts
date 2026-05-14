@@ -15,7 +15,6 @@ import { PrivacycashApiService } from './services/privacy-cash-api.service';
 import { PrivacycashPublicAssetsService } from './services/common/assets-services/privacycash-public-assets.service';
 import { PrivacycashPrivateAssetsService } from './services/common/assets-services/privacycash-private-assets.service';
 import { PrivacycashSignatureWindowComponent } from './components/privacycash-signature-window/privacycash-signature-window.component';
-import { TuiButtonModule } from '@taiga-ui/core';
 import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashTokensService } from './services/common/token-facades/privacycash-tokens.service';
 import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
@@ -40,7 +39,7 @@ import { PrivacycashPrivateUnshieldTokensFacadeService } from './services/common
     CommonModule,
     PrivacyCashRoutingModule,
     SharedModule,
-    TuiButtonModule,
+    TuiButton,
     SharedPrivacyProvidersModule
   ],
   providers: [

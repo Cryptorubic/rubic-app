@@ -4,24 +4,26 @@ import {
   EventEmitter,
   Input,
   Output,
-  Self,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { debounceTime } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-tokens-bar',
   templateUrl: './search-bar-tokens.component.html',
   styleUrls: ['./search-bar-tokens.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchBarTokensComponent implements OnChanges {
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input() expandableField: boolean = false;
 
   private _searchQuery: string = '';
@@ -58,10 +60,7 @@ export class SearchBarTokensComponent implements OnChanges {
    */
   private isTyping = false;
 
-  constructor(
-    private readonly headerStore: HeaderStore,
-    @Self() private readonly destroy$: TuiDestroyService
-  ) {
+  constructor(private readonly headerStore: HeaderStore) {
     this.subscribeToQuery();
   }
 
@@ -100,7 +99,7 @@ export class SearchBarTokensComponent implements OnChanges {
   }
 
   private subscribeToQuery(): void {
-    this.query$.pipe(debounceTime(100), takeUntil(this.destroy$)).subscribe(value => {
+    this.query$.pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(value => {
       // Typing finished, allow external sync again
       this.isTyping = false;
       this.queryChange.emit(value);

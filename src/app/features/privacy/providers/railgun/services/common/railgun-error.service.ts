@@ -1,13 +1,15 @@
-import { Injectable, Self } from '@angular/core';
+import { Injectable, DestroyRef, inject } from '@angular/core';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { ErrorInterface } from '@cryptorubic/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, combineLatest, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class RailgunErrorService {
+  private readonly destroyRef = inject(DestroyRef);
+
   private readonly _tradeError$ = new BehaviorSubject<ErrorInterface | null>(null);
 
   public readonly tradeError$ = this._tradeError$.asObservable();
@@ -15,8 +17,7 @@ export class RailgunErrorService {
   constructor(
     protected readonly privatePageTypeService: PrivatePageTypeService,
     protected readonly privateTransferWindowService: PrivateTransferWindowService,
-    protected readonly privateSwapWindowService: PrivateSwapWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    protected readonly privateSwapWindowService: PrivateSwapWindowService
   ) {
     combineLatest([
       this.privatePageTypeService.activePage$,
@@ -28,7 +29,7 @@ export class RailgunErrorService {
         tap(() => {
           this._tradeError$.next(null);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }

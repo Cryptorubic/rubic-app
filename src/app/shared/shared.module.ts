@@ -6,29 +6,14 @@ import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiBadgeModule,
-  TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
   TuiInputNumberModule,
   TuiProgressModule,
-  TuiTabsModule,
   TuiTagModule,
-  TuiToggleModule
+  TuiSwitch
 } from '@taiga-ui/kit';
-import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDropdownModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiScrollbarModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-  TuiTooltipModule
-} from '@taiga-ui/core';
+import { TuiTooltipModule } from '@taiga-ui/core';
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
@@ -156,33 +141,31 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     RouterModule,
     ScrollingModule,
     InlineSVGModule.forRoot(),
-    TuiSvgModule,
     TuiTooltipModule,
-    TuiHintModule,
+    ...TuiHint,
     TuiInputModule,
-    TuiButtonModule,
-    TuiDataListModule,
+    TuiButton,
+    TuiDataList,
     TuiActiveZoneModule,
-    TuiDropdownModule,
-    TuiHostedDropdownModule,
-    TuiToggleModule,
+    ...TuiDropdown,
+    ...TuiDropdown,
+    TuiSwitch,
     TuiProgressModule,
-    TuiSvgModule,
-    TuiHintModule,
-    TuiToggleModule,
-    TuiTabsModule,
+    ...TuiHint,
+    TuiSwitch,
+    ...TuiTabs,
     TuiInputCountModule,
-    TuiDataListWrapperModule,
-    TuiLoaderModule,
-    TuiBadgeModule,
-    TuiHintModule,
+    TuiDataListWrapper,
+    TuiLoader,
+    TuiBadge,
+    ...TuiHint,
     TuiTagModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule,
+    TuiScrollbar,
     TuiHoveredModule,
     NgOptimizedImage,
     TuiInputNumberModule,
-    TuiNotificationModule
+    TuiNotification
   ],
   exports: [
     BigNumberFormatPipe,

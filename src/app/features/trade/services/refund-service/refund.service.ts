@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, DestroyRef, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
 import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class RefundService {
+  private readonly destroyRef = inject(DestroyRef);
+
   public readonly refundAddressCtrl = new FormControl<string>('', {
     validators: [Validators.required],
     asyncValidators: []
@@ -22,11 +24,11 @@ export class RefundService {
     return this.refundAddressCtrl.value;
   }
 
-  constructor(private readonly destroy$: TuiDestroyService) {
+  constructor() {
     this.refundAddressCtrl.statusChanges
       .pipe(
         map(status => status === 'VALID'),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(isValid => {
         this._isValidRefundAddress$.next(isValid);
