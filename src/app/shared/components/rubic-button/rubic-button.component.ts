@@ -8,7 +8,6 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
@@ -25,7 +24,8 @@ import { TuiDestroyService } from '../../../core/services/destroy/destroy.servic
 export class RubicButtonComponent implements OnInit {
   @HostBinding('class') @Input('class') classList: string;
 
-  @Input() appearance: TuiAppearance | string = 'primary';
+  @Input() appearance: 'primary' | 'secondary' | 'warning' | 'positive' | 'negative' | 'outline' =
+    'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
 

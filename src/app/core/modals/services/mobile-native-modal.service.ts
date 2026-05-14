@@ -1,12 +1,13 @@
-import { Injectable, Injector, Type, Component } from '@angular/core';
+import { Injectable, Injector, Type } from '@angular/core';
 import { TuiPopoverService } from '@taiga-ui/cdk';
-import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { TUI_DIALOGS } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
 import { MobileNativeModalComponent } from '../components/mobile-native-modal/mobile-native-modal.component';
 import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+  useFactory: () => new MobileNativeModalService()
 })
 export class MobileNativeModalService extends TuiPopoverService<IMobileNativeOptions> {
   private readonly _forceClose$ = new Subject<void>();
@@ -17,12 +18,9 @@ export class MobileNativeModalService extends TuiPopoverService<IMobileNativeOpt
 
   public readonly nextModal$ = this._nextModal$.asObservable();
 
-  protected defaultOptions: IMobileNativeOptions = {
-    forceClose$: this.forceClose$,
-    nextModal$: this.nextModal$
-  } as const;
-
-  readonly component = new PolymorpheusComponent(MobileNativeModalComponent);
+  constructor() {
+    super(TUI_DIALOGS, MobileNativeModalComponent);
+  }
 
   /**
    * Force close opened modal dialog.
@@ -37,11 +35,7 @@ export class MobileNativeModalService extends TuiPopoverService<IMobileNativeOpt
    * @param data Next Modal data
    * @param injector Next Modal injector
    */
-  public openNextModal(
-    component: Type<Component & object>,
-    data: object,
-    injector?: Injector
-  ): void {
+  public openNextModal(component: Type<object>, data: object, injector?: Injector): void {
     this._nextModal$.next({
       component,
       ...data,

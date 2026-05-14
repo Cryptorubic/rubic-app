@@ -182,6 +182,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
+    "libphonenumber-js": "^1.13.1",
     "lint-staged": "^10.5.4",
     "lodash": "^4.17.21",
     "ngx-unused-css": "^3.0.0",

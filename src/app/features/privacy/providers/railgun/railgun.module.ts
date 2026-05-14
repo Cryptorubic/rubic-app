@@ -29,7 +29,6 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
 import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
 import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
-import { TuiDestroyService } from '@app/shared/utils/destroy/tui-destroy.service';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -37,6 +36,7 @@ import { RailgunWalletLoadingComponent } from './components/railgun-wallet-loadi
 import { RailgunTokensBootstrapService } from '@features/privacy/providers/railgun/services/common/railgun-tokens-bootstrap.service';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
+import { TuiDestroyService } from '@app/core/services/destroy/destroy.service';
 
 @NgModule({
   declarations: [

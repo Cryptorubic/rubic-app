@@ -40,14 +40,23 @@ export class SettingsItComponent {
     }
   }
 
-  public onSlippageToleranceChange(slippageString: number): void {
+  public onSlippageToleranceChange(slippage: number): void {
     const currentSlippage = this.instantTradeForm.controls.slippageTolerance.value;
-    const newSlippage = Number(slippageString) || this.defaultSlippageTolerance;
+    const newSlippage = Number(slippage) || this.defaultSlippageTolerance;
     if (currentSlippage !== newSlippage) {
       this.instantTradeForm.patchValue({
         autoSlippageTolerance: false,
         slippageTolerance: newSlippage
       });
+    }
+  }
+
+  public onDeadlineChange(deadline: number): void {
+    const currentDeadline = this.instantTradeForm.controls.deadline.value;
+    const defaultDeadline = this.settingsService.defaultItSettings.deadline;
+    const newDeadline = Number(deadline) || defaultDeadline;
+    if (currentDeadline !== newDeadline) {
+      this.instantTradeForm.patchValue({ deadline: newDeadline });
     }
   }
 }

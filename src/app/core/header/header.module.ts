@@ -10,7 +10,6 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiButton, TuiDataList, TuiDropdown, TuiGroup, TuiHint, TuiLoader } from '@taiga-ui/core';
 import { TuiAccordion, TuiBadge, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
-import { TuiDestroyService } from '@app/shared/utils/destroy/tui-destroy.service';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -30,6 +29,7 @@ import { ProfileMenuTogglerComponent } from '@core/header/components/header/comp
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
 import { BannersService } from './services/banners.service';
+import { TuiDestroyService } from '../services/destroy/destroy.service';
 
 @NgModule({
   declarations: [

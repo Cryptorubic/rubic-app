@@ -1,4 +1,4 @@
-<div class="settings">
+<div *ngLet="formValue$ | async as formValue" class="settings">
   <form [formGroup]="instantTradeForm" class="settings__form">
     <div class="settings__row">
       <div
@@ -10,7 +10,7 @@
       <label>{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
     </div>
 
-    <div class="settings__row" *ngLet="formValue$ | async as formValue">
+    <div class="settings__row">
       <button
         tuiButton
         [appearance]="formValue.autoSlippageTolerance ? 'primary' : 'outline'"
@@ -74,16 +74,15 @@
     </div>
 
     <div class="settings__row">
-      <tui-input-number
-        id="deadline"
-        class="settings__deadline-input"
-        formControlName="deadline"
-        decimal="never"
-        [max]="240"
-        [min]="1"
-        tuiTextfieldSize="s"
-        >20
-      </tui-input-number>
+      <div class="settings__deadline-input">
+        <app-input-number
+          [min]="240"
+          [max]="1"
+          [value]="formValue.deadline"
+          [name]="'deadline'"
+          (inputChanged)="onDeadlineChange($event)"
+        ></app-input-number>
+      </div>
       <span> {{ 'common.minutes' | translate }}</span>
     </div>
 
@@ -96,7 +95,9 @@
       ></div>
       <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
 
-      <input type="checkbox" tuiSwitch
+      <input
+        type="checkbox"
+        tuiSwitch
         class="settings__toggle"
         id="disableMultihops"
         formControlName="disableMultihops"
@@ -112,7 +113,9 @@
       ></div>
       <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
 
-      <input type="checkbox" tuiSwitch
+      <input
+        type="checkbox"
+        tuiSwitch
         class="settings__toggle"
         id="autoRefresh"
         formControlName="autoRefresh"
@@ -127,7 +130,9 @@
         tuiHintAppearance="onDark"
       ></div>
       <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
-      <input type="checkbox" tuiSwitch
+      <input
+        type="checkbox"
+        tuiSwitch
         class="settings__toggle"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"

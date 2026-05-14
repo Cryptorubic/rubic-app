@@ -7,27 +7,12 @@ import { SwapFormQueryService } from '@features/trade/services/swap-form-query/s
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-import {
-  TuiButton,
-  TuiExpand,
-  TuiHint,
-  TuiDropdown,
-  TuiLoader,
-  TuiNotification,
-  TuiScrollbar,
-  TuiTextfield,
-  TuiIcon
-} from '@taiga-ui/core';
-import { TuiCarousel, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
-import { InlineSVGModule } from 'ng-inline-svg-2';
-import { ClipboardModule } from '@angular/cdk/clipboard';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
-import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
@@ -37,33 +22,12 @@ import { RefundService } from './services/refund-service/refund.service';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
+import { TuiDestroyService } from '@app/core/services/destroy/destroy.service';
 
 @NgModule({
   declarations: [],
   exports: [],
-  imports: [
-    TradeRoutingModule,
-    CommonModule,
-    SharedModule,
-    ...TuiExpand,
-    TuiScrollbar,
-    InlineSVGModule,
-    TuiButton,
-    ClipboardModule,
-    ReactiveFormsModule,
-    ...TuiHint,
-    FormsModule,
-    ...TuiTextfield,
-    ...TuiInputNumber,
-    TuiSwitch,
-    ...TuiDropdown,
-    TuiLoader,
-    AssetsSelectorModule,
-    TuiNotification,
-    ...TuiCarousel,
-    TuiIcon,
-    SharedTradeModule
-  ],
+  imports: [TradeRoutingModule, CommonModule, SharedModule, SharedTradeModule],
   providers: [
     SwapsStateService,
     SwapFormQueryService,
@@ -83,7 +47,8 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,
-    SolanaGaslessStateService
+    SolanaGaslessStateService,
+    TuiDestroyService
   ]
 })
 export class TradeModule {}
