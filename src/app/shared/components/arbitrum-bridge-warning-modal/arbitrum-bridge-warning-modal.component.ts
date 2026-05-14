@@ -3,6 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-arbitrum-bridge-warning-modal',
   templateUrl: './arbitrum-bridge-warning-modal.component.html',
   styleUrls: ['./arbitrum-bridge-warning-modal.component.scss'],

@@ -39,6 +39,7 @@ export function mnemonicValidator(): ValidatorFn {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-wallet-import',
   templateUrl: './railgun-wallet-import.component.html',
   styleUrls: ['./railgun-wallet-import.component.scss'],

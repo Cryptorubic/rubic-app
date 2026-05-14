@@ -1,12 +1,13 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { takeUntil, timer } from 'rxjs';
+import { timer } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-rate-changed-modal',
   templateUrl: './rate-changed-modal.component.html',
   styleUrls: ['./rate-changed-modal.component.scss'],

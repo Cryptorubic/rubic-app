@@ -1,11 +1,18 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { HINKAL_PAGES } from '../../constants/hinkal-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
 import { HinkalInstanceService } from '../../services/hinkal-sdk/hinkal-instance.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HinkalActionButtonService } from '../../services/hinkal-action-button.service';
@@ -19,6 +26,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hide-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-view',
   templateUrl: './hinkal-view.component.html',
   styleUrls: ['./hinkal-view.component.scss'],
@@ -30,7 +38,7 @@ import { HinkalHideFacadeService } from '../../services/token-facades/hinkal-hid
     }
   ]
 })
-export class HinkalViewComponent {
+export class HinkalViewComponent implements OnInit, OnDestroy {
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly activeChain$ = this.hinkalFacadeService.activeChain$;

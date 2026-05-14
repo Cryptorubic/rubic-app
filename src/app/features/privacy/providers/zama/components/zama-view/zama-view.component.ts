@@ -1,11 +1,18 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ZamaActionButtonService } from '../../services/zama-action-button.service';
@@ -17,6 +24,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-view',
   templateUrl: './zama-view.component.html',
   styleUrls: ['./zama-view.component.scss'],
@@ -28,7 +36,7 @@ import { PrivateLocalStorageService } from '@app/features/privacy/services/priva
     }
   ]
 })
-export class ZamaViewComponent {
+export class ZamaViewComponent implements OnInit, OnDestroy {
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = ZAMA_PAGES;

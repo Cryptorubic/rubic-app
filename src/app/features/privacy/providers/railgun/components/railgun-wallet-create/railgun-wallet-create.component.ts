@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 type ContextParams = TuiDialogContext<{ password: string; mnemonic: string }>;
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-wallet-create',
   templateUrl: './railgun-wallet-create.component.html',
   styleUrls: ['./railgun-wallet-create.component.scss'],

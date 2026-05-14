@@ -38,6 +38,7 @@ module.exports = {
         '@angular-eslint/no-output-on-prefix': 'off',
         '@typescript-eslint/no-inferrable-types': 'off',
         '@angular-eslint/no-input-rename': 'off',
+        '@angular-eslint/prefer-standalone': 'off',
         'class-methods-use-this': 'off',
         eqeqeq: ['error', 'always', { null: 'ignore' }],
         'no-magic-numbers': 'off',

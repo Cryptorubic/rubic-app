@@ -8,11 +8,10 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   DestroyRef
 } from '@angular/core';
 import { PrivateEvent } from '../../models/private-event';
-import { BehaviorSubject, combineLatestWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -26,6 +25,7 @@ import { FormControl } from '@angular/forms';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 
 @Component({
+  standalone: false,
   selector: 'app-transfer-tokens-window',
   templateUrl: './transfer-tokens-window.component.html',
   styleUrls: ['./transfer-tokens-window.component.scss'],

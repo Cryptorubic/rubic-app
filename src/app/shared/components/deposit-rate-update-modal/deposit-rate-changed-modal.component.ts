@@ -5,6 +5,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { CrossChainTradeType } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-rate-update-modal',
   templateUrl: './deposit-rate-changed-modal.component.html',
   styleUrls: ['./deposit-rate-changed-modal.component.scss'],

@@ -8,6 +8,7 @@ import { HintAppearance, HintDirection, SwapDataElementConfig } from './model';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-data-element',
   templateUrl: './swap-data-element.component.html',
   styleUrls: ['./swap-data-element.component.scss'],

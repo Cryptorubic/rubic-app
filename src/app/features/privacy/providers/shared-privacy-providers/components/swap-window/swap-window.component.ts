@@ -7,7 +7,6 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   inject,
   DestroyRef
 } from '@angular/core';
@@ -24,7 +23,6 @@ import {
   Observable,
   startWith,
   switchMap,
-  takeUntil,
   tap
 } from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -46,6 +44,7 @@ import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/featu
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-window',
   templateUrl: './swap-window.component.html',
   styleUrls: ['./swap-window.component.scss'],

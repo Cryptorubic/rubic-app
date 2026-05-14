@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WA_WINDOW } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
@@ -8,7 +7,6 @@ import {
   Inject,
   NgZone,
   PLATFORM_ID,
-  Self,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -25,6 +23,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
+  standalone: false,
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],

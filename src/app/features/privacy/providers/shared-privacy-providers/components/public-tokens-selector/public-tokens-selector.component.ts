@@ -4,6 +4,7 @@ import { Asset } from '@features/trade/models/asset';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 
 @Component({
+  standalone: false,
   selector: 'app-public-tokens-selector',
   templateUrl: './public-tokens-selector.component.html',
   styleUrls: ['./public-tokens-selector.component.scss'],

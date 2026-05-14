@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-dropdown-options-table-item',
   templateUrl: './dropdown-options-table-item.component.html',
   styleUrls: ['./dropdown-options-table-item.component.scss'],

@@ -14,6 +14,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-token-selector-page',
   templateUrl: './token-selector-page.component.html',
   styleUrls: ['./token-selector-page.component.scss'],

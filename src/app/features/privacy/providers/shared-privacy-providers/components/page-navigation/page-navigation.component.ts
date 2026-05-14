@@ -12,6 +12,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
 
 @Component({
+  standalone: false,
   selector: 'app-page-navigation',
   templateUrl: './page-navigation.component.html',
   styleUrls: ['./page-navigation.component.scss'],

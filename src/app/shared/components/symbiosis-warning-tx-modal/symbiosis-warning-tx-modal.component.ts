@@ -5,6 +5,7 @@ import { BlockchainName } from '@cryptorubic/core';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-symbiosis-warning-tx-modal',
   templateUrl: './symbiosis-warning-tx-modal.component.html',
   styleUrls: ['./symbiosis-warning-tx-modal.component.scss'],

@@ -1,11 +1,9 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiDropdownOpen } from '@taiga-ui/core';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Output,
-  Self,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -14,6 +12,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],

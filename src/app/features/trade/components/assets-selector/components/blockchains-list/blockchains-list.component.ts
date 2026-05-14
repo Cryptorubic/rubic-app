@@ -21,6 +21,7 @@ import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-blockchains-list',
   templateUrl: './blockchains-list.component.html',
   styleUrls: ['./blockchains-list.component.scss'],

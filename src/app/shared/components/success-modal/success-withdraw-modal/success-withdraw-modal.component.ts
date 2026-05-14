@@ -9,6 +9,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-success-withdraw-modal',
   templateUrl: './success-withdraw-modal.component.html',
   styleUrls: ['./success-withdraw-modal.component.scss'],

@@ -1,16 +1,9 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Self,
-  inject,
-  DestroyRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
@@ -27,6 +20,7 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 
 @Component({
+  standalone: false,
   selector: 'app-privacycash-transfer-page',
   templateUrl: './privacycash-transfer-page.component.html',
   styleUrls: ['./privacycash-transfer-page.component.scss'],

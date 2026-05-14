@@ -6,6 +6,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-password-verification-modal',
   templateUrl: './password-verification-modal.component.html',
   styleUrls: ['./password-verification-modal.component.scss'],

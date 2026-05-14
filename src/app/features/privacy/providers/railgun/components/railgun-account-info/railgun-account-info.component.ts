@@ -15,6 +15,7 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-account-info',
   templateUrl: './railgun-account-info.component.html',
   styleUrls: ['./railgun-account-info.component.scss'],

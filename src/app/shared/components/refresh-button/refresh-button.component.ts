@@ -8,16 +8,16 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   ViewChild,
   DestroyRef,
   inject
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
-import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
+import { mergeMap, take, tap, pairwise } from 'rxjs/operators';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
+  standalone: false,
   selector: 'app-refresh-button',
   templateUrl: './refresh-button.component.html',
   styleUrls: ['./refresh-button.component.scss'],

@@ -1,12 +1,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
-import { filter, firstValueFrom, map, takeUntil } from 'rxjs';
+import { filter, firstValueFrom, map } from 'rxjs';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
@@ -14,6 +14,7 @@ import { HideWindowService } from '../../../shared-privacy-providers/services/hi
 import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-hide-tokens-page',
   templateUrl: './zama-hide-tokens-page.component.html',
   styleUrls: ['./zama-hide-tokens-page.component.scss'],
@@ -29,7 +30,7 @@ import { compareTokens } from '@app/shared/utils/utils';
     }
   ]
 })
-export class ZamaHideTokensPageComponent {
+export class ZamaHideTokensPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig: PrivateShieldFormConfig = {

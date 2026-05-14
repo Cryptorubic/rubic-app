@@ -1,5 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
 import { HinkalQuoteAdapter } from '../../services/hinkal-sdk/utils/hinkal-quote-adapter';
@@ -11,7 +11,7 @@ import {
   TokenAmount
 } from '@cryptorubic/core';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, map, startWith, tap } from 'rxjs';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -28,6 +28,7 @@ import BigNumber from 'bignumber.js';
 import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-swap-tokens-page',
   templateUrl: './hinkal-swap-tokens-page.component.html',
   styleUrls: ['./hinkal-swap-tokens-page.component.scss'],
@@ -35,11 +36,10 @@ import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hink
   providers: [
     { provide: FromAssetsService, useClass: HinkalPrivateAssetsService },
     { provide: ToAssetsService, useClass: HinkalToPrivateAssetsService },
-
     { provide: TokensFacadeService, useClass: HinkalSwapTokensFacadeService }
   ]
 })
-export class HinkalSwapTokensPageComponent {
+export class HinkalSwapTokensPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(

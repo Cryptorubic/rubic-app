@@ -1,14 +1,7 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /* eslint-disable rxjs/no-exposed-subjects */
 import { FormControl } from '@angular/forms';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Self,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { PrivateEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { Token } from '@app/shared/models/tokens/token';
@@ -24,7 +17,6 @@ import {
   startWith,
   Subject,
   switchMap,
-  takeUntil,
   tap,
   throwError,
   timer
@@ -47,6 +39,7 @@ import { PrivateTransferWindowService } from '../../../shared-privacy-providers/
 import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-clearswap-transfer-tokens-page',
   templateUrl: './clearswap-transfer-tokens-page.component.html',
   styleUrls: ['./clearswap-transfer-tokens-page.component.scss'],

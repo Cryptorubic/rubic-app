@@ -5,6 +5,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-failed-error',
   templateUrl: './transaction-failed-error.component.html',
   styleUrls: ['./transaction-failed-error.component.scss'],

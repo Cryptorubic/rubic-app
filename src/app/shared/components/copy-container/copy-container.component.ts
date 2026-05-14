@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-copy-container',
   templateUrl: './copy-container.component.html',
   styleUrls: ['./copy-container.component.scss'],

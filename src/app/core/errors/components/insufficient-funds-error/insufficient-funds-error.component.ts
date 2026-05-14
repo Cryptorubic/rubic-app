@@ -3,6 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-insufficient-funds-error',
   templateUrl: './insufficient-funds-error.component.html',
   styleUrls: ['./insufficient-funds-error.component.scss'],

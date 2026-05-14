@@ -26,6 +26,7 @@ import { PrivateLocalStorageService } from '@app/features/privacy/services/priva
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-cash-view',
   templateUrl: './privacycash-main-page.component.html',
   styleUrls: ['./privacycash-main-page.component.scss'],

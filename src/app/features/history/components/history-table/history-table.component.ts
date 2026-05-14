@@ -10,6 +10,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
+  standalone: false,
   selector: 'app-history-table',
   templateUrl: './history-table.component.html',
   styleUrls: ['./history-table.component.scss'],

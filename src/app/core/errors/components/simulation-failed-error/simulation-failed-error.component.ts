@@ -6,6 +6,7 @@ import { timer } from 'rxjs';
 import { SwapErrorResponseInterface } from '@cryptorubic/web3';
 
 @Component({
+  standalone: false,
   selector: 'app-simulation-failed-error',
   templateUrl: './simulation-failed-error.component.html',
   styleUrls: ['./simulation-failed-error.component.scss'],

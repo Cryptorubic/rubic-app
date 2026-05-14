@@ -3,6 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-rpc-error',
   templateUrl: './rpc-error.component.html',
   styleUrls: ['./rpc-error.component.scss'],

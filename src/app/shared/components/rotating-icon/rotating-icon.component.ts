@@ -16,6 +16,7 @@ import { NgChanges } from '@shared/models/utility-types/ng-changes';
  * Rotating icon with smooth rotation completion.
  */
 @Component({
+  standalone: false,
   selector: 'app-rotating-icon',
   templateUrl: './rotating-icon.component.html',
   styleUrls: ['./rotating-icon.component.scss'],

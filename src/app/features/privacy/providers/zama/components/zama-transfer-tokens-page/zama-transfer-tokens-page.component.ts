@@ -1,5 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -8,7 +8,7 @@ import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facad
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
 
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { ZamaBalanceService } from '../../services/zama-sdk/zama-balance.service';
@@ -17,6 +17,7 @@ import BigNumber from 'bignumber.js';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-transfer-tokens-page',
   templateUrl: './zama-transfer-tokens-page.component.html',
   styleUrls: ['./zama-transfer-tokens-page.component.scss'],
@@ -26,7 +27,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
     { provide: TokensFacadeService, useClass: ZamaRevealFacadeService }
   ]
 })
-export class ZamaTransferTokensPageComponent {
+export class ZamaTransferTokensPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig: PrivateTransferFormConfig = {

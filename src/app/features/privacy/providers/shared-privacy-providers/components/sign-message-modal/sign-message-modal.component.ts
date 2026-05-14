@@ -4,6 +4,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-sign-message-modal',
   templateUrl: './sign-message-modal.component.html',
   styleUrls: ['./sign-message-modal.component.scss'],

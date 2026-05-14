@@ -10,6 +10,7 @@ import { TradeInfo } from '../../models/trade-info';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-backup-rate-changed-modal',
   templateUrl: './swap-backup-rate-changed-modal.component.html',
   styleUrls: ['./swap-backup-rate-changed-modal.component.scss'],

@@ -3,6 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-unsupported-token-ccr',
   templateUrl: './unsupported-token-ccr.component.html',
   styleUrls: ['./unsupported-token-ccr.component.scss'],

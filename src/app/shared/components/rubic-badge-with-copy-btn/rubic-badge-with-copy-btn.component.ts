@@ -10,6 +10,7 @@ import { DepositTableData } from '@app/features/history/models/deposit-table-dat
 import { timer } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-badge-with-copy-btn',
   templateUrl: './rubic-badge-with-copy-btn.component.html',
   styleUrls: ['./rubic-badge-with-copy-btn.component.scss'],

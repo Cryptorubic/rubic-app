@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
@@ -6,6 +5,7 @@ import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.
 import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 
 @Component({
+  standalone: false,
   selector: 'app-settings-ccr',
   templateUrl: './settings-ccr.component.html',
   styleUrls: ['./settings-ccr.component.scss'],

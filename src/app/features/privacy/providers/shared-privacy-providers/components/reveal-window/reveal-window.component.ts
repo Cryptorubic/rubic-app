@@ -21,6 +21,7 @@ import { RevealWindowService } from '../../services/reveal-window/reveal-window.
 import { PrivateShieldFormConfig } from '@features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 
 @Component({
+  standalone: false,
   selector: 'app-reveal-window',
   templateUrl: './reveal-window.component.html',
   styleUrls: ['./reveal-window.component.scss'],

@@ -7,6 +7,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-unknown-error',
   templateUrl: './unknown-error.component.html',
   styleUrls: ['./unknown-error.component.scss'],

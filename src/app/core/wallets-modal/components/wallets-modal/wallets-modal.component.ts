@@ -29,6 +29,7 @@ import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 
 @Component({
+  standalone: false,
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],

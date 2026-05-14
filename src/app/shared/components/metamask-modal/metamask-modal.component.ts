@@ -7,6 +7,7 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-metamask-modal',
   templateUrl: './metamask-modal.component.html',
   styleUrls: ['./metamask-modal.component.scss'],

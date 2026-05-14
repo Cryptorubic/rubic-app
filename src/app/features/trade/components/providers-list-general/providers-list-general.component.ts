@@ -10,7 +10,8 @@ import {
   Output,
   ViewChild,
   DestroyRef,
-  inject
+  inject,
+  AfterViewInit
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -30,6 +31,7 @@ import { AlternativeRoute } from '../../services/alternative-route-api-service/m
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 @Component({
+  standalone: false,
   selector: 'app-providers-list-general',
   templateUrl: './providers-list-general.component.html',
   styleUrls: ['./providers-list-general.component.scss'],
@@ -48,7 +50,7 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
     ])
   ]
 })
-export class ProvidersListGeneralComponent {
+export class ProvidersListGeneralComponent implements AfterViewInit {
   @Input({ required: true }) states: TradeState[] = [];
 
   @Input({ required: true }) selectedTradeType: TradeProvider;

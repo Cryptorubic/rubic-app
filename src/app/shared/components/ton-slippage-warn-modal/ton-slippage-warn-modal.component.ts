@@ -12,6 +12,7 @@ interface TxStep {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-ton-slippage-warn-modal',
   templateUrl: './ton-slippage-warn-modal.component.html',
   styleUrls: ['./ton-slippage-warn-modal.component.scss'],

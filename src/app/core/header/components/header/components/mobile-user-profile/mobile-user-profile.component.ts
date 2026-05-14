@@ -21,6 +21,7 @@ interface ContextData {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-mobile-user-profile',
   templateUrl: './mobile-user-profile.component.html',
   styleUrls: ['./mobile-user-profile.component.scss']

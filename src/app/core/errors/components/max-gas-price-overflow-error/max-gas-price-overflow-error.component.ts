@@ -3,6 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-max-gas-price-overflow-error',
   templateUrl: './max-gas-price-overflow-error.component.html',
   styleUrls: ['./max-gas-price-overflow-error.component.scss'],

@@ -19,6 +19,7 @@ import { RailgunWalletImportComponent } from '@features/privacy/providers/railgu
 import { RailgunWalletCreateComponent } from '@features/privacy/providers/railgun/components/railgun-wallet-create/railgun-wallet-create.component';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-login-page',
   templateUrl: './railgun-login-page.component.html',
   styleUrls: ['./railgun-login-page.component.scss'],

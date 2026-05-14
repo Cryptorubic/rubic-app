@@ -1,10 +1,10 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
@@ -16,6 +16,7 @@ import { HideWindowService } from '../../../shared-privacy-providers/services/hi
 import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-hide-tokens-page',
   templateUrl: './hinkal-hide-tokens-page.component.html',
   styleUrls: ['./hinkal-hide-tokens-page.component.scss'],
@@ -31,7 +32,7 @@ import { compareTokens } from '@app/shared/utils/utils';
     }
   ]
 })
-export class HinkalHideTokensPageComponent {
+export class HinkalHideTokensPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(

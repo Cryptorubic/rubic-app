@@ -20,6 +20,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-providers-list',
   templateUrl: './providers-list.component.html',
   styleUrls: ['./providers-list.component.scss'],

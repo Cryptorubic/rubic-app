@@ -13,6 +13,7 @@ import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/feature
 import { timer } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-status-info',
   templateUrl: './deposit-status-info.component.html',
   styleUrls: ['./deposit-status-info.component.scss'],

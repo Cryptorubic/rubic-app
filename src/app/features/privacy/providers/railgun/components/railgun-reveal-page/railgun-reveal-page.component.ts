@@ -1,5 +1,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, inject, Input, DestroyRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+  DestroyRef,
+  OnInit
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -20,6 +27,7 @@ import { TokensBalanceService } from '@core/services/tokens/tokens-balance.servi
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-reveal-page',
   templateUrl: './railgun-reveal-page.component.html',
   styleUrls: ['./railgun-reveal-page.component.scss'],
@@ -32,7 +40,7 @@ import { RevealWindowService } from '@features/privacy/providers/shared-privacy-
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
 })
-export class RailgunRevealPageComponent {
+export class RailgunRevealPageComponent implements OnInit {
   @Input({ required: true }) public readonly railgunId: string;
 
   @Input({ required: true }) balances: Record<

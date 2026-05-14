@@ -23,6 +23,7 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-hide-tokens-page',
   templateUrl: './railgun-hide-tokens-page.component.html',
   styleUrls: ['./railgun-hide-tokens-page.component.scss'],

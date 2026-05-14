@@ -5,6 +5,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 
 @Component({
+  standalone: false,
   selector: 'app-layer3-widget',
   templateUrl: './layer3-widget.component.html',
   styleUrls: ['./layer3-widget.component.scss'],

@@ -33,6 +33,7 @@ import { PrivateTransferWindowService } from '@features/privacy/providers/shared
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-transfer-page',
   templateUrl: './railgun-transfer-page.component.html',
   styleUrls: ['./railgun-transfer-page.component.scss'],

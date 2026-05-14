@@ -6,7 +6,6 @@ import {
   Component,
   Inject,
   OnDestroy,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -14,7 +13,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, filter, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -38,6 +37,7 @@ import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/co
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],

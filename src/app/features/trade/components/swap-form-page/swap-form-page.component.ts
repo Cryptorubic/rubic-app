@@ -1,17 +1,9 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -28,6 +20,7 @@ import { TargetNetworkAddressService } from '../../services/target-network-addre
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-form-page',
   templateUrl: './swap-form-page.component.html',
   styleUrls: ['./swap-form-page.component.scss'],

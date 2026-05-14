@@ -11,6 +11,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-scanner';
 
 @Component({
+  standalone: false,
   selector: 'app-dropdown-options-shielded-token',
   templateUrl: './dropdown-options-shielded-token.component.html',
   styleUrls: ['./dropdown-options-shielded-token.component.scss'],

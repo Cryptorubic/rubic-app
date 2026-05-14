@@ -7,11 +7,10 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
   inject,
   DestroyRef
 } from '@angular/core';
-import { BehaviorSubject, skip, takeUntil } from 'rxjs';
+import { BehaviorSubject, skip } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
@@ -30,6 +29,7 @@ import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-ma
 import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@app/core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
+  standalone: false,
   selector: 'app-private-main-page-swap',
   templateUrl: './private-page-swap.component.html',
   styleUrls: ['./private-page-swap.component.scss'],

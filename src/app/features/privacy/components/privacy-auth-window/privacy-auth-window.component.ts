@@ -19,6 +19,7 @@ import { StoreService } from '@app/core/services/store/store.service';
 import { PrivateLocalStorageService } from '../../services/privacy-local-storage.service';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-auth-window',
   templateUrl: './privacy-auth-window.component.html',
   styleUrls: ['./privacy-auth-window.component.scss'],

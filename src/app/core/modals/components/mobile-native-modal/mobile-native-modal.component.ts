@@ -21,6 +21,7 @@ import { DOCUMENT } from '@angular/common';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 
 @Component({
+  standalone: false,
   selector: 'app-mobile-native-modal',
   templateUrl: './mobile-native-modal.component.html',
   styleUrls: ['./mobile-native-modal.component.scss'],

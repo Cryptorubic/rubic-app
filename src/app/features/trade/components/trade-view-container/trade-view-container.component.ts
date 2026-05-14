@@ -24,6 +24,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'app-trade-view-container',
   templateUrl: './trade-view-container.component.html',
   styleUrls: ['./trade-view-container.component.scss'],

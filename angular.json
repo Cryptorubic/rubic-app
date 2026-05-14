@@ -21,17 +21,14 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "aot": true,
-            "customWebpackConfig": {
-              "path": "./sentry-webpack.config.ts"
-            },
             "webWorkerTsConfig": "tsconfig.worker.json",
             "outputPath": "dist/rubic",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/assets",
@@ -71,25 +68,25 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["."]
+            },
             "scripts": ["src/assets/analytics/live-chat.js"],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
               "hash.js",
               "big.js",
-              "ng-inline-svg-2/lib_commonjs/inline-svg.module"
+              "ng-inline-svg-2/lib_commonjs/inline-svg.module",
+              "stream-browserify"
             ],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": {
               "scripts": true,
               "styles": false,
               "vendor": false
             },
-            "optimization": false,
-            "namedChunks": true,
-            "webWorkerTsConfig": "tsconfig.worker.json"
+            "optimization": false
           },
           "configurations": {
             "local": {
@@ -99,17 +96,6 @@
                   "with": "src/environments/environment.local.ts"
                 }
               ]
-            },
-            "sdk": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.sdk.ts"
-                }
-              ],
-              "customWebpackConfig": {
-                "path": "./custom-webpack.config.ts"
-              }
             },
             "dev": {
               "fileReplacements": [
@@ -177,11 +163,8 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -204,11 +187,8 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -225,44 +205,41 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rubic:build",
+            "buildTarget": "rubic:build",
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rubic:build:production"
+              "buildTarget": "rubic:build:production"
             },
             "local": {
-              "browserTarget": "rubic:build:local"
-            },
-            "sdk": {
-              "browserTarget": "rubic:build:sdk"
+              "buildTarget": "rubic:build:local"
             },
             "dev": {
-              "browserTarget": "rubic:build:dev"
+              "buildTarget": "rubic:build:dev"
             },
             "dev2": {
-              "browserTarget": "rubic:build:dev2"
+              "buildTarget": "rubic:build:dev2"
             },
             "dev3": {
-              "browserTarget": "rubic:build:dev3"
+              "buildTarget": "rubic:build:dev3"
             },
             "dev4": {
-              "browserTarget": "rubic:build:dev4"
+              "buildTarget": "rubic:build:dev4"
             },
             "dev5": {
-              "browserTarget": "rubic:build:dev5"
+              "buildTarget": "rubic:build:dev5"
             },
             "dev6": {
-              "browserTarget": "rubic:build:dev6"
+              "buildTarget": "rubic:build:dev6"
             },
             "prod-api": {
-              "browserTarget": "rubic:build:prod-api"
+              "buildTarget": "rubic:build:prod-api"
             },
             "stage": {
-              "browserTarget": "rubic:build:stage"
+              "buildTarget": "rubic:build:stage"
             }
           }
         },
@@ -277,7 +254,7 @@
           "options": {
             "codeCoverage": true,
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": ["src/styles.scss"],

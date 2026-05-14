@@ -29,6 +29,7 @@ import {
 } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-page-view',
   templateUrl: './privacy-page-view.component.html',
   styleUrls: ['./privacy-page-view.component.scss'],

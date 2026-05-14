@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  Self,
   OnChanges,
   SimpleChanges,
   DestroyRef,
@@ -14,9 +13,10 @@ import {
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'app-search-tokens-bar',
   templateUrl: './search-bar-tokens.component.html',
   styleUrls: ['./search-bar-tokens.component.scss'],

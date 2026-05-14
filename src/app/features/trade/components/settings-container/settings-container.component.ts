@@ -16,6 +16,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-settings-container',
   templateUrl: './settings-container.component.html',
   styleUrls: ['./settings-container.component.scss'],

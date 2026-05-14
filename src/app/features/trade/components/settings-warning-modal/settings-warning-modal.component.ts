@@ -4,6 +4,7 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
+  standalone: false,
   selector: 'app-settings-warning-modal',
   templateUrl: './settings-warning-modal.component.html',
   styleUrls: ['./settings-warning-modal.component.scss'],

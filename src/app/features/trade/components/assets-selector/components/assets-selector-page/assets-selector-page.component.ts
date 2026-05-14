@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,8 +7,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
-  Self
+  Output
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
@@ -40,6 +38,7 @@ import { ToAssetsService } from '@features/trade/components/assets-selector/serv
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
 
 @Component({
+  standalone: false,
   selector: 'app-assets-selector-page',
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],

@@ -5,6 +5,7 @@ import { TuiSizeL, TuiSizeS, TuiSizeXS } from '@taiga-ui/core';
  * Display count of notifications.
  */
 @Component({
+  standalone: false,
   selector: 'app-notification-badge',
   templateUrl: './notification-badge.component.html',
   styleUrls: ['./notification-badge.component.scss'],

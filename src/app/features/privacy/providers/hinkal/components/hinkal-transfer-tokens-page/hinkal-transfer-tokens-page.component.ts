@@ -1,12 +1,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, Self, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 
 import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HINKAL_WARNINGS } from '../../constants/hinkal-preswap-warnings';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -18,6 +18,7 @@ import BigNumber from 'bignumber.js';
 import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-transfer-tokens-page',
   templateUrl: './hinkal-transfer-tokens-page.component.html',
   styleUrls: ['./hinkal-transfer-tokens-page.component.scss'],
@@ -27,7 +28,7 @@ import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-r
     { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
   ]
 })
-export class HinkalTransferTokensPageComponent {
+export class HinkalTransferTokensPageComponent implements OnInit {
   public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly creationConfig$ = this.hinkalFacadeService.activeChain$.pipe(

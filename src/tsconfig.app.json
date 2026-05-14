@@ -21,7 +21,7 @@
       "zlib": ["node_modules/browserify-zlib"]
     }
   },
-  "files": ["main.ts", "polyfills.ts"],
+  "files": ["main.ts", "polyfills.ts", "custom-types.d.ts"],
   "include": ["src/**/*.d.ts"],
   "angularCompilerOptions": {
     "strictTemplates": true

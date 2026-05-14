@@ -15,6 +15,7 @@ import { TuiInputNumberComponent } from '@taiga-ui/legacy';
 import BigNumber from 'bignumber.js';
 
 @Component({
+  standalone: false,
   selector: 'app-input-number',
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],

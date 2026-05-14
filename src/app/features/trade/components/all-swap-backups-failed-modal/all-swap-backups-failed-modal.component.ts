@@ -3,6 +3,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 
 @Component({
+  standalone: false,
   selector: 'app-all-swap-backups-failed-modal',
   templateUrl: './all-swap-backups-failed-modal.component.html',
   styleUrls: ['./all-swap-backups-failed-modal.component.scss'],

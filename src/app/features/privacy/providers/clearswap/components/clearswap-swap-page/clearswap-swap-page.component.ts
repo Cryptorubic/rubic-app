@@ -1,12 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Self,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
@@ -17,7 +10,7 @@ import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';
 
@@ -31,6 +24,7 @@ import { PrivateSwapWindowService } from '../../../shared-privacy-providers/serv
 import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-clearswap-swap-page',
   templateUrl: './clearswap-swap-page.component.html',
   styleUrls: ['./clearswap-swap-page.component.scss'],

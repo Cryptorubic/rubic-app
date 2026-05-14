@@ -25,6 +25,7 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
 
 @Component({
+  standalone: false,
   selector: 'app-private-preview-swap',
   templateUrl: './private-preview-swap.component.html',
   styleUrls: ['./private-preview-swap.component.scss'],

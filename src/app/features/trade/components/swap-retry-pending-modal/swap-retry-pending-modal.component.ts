@@ -12,6 +12,7 @@ import { RubicStep } from '@app/core/services/sdk/sdk-legacy/features/cross-chai
 import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-retry-pending-modal',
   templateUrl: './swap-retry-pending-modal.component.html',
   styleUrls: ['./swap-retry-pending-modal.component.scss'],

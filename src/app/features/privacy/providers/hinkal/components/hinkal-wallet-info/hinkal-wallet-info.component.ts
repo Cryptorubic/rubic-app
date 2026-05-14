@@ -5,6 +5,7 @@ import { getRecipientInfoFromUserKeys } from '@hinkal/common';
 import { distinctUntilChanged, map, timer } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-wallet-info',
   templateUrl: './hinkal-wallet-info.component.html',
   styleUrls: ['./hinkal-wallet-info.component.scss'],

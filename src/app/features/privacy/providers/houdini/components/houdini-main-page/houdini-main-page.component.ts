@@ -4,7 +4,6 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -27,7 +26,6 @@ import {
   lastValueFrom,
   retry,
   startWith,
-  takeUntil,
   tap,
   throwError,
   timer
@@ -48,6 +46,7 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Component({
+  standalone: false,
   selector: 'app-houdini-main-page',
   templateUrl: './houdini-main-page.component.html',
   styleUrls: ['./houdini-main-page.component.scss'],

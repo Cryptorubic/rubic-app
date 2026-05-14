@@ -17,6 +17,7 @@ import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-private-providers-list',
   templateUrl: './private-providers-list.component.html',
   styleUrls: ['./private-providers-list.component.scss'],

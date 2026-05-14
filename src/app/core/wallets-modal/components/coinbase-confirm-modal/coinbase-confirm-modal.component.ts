@@ -6,6 +6,7 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-coinbase-confirm-modal',
   templateUrl: './coinbase-confirm-modal.component.html',
   styleUrls: ['./coinbase-confirm-modal.component.scss'],

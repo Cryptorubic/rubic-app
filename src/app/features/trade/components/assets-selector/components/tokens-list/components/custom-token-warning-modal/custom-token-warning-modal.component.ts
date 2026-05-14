@@ -5,6 +5,7 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MobileNativeModalService } from '@core/modals/services/mobile-native-modal.service';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-custom-token-warning-modal',
   templateUrl: './custom-token-warning-modal.component.html',
   styleUrls: ['./custom-token-warning-modal.component.scss'],

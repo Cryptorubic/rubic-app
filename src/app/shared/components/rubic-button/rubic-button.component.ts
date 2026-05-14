@@ -7,7 +7,6 @@ import {
   EventEmitter,
   HostBinding,
   OnInit,
-  Self,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -15,9 +14,9 @@ import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-button',
   templateUrl: './rubic-button.component.html',
   styleUrls: ['./rubic-button.component.scss'],

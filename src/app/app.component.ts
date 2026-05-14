@@ -26,6 +26,7 @@ import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

@@ -6,7 +6,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  Self,
   ViewChild,
   OnInit,
   ElementRef,
@@ -22,7 +21,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { AnimationBuilder } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
@@ -30,6 +29,7 @@ import { BlockchainsInfo } from '@cryptorubic/core';
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
 
 @Component({
+  standalone: false,
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],

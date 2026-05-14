@@ -30,6 +30,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-dropdown-options-token',
   templateUrl: './dropdown-options-token.component.html',
   styleUrls: ['./dropdown-options-token.component.scss'],

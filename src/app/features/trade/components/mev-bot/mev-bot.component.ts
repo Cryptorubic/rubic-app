@@ -7,13 +7,14 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
 import { HeaderStore } from '@core/header/services/header.store';
-import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, pairwise, startWith, switchMap } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 @Component({
+  standalone: false,
   selector: 'app-mev-bot',
   templateUrl: './mev-bot.component.html',
   styleUrls: ['./mev-bot.component.scss'],
