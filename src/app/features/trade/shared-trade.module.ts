@@ -19,7 +19,8 @@ import {
   TuiDropdown,
   TuiButton,
   TuiHint,
-  TuiAppearance
+  TuiAppearance,
+  TuiNumberFormat
 } from '@taiga-ui/core';
 import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -74,7 +75,6 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 
@@ -175,25 +175,24 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     AssetsSelectorModule,
     TuiNotification,
     ...TuiCarousel,
-    TuiAppearance
+    TuiAppearance,
+    TuiNumberFormat
   ],
   providers: [
+    SettingsService,
     SwapsStateService,
     SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,
     CrossChainApiService,
-    SettingsService,
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
     OnChainApiService,
     DepositService,
     ActionButtonService,
-    FormsTogglerService,
     TradeInfoManager,
-    FormsTogglerService,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,

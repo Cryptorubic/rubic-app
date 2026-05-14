@@ -56,6 +56,7 @@ import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/pri
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 @Injectable({
   providedIn: 'root'
@@ -424,7 +425,7 @@ export class ModalService {
    */
   public showDialog<Component, Output>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<Output> {
     //@ts-ignore
@@ -442,7 +443,7 @@ export class ModalService {
 
   public openClosableDialog<Component, ClosableDialogOutput>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<ClosableDialogOutput> {
     return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(

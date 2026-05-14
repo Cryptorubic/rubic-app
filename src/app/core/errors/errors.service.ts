@@ -60,11 +60,9 @@ export class ErrorsService {
 
     const options = {
       label: this.translateService.instant(isWarning ? 'common.warning' : 'common.error'),
-      status: isWarning ? 'warning' : 'error',
+      appearance: isWarning ? 'warning' : 'error',
       data: {},
-      autoClose: 7000,
-      icon: '',
-      defaultAutoCloseTime: 0
+      autoClose: 7000
     };
 
     if (this.isCustomRPCError(error)) {

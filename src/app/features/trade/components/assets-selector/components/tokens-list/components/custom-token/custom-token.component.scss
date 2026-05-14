@@ -25,15 +25,13 @@
     width: 100%;
     margin-top: 15px;
 
-    ::ng-deep {
-      .t-wrapper {
-        background-color: var(--tui-background-accent-1);
+    ::ng-deep button[tuiWrapper] {
+      background-color: var(--tui-background-accent-1) !important;
 
-        span {
-          height: 100%;
+      span {
+        height: 100%;
 
-          font-size: 14px;
-        }
+        font-size: 14px;
       }
     }
   }

@@ -66,7 +66,7 @@ export class HinkalWorkerSwapService {
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
         false
-      )) as ethers.TransactionResponse;
+      )) as unknown as ethers.TransactionResponse;
 
       console.log(resp);
       return resp.hash;

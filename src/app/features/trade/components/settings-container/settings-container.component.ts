@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit, Type } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EnvironmentInjector,
+  OnInit,
+  Type
+} from '@angular/core';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -16,10 +22,7 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsContainerComponent implements OnInit {
-  public settingsComponent: PolymorpheusComponent<
-    SettingsItComponent | SettingsCcrComponent,
-    Injector
-  >;
+  public settingsComponent: PolymorpheusComponent<SettingsItComponent | SettingsCcrComponent>;
 
   public open: boolean;
 
@@ -40,7 +43,7 @@ export class SettingsContainerComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
     private readonly modalService: ModalService,
-    @Inject(Injector) private readonly injector: Injector
+    private readonly environmentInjector: EnvironmentInjector
   ) {
     this.open = false;
   }
@@ -51,7 +54,8 @@ export class SettingsContainerComponent implements OnInit {
         mode === SWAP_PROVIDER_TYPE.INSTANT_TRADE ? SettingsItComponent : SettingsCcrComponent;
 
       this.settingsComponent = new PolymorpheusComponent(
-        component as Type<SettingsItComponent | SettingsCcrComponent>
+        component as Type<SettingsItComponent | SettingsCcrComponent>,
+        this.environmentInjector
       );
     });
   }
@@ -59,9 +63,9 @@ export class SettingsContainerComponent implements OnInit {
   public async openMobile(): Promise<void> {
     const inputValue = await firstValueFrom(this.swapsFormService.inputValue$);
     if (inputValue.fromBlockchain === inputValue.toBlockchain) {
-      this.modalService.openItSettings(this.injector).subscribe();
+      this.modalService.openItSettings(this.environmentInjector).subscribe();
     } else {
-      this.modalService.openCcrSettings(this.injector).subscribe();
+      this.modalService.openCcrSettings(this.environmentInjector).subscribe();
     }
   }
 }

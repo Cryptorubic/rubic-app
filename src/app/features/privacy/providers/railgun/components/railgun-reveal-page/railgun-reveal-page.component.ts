@@ -7,7 +7,7 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
@@ -58,6 +58,7 @@ export class RailgunRevealPageComponent {
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
 
   private readonly authService = inject(AuthService);
+
   private readonly windowService = inject(RevealWindowService);
 
   private readonly tokensBalanceService = inject(TokensBalanceService);
@@ -78,11 +79,9 @@ export class RailgunRevealPageComponent {
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
-                status: 'info',
+                appearance: 'info',
                 autoClose: 10_000,
-                data: null,
-                icon: '',
-                defaultAutoCloseTime: 0
+                data: null
               });
               await this.revealService.unshield(
                 token.address,
@@ -93,11 +92,9 @@ export class RailgunRevealPageComponent {
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',
                 {
-                  status: 'success',
+                  appearance: 'success',
                   autoClose: 5_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
+                  data: null
                 }
               );
               this.privateStatisticsService.saveAction(

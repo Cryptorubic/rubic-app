@@ -93,7 +93,7 @@
 
   ::ng-deep {
     tui-hosted-dropdown {
-      .tui-group .t-wrapper {
+      .tui-group button[tuiWrapper] {
         padding: 0 var(--tui-padding-l) !important;
       }
     }

@@ -62,7 +62,7 @@ app-search-blockchains-bar {
         ::ng-deep {
           app-search-tokens-bar,
           app-search-blockchains-bar {
-            .tui-autofill {
+            [tuiWrapper][data-appearance='textfield'] {
               height: 51px;
             }
           }
@@ -71,7 +71,7 @@ app-search-blockchains-bar {
         ::ng-deep app-switch-list-type-button {
           height: 51px;
 
-          .t-wrapper {
+          button[tuiButton] {
             width: 51px;
             height: 51px;
           }

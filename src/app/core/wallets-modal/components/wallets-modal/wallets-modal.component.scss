@@ -90,11 +90,11 @@
     }
 
     ::ng-deep {
-      .t-wrapper {
-        background: none;
+      button[tuiWrapper] {
+        background: none !important;
 
         &:hover {
-          background: none;
+          background: none !important;
         }
       }
 

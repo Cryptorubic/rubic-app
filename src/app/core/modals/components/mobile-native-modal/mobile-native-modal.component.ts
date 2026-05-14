@@ -9,10 +9,10 @@ import {
   DestroyRef,
   inject
 } from '@angular/core';
-import { TuiSwipe, TuiPopover } from '@taiga-ui/cdk';
+import { TuiSwipeEvent, TuiPopover } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { ModalStates } from '../../models/modal-states.enum';
-import { takeUntil, delay, tap } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { IMobileNativeOptions } from '../../models/mobile-native-options';
@@ -126,7 +126,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     animationTimeout(this.context.completeWith);
   }
 
-  public onSwipe(swipe: TuiSwipe, title: string, place: string): void {
+  public onSwipe(swipe: TuiSwipeEvent, title: string, place: string): void {
     if (
       swipe.direction === 'top' &&
       this.state === ModalStates.MEDIUM &&

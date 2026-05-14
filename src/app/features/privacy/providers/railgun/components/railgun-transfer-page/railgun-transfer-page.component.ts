@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
-import { BehaviorSubject, firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, startWith, tap } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
@@ -59,6 +59,7 @@ export class RailgunTransferPageComponent implements OnInit {
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
   private readonly actionButtonService = inject(PrivateActionButtonService);
+
   private readonly windowService = inject(PrivateTransferWindowService);
 
   @Input({ required: true }) public readonly railgunId: string;
@@ -146,11 +147,9 @@ export class RailgunTransferPageComponent implements OnInit {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',
                 {
-                  status: 'info',
+                  appearance: 'info',
                   autoClose: 10_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
+                  data: null
                 }
               );
               await this.transferService.transferTokens(
@@ -161,11 +160,9 @@ export class RailgunTransferPageComponent implements OnInit {
                 token.blockchain as RailgunSupportedChain
               );
               this.notificationService.show('Transfer successful.', {
-                status: 'success',
+                appearance: 'success',
                 autoClose: 5_000,
-                data: null,
-                icon: '',
-                defaultAutoCloseTime: 0
+                data: null
               });
               this.privateStatisticsService.saveAction(
                 'TRANSFER',

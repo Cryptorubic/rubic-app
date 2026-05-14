@@ -4,10 +4,9 @@
   <button
     [tuiAppearanceState]="pseudoHovered ? 'hover' : null"
     tuiButton
-    [shape]="'rounded'"
     type="button"
     [size]="size"
-    [appearance]="appearance"
+    [appearance]="$any(appearance)"
     [class.full-width]="_fullWidth"
     [disabled]="_disabled"
     [attr.bordered]="_border"

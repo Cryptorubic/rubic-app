@@ -6,7 +6,10 @@ import { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorInterface } from '@cryptorubic/core';
 
-type DialogOptions<I> = Omit<TuiAlertOptions<I>, 'label' | 'hasCloseButton' | 'hasIcon'> &
+type DialogOptions<I> = Omit<
+  TuiAlertOptions<I>,
+  'label' | 'hasCloseButton' | 'hasIcon' | 'icon' | 'closeable'
+> &
   Partial<TuiAlertOptions<I>>;
 
 @Injectable({
@@ -30,8 +33,7 @@ export class NotificationsService {
         .open(msg, {
           appearance: 'success',
           autoClose: 10_000,
-          data: null,
-          icon: ''
+          data: null
         })
         .subscribe()
     );
@@ -43,8 +45,7 @@ export class NotificationsService {
         .open(msg, {
           appearance: 'error',
           autoClose: 10_000,
-          data: null,
-          icon: ''
+          data: null
         })
         .subscribe()
     );
@@ -56,8 +57,7 @@ export class NotificationsService {
         .open(msg, {
           appearance: 'warning',
           autoClose: 10_000,
-          data: null,
-          icon: ''
+          data: null
         })
         .subscribe()
     );
@@ -69,8 +69,7 @@ export class NotificationsService {
         .open(msg, {
           appearance: 'info',
           autoClose: 10_000,
-          data: null,
-          icon: ''
+          data: null
         })
         .subscribe()
     );
@@ -82,8 +81,7 @@ export class NotificationsService {
         .open(error.reason, {
           appearance: 'info',
           autoClose: 10_000,
-          data: null,
-          icon: ''
+          data: null
         })
         .subscribe()
     );
@@ -104,8 +102,7 @@ export class NotificationsService {
       closeable: false,
       label: undefined,
       autoClose: 10_000,
-      data: null,
-      icon: ''
+      data: null
     });
   }
 
@@ -122,8 +119,7 @@ export class NotificationsService {
       label: undefined,
       appearance: options?.appearance ?? 'info',
       autoClose: options?.autoClose,
-      data: null,
-      icon: ''
+      data: null
     });
   }
 
@@ -133,8 +129,7 @@ export class NotificationsService {
       label: undefined,
       appearance: options?.appearance ?? 'success',
       autoClose: options?.autoClose ?? this.LONG_DELAY,
-      data: null,
-      icon: ''
+      data: null
     });
   }
 
@@ -144,8 +139,7 @@ export class NotificationsService {
       label: undefined,
       appearance: options?.appearance ?? 'info',
       autoClose: options?.autoClose ?? this.SHORT_DELAY,
-      data: null,
-      icon: ''
+      data: null
     });
   }
 
@@ -155,8 +149,7 @@ export class NotificationsService {
       label: this.translateService.instant('notifications.solanaGaslessTitle'),
       appearance: 'success',
       autoClose: 10_000,
-      data: null,
-      icon: ''
+      data: null
     });
   }
 }

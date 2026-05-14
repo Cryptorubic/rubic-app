@@ -84,25 +84,23 @@ tui-loader {
     }
 
     ::ng-deep {
-      .tui-autofill {
+      [tuiWrapper][data-appearance='textfield'] {
         background-color: var(--io-background);
         border-radius: 0;
         border-top-left-radius: var(--tui-radius-m);
       }
     }
 
-    ::ng-deep button {
-      .t-wrapper {
-        background-color: var(--io-background);
-        border-radius: 0;
-        border-top-right-radius: var(--tui-radius-m);
-      }
+    ::ng-deep button[tuiWrapper] {
+      background-color: var(--io-background) !important;
+      border-radius: 0;
+      border-top-right-radius: var(--tui-radius-m);
     }
   }
 
   &__hide-favorites {
     ::ng-deep {
-      .tui-autofill {
+      [tuiWrapper][data-appearance='textfield'] {
         border-top-right-radius: var(--tui-radius-m);
       }
     }

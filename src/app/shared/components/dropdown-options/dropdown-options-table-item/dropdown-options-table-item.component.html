@@ -1,12 +1,12 @@
 <!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
-<div #dropdown [tuiDropdown]="content" [(tuiDropdownOpen)]="isDropdownOpen">
+<div tuiDropdown #dropdown="tuiDropdown" [tuiDropdown]="content" [(tuiDropdownOpen)]="isDropdownOpen">
   <button
     appearance="flat"
     iconStart="@tui.ellipsis-vertical"
     tuiIconButton
     type="button"
     [size]="'xs'"
-    [tuiAppearanceState]="dropdown.open || null ? 'hover' : null"
+    [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
   ></button>
 </div>
 

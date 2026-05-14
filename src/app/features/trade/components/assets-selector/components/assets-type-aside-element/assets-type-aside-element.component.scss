@@ -3,16 +3,12 @@
 :host {
   @include b($mobile-md) {
     .asset-types-aside__list-element {
+
+      justify-content: center;
       width: 80px;
       height: 62px;
 
       border-radius: 16px;
-
-      ::ng-deep {
-        .t-content {
-          justify-content: center;
-        }
-      }
     }
 
     .icon {
@@ -44,13 +40,9 @@
     cursor: not-allowed;
   }
 
-  .selected {
-    ::ng-deep {
-      .t-wrapper {
-        background: var(--tui-background-neutral-1-hover);
-        border-radius: 8px;
-      }
-    }
+  .selected.asset-types-aside__list-element {
+    background-color: var(--tui-background-neutral-1-hover) !important;
+    border-radius: 8px;
   }
 
   .icon {

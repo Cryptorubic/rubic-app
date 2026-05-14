@@ -27,7 +27,6 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
@@ -76,6 +75,6 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
     ...TuiCarousel
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [FormsTogglerService]
+  providers: []
 })
 export class AssetsSelectorModule {}

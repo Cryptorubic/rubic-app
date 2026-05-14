@@ -39,10 +39,10 @@
 }
 
 .active-router-link {
-  ::ng-deep .t-wrapper {
-    color: black;
+  ::ng-deep button[tuiWrapper] {
+    color: black !important;
 
-    background: var(--tui-background-accent-1);
+    background: var(--tui-background-accent-1) !important;
   }
 
   .icon {
@@ -81,11 +81,7 @@
   .private-mode-button {
     height: 40px !important;
 
-    ::ng-deep {
-      .t-wrapper {
-        padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-      }
-    }
+    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
   }
 
   app-rubic-menu-toggler,

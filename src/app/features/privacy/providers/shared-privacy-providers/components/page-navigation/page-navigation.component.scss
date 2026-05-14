@@ -18,26 +18,22 @@
   }
 
   &__item {
-    ::ng-deep {
-      .t-wrapper {
-        background: var(--tui-background-neutral-1-pressed);
+    ::ng-deep button[tuiWrapper] {
+      background: var(--tui-background-neutral-1-pressed) !important;
 
-        &:hover {
-          background: var(--app-background);
-        }
+      &:hover {
+        background: var(--app-background) !important;
       }
     }
 
     &-active {
-      ::ng-deep {
-        .t-wrapper {
-          color: var(--tui-text-primary-on-accent-1);
+      ::ng-deep button[tuiWrapper] {
+        color: var(--tui-text-primary-on-accent-1) !important;
 
-          background: var(--tui-background-accent-1);
+        background: var(--tui-background-accent-1) !important;
 
-          &:hover {
-            background: var(--tui-background-accent-1);
-          }
+        &:hover {
+          background: var(--tui-background-accent-1) !important;
         }
       }
     }

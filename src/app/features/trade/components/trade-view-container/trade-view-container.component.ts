@@ -107,11 +107,9 @@ export class TradeViewContainerComponent {
       buttonStatus.action();
     } else if (buttonStatus.type === 'error' || buttonStatus.text === 'Connect wallet') {
       this.notificationsService.show(buttonStatus.text, {
-        status: 'warning',
+        appearance: 'warning',
         autoClose: 5_000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       });
     }
   }

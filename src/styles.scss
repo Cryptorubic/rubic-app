@@ -222,6 +222,10 @@ a {
   }
 }
 
+tui-hint[data-appearance='dark'] {
+  --tui-background-elevation-1: #3b3d4f;
+}
+
 [id^='tui-hint_price-impact'] {
   color: var(--tui-text-primary) !important;
 

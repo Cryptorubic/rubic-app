@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
  */
 export abstract class AbstractModalService {
   abstract open<T, C, G>(
-    component: PolymorpheusComponent<T & object, C & object>,
+    component: PolymorpheusComponent<T & object>,
     options?: Partial<C>
   ): Observable<G>;
 }

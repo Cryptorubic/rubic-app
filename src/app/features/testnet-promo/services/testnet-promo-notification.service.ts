@@ -21,11 +21,9 @@ export class TestnetPromoNotificationService {
       this.wrongWalletTypeSubscription = this.notificationsService.show(
         'Wrong wallet. You should connect EVM wallet to participate in the Promo.',
         {
-          status: 'error',
+          appearance: 'error',
           autoClose: 10000,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
+          data: null
         }
       );
     }
@@ -35,11 +33,9 @@ export class TestnetPromoNotificationService {
     return this.notificationsService.show(
       this.translateService.instant(`testnetPromo.notification.progress`),
       {
-        status: 'info',
-        autoClose: false,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        appearance: 'info',
+        autoClose: 0,
+        data: null
       }
     );
   }
@@ -48,11 +44,9 @@ export class TestnetPromoNotificationService {
     return this.notificationsService.show(
       this.translateService.instant(`testnetPromo.notification.success`),
       {
-        status: 'success',
+        appearance: 'success',
         autoClose: 10000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       }
     );
   }
@@ -92,10 +86,8 @@ export class TestnetPromoNotificationService {
 
       this.notificationsService.show(label, {
         autoClose: 10000,
-        status,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        appearance: status,
+        data: null
       });
     }
   }

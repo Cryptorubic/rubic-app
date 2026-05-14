@@ -12,7 +12,6 @@ import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
-import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 import * as Sentry from '@sentry/angular';
 import { privacyInitializer } from './features/privacy/utils/privacy-initializer';
 import { PrivateLocalStorageService } from './features/privacy/services/privacy-local-storage.service';
@@ -36,7 +35,6 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
     NgxGoogleAnalyticsModule
   ],
   providers: [
-    MOBILE_NATIVE_MODAL_PROVIDER,
     {
       provide: APP_INITIALIZER,
       useFactory: () => () => {},

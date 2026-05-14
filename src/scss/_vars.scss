@@ -33,9 +33,9 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-background-neutral-1-hover: #4c4e67;
   --tui-background-neutral-1-pressed: #4c4e67;
 
-  --tui-background-elevation-1: var(--tui-background-neutral-1);
-  --tui-background-elevation-2: var(--tui-background-neutral-1);
-  --tui-background-neutral-1: var(--primary-background);
+  --tui-background-elevation-1: #3b3d4f;
+  --tui-background-elevation-2: #3b3d4f;
+  --tui-background-elevation-3: #3b3d4f;
 
   --tui-text-action: white;
   --tui-text-action-hover: white;
@@ -44,7 +44,6 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
   --tui-background-base: #2c2d3e;
   --tui-background-base-alt: #2c2d3e;
-  --tui-background-neutral-1-hover: #2c2d3e;
   --tui-border-normal: #4d4d59;
 
   --tui-text-primary: white;
@@ -107,6 +106,8 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   //--warning-color: #f2994a;
 
   //
+
+  --tui-text-03: var(--tui-text-tertiary);
 
   --tui-disabled-opacity: 0.5;
   --tui-radius-l: 17px;
