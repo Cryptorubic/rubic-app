@@ -3,13 +3,14 @@ import { CrossChainTableService } from '@features/history/services/cross-chain-t
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
-import { BLOCKCHAIN_NAME, BRIDGE_TYPE, EvmBlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/core';
 import { tableRowsWithActionButtons } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ActionButtonLoadingStatus } from './model/types';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { BRIDGE_TYPE } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -46,8 +47,7 @@ export class CrossChainDesktopTableComponent {
     private readonly crossChainTableSrvice: CrossChainTableService,
     private readonly commonTableService: CommonTableService,
     private readonly walletConnector: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly tokensService: TokensService
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public changeDirection(direction: 1 | -1): void {
@@ -72,12 +72,16 @@ export class CrossChainDesktopTableComponent {
   }
 
   public shouldShowActionButton(item: CrossChainTableData): boolean {
-    const shouldShow = tableRowsWithActionButtons.some(
-      actionCase =>
-        item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        item.toTx.status.label === actionCase.status &&
-        actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
-    );
+    const shouldShow = tableRowsWithActionButtons.some(actionCase => {
+      if (
+        (item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
+          actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]) ||
+        (item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR &&
+          actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API])
+      ) {
+        return item.toTx.status.label === actionCase.status;
+      }
+    });
     return shouldShow;
   }
 
@@ -101,6 +105,20 @@ export class CrossChainDesktopTableComponent {
       }
     }
 
+    if (
+      provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API] &&
+      item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR
+    ) {
+      await this.commonTableService.openTrustline({
+        toBlockchain: BLOCKCHAIN_NAME.STELLAR,
+        receiver: item.receiver,
+        trustlineToken: {
+          address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+          symbol: 'USDC'
+        },
+        trustlineType: 'refund'
+      });
+    }
     status.isLoading = false;
     this.cdr.markForCheck();
   }
@@ -110,7 +128,7 @@ export class CrossChainDesktopTableComponent {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 
   private startLoadingOnAction(item: CrossChainTableData): ActionButtonLoadingStatus {

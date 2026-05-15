@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-receiver-address-button',
@@ -8,9 +8,9 @@ import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiverAddressButtonComponent {
+  @Input({ required: true }) toBlockchain: BlockchainName;
+
   @Output() handleClick = new EventEmitter<void>();
 
-  public toBlockchain$ = this.swapFormService.toBlockchain$;
-
-  constructor(private swapFormService: SwapsFormService) {}
+  constructor() {}
 }

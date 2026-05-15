@@ -4,30 +4,11 @@ import { concatMap, firstValueFrom, of, timer } from 'rxjs';
 import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  NotWhitelistedProviderError,
-  OnChainTrade,
-  OnChainTradeType,
-  PriceToken,
-  SwapTransactionOptions,
-  TX_STATUS,
-  UnnecessaryApproveError,
-  UserRejectError,
-  Web3Pure,
-  UnapprovedContractError,
-  UnapprovedMethodError,
-  TO_BACKEND_BLOCKCHAINS,
-  TonOnChainTrade,
-  ON_CHAIN_TRADE_TYPE,
-  Injector as SdkInjector
-} from '@cryptorubic/sdk';
+import { TX_STATUS, UnnecessaryApproveError, UserRejectError } from '@cryptorubic/web3';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
@@ -45,18 +26,31 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { ErrorInterface, QuoteOptionsInterface } from '@cryptorubic/core';
-import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  ErrorInterface,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType,
+  PriceToken,
+  QuoteOptionsInterface,
+  TO_BACKEND_BLOCKCHAINS,
+  Token
+} from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
-type NotWhitelistedProviderErrors =
-  | UnapprovedContractError
-  | UnapprovedMethodError
-  | NotWhitelistedProviderError;
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
@@ -71,7 +65,6 @@ export class OnChainService {
     private readonly swapFormService: SwapsFormService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly gasService: GasService,
-    private readonly tokensService: TokensService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -83,14 +76,18 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly rubicApiService: RubicApiService,
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly privacyAuthService: PrivacyAuthService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getTokenPrice(fromToken, true),
-      this.tokensService.getTokenPrice(toToken, true)
+      this.tokensFacade.getLatestPrice(fromToken),
+      this.tokensFacade.getLatestPrice(toToken)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -115,7 +112,7 @@ export class OnChainService {
       dstTokenAddress: toToken.address
     };
 
-    SdkInjector.rubicApiService.calculateAsync({
+    this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
       ...tradeParams,
@@ -129,6 +126,7 @@ export class OnChainService {
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
+    onSimulationSuccess?: () => Promise<boolean>,
     params: { useCacheData: boolean; skipAmountCheck: boolean } = {
       useCacheData: false,
       skipAmountCheck: false
@@ -165,6 +163,8 @@ export class OnChainService {
       });
     };
 
+    const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -181,6 +181,7 @@ export class OnChainService {
         this.postTrade(hash, trade, preTradeId);
       },
       onWarning,
+      onSimulationSuccess,
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
@@ -191,19 +192,33 @@ export class OnChainService {
         feePayer: SOLANA_SPONSOR,
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
-      }
+      },
+      ...(gasLimitRatio && { gasLimitRatio })
     };
 
     try {
-      await trade.swap(options);
-
       const [fromToken, toToken] = await Promise.all([
-        this.tokensService.findToken(trade.from),
-        this.tokensService.findToken(trade.to)
+        this.tokensFacade.findToken(trade.from),
+        this.tokensFacade.findToken(trade.to)
+      ]);
+      const fromChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const toChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const [fromTokenPrevBalanceWei, toTokenPrevBalanceWei] = await Promise.all([
+        fromChainAdapter.getBalance(this.walletConnectorService.address, fromToken.address),
+        toChainAdapter.getBalance(this.walletConnectorService.address, toToken.address)
       ]);
 
-      await this.conditionalAwait(fromBlockchain);
-      await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
+      await trade.swap(options);
+      this.updateBalancesAfterSwap(
+        fromToken,
+        toToken,
+        fromTokenPrevBalanceWei,
+        toTokenPrevBalanceWei
+      );
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
@@ -232,31 +247,25 @@ export class OnChainService {
         }
       }
 
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
+          transactionHash
+        );
+        if (txStatus.status !== TX_STATUS.SUCCESS) {
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
+        }
+      }
+
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
 
       return transactionHash;
     } catch (err) {
-      if (
-        err instanceof NotWhitelistedProviderError ||
-        err instanceof UnapprovedContractError ||
-        err instanceof UnapprovedMethodError
-      ) {
-        this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
-      }
-
       const parsedError = RubicSdkErrorParser.parseError(err);
-
       if (!(err instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
-
-      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-        const slippageErr = new LowSlippageError(0.03);
-        throw slippageErr;
-      }
-
       throw parsedError;
     }
   }
@@ -280,7 +289,7 @@ export class OnChainService {
     };
 
     try {
-      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      const amount = new BigNumber(Token.toWei(fromAmount, fromDecimals));
 
       await trade.approve(transactionOptions, true, amount);
     } catch (err) {
@@ -328,29 +337,6 @@ export class OnChainService {
     );
   }
 
-  public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderErrors,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): void {
-    if (error instanceof NotWhitelistedProviderError) {
-      this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
-    } else {
-      this.onChainApiService
-        .saveNotWhitelistedOnChainProvider(error, blockchain, tradeType)
-        .subscribe();
-    }
-  }
-
-  private isNotMinedError(err: Error): boolean {
-    return (
-      Boolean(err?.message?.includes) &&
-      err.message.includes(
-        'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
-      )
-    );
-  }
-
   private async handlePreSwapModal(trade: OnChainTrade): Promise<void> {
     if (trade instanceof TonOnChainTrade && trade.additionalInfo.isMultistep) {
       const ok = await this.modalService.openTonSlippageWarning(trade);
@@ -359,11 +345,25 @@ export class OnChainService {
     }
   }
 
-  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
-    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const waitTime = 3_000;
-      await firstValueFrom(timer(waitTime));
-    }
+  private async updateBalancesAfterSwap(
+    fromToken: BalanceToken,
+    toToken: BalanceToken,
+    fromTokenPrevBalanceWei: BigNumber,
+    toTokenPrevBalanceWei: BigNumber
+  ): Promise<void> {
+    await this.tokensFacade.updateTokenBalancesAfterItSwap(
+      fromToken,
+      toToken,
+      fromTokenPrevBalanceWei,
+      toTokenPrevBalanceWei
+    );
+
+    const updatedSrcToken = this.tokensFacade.findTokenSync(fromToken);
+    const updatedDstToken = this.tokensFacade.findTokenSync(toToken);
+    const input = this.swapFormService.inputValue;
+    this.swapFormService.form.patchValue({
+      input: { ...input, fromToken: updatedSrcToken, toToken: updatedDstToken }
+    });
   }
 
   private calculateTimeoutForChains(): number {
@@ -419,7 +419,10 @@ export class OnChainService {
     );
 
     const settings = this.settingsService.instantTradeValue;
-    const slippageTolerance = settings.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(settings.slippageTolerance)
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
@@ -444,5 +447,13 @@ export class OnChainService {
     } catch {
       return null;
     }
+  }
+
+  private getGasLimitRatio(fromBlockchain: BlockchainName): number | null {
+    if (fromBlockchain === BLOCKCHAIN_NAME.MONAD) {
+      return 1.1;
+    }
+
+    return null;
   }
 }

@@ -60,3 +60,6 @@ Thumbs.db
 
 # Test
 /src/coverage/*
+
+# Sentry
+.env.sentry-build-plugin

@@ -10,5 +10,5 @@
 </button>
 
 <ng-template #hint>
-  {{ 'crossChainPage.targetAddress.hint' | translate : { network: (toBlockchain$ | async) } }}
+  {{ 'crossChainPage.targetAddress.hint' | translate : { network: toBlockchain } }}
 </ng-template>

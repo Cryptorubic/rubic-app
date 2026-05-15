@@ -1,0 +1,5 @@
+export enum HOUDINI_STATUS {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAIL = 'FAIL'
+}

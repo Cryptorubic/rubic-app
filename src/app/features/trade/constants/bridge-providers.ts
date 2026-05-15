@@ -1,4 +1,4 @@
-import { BridgeType } from '@cryptorubic/sdk';
+import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
@@ -131,6 +131,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}hop.svg`,
     name: 'Hop'
   },
+  houdini: {
+    averageTime: 5,
+    color: '#a919d1',
+    image: `${imageBasePath}houdini.svg`,
+    name: 'Privacy Routing'
+  },
   hyphen: {
     averageTime: 5,
     color: '#353392',
@@ -188,6 +194,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}multichain.png`,
     name: 'Multichain'
   },
+  //NNNNNNNNNNNNNNNNNN
+  near_intents: {
+    averageTime: 5,
+    color: '#452fbf',
+    image: `assets/images/icons/coins/near.svg`,
+    name: 'Near Intents'
+  },
   //OOOOOOOOOOOOOOOOOO
   omni: {
     averageTime: 5,
@@ -232,6 +245,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Owlto'
   },
   //PPPPPPPPPPPPPPP
+  pact_swap: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}pactswap.svg`,
+    name: 'PactSwap'
+  },
   polygon: {
     averageTime: 5,
     color: '#5d25ba',
@@ -243,6 +262,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#fff',
     image: `assets/images/icons/coins/pulsechain.svg`,
     name: 'Pulsechain bridge'
+  },
+  //QQQQQQQQQQQQQQQQQQQQ
+  quickex: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}quickex.svg`,
+    name: 'Quickex'
   },
   //RRRRRRRRRRRRRRRRRRRR
   rainbow: {
@@ -280,6 +306,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#000000',
     image: `${imageBasePath}router.svg`,
     name: 'Router'
+  },
+  rubic_stellar_api: {
+    color: '#00ff73',
+    image: 'assets/images/icons/providers/on-chain/rubic-stellar-api.svg',
+    name: `Rubic's Stellar API`
   },
   //SSSSSSSSSSSSSSSSSSS
   satellite: {
@@ -355,6 +386,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#33FF99',
     image: `${imageBasePath}unizen.png`,
     name: 'Unizen'
+  },
+  usdt_zero_bridge: {
+    averageTime: 5,
+    color: '#33FF99',
+    image: `${imageBasePath}usdt_zero_bridge.svg`,
+    name: 'USDT0 Bridge'
   },
   //VVVVVVVVVVVVVVVVVVVVV
   voyager: {

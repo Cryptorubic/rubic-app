@@ -1,0 +1,5 @@
+<app-transfer-tokens-window
+  [receiverCtrl]="receiverCtrl"
+  [creationConfig]="clearswapFormConfig"
+  (handleTransfer)="nextTransfer$.next($event)"
+></app-transfer-tokens-window>

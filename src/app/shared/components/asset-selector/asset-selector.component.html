@@ -28,16 +28,25 @@
   </ng-container>
 
   <ng-template #emptySelector>
+    <ng-container
+      *ngTemplateOutlet="
+        emptySelectorTemplate || defaultEmptySelector;
+        context: { emptySelectorText: emptySelectorText, isDisabled: isDisabled || isQueryDisabled }
+      "
+    ></ng-container>
+  </ng-template>
+
+  <ng-template #defaultEmptySelector>
     <div class="selector__empty">
       <div class="selector__empty-container">
         {{ emptySelectorText }}
         <img
-          *ngIf="isDisabled"
+          *ngIf="isDisabled || isQueryDisabled"
           src="assets/images/icons/arrow/arrow-down-grey.svg"
           alt="Select token"
         />
         <img
-          *ngIf="!isDisabled"
+          *ngIf="!isDisabled && !isQueryDisabled"
           src="assets/images/icons/arrow/arrow-down-white.svg"
           alt="Select token"
         />

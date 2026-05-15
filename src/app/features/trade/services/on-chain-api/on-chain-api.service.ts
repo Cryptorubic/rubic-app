@@ -6,16 +6,6 @@ import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
-import {
-  BlockchainName,
-  NotWhitelistedProviderError,
-  OnChainTrade,
-  OnChainTradeType,
-  TO_BACKEND_BLOCKCHAINS,
-  UnapprovedContractError,
-  UnapprovedMethodError,
-  Web3Pure
-} from '@cryptorubic/sdk';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
@@ -25,7 +15,15 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
-import { TO_BACKEND_ON_CHAIN_PROVIDERS } from '@cryptorubic/core';
+import {
+  BlockchainName,
+  OnChainTradeType,
+  TO_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_ON_CHAIN_PROVIDERS,
+  Token
+} from '@cryptorubic/core';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable()
 export class OnChainApiService {
@@ -109,43 +107,6 @@ export class OnChainApiService {
       .pipe(delay(1000));
   }
 
-  public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): Observable<void> {
-    return this.httpService.post(`info/new_provider`, {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: tradeType,
-      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: 'on-chain'
-    });
-  }
-
-  public saveNotWhitelistedOnChainProvider(
-    error: UnapprovedContractError | UnapprovedMethodError,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): Observable<void> {
-    if (error instanceof UnapprovedContractError) {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: tradeType,
-        address: error.contract,
-        cause: 'on-chain',
-        selector: 'unknown'
-      });
-    } else {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: tradeType,
-        address: 'unknown',
-        cause: 'on-chain',
-        selector: error.method
-      });
-    }
-  }
-
   public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {
     return this.httpService.post('onchain_route_calculation/save', data, null, {
       headers: {
@@ -173,7 +134,7 @@ export class OnChainApiService {
       provider: backendProvider,
       from_token: fromAddress,
       to_token: toAddress,
-      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
+      from_amount: Token.toWei(fromAmount, fromDecimals),
       to_amount: trade.to.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
@@ -187,6 +148,14 @@ export class OnChainApiService {
           delay(1000),
           map(res => res.pretrade_id)
         )
+    );
+  }
+
+  public getClearswapStatus(id: string): Promise<{ status: CLEARSWAP_STATUS }> {
+    return firstValueFrom(
+      this.httpService.get<{ status: CLEARSWAP_STATUS }>(
+        `v3/tmp/statuses/clearswap/status?rubic_id=${id}`
+      )
     );
   }
 }

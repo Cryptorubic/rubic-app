@@ -1,5 +1,4 @@
 import {
-  nativeTokensList,
   RubicSdkError,
   TransactionRevertedError as SdkTransactionRevertedError,
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
@@ -23,8 +22,8 @@ import {
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
   SimulationFailedError as SdkSimulationFailedError,
-  TimeoutError as SdkTimeoutError
-} from '@cryptorubic/sdk';
+  TxRevertedInBlockchainError as SdkTxRevertedInBlockchainError
+} from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -55,14 +54,17 @@ import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
-import { SwapTimeoutError } from './common/swap-timeout.error';
+import { nativeTokensList } from '@cryptorubic/core';
+import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
+import { WrongReceiverError } from './provider/wrong-receiver-error';
+import InactiveWalletError from './common/inactive-wallet.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
-    if (err instanceof SdkTimeoutError) {
-      return new SwapTimeoutError();
+    if (err instanceof SdkTxRevertedInBlockchainError) {
+      return new TxRevertedInBlockchainError();
     }
     if (err instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(err.apiError);
@@ -83,7 +85,7 @@ export class RubicSdkErrorParser {
       return new FailedToCheckForTransactionReceiptError();
     }
     if (err instanceof SdkUserRejectError) {
-      return new UserRejectError();
+      return new UserRejectError(err.message);
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
@@ -184,9 +186,23 @@ export class RubicSdkErrorParser {
     // Backpack wallet tx errors
     if (
       err.message.toLowerCase().includes('approval denied') ||
-      err.message.toLowerCase().includes('plugin closed')
+      err.message.toLowerCase().includes('plugin closed') ||
+      err.message.toLowerCase().includes('the user rejected this request') ||
+      err.message.toLowerCase().includes('user declined access')
     ) {
       return new UserRejectError();
+    }
+
+    if (err.message.toLowerCase().includes('manual swap reject')) {
+      return new UserRejectError(err.message);
+    }
+
+    if (err.message.toLowerCase().includes('connected wallet must be the same as receiver')) {
+      return new WrongReceiverError();
+    }
+
+    if (err.message.toLowerCase().includes('account is not activated')) {
+      return new InactiveWalletError();
     }
 
     return new ExecutionRevertedError(err.message);

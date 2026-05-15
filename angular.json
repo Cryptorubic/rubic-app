@@ -24,6 +24,10 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "aot": true,
+            "customWebpackConfig": {
+              "path": "./sentry-webpack.config.ts"
+            },
+            "webWorkerTsConfig": "tsconfig.worker.json",
             "outputPath": "dist/rubic",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -39,6 +43,26 @@
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
                 "output": "assets/taiga-ui/icons"
+              },
+              {
+                "glob": "poseidon_hash_wasm_bg.wasm",
+                "input": "node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm",
+                "output": "assets/railgun"
+              },
+              {
+                "glob": "curve25519_scalarmult_wasm_bg.wasm",
+                "input": "node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm",
+                "output": "assets/railgun"
+              },
+              {
+                "glob": "kms_lib_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
+              },
+              {
+                "glob": "tfhe_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
               }
             ],
             "styles": [
@@ -58,9 +82,14 @@
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
-            "sourceMap": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": false
+            },
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "local": {
@@ -81,6 +110,14 @@
               "customWebpackConfig": {
                 "path": "./custom-webpack.config.ts"
               }
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             },
             "dev2": {
               "fileReplacements": [
@@ -203,6 +240,9 @@
             "sdk": {
               "browserTarget": "rubic:build:sdk"
             },
+            "dev": {
+              "browserTarget": "rubic:build:dev"
+            },
             "dev2": {
               "browserTarget": "rubic:build:dev2"
             },
@@ -242,7 +282,11 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           }
         },
         "lint": {

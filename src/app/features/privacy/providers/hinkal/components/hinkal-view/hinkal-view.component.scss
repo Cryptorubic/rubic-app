@@ -1,0 +1,8 @@
+@use 'src/scss/core' as *;
+
+@include b($mobile-md) {
+  app-hinkal-wallet-info,
+  app-hinkal-login-page {
+    margin-top: 80px;
+  }
+}

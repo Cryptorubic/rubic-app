@@ -39,14 +39,6 @@ app-target-network-address {
   display: block;
 }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--tui-padding-s);
-  align-items: flex-end;
-  width: 100%;
-}
-
 .buttons-container {
   display: flex;
   gap: var(--tui-padding-l);
@@ -76,10 +68,5 @@ app-form-switcher {
         border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
       }
     }
-  }
-
-  .input-container {
-    gap: var(--tui-padding-xs);
-    align-items: flex-start;
   }
 }

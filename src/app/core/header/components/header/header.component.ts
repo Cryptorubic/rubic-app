@@ -13,7 +13,7 @@ import {
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Router } from '@angular/router';
+import { IsActiveMatchOptions, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { map, startWith } from 'rxjs/operators';
@@ -22,6 +22,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
   selector: 'app-header',
@@ -32,6 +33,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 })
 export class HeaderComponent {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
+
+  public readonly ROUTER_LINK_OPTS: IsActiveMatchOptions = {
+    queryParams: 'ignored',
+    matrixParams: 'exact',
+    paths: 'exact',
+    fragment: 'exact'
+  };
 
   /**
    * Rubic advertisement type. Renders different components based on type.
@@ -80,6 +88,10 @@ export class HeaderComponent {
     return this.headerStore.isMobile;
   }
 
+  public get isTablet(): boolean {
+    return this.headerStore.isTablet;
+  }
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
@@ -102,6 +114,7 @@ export class HeaderComponent {
     this.advertisementType = 'default';
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
     if (isPlatformBrowser(platformId)) {
       this.zone.runOutsideAngular(() => {
         this.setNotificationPosition();
@@ -122,26 +135,29 @@ export class HeaderComponent {
   /**
    * Triggering redefining status of using mobile.
    */
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
   }
 
   public navigateToSwaps(): void {
+    this.gtmService.fireSwitchModeEvent('regular');
     this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
   public navigateToTestnets(): void {
+    this.gtmService.fireSwitchModeEvent('testnets');
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
-  public navigateToBirthdayPage(): void {
-    this.window.open('http://rubic.exchange/birthday5', '_blank');
+  public onHeaderModeSwitch(selectedMode: SwitchModeEvent): void {
+    this.gtmService.fireSwitchModeEvent(selectedMode);
   }
 
-  public handleMenuButtonClick(): void {
-    this.gtmService.reloadGtmSession();
-  }
+  // public navigateToPrivateSwaps(): void {
+  //   this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
+  // }
 
   public switchTheme(): void {
     this.themeService.switchTheme();

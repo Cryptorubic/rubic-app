@@ -3,10 +3,9 @@
   size="m"
   appearance="secondary"
   type="button"
-  *ngLet="buttonData$ | async as buttonData"
   (click)="switchMode()"
-  [tuiHint]="buttonData.hintText"
+  [tuiHint]="hintText"
   tuiHintAppearance="onDark"
 >
-  <img class="image" [src]="'assets/images/icons/' + buttonData.icon" [alt]="'Switch list'" />
+  <img *ngIf="icon" class="image" [src]="'assets/images/icons/' + icon" [alt]="'Switch list'" />
 </button>

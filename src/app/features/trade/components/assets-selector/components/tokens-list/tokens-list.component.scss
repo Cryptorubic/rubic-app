@@ -52,12 +52,16 @@
     height: 100%;
 
     @include b($mobile-md-minus) {
-      height: calc(100% - 10px);
+      height: calc(100% - 50px);
     }
   }
 }
 
 tui-loader {
+  height: 100%;
+}
+
+.token-list-wrapper {
   height: 100%;
 }
 
@@ -75,7 +79,7 @@ tui-loader {
 
     margin-bottom: 2px;
 
-    app-search-bar {
+    app-search-tokens-bar {
       flex: 1;
     }
 
@@ -91,6 +95,14 @@ tui-loader {
       .t-wrapper {
         background-color: var(--io-background);
         border-radius: 0;
+        border-top-right-radius: var(--tui-radius-m);
+      }
+    }
+  }
+
+  &__hide-favorites {
+    ::ng-deep {
+      .tui-autofill {
         border-top-right-radius: var(--tui-radius-m);
       }
     }

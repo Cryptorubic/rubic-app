@@ -4,7 +4,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { CHAIN_TYPE } from '@cryptorubic/sdk';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-metamask-modal',

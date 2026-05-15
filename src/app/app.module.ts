@@ -1,5 +1,5 @@
 import { BrowserModule, Meta } from '@angular/platform-browser';
-import { APP_INITIALIZER, Inject, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiAlertModule, TuiDialogModule, TuiRootModule } from '@taiga-ui/core';
@@ -12,10 +12,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
+import * as Sentry from '@sentry/angular';
+import { privacyInitializer } from './features/privacy/utils/privacy-initializer';
+import { PrivateLocalStorageService } from './features/privacy/services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     CoreModule,
     SharedModule,
     TuiRootModule,
@@ -25,8 +30,6 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-p
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'
     }),
-    BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     NgxGoogleAnalyticsModule
@@ -37,6 +40,26 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-p
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
       deps: [],
+      multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler()
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: privacyInitializer,
+      deps: [PrivateLocalStorageService],
       multi: true
     }
   ],

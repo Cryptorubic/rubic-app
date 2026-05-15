@@ -1,0 +1,58 @@
+<div class="wrapper">
+  <app-window-container *ngIf="!railgunId && !railgunAddress">
+    <ng-container header>Log In</ng-container>
+    <tui-loader class="loader" [inheritColor]="true" [overlay]="true" [showLoader]="loading">
+      <ng-container *ngIf="hasAccount; else actions">
+        <p>Welcome back! Please enter your password to access your wallet.</p>
+        <form [formGroup]="secretForm" (ngSubmit)="onSubmit()">
+          <tui-input-password formControlName="password">
+            Input password
+            <span class="tui-required"></span>
+          </tui-input-password>
+          <tui-error
+            formControlName="password"
+            [error]="['required', 'minlength', 'invalid'] | tuiFieldError | async"
+          ></tui-error>
+
+          <div class="buttons">
+            <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
+            <button
+              (click)="handleReset()"
+              type="button"
+              size="l"
+              tuiButton
+              appearance="outline"
+              class="tui-form__button"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+      </ng-container>
+
+      <ng-template #actions>
+        <p>Create new wallet or import existing using a seed phrase</p>
+        <div class="buttons">
+          <button
+            (click)="handleImport()"
+            size="l"
+            tuiButton
+            type="submit"
+            class="tui-form__button"
+          >
+            Import
+          </button>
+          <button
+            (click)="handleCreate()"
+            size="l"
+            tuiButton
+            type="submit"
+            class="tui-form__button"
+          >
+            Create new
+          </button>
+        </div>
+      </ng-template>
+    </tui-loader>
+  </app-window-container>
+</div>

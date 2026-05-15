@@ -4,6 +4,8 @@ import { Env } from './models/env';
 export const ENVIRONMENT: Env = {
   environmentName: 'rubic',
   production: true,
+  local: false,
+  googleAnalyticsId: 'G-QHYCGJXV8G',
 
   apiBaseUrl: '//api.rubic.exchange/api',
   apiTokenUrl: 'https://api.rubic.exchange/api',

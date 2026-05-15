@@ -1,4 +1,4 @@
-import { BlockchainName, OnChainTradeType } from '@cryptorubic/sdk';
+import { BlockchainName, OnChainTradeType } from '@cryptorubic/core';
 
 export interface InstantTradeBotRequest {
   txHash: string;

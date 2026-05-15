@@ -1,0 +1,6 @@
+<app-swap-window
+  [quoteAdapter]="quoteAdapter"
+  (swapClicked)="handleSwap($event)"
+  [receiverCtrl]="receiverCtrl"
+  [creationConfig]="creationConfig$ | async"
+></app-swap-window>

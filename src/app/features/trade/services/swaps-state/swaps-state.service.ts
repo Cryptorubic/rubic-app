@@ -15,13 +15,9 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  EvmWrapTrade,
   nativeTokensList,
-  OnChainTrade,
-  Token,
-  WrappedCrossChainTradeOrNull,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  Token
+} from '@cryptorubic/core';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
@@ -33,10 +29,9 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
 import { compareAddresses, compareObjects, compareTokens } from '@shared/utils/utils';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -52,6 +47,13 @@ import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
+import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
+import { RubicSdkError } from '@cryptorubic/web3';
 
 @Injectable()
 export class SwapsStateService {
@@ -85,7 +87,7 @@ export class SwapsStateService {
   public readonly notEnoughBalance$ = this.swapsFormService.fromToken$.pipe(
     filter(Boolean),
     combineLatestWith(
-      this.tokensStoreService.tokens$,
+      this.tokensFacade.tokens$,
       this.swapsFormService.fromAmount$,
       this.walletConnector.networkChange$,
       this.walletConnector.addressChange$
@@ -123,6 +125,22 @@ export class SwapsStateService {
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
 
+  private readonly _backupTrades$ = new BehaviorSubject<TradeState[]>([]);
+
+  private set backupTrades(trades: TradeState[]) {
+    this._backupTrades$.next(trades);
+  }
+
+  public get backupTrades(): TradeState[] {
+    return this._backupTrades$.getValue();
+  }
+
+  public readonly backupTradesCount$ = this._backupTrades$.pipe(
+    map(trades => {
+      return trades.length;
+    })
+  );
+
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
     current: 0
@@ -142,11 +160,11 @@ export class SwapsStateService {
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
     private readonly refundService: RefundService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly solanaGaslessStateService: SolanaGaslessStateService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -155,7 +173,8 @@ export class SwapsStateService {
     wrappedTrade: WrappedSdkTrade,
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean,
-    needAuthWallet: boolean
+    needAuthWallet: boolean,
+    needTrustlineOptions: NeedTrustlineOptions
   ): void {
     const trade = wrappedTrade?.trade;
     const defaultState: TradeState = !trade
@@ -167,18 +186,25 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: [],
-          centralizationStatus: null
+          centralizationStatus: null,
+          needTrustlineOptions: {
+            needTrustlineAfterSwap: false,
+            needTrustlineBeforeSwap: false
+          },
+          warnings: []
         }
       : {
-          error: wrappedTrade?.error,
+          error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
           trade,
           needApprove,
           needAuthWallet,
+          needTrustlineOptions,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade),
-          centralizationStatus: this.setCentralizationStatus(trade)
+          centralizationStatus: this.setCentralizationStatus(trade),
+          warnings: trade.warnings
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -322,7 +348,7 @@ export class SwapsStateService {
 
   private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
     const nativeToken = nativeTokensList[blockchain];
-    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+    const nativeTokenPrice = this.tokensFacade.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
 
@@ -362,10 +388,47 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
+  }
+
+  public setBackupsForTrade(trade: TradeState): void {
+    this.backupTrades = [];
+    this.updateBackups(trade);
+  }
+
+  public updateBackups(tradeToExclude: TradeState): void {
+    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    this.backupTrades = source.filter(t => t.tradeType !== tradeToExclude.tradeType);
+  }
+
+  public selectNextBackupTrade(): SelectedTrade {
+    if (this.backupTrades.length === 0) {
+      return null;
+    }
+
+    const trade: SelectedTrade = {
+      ...this.backupTrades[0],
+      selectedByUser: false,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+
+    return trade;
+  }
+
+  public resetBackupTrades(): void {
+    this.backupTrades = [];
   }
 
   private subscribeOnTradeChange(): void {
@@ -387,7 +450,7 @@ export class SwapsStateService {
     this._calculationProgress$.next({ total, current });
   }
 
-  private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
+  private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {
     if (!fromToken?.address || !toToken?.address) {
       return false;
     }
@@ -475,7 +538,7 @@ export class SwapsStateService {
     return calculationResult;
   }
 
-  private shouldEmitToken(oldToken: TokenAmount, newToken: TokenAmount): boolean {
+  private shouldEmitToken(oldToken: BalanceToken, newToken: BalanceToken): boolean {
     return Boolean(oldToken && newToken) ?? compareTokens(oldToken, newToken);
   }
 
@@ -528,5 +591,21 @@ export class SwapsStateService {
       return CENTRALIZATION_CONFIG[trade.type];
     }
     return null;
+  }
+
+  private setSpecificError(
+    type: SWAP_PROVIDER_TYPE,
+    options: NeedTrustlineOptions
+  ): RubicSdkError | undefined {
+    //@TODO remove after fix receiver connection on mobile
+    if (
+      type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
+      this.headerStore.isMobile &&
+      (options.needTrustlineAfterSwap || options.needTrustlineBeforeSwap)
+    ) {
+      return new RubicSdkError(
+        'Trustline not detected. Please open your wallet and add the trustline to enable this swap.'
+      );
+    }
   }
 }

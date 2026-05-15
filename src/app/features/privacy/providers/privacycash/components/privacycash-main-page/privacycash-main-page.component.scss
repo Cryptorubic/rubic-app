@@ -1,0 +1,24 @@
+@use 'src/scss/core' as *;
+
+:host {
+  position: relative;
+
+  .loading-banner {
+    padding: 15px;
+
+    font-size: 16px;
+    text-align: center;
+
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+  }
+
+  ::ng-deep app-window-container {
+    display: block;
+    margin-bottom: 12px;
+
+    @include b($mobile-md) {
+      width: 100%;
+    }
+  }
+}

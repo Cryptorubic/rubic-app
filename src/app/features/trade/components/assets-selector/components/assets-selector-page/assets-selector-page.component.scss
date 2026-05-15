@@ -12,13 +12,20 @@
 
   &__header {
     display: flex;
+    align-items: center;
 
     font-weight: bold;
     font-size: 15px;
+
+    app-back-button {
+      position: relative;
+      top: 1px;
+    }
   }
 }
 
-app-search-bar {
+app-search-tokens-bar,
+app-search-blockchains-bar {
   width: 100%;
 }
 
@@ -31,7 +38,6 @@ app-search-bar {
 .token-list-container {
   width: 100%;
   min-height: 410px;
-  max-height: 410px;
 
   &__list {
     height: 100%;
@@ -53,9 +59,12 @@ app-search-bar {
         margin-bottom: 0;
         padding: 0 var(--tui-padding-l);
 
-        ::ng-deep app-search-bar {
-          .tui-autofill {
-            height: 51px;
+        ::ng-deep {
+          app-search-tokens-bar,
+          app-search-blockchains-bar {
+            .tui-autofill {
+              height: 51px;
+            }
           }
         }
 
@@ -91,4 +100,11 @@ app-search-bar {
       }
     }
   }
+}
+
+.back-button__text {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 14px;
 }

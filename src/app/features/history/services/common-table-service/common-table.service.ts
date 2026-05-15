@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { TuiNotification } from '@taiga-ui/core';
-import { BlockchainName, CHAIN_TYPE, EvmBlockchainName, Injector } from '@cryptorubic/sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -9,6 +8,12 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { HttpService } from '@app/core/services/http/http.service';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TransactionReceipt } from 'viem';
+import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class CommonTableService {
@@ -25,8 +30,16 @@ export class CommonTableService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly sdkService: SdkService,
-    private readonly http: HttpService
+    private readonly http: HttpService,
+    private readonly rubicApiService: RubicApiService,
+    private readonly adaptersFactory: BlockchainAdapterFactoryService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly modalService: ModalService
   ) {}
+
+  public async openTrustline(options: TrustlineComponentOptions): Promise<void> {
+    await this.modalService.openTrustlineModal(options);
+  }
 
   public async claimArbitrumBridgeTokens(
     srcTxHash: string,
@@ -50,17 +63,19 @@ export class CommonTableService {
     };
 
     try {
-      const data = await Injector.rubicApiService.claimOrRedeemCoins(
+      const txData = await this.rubicApiService.claimOrRedeemCoins(
         srcTxHash,
         fromBlockchain as EvmBlockchainName
       );
 
-      transactionReceipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .trySendTransaction(data.to, {
-          ...data,
+      const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
+
+      transactionReceipt = await adapter.signer.trySendTransaction({
+        txOptions: {
+          ...txData,
           onTransactionHash
-        });
+        }
+      });
 
       await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
 
@@ -121,9 +136,13 @@ export class CommonTableService {
     };
 
     try {
-      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, {
-        onConfirm: onTransactionHash
-      });
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(
+        srcTxHash,
+        this.walletConnectorService.address,
+        {
+          onConfirm: onTransactionHash
+        }
+      );
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {

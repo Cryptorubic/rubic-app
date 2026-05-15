@@ -1,6 +1,6 @@
-import { TokenAmount } from 'src/app/shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 
-export interface AvailableTokenAmount extends TokenAmount {
+export interface AvailableTokenAmount extends BalanceToken {
   available: boolean;
 }
 

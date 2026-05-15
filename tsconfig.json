@@ -1,6 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "rootDirs": [
+      "./",
+      "./node_modules/@cryptorubic"
+    ],
     "baseUrl": "./",
     "downlevelIteration": true,
     "noImplicitAny": true,
@@ -8,7 +12,7 @@
     "sourceMap": true,
     "declaration": false,
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -31,11 +35,13 @@
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"],
-      "zlib": ["node_modules/browserify-zlib"],
-      
+      "zlib": ["node_modules/browserify-zlib"]
     },
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   },
   "exclude": ["rubic-sdk/*"]
 }

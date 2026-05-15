@@ -21,6 +21,7 @@ export class TransactionStateComponent {
     type: 'bridge' | 'swap';
     needApprove: boolean;
     needAuthWallet: boolean;
+    needTrustlineAfterSwap: boolean;
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
@@ -36,7 +37,9 @@ export class TransactionStateComponent {
       steps.push(
         transactionStep.swapRequest,
         transactionStep.sourcePending,
-        transactionStep.destinationPending
+        ...(value.needTrustlineAfterSwap
+          ? [transactionStep.trustlinePending, transactionStep.destinationPending]
+          : [transactionStep.destinationPending])
       );
     }
     steps.push(transactionStep.success);
@@ -55,8 +58,11 @@ export class TransactionStateComponent {
       approvePending: 'Manage allowance',
       authWalletPending: 'Signing message',
       authWalletReady: 'Wallet authorized',
+      trustlinePending: 'Waiting for trustline',
+      trustlineReady: 'Trustline added',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
+      swapRetry: 'Swap Retry',
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
@@ -67,14 +73,22 @@ export class TransactionStateComponent {
   }
 
   private setStepStates(value: TransactionStep): void {
+    value = value === transactionStep.swapRetry ? transactionStep.swapRequest : value;
     const stateIdx = this.steps.findIndex(el => el.key === value);
-    const successStateIdx = this.steps.findIndex(el => el.key === transactionStep.success);
+
+    const isSrcChainLastStep = (el: StepsType): boolean => {
+      return this.type === 'swap'
+        ? el.key === transactionStep.success
+        : el.key === transactionStep.sourcePending;
+    };
+
+    const srcChainSuccessIdx = this.steps.findIndex(el => isSrcChainLastStep(el));
 
     this.steps = this.steps.map((step, index) => {
       if (value === transactionStep.error) {
-        if (step.key === transactionStep.success) return { ...step, status: 'failed' };
+        if (isSrcChainLastStep(step)) return { ...step, status: 'failed' };
         // every step before success supposed to be succeeded
-        if (index < successStateIdx) return { ...step, status: 'fullfilled' };
+        if (index < srcChainSuccessIdx) return { ...step, status: 'fullfilled' };
       }
       if (index < stateIdx || value === transactionStep.success) {
         return { ...step, status: 'fullfilled' };

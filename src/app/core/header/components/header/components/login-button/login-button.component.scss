@@ -1,0 +1,19 @@
+@use 'src/scss/core' as *;
+
+@include b($tablet) {
+  button {
+    height: 40px !important;
+
+    ::ng-deep {
+      .t-wrapper {
+        padding: 0 16px !important;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  button {
+    font-size: 12px !important;
+  }
+}

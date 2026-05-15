@@ -1,4 +1,4 @@
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 
 export interface AlternativeRouteDTO {
@@ -24,8 +24,8 @@ export interface AlternativeTokenPairs {
 }
 
 export interface AlternativeRoute {
-  from: TokenAmount;
-  to: TokenAmount;
+  from: BalanceToken;
+  to: BalanceToken;
   amount: BigNumber;
 }
 

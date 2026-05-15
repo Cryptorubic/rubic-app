@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {
   BehaviorSubject,
+  combineLatest,
   firstValueFrom,
   forkJoin,
   from,
   interval,
   Observable,
   of,
+  Subject,
   Subscription
 } from 'rxjs';
 import {
@@ -15,8 +17,10 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  finalize,
   first,
   map,
+  skip,
   startWith,
   switchMap,
   takeWhile,
@@ -24,21 +28,13 @@ import {
   timeout
 } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
-import BigNumber from 'bignumber.js';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  EvmBlockchainName,
-  TX_STATUS,
-  Web3PublicSupportedBlockchain,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+import { TX_STATUS } from '@cryptorubic/web3';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -53,27 +49,36 @@ import {
   MevBotSupportedBlockchain,
   mevBotSupportedBlockchains
 } from './models/mevbot-data';
-import { compareObjects } from '@shared/utils/utils';
-import { tuiIsPresent } from '@taiga-ui/cdk';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { SwapTimeoutError } from '@app/core/errors/models/common/swap-timeout.error';
-
-interface TokenFiatAmount {
-  tokenAmount: BigNumber;
-  fiatAmount: string;
-}
-
-interface TradeInfo {
-  fromAsset: AssetSelector;
-  fromValue: TokenFiatAmount;
-  toAsset: AssetSelector;
-  toValue: TokenFiatAmount;
-}
+import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  CrossChainTradeType,
+  EvmBlockchainName,
+  OnChainTradeType
+} from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { TradeInfo } from '../../models/trade-info';
+import { transactionStep, TransactionStep } from '../../models/transaction-steps';
+import { RateChangeInfo } from '../../models/rate-change-info';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { SwapRetryModalInput } from '../../components/swap-retry-pending-modal/models/swap-retry-modal-input';
+import { checkAmountChange } from '../../utils/check-amount-change';
+import {
+  transferTradeSupportedProviders,
+  TransferTradeType
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
 
 @Injectable()
 export class PreviewSwapService {
@@ -98,7 +103,37 @@ export class PreviewSwapService {
 
   private readonly _selectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
 
+  private readonly _initialSelectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
+
   public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
+
+  private readonly _isRetryModalOpen$ = new BehaviorSubject<boolean>(false);
+
+  private _continueSwapTrigger$: Subject<boolean>;
+
+  private _isBackupProviderSelected$ = new BehaviorSubject<boolean>(false);
+
+  private _isRateChanged$ = new BehaviorSubject<boolean>(false);
+
+  private get isRetryModalOpen(): boolean {
+    return this._isRetryModalOpen$.getValue();
+  }
+
+  private get initialSelectedTradeState(): SelectedTrade | null {
+    return this._initialSelectedTradeState$.getValue();
+  }
+
+  private set isRetryModalOpen(isOpen: boolean) {
+    this._isRetryModalOpen$.next(isOpen);
+  }
+
+  private set isBackupProviderSelected(isSelected: boolean) {
+    this._isBackupProviderSelected$.next(isSelected);
+  }
+
+  private set isRateChanged(isChanged: boolean) {
+    this._isRateChanged$.next(isChanged);
+  }
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
     this.swapForm.fromToken$.pipe(first()),
@@ -142,10 +177,12 @@ export class PreviewSwapService {
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
     private readonly ccrApiService: CrossChainApiService,
-    private readonly spindlService: SpindlService
+    private readonly spindlService: SpindlService,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
-  private getTokenAsset(token: TokenAmount): AssetSelector {
+  private getTokenAsset(token: BalanceToken): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
     const color = blockchainColor[token.blockchain];
 
@@ -185,12 +222,45 @@ export class PreviewSwapService {
     this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
   }
 
+  public backToForm(): void {
+    this.continueBackupSwap(false);
+
+    this.swapsStateService.resetBackupTrades();
+    this.tradePageService.setState('form');
+  }
+
+  public handleTrustline(): void {
+    const currState = this.transactionState;
+
+    const nextState: TransactionState = {
+      ...currState,
+      data: {
+        ...currState.data,
+        needTrustlineOptions: {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
+      },
+      ...(currState.data.needTrustlineOptions?.needTrustlineAfterSwap && {
+        step: transactionStep.trustlineReady
+      })
+    };
+    this.setNextTxState(nextState);
+  }
+
   public activatePage(): void {
     this.resetTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
+    this.subscribeOnSelectedTradeChange();
     this.subscribeOnValidation();
     this.handleTransactionState();
+    this.handleRetryModal();
+  }
+
+  public activateDepositPage(): void {
+    this.resetTransactionState();
+    this.subscribeOnDepositValidation();
   }
 
   public deactivatePage(): void {
@@ -200,17 +270,54 @@ export class PreviewSwapService {
     this._selectedTradeState$.next(null);
   }
 
+  private handleRetryModal(): void {
+    const retryModalSubscription$ = this._isRetryModalOpen$
+      .pipe(
+        skip(1),
+        distinctUntilChanged(),
+        switchMap(isOpen => {
+          if (isOpen) {
+            this.isRateChanged = false;
+            const swapRetryModalInput$ = this.getSwapRetryModalInput();
+
+            return this.modalService
+              .openSwapRetryPendingModal(swapRetryModalInput$, this.injector)
+              .pipe(map(() => of(true)));
+          }
+          return of(false);
+        }),
+        tap(isManualClose => {
+          this.modalService.closeSwapRetryModal();
+          if (isManualClose) {
+            this.backToForm();
+          }
+        })
+      )
+      .subscribe();
+
+    this.subscriptions$.push(retryModalSubscription$);
+  }
+
+  public continueBackupSwap(allowedToContinue: boolean): void {
+    this._continueSwapTrigger$?.next(allowedToContinue);
+  }
+
   private handleTransactionState(): void {
+    let retriesCount: number = 0;
     const transactionStateSubscription$ = this.transactionState$
       .pipe(
         filter(state => state.step !== 'inactive'),
-        combineLatestWith(this.selectedTradeState$.pipe(first(tuiIsPresent))),
-        distinctUntilChanged(
-          ([prevTxState, prevTradeState], [nextTxState, nextTradeState]) =>
-            prevTxState.step === nextTxState.step && compareObjects(prevTradeState, nextTradeState)
-        ),
+        combineLatestWith(this.selectedTradeState$),
+        distinctUntilChanged(([prevTxState, prevTradeState], [nextTxState, nextTradeState]) => {
+          return (
+            prevTxState.step === nextTxState.step &&
+            prevTxState.level === nextTxState.level &&
+            prevTradeState.tradeType === nextTradeState.tradeType
+          );
+        }),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
+          retriesCount = txState.level ? retriesCount : 0;
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
@@ -218,8 +325,20 @@ export class PreviewSwapService {
             return this.handleAuthMessage(tradeState);
           }
           if (txState.step === 'swapRequest') {
-            return this.makeSwapRequest(tradeState);
+            return this.makeSwapRequest(tradeState, txState.step);
           }
+          if (txState.step === 'swapRetry' && txState.level !== retriesCount) {
+            retriesCount = txState.level;
+            return this.tryRetrySwap(tradeState, txState.step);
+          }
+
+          if (txState.step === 'trustlineReady') {
+            this.setNextTxState({
+              step: 'destinationPending',
+              data: { ...this.transactionState.data }
+            });
+          }
+
           return of(null);
         })
       )
@@ -241,7 +360,7 @@ export class PreviewSwapService {
             this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
               (tradeState.trade as CrossChainTrade).rubicId,
               srcHash,
-              tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain
+              tradeState.trade.from.blockchain
             )
           ).pipe(
             timeout(29_000),
@@ -255,6 +374,15 @@ export class PreviewSwapService {
           );
         }),
         tap(crossChainStatus => {
+          if (
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_TRUSTLINE &&
+            this.transactionState.step !== transactionStep.trustlineReady
+          ) {
+            this.setNextTxState({
+              step: 'trustlinePending',
+              data: { ...this.transactionState.data }
+            });
+          }
           if (crossChainStatus.dstTxStatus === TX_STATUS.SUCCESS) {
             this.setNextTxState({
               step: 'success',
@@ -279,11 +407,18 @@ export class PreviewSwapService {
             if (crossChainStatus.extraInfo?.mesonSwapId) {
               this.ccrApiService.sendMesonSwapId(crossChainStatus, srcHash);
             }
-          } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
+          } else if (
+            crossChainStatus.dstTxStatus === TX_STATUS.FAIL ||
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_REFUND_TRUSTLINE
+          ) {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }
         }),
-        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
+        takeWhile(
+          crossChainStatus =>
+            crossChainStatus.dstTxStatus === TX_STATUS.PENDING ||
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_TRUSTLINE
+        )
       )
       .subscribe();
     this.subscriptions$.push(pollingSubscription$);
@@ -303,6 +438,36 @@ export class PreviewSwapService {
     this.subscriptions$.push(addressChangeSubscription$);
   }
 
+  public subscribeOnSelectedTradeChange(): void {
+    const tradeStateChangeSubscription$ = this._selectedTradeState$
+      .pipe(tap(trade => this.showSmartAccountHintIfNeeded(trade)))
+      .subscribe();
+
+    this.subscriptions$.push(tradeStateChangeSubscription$);
+  }
+
+  private showSmartAccountHintIfNeeded(trade: SelectedTrade): void {
+    const fromChainType = BlockchainsInfo.getChainType(
+      trade?.trade?.from.blockchain as BlockchainName
+    );
+    const isFromEvm = fromChainType === CHAIN_TYPE.EVM;
+    const shouldShowHint =
+      trade?.tradeType &&
+      transferTradeSupportedProviders.indexOf(trade?.tradeType as TransferTradeType) > -1 &&
+      isFromEvm;
+    if (!shouldShowHint) return;
+
+    const msg = `If you are using a smart account, please be aware that ${this.getProviderName(
+      trade?.tradeType
+    )} may not recognise your transaction correctly. You can choose another best option.`;
+    this.notificationsService.showInfo(msg);
+  }
+
+  private getProviderName(tradeType: CrossChainTradeType | OnChainTradeType): string {
+    const provider = BRIDGE_PROVIDERS[tradeType as CrossChainTradeType];
+    return provider.name || 'unknown';
+  }
+
   private checkAddress(address: string = this.walletConnectorService.address): void {
     const state = this._transactionState$.getValue();
     state.data.activeWallet = Boolean(address);
@@ -314,6 +479,13 @@ export class PreviewSwapService {
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
     state.data.wrongNetwork = Boolean(tokenBlockchain) && network !== tokenBlockchain;
+    this.setNextTxState(state);
+  }
+
+  private checkTrustline(): void {
+    const selectedTrade = this._selectedTradeState$.value;
+    const state = this._transactionState$.getValue();
+    state.data.needTrustlineOptions = selectedTrade.needTrustlineOptions;
     this.setNextTxState(state);
   }
 
@@ -339,7 +511,75 @@ export class PreviewSwapService {
   }
 
   public setSelectedProvider(): void {
+    this.swapsStateService.setBackupsForTrade(this.swapsStateService.tradeState);
     this._selectedTradeState$.next(this.swapsStateService.tradeState);
+  }
+
+  public tryRetrySwap(prevState: SelectedTrade, txStep: TransactionStep): Observable<void> {
+    this.swapsStateService.updateBackups(prevState);
+    const backupTrade = this.swapsStateService.selectNextBackupTrade();
+
+    if (backupTrade) {
+      this.isRetryModalOpen = true;
+      this._selectedTradeState$.next(backupTrade);
+      return this.makeSwapRequest(backupTrade, txStep);
+    } else {
+      this.closeRetryModal();
+      return this.modalService
+        .openAllSwapBackupsFailedModal()
+        .pipe(finalize(() => this.backToForm()));
+    }
+  }
+
+  public closeRetryModal(): void {
+    if (this.isRetryModalOpen) {
+      this.isRetryModalOpen = false;
+    }
+  }
+
+  private async checkBackupProviderRate(tradeState: SelectedTrade): Promise<boolean> {
+    const oldWeiAmount = this.initialSelectedTradeState.trade.to.weiAmount;
+    const newWeiAmount = tradeState.trade.to.weiAmount;
+    const isRateChanged = checkAmountChange(newWeiAmount, oldWeiAmount);
+
+    if (isRateChanged) {
+      this.isRateChanged = true;
+      const rateChangeInfo = {
+        oldAmount: this.initialSelectedTradeState.trade.to.tokenAmount,
+        newAmount: tradeState.trade.to.tokenAmount,
+        tokenSymbol: tradeState.trade.to.symbol
+      };
+
+      return await this.modalService.openSwapRetryProviderSelectModal(
+        tradeState,
+        this.tradeInfo$,
+        rateChangeInfo,
+        this.injector
+      );
+    }
+
+    return true;
+  }
+
+  private getSwapRetryModalInput(): Observable<SwapRetryModalInput> {
+    const initialBackupsCount = this.swapsStateService.backupTrades.length;
+
+    return combineLatest([
+      this.swapsStateService.backupTradesCount$,
+      this._isBackupProviderSelected$,
+      this._isRateChanged$,
+      this._selectedTradeState$
+    ]).pipe(
+      map(([backupTradesCount, isBackupProviderSelected, isRateChanged, selectedTradeState]) => {
+        return {
+          initialBackupsCount,
+          backupTradesCount,
+          isBackupProviderSelected,
+          isRateChanged,
+          selectedTradeState
+        };
+      })
+    );
   }
 
   private async catchSwitchCancel(): Promise<void> {
@@ -354,7 +594,7 @@ export class PreviewSwapService {
     this.resetTransactionState();
   }
 
-  private makeSwapRequest(tradeState: SelectedTrade): Observable<void> {
+  private makeSwapRequest(tradeState: SelectedTrade, txStep: TransactionStep): Observable<void> {
     let txHash: string;
     this.useCallback = true;
     const useMevProtection =
@@ -362,13 +602,19 @@ export class PreviewSwapService {
         ? this.settingsService.instantTradeValue.useMevBotProtection
         : this.settingsService.crossChainRoutingValue.useMevBotProtection;
 
+    if (txStep === 'swapRequest') {
+      this._initialSelectedTradeState$.next(tradeState);
+    }
+
     return from(this.loadRpcParams(useMevProtection)).pipe(
       debounceTime(50),
       switchMap(rpcChanged => {
+        const isSwapRetry = txStep === 'swapRetry';
         return rpcChanged
-          ? this.swapsControllerService.swap(tradeState, {
+          ? this.swapsControllerService.swap(tradeState, !isSwapRetry, {
               onHash: (hash: string) => {
                 if (this.useCallback) {
+                  this.closeRetryModal();
                   txHash = hash;
                   this.setNextTxState({
                     step: 'sourcePending',
@@ -379,11 +625,15 @@ export class PreviewSwapService {
               onSwap: () => {
                 // @TODO Refactor
                 if (this.useCallback) {
+                  this.closeRetryModal();
                   if (tradeState.trade instanceof CrossChainTrade) {
-                    this.setNextTxState({
-                      step: 'destinationPending',
-                      data: { ...this.transactionState.data }
-                    });
+                    if (!tradeState.needTrustlineOptions?.needTrustlineAfterSwap) {
+                      this.setNextTxState({
+                        step: 'destinationPending',
+                        data: { ...this.transactionState.data }
+                      });
+                    }
+
                     this.initDstTxStatusPolling(txHash, tradeState.trade.to.blockchain);
                   } else {
                     this.setNextTxState({
@@ -401,13 +651,46 @@ export class PreviewSwapService {
               },
               onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
-                  if (err instanceof SwapTimeoutError) {
+                  if (err instanceof SimulationFailedError) {
+                    this.setNextTxState({
+                      step: 'swapRetry',
+                      data: this.transactionState.data,
+                      level: (this.transactionState.level ?? 0) + 1
+                    });
+                  } else if (err instanceof TxRevertedInBlockchainError) {
+                    this.closeRetryModal();
                     this.setNextTxState({ step: 'error', data: this.transactionState.data });
-                  } else {
+                  } else if (!(err instanceof UserRejectError && !err.showAlert)) {
+                    this.closeRetryModal();
                     this.setNextTxState({ step: 'inactive', data: {} });
                     this.tradePageService.setState('form');
                   }
                 }
+              },
+              onSimulationSuccess: async () => {
+                if (txStep === 'swapRequest') return true;
+
+                this._continueSwapTrigger$ = new Subject();
+                this.isBackupProviderSelected = true;
+
+                try {
+                  let allowedToContinue = await this.checkBackupProviderRate(tradeState);
+
+                  if (!allowedToContinue) {
+                    this.backToForm();
+                    return false;
+                  }
+
+                  allowedToContinue = await firstValueFrom(this._continueSwapTrigger$);
+                  return allowedToContinue;
+                } finally {
+                  this.closeRetryModal();
+                  this.isBackupProviderSelected = false;
+                }
+              },
+              onRateChange: (rateChangeInfo: RateChangeInfo) => {
+                this.isRateChanged = true;
+                return firstValueFrom(this.modalService.openRateChangedModal(rateChangeInfo));
               }
             })
           : this.catchSwitchCancel();
@@ -457,6 +740,14 @@ export class PreviewSwapService {
     const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
       this.checkAddress();
       this.checkNetwork();
+      this.checkTrustline();
+    });
+    this.subscriptions$.push(validationSubscription$);
+  }
+
+  private subscribeOnDepositValidation(): void {
+    const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
+      this.checkTrustline();
     });
     this.subscriptions$.push(validationSubscription$);
   }

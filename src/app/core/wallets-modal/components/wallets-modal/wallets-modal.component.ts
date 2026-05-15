@@ -26,6 +26,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
+import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -37,7 +38,7 @@ import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
 
-  private readonly allProviders = PROVIDERS_LIST;
+  private readonly allProviders: ReadonlyArray<WalletProvider>;
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
@@ -78,7 +79,8 @@ export class WalletsModalComponent implements OnInit {
   );
 
   constructor(
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, WalletsModalOptions>,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly authService: AuthService,
@@ -89,7 +91,11 @@ export class WalletsModalComponent implements OnInit {
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
     private readonly modalService: ModalService
-  ) {}
+  ) {
+    this.allProviders = context.data?.providers
+      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
+      : PROVIDERS_LIST;
+  }
 
   ngOnInit() {
     this.rulesCheckbox.patchValue(this.getStorageValue());

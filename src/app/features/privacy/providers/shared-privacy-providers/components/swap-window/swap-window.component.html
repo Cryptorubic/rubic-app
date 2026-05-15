@@ -1,0 +1,90 @@
+<app-window-container
+  *ngLet="{
+    swapInfo: swapInfo$ | async,
+    loading: loading$ | async,
+    displayReceiver: displayReceiver$ | async,
+    showDepositStatus: creationConfig.withStatus && depositTrade
+  } as state"
+>
+  <div class="back-button" *ngIf="state.showDepositStatus">
+    <app-back-button [isMobile]="false" (onClick)="resetForm()"></app-back-button>
+  </div>
+  <app-input-output-container [round]="inputContainerRounding" [marginTop]="true">
+    <app-asset-selector
+      left
+      selectorType="from"
+      [asset]="state.swapInfo.fromAsset"
+      [isDisabled]="state.loading"
+      (handleAssetSelection)="openInputSelector()"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        *ngIf="creationConfig.withSrcAmount"
+        formType="from"
+        [selectedToken]="state.swapInfo.fromAsset"
+        inputMode="input"
+        (amountUpdated)="updateInputValue($event)"
+        [amountValue]="state.swapInfo.fromAmount"
+        [allowManualInputClear]="true"
+      ></app-amount-transput>
+      <app-user-balance-container
+        [fromToken$]="fromToken$"
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+
+  <app-form-switcher *ngIf="hasOutputContainer" (switcherClick)="revert()"></app-form-switcher>
+
+  <app-input-output-container
+    *ngIf="hasOutputContainer"
+    [round]="state.displayReceiver && !state.showDepositStatus ? 'none' : 'bottom'"
+  >
+    <app-asset-selector
+      left
+      selectorType="to"
+      [asset]="state.swapInfo.toAsset"
+      [isDisabled]="state.loading"
+      (handleAssetSelection)="openOutputSelector()"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        *ngIf="creationConfig.withDstAmount"
+        formType="to"
+        [selectedToken]="state.swapInfo.toAsset"
+        inputMode="output"
+        [amountValue]="state.swapInfo.toAmount"
+      ></app-amount-transput>
+      <app-tokens-rate></app-tokens-rate>
+    </div>
+  </app-input-output-container>
+
+  <app-target-network-address
+    *ngIf="creationConfig.withReceiver && state.displayReceiver && !state.showDepositStatus"
+    [addressCtrl]="receiverCtrl"
+    [placeholderText]="creationConfig?.receiverPlaceholder"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <div
+    *ngIf="(creationConfig.withActionButton || creationConfig.withReceiver) && !depositTrade"
+    class="buttons-container"
+  >
+    <app-private-action-button
+      *ngIf="creationConfig.withActionButton"
+      [showLoader]="state.loading"
+      (onClick)="swap()"
+    ></app-private-action-button>
+    <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
+      [toBlockchain]="state.swapInfo.toAsset ? state.swapInfo.toAsset.blockchain : 'target network'"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
+  </div>
+  <ng-container *ngIf="state.showDepositStatus">
+    <app-deposit-status-info
+      [paymentInfo]="depositPaymentInfo"
+      [status]="depositTradeStatus"
+    ></app-deposit-status-info>
+  </ng-container>
+</app-window-container>

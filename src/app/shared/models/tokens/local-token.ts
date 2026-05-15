@@ -1,4 +1,4 @@
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 
 export interface LocalToken {
   address: string;

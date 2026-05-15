@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainItem } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { AssetType } from '@app/features/trade/models/asset';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-small-blockchain-button',
@@ -11,5 +11,5 @@ import { AssetType } from '@app/features/trade/models/asset';
 export class SmallBlockchainButtonComponent {
   @Input({ required: true }) blockchainItem: BlockchainItem;
 
-  @Input({ required: true }) selectedAssetType: AssetType;
+  @Input({ required: true }) selectedAssetType: AssetListType;
 }

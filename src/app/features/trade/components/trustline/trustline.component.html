@@ -1,0 +1,21 @@
+<div
+  class="trustline-container"
+  *ngLet="{
+    buttonState: buttonState$ | async
+  } as state"
+>
+  <tui-notification status="warning">{{ trustlineText }}</tui-notification>
+
+  <div class="trustline-container__actions" *ngIf="state.buttonState">
+    <button
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="state.buttonState.action()"
+      [disabled]="state.buttonState.disabled"
+    >
+      {{ state.buttonState.label }}
+    </button>
+  </div>
+</div>

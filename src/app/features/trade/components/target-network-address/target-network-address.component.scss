@@ -2,6 +2,8 @@
 @use 'src/scss/core' as *;
 
 .network-container {
+  position: relative;
+
   margin-top: 1px;
 
   &__row {
@@ -14,5 +16,29 @@
 
   tui-input {
     border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+  }
+
+  .clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 50px;
+
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    transition: opacity 100ms;
+
+    ::ng-deep svg {
+      width: 14px;
+      height: 14px;
+
+      path {
+        fill: var(--tui-text-01);
+      }
+    }
+
+    &:hover {
+      opacity: 0.6;
+    }
   }
 }

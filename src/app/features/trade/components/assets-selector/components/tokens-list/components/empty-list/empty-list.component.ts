@@ -1,9 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Injector,
+  Input,
+  Output
+} from '@angular/core';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { map } from 'rxjs/operators';
-import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
-import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-empty-list',
@@ -12,26 +18,25 @@ import { SearchQueryService } from '@features/trade/components/assets-selector/s
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmptyListComponent {
+  @Input({ required: true }) hasQuery: boolean;
+
+  @Input({ required: true }) assetListType: AssetListType;
+
+  @Output() listSwitch = new EventEmitter<void>();
+
   public readonly user$ = this.authService.currentUser$;
 
-  public readonly hasSearchQuery$ = this.searchQueryService.query$.pipe(
-    map(query => Boolean(query.length))
-  );
-
-  public readonly listType$ = this.tokensListTypeService.listType$;
-
   constructor(
-    private readonly tokensListTypeService: TokensListTypeService,
-    private readonly searchQueryService: SearchQueryService,
     private readonly authService: AuthService,
-    private readonly walletsModalService: WalletsModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public switchToDefaultList(): void {
-    this.tokensListTypeService.switchListType();
+    this.listSwitch.emit();
   }
 
   public openAuthModal(): void {
-    this.walletsModalService.open$();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

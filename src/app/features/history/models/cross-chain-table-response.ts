@@ -2,7 +2,7 @@ import { SourceTxStatus } from '@features/history/models/source-tx-status';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
 import { HistoryRequestToken } from '@features/history/models/history-request-token';
 import { HistoryRequestTx } from '@features/history/models/history-request-tx';
-import { BackendBlockchain } from '@cryptorubic/sdk';
+import { BackendBlockchain } from '@cryptorubic/core';
 import { ToBackendCrossChainProviders } from '@cryptorubic/core';
 
 export interface CrossChainTableResponse {
@@ -25,5 +25,6 @@ export interface CrossChainTableResponse {
     via_rubic_proxy: true;
     status: DestinationTxStatus;
     changenow_id: string;
+    receiver: string;
   }[];
 }

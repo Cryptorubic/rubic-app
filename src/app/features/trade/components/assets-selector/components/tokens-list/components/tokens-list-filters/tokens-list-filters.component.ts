@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TOKEN_FILTERS_UI, TokenFilterUI } from './constants/token-filters';
-import { TokenFilter } from '../../../../models/token-filters';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { tap } from 'rxjs';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-tokens-list-filters',
@@ -11,9 +11,9 @@ import { tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListFiltersComponent {
-  @Input({ required: true }) tokenFilter: TokenFilter;
+  @Output() onSelect: EventEmitter<AssetListType> = new EventEmitter();
 
-  @Output() onSelect: EventEmitter<TokenFilter> = new EventEmitter();
+  @Input({ required: true }) assetListType: AssetListType;
 
   public ITEMS_PER_SLIDE = 3;
 

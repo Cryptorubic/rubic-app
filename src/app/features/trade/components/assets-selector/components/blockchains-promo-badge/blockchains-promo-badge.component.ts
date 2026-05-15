@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { blockchainsPromoLinks } from './constants/blockchains-promo-links';
 

@@ -7,7 +7,7 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { ChainType } from '@cryptorubic/sdk';
+import { ChainType } from '@cryptorubic/core';
 
 /**
  * Service that provides methods for working with authentication and user interaction.

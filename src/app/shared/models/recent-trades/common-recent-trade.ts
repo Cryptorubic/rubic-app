@@ -1,4 +1,4 @@
-import { ChangenowApiStatus, TxStatus } from '@cryptorubic/sdk';
+import { TxStatus } from '@cryptorubic/web3';
 import { Token } from '@shared/models/tokens/token';
 
 export interface CommonRecentTrade {
@@ -10,6 +10,6 @@ export interface CommonRecentTrade {
   timestamp: number;
   rubicId: string;
 
-  calculatedStatusTo?: TxStatus | ChangenowApiStatus;
-  calculatedStatusFrom?: TxStatus | ChangenowApiStatus;
+  calculatedStatusTo?: TxStatus;
+  calculatedStatusFrom?: TxStatus;
 }

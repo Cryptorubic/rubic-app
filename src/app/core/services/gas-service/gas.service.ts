@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { GasPrice, Injector, Web3Pure } from '@cryptorubic/sdk';
+import { GasPrice } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
@@ -13,7 +13,8 @@ import { GasInfo } from './models/gas-info';
 import { MetaMaskGasResponse } from './models/metamask-gas-response';
 import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas-price-deviation';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, Token } from '@cryptorubic/core';
+import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -47,7 +48,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.UNICHAIN,
   BLOCKCHAIN_NAME.MORPH,
   BLOCKCHAIN_NAME.FLARE,
-  BLOCKCHAIN_NAME.HEMI
+  BLOCKCHAIN_NAME.HEMI,
+  BLOCKCHAIN_NAME.MONAD
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -98,7 +100,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this),
     [BLOCKCHAIN_NAME.UNICHAIN]: this.fetchUnichainGas.bind(this),
     [BLOCKCHAIN_NAME.FLARE]: this.fetchFlareGas.bind(this),
-    [BLOCKCHAIN_NAME.HEMI]: this.fetchHemiGas.bind(this)
+    [BLOCKCHAIN_NAME.HEMI]: this.fetchHemiGas.bind(this),
+    [BLOCKCHAIN_NAME.MONAD]: this.fetchMonadGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -109,7 +112,8 @@ export class GasService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   /**
@@ -158,11 +162,11 @@ export class GasService {
 
     const gasPriceOptions = Boolean(maxPriorityFeePerGas)
       ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+          maxPriorityFeePerGas: Token.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Token.toWei(maxFeePerGas, 9)
         }
       : {
-          gasPrice: Web3Pure.toWei(gasPrice)
+          gasPrice: Token.toWei(gasPrice)
         };
 
     return { shouldCalculateGasPrice, gasPriceOptions };
@@ -176,7 +180,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchEthGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ETHEREUM
+    );
     const requestTimeout = 2000;
 
     const oneInchEstimation$ = this.httpClient
@@ -199,9 +205,9 @@ export class GasService {
       .pipe(
         timeout(requestTimeout),
         map(response => ({
-          baseFee: Web3Pure.toWei(response.estimatedBaseFee, 9),
-          maxFeePerGas: Web3Pure.toWei(response.low.suggestedMaxFeePerGas, 9),
-          maxPriorityFeePerGas: Web3Pure.toWei(response.low.suggestedMaxPriorityFeePerGas, 9)
+          baseFee: Token.toWei(response.estimatedBaseFee, 9),
+          maxFeePerGas: Token.toWei(response.low.suggestedMaxFeePerGas, 9),
+          maxPriorityFeePerGas: Token.toWei(response.low.suggestedMaxPriorityFeePerGas, 9)
         })),
         catchError(() => of(null))
       );
@@ -227,7 +233,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBscGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
@@ -254,7 +260,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchPolygonGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.POLYGON);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.POLYGON
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => {
@@ -276,7 +284,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchAvalancheGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.AVALANCHE);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.AVALANCHE
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -291,7 +301,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchUnichainGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.UNICHAIN);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.UNICHAIN
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -319,7 +331,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchFantomGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FANTOM);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.FANTOM
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -334,7 +348,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchOptimismGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.OPTIMISM);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.OPTIMISM
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -349,7 +365,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchArbitrumGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -377,7 +395,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchLineaGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.LINEA);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.LINEA
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       map(gasOptions => ({
@@ -396,7 +416,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBaseGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BASE);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.BASE
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -411,7 +433,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchMantleGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MANTLE);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.MANTLE
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -429,7 +453,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchMantaPacificGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.MANTA_PACIFIC
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
@@ -449,7 +473,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchScrollGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SCROLL);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.SCROLL
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -460,7 +486,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBlastGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.BLAST
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -475,7 +503,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchPolygonZkEvmGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.POLYGON_ZKEVM
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
@@ -500,7 +528,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchModeGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MODE);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.MODE
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -515,7 +545,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchZkLinkGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZK_LINK);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ZK_LINK
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -533,7 +565,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchTaikoGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.TAIKO);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.TAIKO
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -551,7 +585,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchRootstockGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ROOTSTOCK);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ROOTSTOCK
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -565,7 +601,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchSeiGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SEI);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.SEI
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -579,7 +617,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchGravityGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.GRAVITY);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.GRAVITY
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -629,7 +669,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBitlayerGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BITLAYER);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.BITLAYER
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -643,7 +685,7 @@ export class GasService {
   //   maxAge: GasService.requestInterval
   // })
   // private fetchSonicGas(): Observable<GasPrice | null> {
-  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONIC);
+  //   const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SONIC);
   //   return from(blockchainAdapter.getGasPrice()).pipe(
   //     map((gasPriceInWei: string) => {
   //       return {
@@ -657,7 +699,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchMorphGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MORPH);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.MORPH
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -668,7 +712,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchFraxtalGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FRAXTAL);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.FRAXTAL
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -682,7 +728,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBerachainGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BERACHAIN);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.BERACHAIN
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -696,7 +744,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchSoneiumGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONEIUM);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.SONEIUM
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -707,7 +757,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchFlareGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FLARE);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.FLARE
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
@@ -721,13 +773,28 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchHemiGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.HEMI);
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.HEMI
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMonadGas(): Observable<GasPrice> {
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.MONAD
+    );
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 }

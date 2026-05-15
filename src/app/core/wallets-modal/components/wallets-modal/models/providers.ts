@@ -172,5 +172,32 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Lobstr',
+    value: WALLET_NAME.LOBSTR,
+    img: './assets/images/icons/wallets/lobstr.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Freighter',
+    value: WALLET_NAME.FREIGHTER,
+    img: './assets/images/icons/wallets/freighter.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Stellar WalletConnect',
+    value: WALLET_NAME.STELLAR_WALLET_CONNECT,
+    img: './assets/images/icons/wallets/walletconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];
