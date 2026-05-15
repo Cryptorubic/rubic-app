@@ -12,9 +12,10 @@ const ACTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint: strin
   THREE: { steps: 3, hint: 'Completing the target action requires 3 steps.' }
 };
 
-const DISCONNECTION_STEPS: Record<'ONE' | 'TWO', { steps: number; hint: string }> = {
+const DISCONNECTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint: string }> = {
   ONE: { steps: 1, hint: 'Private Transfer' },
-  TWO: { steps: 2, hint: 'Shield → Private Transfer' }
+  TWO: { steps: 2, hint: 'Shield → Private Transfer' },
+  THREE: { steps: 3, hint: 'Shield → Private Transfer → Unshield' }
 };
 
 const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProviderRawInfo> = {
@@ -29,7 +30,9 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     security: 3,
     executionTimeRate: 1,
     disconnectionRate: 1,
-    disconnectionSteps: DISCONNECTION_STEPS.TWO
+    disconnectionSteps: DISCONNECTION_STEPS.THREE,
+    disconnectionRateHint:
+      'Please note that Zama doesn’t break the link between wallets, it only hides balances.'
   },
   RAILGUN: {
     //getMinAmountUsd: () => 0,
@@ -130,8 +133,8 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     },
     security: 3,
     executionTimeRate: 2,
-    disconnectionRate: 3,
-    disconnectionSteps: DISCONNECTION_STEPS.ONE
+    disconnectionRate: 3
+    // disconnectionSteps: DISCONNECTION_STEPS.ONE
   }
 };
 

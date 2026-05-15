@@ -28,21 +28,22 @@
         (maxButtonClickEvent)="handleMaxButton()"
       ></app-user-balance-container>
     </div>
-    <app-preset-amount-list
-      bottom
-      *ngIf="creationConfig.showPresets && state.revealAsset"
-      [token]="state.revealAsset"
-      [selectedAmount]="state.revealAmount?.visibleValue"
-      (onPresetSelect)="handlePresetSelect($event)"
-    ></app-preset-amount-list>
   </app-input-output-container>
 
+  <app-preset-amount-list
+    *ngIf="creationConfig.showPresets && state.revealAsset"
+    [token]="state.revealAsset"
+    [selectedAmount]="state.revealAmount?.visibleValue"
+    (onPresetSelect)="handlePresetSelect($event)"
+  ></app-preset-amount-list>
+
   <app-target-network-address
+    [round]="'all'"
     [addressCtrl]="receiverCtrl"
     [placeholderText]="creationConfig?.receiverPlaceholder"
   ></app-target-network-address>
   <tui-notification *ngIf="creationConfig.showWarnings"
-    >Using round amounts can improve transaction unlinking</tui-notification
+    >Using round amounts can improve privacy</tui-notification
   >
 
   <div

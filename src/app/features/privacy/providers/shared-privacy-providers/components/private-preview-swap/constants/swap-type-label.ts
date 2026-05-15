@@ -1,7 +1,7 @@
 import { PrivateSwapType } from '../models/preview-swap-options';
 
 export const SWAP_TYPE_LABEL: Record<PrivateSwapType, string> = {
-  shield: 'Shield',
+  shield: 'Shield Tokens',
   unshield: 'Private Transfer',
   transfer: 'Private transfer',
   swap: 'Private swap',

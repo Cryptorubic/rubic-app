@@ -17,7 +17,8 @@ export interface PrivateProviderInfoUI {
   feeInfo: { feeSize: string; feeRate: number };
   executionSteps: { steps: number; hint: string };
   disconnectionRate: number;
-  disconnectionSteps: { steps: number; hint: string };
+  disconnectionSteps?: { steps: number; hint: string };
+  disconnectionRateHint?: string;
 }
 
 export interface PrivateProviderRawInfo {
@@ -30,11 +31,12 @@ export interface PrivateProviderRawInfo {
   warning?: { message: string; hint: string };
   executionTimeRate: number;
   disconnectionRate: number;
-  disconnectionSteps: { steps: number; hint: string };
+  disconnectionSteps?: { steps: number; hint: string };
   getExecutionStepsInfo: (tab: PrivateModeTab) => { steps: number; hint: string };
   getFeeInfo: (
     tab: PrivateModeTab,
     formValue: Partial<PrivacyFormValue>,
     privacyApiService: PrivacyApiService
   ) => Promise<{ feeSize: string; feeRate: number }>;
+  disconnectionRateHint?: string;
 }

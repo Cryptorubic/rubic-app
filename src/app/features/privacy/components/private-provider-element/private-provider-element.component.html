@@ -54,9 +54,15 @@
       ></div>
     </div>
 
-    <div class="steps" [tuiHint]="providerInfo.disconnectionSteps.hint">
+    <div
+      class="steps"
+      *ngIf="providerInfo.disconnectionSteps"
+      [tuiHint]="providerInfo.disconnectionSteps.hint"
+    >
       <div
-        [inlineSVG]="'assets/images/private-swaps/common/disconnection-steps.svg'"
+        inlineSVG="assets/images/private-swaps/common/disconnection-steps-{{
+          providerInfo.disconnectionSteps.steps
+        }}.svg"
         width="9"
         height="16"
       ></div>
@@ -64,7 +70,10 @@
 
     <div
       class="security-percent"
-      [tuiHint]="'Indicates how effectively the sender and recipient are unlinked.'"
+      [tuiHint]="
+        providerInfo.disconnectionRateHint ||
+        'Indicates how effectively the sender and recipient are unlinked.'
+      "
       (mouseenter)="handleMetricTooltipHover('privacy_score')"
     >
       <img

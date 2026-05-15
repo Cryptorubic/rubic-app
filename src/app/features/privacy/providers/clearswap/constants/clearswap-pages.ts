@@ -3,7 +3,7 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 export const CLEARSWAP_PAGES: PageType[] = [
   {
     type: 'transfer',
-    label: 'Transfer'
+    label: 'Private Transfer'
   },
   {
     type: 'swap',

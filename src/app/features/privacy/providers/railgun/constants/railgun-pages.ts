@@ -16,7 +16,7 @@ export const RAILGUN_PAGES: PageType<RailgunPageStatus>[] = [
   // },
   {
     type: 'hide',
-    label: 'Shield'
+    label: 'Shield Tokens'
   },
   // {
   //   type: 'transfer',

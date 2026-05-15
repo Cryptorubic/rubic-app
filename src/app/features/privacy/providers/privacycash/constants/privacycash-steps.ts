@@ -2,7 +2,7 @@ import { PageType } from '@app/features/privacy/providers/shared-privacy-provide
 
 export const PRIVACYCASH_PAGES: PageType[] = [
   //{ label: 'Login', type: 'login' },
-  { label: 'Shield', type: 'hide' },
+  { label: 'Shield Tokens', type: 'hide' },
   // { label: 'Transfer', type: 'transfer' },
   // { label: 'Swap', type: 'swap' },
   { label: 'Private Transfer', type: 'reveal' }
