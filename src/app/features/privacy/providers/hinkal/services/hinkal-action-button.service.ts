@@ -184,7 +184,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
 
         if (!estimatedFee) return false;
 
-        return tokenBalance.amount.minus(estimatedFee.fee).gte(0);
+        return new BigNumber(tokenBalance.amount).minus(estimatedFee.fee).gte(0);
       });
 
       if (!isTokenWithEnoughBalanceExist) {
