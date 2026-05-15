@@ -125,7 +125,7 @@
     "libsodium-wrappers-sumo": "0.8.2",
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^15.0.1",
-    "ngx-cookie-service": "^16.0.0",
+    "ngx-cookie-service": "^20.3.21",
     "patch-package": "^8.0.1",
     "privacycash": "^1.1.15",
     "querystring-es3": "^0.2.1",
