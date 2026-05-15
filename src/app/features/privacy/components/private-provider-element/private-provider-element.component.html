@@ -67,7 +67,13 @@
       [tuiHint]="'Indicates how effectively the sender and recipient are unlinked.'"
       (mouseenter)="handleMetricTooltipHover('privacy_score')"
     >
-      <img src="assets/images/private-swaps/common/disconnection-rate.svg" width="15" height="21" />
+      <img
+        src="
+          assets/images/private-swaps/common/lock.svg
+        "
+        width="15"
+        height="21"
+      />
       <div class="stars">
         <div
           *ngFor="let count of starsCount"

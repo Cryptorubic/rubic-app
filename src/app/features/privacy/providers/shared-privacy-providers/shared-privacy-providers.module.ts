@@ -132,7 +132,8 @@ import { PresetAmountListComponent } from './components/preset-amount-list/prese
     SwitchNetworkPageComponent,
     LoginWindowComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PrivateActionButtonComponent
   ],
   providers: [
     SwapsFormService,

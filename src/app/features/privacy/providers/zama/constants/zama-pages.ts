@@ -7,14 +7,14 @@ export const ZAMA_PAGES: PageType[] = [
   // },
   {
     type: 'hide',
-    label: 'Deposit'
+    label: 'Shield Tokens'
   },
   {
     type: 'transfer',
-    label: 'Transfer'
+    label: 'Private Transfer'
   },
   {
     type: 'reveal',
-    label: 'Unshield'
+    label: 'Unshield Tokens'
   }
 ];

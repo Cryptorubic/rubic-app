@@ -12,7 +12,6 @@ import { waitFor } from '@cryptorubic/web3';
 import { ZAMA_SUPPORTED_CHAINS, ZamaSupportedChain } from '../../constants/chains';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
-import { TransactionReceipt } from 'viem';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
@@ -174,10 +173,10 @@ export class ZamaFacadeService {
 
     this.addSwitchNetworkStep(unwrapToken.blockchain, steps);
 
-    let unwrapReceipt: TransactionReceipt;
+    let burntAmount = '';
 
-    const onUnwrapSuccess = (receipt: TransactionReceipt) => {
-      unwrapReceipt = receipt;
+    const onUnwrapSuccess = (amount: string) => {
+      burntAmount = amount;
     };
 
     steps.push({
@@ -188,7 +187,7 @@ export class ZamaFacadeService {
     steps.push({
       label: 'Finalize unshield',
       action: () =>
-        this.zamaSwapService.finalizeUnwrap(unwrapToken, unwrapReceipt).then(isSuccess => {
+        this.zamaSwapService.finalizeUnwrap(unwrapToken, burntAmount).then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
@@ -202,7 +201,10 @@ export class ZamaFacadeService {
               'Transaction sent. This may take a moment. Please keep Rubic App open'
             );
             this.refreshBalancesAfterAction();
+            return;
           }
+
+          this.zamaBalanceService.refreshPendingUnshieldBalances();
         })
     });
     return steps;
@@ -246,6 +248,7 @@ export class ZamaFacadeService {
 
         if (signature) {
           this.zamaBalanceService.refreshBalances();
+          this.zamaBalanceService.refreshPendingUnshieldBalances();
         }
       });
   }

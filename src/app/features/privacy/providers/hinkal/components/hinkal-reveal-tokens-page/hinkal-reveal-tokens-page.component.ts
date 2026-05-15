@@ -38,6 +38,8 @@ export class HinkalRevealTokensPageComponent {
         ...HINKAL_DEFAULT_CREATION_CONFIG,
         withReceiver: true,
         receiverPlaceholder: 'Enter receiver’s EVM wallet address',
+        showPresets: true,
+        showWarnings: true,
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
           listType: chain,
@@ -106,7 +108,7 @@ export class HinkalRevealTokensPageComponent {
 
     const balances = privateBalances[token.blockchain as EvmBlockchainName];
 
-    const isTokenWithEnoughBalanceExist = balances.some(tokenBalance => {
+    const tokenWithEnoughBalance = balances.find(tokenBalance => {
       const estimatedFee = estimatedFees
         .filter(t => !compareAddresses(t.feeToken, token.address))
         .find(({ feeToken }) => compareAddresses(feeToken, tokenBalance.tokenAddress));
@@ -116,7 +118,9 @@ export class HinkalRevealTokensPageComponent {
       return tokenBalance.amount.minus(estimatedFee.fee).gte(0);
     });
 
-    if (isTokenWithEnoughBalanceExist) {
+    if (tokenWithEnoughBalance) {
+      this.gasTokenService.selectGasToken(tokenWithEnoughBalance.tokenAddress);
+
       this.revealWindowService.setRevealAmount({
         visibleValue: token.amount.toFixed(),
         actualValue: token.amount
@@ -132,6 +136,8 @@ export class HinkalRevealTokensPageComponent {
     const maxAmountWithoutFee = token.amount.minus(Token.fromWei(tokenFee, token.decimals));
 
     const finalMaxAmount = maxAmountWithoutFee.lte(0) ? token.amount : maxAmountWithoutFee;
+
+    this.gasTokenService.selectGasToken(token.address);
 
     this.revealWindowService.setRevealAmount({
       visibleValue: finalMaxAmount.toFixed(),

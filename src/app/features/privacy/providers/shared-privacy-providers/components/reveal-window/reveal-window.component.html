@@ -30,7 +30,7 @@
     </div>
     <app-preset-amount-list
       bottom
-      *ngIf="state.revealAsset"
+      *ngIf="creationConfig.showPresets && state.revealAsset"
       [token]="state.revealAsset"
       [selectedAmount]="state.revealAmount?.visibleValue"
       (onPresetSelect)="handlePresetSelect($event)"
@@ -41,7 +41,9 @@
     [addressCtrl]="receiverCtrl"
     [placeholderText]="creationConfig?.receiverPlaceholder"
   ></app-target-network-address>
-  <tui-notification>Using round amounts can improve transaction unlinking</tui-notification>
+  <tui-notification *ngIf="creationConfig.showWarnings"
+    >Using round amounts can improve transaction unlinking</tui-notification
+  >
 
   <div
     *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"

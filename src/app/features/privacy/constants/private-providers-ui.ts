@@ -13,8 +13,8 @@ const ACTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint: strin
 };
 
 const DISCONNECTION_STEPS: Record<'ONE' | 'TWO', { steps: number; hint: string }> = {
-  ONE: { steps: 1, hint: 'Stealth Send' },
-  TWO: { steps: 2, hint: 'Deposit → Stealth Send' }
+  ONE: { steps: 1, hint: 'Private Transfer' },
+  TWO: { steps: 2, hint: 'Shield → Private Transfer' }
 };
 
 const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProviderRawInfo> = {

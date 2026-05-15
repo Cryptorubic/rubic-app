@@ -11,7 +11,7 @@ import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { PrivateUnshieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
@@ -45,13 +45,15 @@ export class PrivacycashRevealPageComponent {
 
   public readonly receiverCtrl = new FormControl<string>('');
 
-  public readonly revealFormCreationConfig: PrivateShieldFormConfig = {
+  public readonly revealFormCreationConfig: PrivateUnshieldFormConfig = {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: true,
     withMaxBtn: true,
     receiverPlaceholder: 'Enter SOLANA receiver address',
-    direction: 'from'
+    direction: 'from',
+    showPresets: true,
+    showWarnings: true
   };
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}

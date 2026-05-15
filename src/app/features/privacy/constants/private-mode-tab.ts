@@ -1,5 +1,5 @@
 export const PRIVATE_MODE_TAB = {
-  TRANSFER: 'Stealth Send',
+  TRANSFER: 'Private Transfer',
   CROSS_CHAIN: 'Cross-Chain',
   ON_CHAIN: 'On-Chain'
 } as const;

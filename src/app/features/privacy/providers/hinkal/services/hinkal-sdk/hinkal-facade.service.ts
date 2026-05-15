@@ -389,7 +389,7 @@ export class HinkalFacadeService {
       );
 
       if (isSuccess) {
-        this.privatePageTypeService.activePage = { type: 'hide', label: 'Deposit' };
+        this.privatePageTypeService.activePage = { type: 'hide', label: 'Shield' };
       }
     } catch {}
   }

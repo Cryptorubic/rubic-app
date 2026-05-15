@@ -16,7 +16,7 @@ export const RAILGUN_PAGES: PageType<RailgunPageStatus>[] = [
   // },
   {
     type: 'hide',
-    label: 'Deposit'
+    label: 'Shield'
   },
   // {
   //   type: 'transfer',
@@ -28,6 +28,6 @@ export const RAILGUN_PAGES: PageType<RailgunPageStatus>[] = [
   // },
   {
     type: 'reveal',
-    label: 'Stealth Send'
+    label: 'Private Transfer'
   }
 ];

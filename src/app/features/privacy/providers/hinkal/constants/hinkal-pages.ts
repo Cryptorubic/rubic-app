@@ -30,10 +30,10 @@ export const HINKAL_PAGES: PageType[] = [
 export const HINKAL_LIGTH_PAGES: PageType[] = [
   {
     type: 'hide',
-    label: 'Deposit'
+    label: 'Shield'
   },
   {
     type: 'reveal',
-    label: 'Stealth Send'
+    label: 'Private Transfer'
   }
 ];

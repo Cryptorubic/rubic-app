@@ -5,16 +5,24 @@ import { ZamaPrivateAssetsService } from '../../services/zama-private-assets.ser
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facade.service';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
-import { compareAddresses, EvmBlockchainName, Token, TokenAmount } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  compareAddresses,
+  EvmBlockchainName,
+  Token,
+  TokenAmount
+} from '@cryptorubic/core';
 
-import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
+import { PrivateUnshieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { ZamaBalanceService } from '../../services/zama-sdk/zama-balance.service';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import BigNumber from 'bignumber.js';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { PendingUnshieldToken } from '../../services/zama-sdk/models/pending-unshield-token';
 
 @Component({
   selector: 'app-zama-reveal-tokens-page',
@@ -30,21 +38,55 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 export class ZamaRevealTokensPageComponent {
   public readonly receiverCtrl = new FormControl<string>('');
 
-  public readonly creationConfig: PrivateShieldFormConfig = {
+  public readonly creationConfig: PrivateUnshieldFormConfig = {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: true,
     withMaxBtn: true,
     receiverPlaceholder: 'Enter receiver’s EVM wallet address',
-    direction: 'from'
+    direction: 'from',
+    showPresets: false,
+    showWarnings: false
   };
+
+  public readonly pendingUnshieldBalance$ = this.zamaBalanceService.pendingUnshieldBalances$.pipe(
+    switchMap(pendingBalances => {
+      return this.zamaRevealFacade
+        .getTokensList(BLOCKCHAIN_NAME.ETHEREUM, '', 'from', getEmptySwapFormInput())
+        .pipe(
+          map(tokens =>
+            tokens.filter(token =>
+              pendingBalances[token.blockchain as EvmBlockchainName]?.find(t =>
+                compareAddresses(t.tokenAddress, token.address)
+              )
+            )
+          ),
+          map(unshieldTokens => {
+            return unshieldTokens.map(unshieldToken => {
+              const pendingBalance = pendingBalances[
+                unshieldToken.blockchain as EvmBlockchainName
+              ].find(t => compareAddresses(t.tokenAddress, unshieldToken.address));
+
+              const pendingToken: PendingUnshieldToken = {
+                ...unshieldToken,
+                encryptedAmount: pendingBalance.encryptedAmount
+              };
+
+              return pendingToken;
+            });
+          })
+        );
+    }),
+    tap(console.log)
+  );
 
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaBalanceService: ZamaBalanceService,
-    private readonly revealWindowService: RevealWindowService
+    private readonly revealWindowService: RevealWindowService,
+    private readonly zamaRevealFacade: ZamaRevealFacadeService
   ) {}
 
   ngOnInit(): void {

@@ -17,11 +17,12 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERC7984_TOKEN_ABI, MULTICALL_ABI } from './abis/erc7984-token-abi';
 import { getAddress } from 'ethers';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
-import { decodeEventLog, erc20Abi, TransactionReceipt } from 'viem';
+import { decodeEventLog, erc20Abi } from 'viem';
 import { ZamaTokensService } from './zama-tokens.service';
 import { wrapAbi } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/wrap-abi';
 import BigNumber from 'bignumber.js';
 import { GasService } from '@app/core/services/gas-service/gas.service';
+import { PendingUnshieldToken } from './models/pending-unshield-token';
 
 @Injectable()
 export class ZamaSwapService {
@@ -277,7 +278,7 @@ export class ZamaSwapService {
   public async unwrap(
     unwrapToken: TokenAmount<EvmBlockchainName>,
     receiver?: string,
-    onTransactionSuccess?: (receipt: TransactionReceipt) => void
+    onTransactionSuccess?: (burntAmount: string) => void
   ): Promise<void> {
     try {
       const adapter = this.getEvmAdapter(unwrapToken.blockchain);
@@ -316,24 +317,6 @@ export class ZamaSwapService {
         }
       });
 
-      onTransactionSuccess?.(receipt);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  public async finalizeUnwrap(
-    unwrapToken: TokenAmount<EvmBlockchainName>,
-    receipt: TransactionReceipt
-  ): Promise<boolean> {
-    try {
-      const zamaInstance = this.getZamaInstance(unwrapToken.blockchain);
-      const shieldedTokenAddress = this.getErc7984Token(
-        unwrapToken.blockchain,
-        unwrapToken.address
-      );
-      const adapter = this.getEvmAdapter(unwrapToken.blockchain);
-
       const log = receipt.logs.find(l => {
         try {
           const decoded = decodeEventLog({
@@ -356,15 +339,31 @@ export class ZamaSwapService {
         topics: log.topics
       }).args as unknown as { amount: `0x${string}` };
 
-      const decryptedBurnAmount = await zamaInstance.publicDecrypt([burntAmount.amount]);
+      onTransactionSuccess?.(burntAmount.amount);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async finalizeUnwrap(
+    unwrapToken: TokenAmount<EvmBlockchainName> | PendingUnshieldToken,
+    burntAmount: string
+  ): Promise<boolean> {
+    try {
+      const blockchain = unwrapToken.blockchain as EvmBlockchainName;
+      const zamaInstance = this.getZamaInstance(blockchain);
+      const shieldedTokenAddress = this.getErc7984Token(blockchain, unwrapToken.address);
+      const adapter = this.getEvmAdapter(blockchain);
+
+      const decryptedBurnAmount = await zamaInstance.publicDecrypt([burntAmount]);
 
       const finilizeWrapTx = EvmAdapter.encodeMethodCall(
         shieldedTokenAddress,
         ERC7984_TOKEN_ABI,
         'finalizeUnwrap',
         [
-          burntAmount.amount,
-          decryptedBurnAmount.clearValues[burntAmount.amount],
+          burntAmount,
+          decryptedBurnAmount.clearValues[burntAmount as `0x${string}`],
           decryptedBurnAmount.decryptionProof
         ]
       );
