@@ -9,6 +9,8 @@ const { fixupPluginRules } = require('@eslint/compat');
 const jasmine = require('eslint-plugin-jasmine');
 const sortKeysFix = require('eslint-plugin-sort-keys-fix');
 const js = require('@eslint/js');
+const prettierPlugin = require('eslint-plugin-prettier');
+const prettierConfig = require('eslint-config-prettier');
 
 const { FlatCompat } = require('@eslint/eslintrc');
 
@@ -30,17 +32,15 @@ module.exports = defineConfig([
 
     plugins: {
       import: fixupPluginRules(_import),
-      'unused-imports': fixupPluginRules(unusedImports)
+      'unused-imports': fixupPluginRules(unusedImports),
+      prettier: prettierPlugin
       // 'angular-rubic': angularRubic,
     },
 
     extends: [
-      ...compat.extends(
-        'plugin:@angular-eslint/recommended',
-        'airbnb-typescript/base'
-        // 'plugin:prettier/recommended',
-      ),
-      rxjsX.configs.recommended
+      ...compat.extends('plugin:@angular-eslint/recommended', 'airbnb-typescript/base'),
+      rxjsX.configs.recommended,
+      prettierConfig
     ],
 
     languageOptions: {
@@ -51,6 +51,7 @@ module.exports = defineConfig([
     },
 
     rules: {
+      'prettier/prettier': 'error',
       'import/prefer-default-export': 'off',
       '@typescript-eslint/no-useless-constructor': 'off',
       'no-plusplus': 'off',
@@ -86,23 +87,6 @@ module.exports = defineConfig([
           varsIgnorePattern: '^_'
         }
       ],
-      // 'prettier/prettier': [
-      //   'error',
-      //   {
-      //     $schema: 'http://json.schemastore.org/prettierrc',
-      //     arrowParens: 'avoid',
-      //     bracketSpacing: true,
-      //     printWidth: 100,
-      //     proseWrap: 'always',
-      //     quoteProps: 'as-needed',
-      //     semi: true,
-      //     singleQuote: true,
-      //     tabWidth: 2,
-      //     trailingComma: 'none',
-      //     useTabs: false,
-      //     endOfLine: 'auto'
-      //   }
-      // ],
 
       '@angular-eslint/no-output-on-prefix': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',
@@ -206,23 +190,6 @@ module.exports = defineConfig([
           code: 200
         }
       ]
-      // 'prettier/prettier': [
-      //   'error',
-      //   {
-      //     $schema: 'http://json.schemastore.org/prettierrc',
-      //     arrowParens: 'avoid',
-      //     bracketSpacing: true,
-      //     printWidth: 100,
-      //     proseWrap: 'always',
-      //     quoteProps: 'as-needed',
-      //     semi: true,
-      //     singleQuote: true,
-      //     tabWidth: 2,
-      //     trailingComma: 'none',
-      //     useTabs: false,
-      //     endOfLine: 'auto'
-      //   }
-      // ]
     }
   },
   {

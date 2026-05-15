@@ -133,7 +133,6 @@ export class RubicSdkErrorParser {
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 
-   
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {

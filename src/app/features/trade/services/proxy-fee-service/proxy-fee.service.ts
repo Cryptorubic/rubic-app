@@ -35,7 +35,6 @@ export class ProxyFeeService {
     private readonly tokensFacade: TokensFacadeService
   ) {}
 
-   
   public async getIntegratorAddress(
     fromToken: PriceToken,
     fromAmount: BigNumber,
@@ -166,7 +165,6 @@ export class ProxyFeeService {
     return tokenTypeMapping[backendType];
   }
 
-   
   private handlePromoIntegrator(from: PriceToken, to: PriceToken, providerAddress: string): string {
     const urlParams = new URLSearchParams(window.location.search);
     const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');

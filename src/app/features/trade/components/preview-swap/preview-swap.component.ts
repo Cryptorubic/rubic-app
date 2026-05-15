@@ -214,7 +214,6 @@ export class PreviewSwapComponent implements OnDestroy {
     return this.tradeInfoManager.getGasData(trade);
   }
 
-   
   private async getState(
     el: TransactionState,
     tradeState: SelectedTrade,
