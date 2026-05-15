@@ -6,7 +6,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.crossChainRouting.slippage' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.crossChainRouting.slippageTitle' | translate }}</label>
     </div>
@@ -67,13 +66,13 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.crossChainRouting.showReceiverAddress' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.crossChainRouting.showReceiverAddressTitle' | translate }}</label>
       <input
         tuiSwitch
         type="checkbox"
         class="settings__toggle"
+        sise="s"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
       />

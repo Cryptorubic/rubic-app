@@ -66,26 +66,23 @@
     width: 44px;
     height: 44px;
 
-    background-color: var(--primary-background);
-    border-radius: var(--tui-radius-s);
-
     img {
       width: 28px;
-    }
-
-    &:hover {
-      background-color: var(--tui-background-neutral-1);
     }
   }
 
   &__button {
-    flex: 1;
+    width: 44px;
+    height: 44px;
 
     text-decoration: none;
+
+    background-color: var(--primary-background);
 
     transition: 0.2s ease-in-out;
 
     &:hover {
+      background-color: var(--tui-background-neutral-1);
       scale: 1.05;
     }
 

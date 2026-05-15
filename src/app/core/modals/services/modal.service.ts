@@ -531,7 +531,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
-        closeable: true,
+        closeable: false,
         fitContent: true
       })
     );

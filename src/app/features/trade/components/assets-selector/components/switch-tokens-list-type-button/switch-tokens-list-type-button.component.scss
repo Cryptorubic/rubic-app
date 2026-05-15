@@ -1,5 +1,11 @@
 :host {
   --tui-background-neutral-1: var(--tui-background-base);
+
+  button {
+    color: var(--tui-text-primary);
+
+    background: none;
+  }
 }
 
 .image {

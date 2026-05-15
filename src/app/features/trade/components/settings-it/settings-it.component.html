@@ -6,7 +6,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.slippage' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
     </div>
@@ -69,7 +68,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.deadline' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.deadlineTitle' | translate }}</label>
     </div>
@@ -93,7 +91,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.multihops' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
 
@@ -101,6 +98,7 @@
         tuiSwitch
         type="checkbox"
         class="settings__toggle"
+        sise="s"
         id="disableMultihops"
         formControlName="disableMultihops"
       />
@@ -111,7 +109,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
 
@@ -119,6 +116,7 @@
         tuiSwitch
         type="checkbox"
         class="settings__toggle"
+        sise="s"
         id="autoRefresh"
         formControlName="autoRefresh"
       />
@@ -129,13 +127,13 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
-        tuiHintAppearance="dark"
       ></div>
       <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
       <input
         tuiSwitch
         type="checkbox"
         class="settings__toggle"
+        sise="s"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
       />

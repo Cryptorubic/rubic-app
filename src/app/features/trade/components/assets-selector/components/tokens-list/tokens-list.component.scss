@@ -76,14 +76,18 @@ tui-loader {
   &__search-bar-container {
     display: flex;
     justify-content: space-between;
-
     margin-bottom: 2px;
+
+    background-color: var(--io-background);
+    border-radius: 0;
+    border-top-left-radius: var(--tui-radius-m);
+    border-top-right-radius: var(--tui-radius-m);
 
     app-search-tokens-bar {
       flex: 1;
     }
 
-    ::ng-deep {
+    /* ::ng-deep {
       [tuiWrapper][data-appearance='textfield'] {
         background-color: var(--io-background);
         border-radius: 0;
@@ -95,7 +99,7 @@ tui-loader {
       background-color: var(--io-background) !important;
       border-radius: 0;
       border-top-right-radius: var(--tui-radius-m);
-    }
+    } */
   }
 
   &__hide-favorites {

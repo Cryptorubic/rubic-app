@@ -1,12 +1,12 @@
 .languages {
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 5px;
   max-width: 300px;
   padding: 5px;
 
   &__element {
-    flex: 1;
+    flex: 1 0 45%;
   }
 
   &__element-icon {
