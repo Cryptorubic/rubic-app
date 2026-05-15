@@ -33,7 +33,6 @@ import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chai
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
-import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from './services/refund-service/refund.service';
@@ -81,7 +80,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     OnChainApiService,
     DepositService,
     ActionButtonService,
-    TradeInfoManager,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,

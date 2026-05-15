@@ -75,7 +75,6 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 
 @NgModule({
@@ -192,7 +191,6 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     OnChainApiService,
     DepositService,
     ActionButtonService,
-    TradeInfoManager,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,
