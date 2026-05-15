@@ -45,7 +45,7 @@ export class PrivacycashRefundPageComponent {
     direction: 'from'
   };
 
-  public async refund({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async refund({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const dstTokenAmountWei = await this.privacycashRefundService.quoteRefundableAmount(
         token.address
@@ -65,7 +65,7 @@ export class PrivacycashRefundPageComponent {
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Refund tokens',

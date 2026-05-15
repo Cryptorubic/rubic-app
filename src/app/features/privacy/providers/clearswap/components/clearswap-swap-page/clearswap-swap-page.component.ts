@@ -69,7 +69,7 @@ export class ClearswapSwapPageComponent implements OnInit {
       .subscribe();
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
@@ -92,7 +92,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         address: Web3Pure.getNativeTokenAddress(fromToken.blockchain),
         blockchain: fromToken.blockchain
       };
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         displayAmount: null,
         steps: [
           {

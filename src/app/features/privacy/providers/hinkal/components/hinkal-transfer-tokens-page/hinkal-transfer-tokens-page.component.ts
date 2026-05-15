@@ -100,13 +100,13 @@ export class HinkalTransferTokensPageComponent implements OnInit {
       });
   }
 
-  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const steps = this.hinkalFacadeService.prepareTransferSteps(
         token as TokenAmount<EvmBlockchainName>,
         this.receiverCtrl.value
       );
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps,
         warnings: HINKAL_WARNINGS,
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed(),

@@ -94,14 +94,14 @@ export class HinkalRevealTokensPageComponent implements OnInit {
       });
   }
 
-  public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async reveal({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const steps = this.hinkalFacadeService.prepareWithdrawSteps(
         token as TokenAmount<EvmBlockchainName>,
         this.receiverCtrl.value
       );
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps,
         warnings: HINKAL_WARNINGS
       });

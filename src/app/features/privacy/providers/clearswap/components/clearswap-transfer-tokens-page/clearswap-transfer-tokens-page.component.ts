@@ -1,5 +1,4 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-/* eslint-disable rxjs/no-exposed-subjects */
 import { FormControl } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -47,6 +46,7 @@ import { compareTokens } from '@app/shared/utils/utils';
   providers: []
 })
 export class ClearswapTransferTokensPageComponent implements OnInit {
+  // eslint-disable-next-line rxjs-x/no-exposed-subjects
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
   public readonly receiverCtrl = new FormControl<string>('', {
@@ -89,7 +89,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
       .subscribe();
   }
 
-  private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {
+  private transfer({ token, loadingCallback, openPreview$ }: PrivateEvent): Observable<void> {
     const userAddress = this.authService.userAddress;
     return from(this.tokensBalanceService.getAndUpdateTokenBalance(token, 5)).pipe(
       tap(balance => {
@@ -131,7 +131,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
             blockchain: token.blockchain
           };
 
-          return openPreview({
+          return openPreview$({
             dstTokenAmount,
             displayAmount,
             steps: [

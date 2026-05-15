@@ -326,7 +326,7 @@ export class RubicApiService {
         useCFProtection ? this.turnstileService.token$.pipe(first(el => el !== null)) : of('token')
       ),
       switchMap(token => {
-        if (!token) return throwError(() => 'cloudflare token is undefined');
+        if (!token) return throwError(() => new Error('cloudflare token is undefined'));
 
         return fromEvent<
           WsQuoteResponseInterface & {

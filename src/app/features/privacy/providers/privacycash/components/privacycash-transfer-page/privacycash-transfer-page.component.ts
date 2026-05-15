@@ -105,7 +105,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
       });
   }
 
-  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const pcSupportedToken = new TokenAmount({
         ...token.asStructWithAmount,
@@ -122,7 +122,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Transfer tokens',

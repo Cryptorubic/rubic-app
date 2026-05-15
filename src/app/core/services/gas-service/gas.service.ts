@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { firstValueFrom, forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { GasPrice } from '@cryptorubic/web3';
@@ -124,9 +124,9 @@ export class GasService {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }
-    const { gasPrice, baseFee, maxFeePerGas, maxPriorityFeePerGas } = await this.gasPriceFunctions[
-      blockchain
-    ]().toPromise();
+    const { gasPrice, baseFee, maxFeePerGas, maxPriorityFeePerGas } = await firstValueFrom(
+      this.gasPriceFunctions[blockchain]()
+    );
 
     return {
       gasPrice,

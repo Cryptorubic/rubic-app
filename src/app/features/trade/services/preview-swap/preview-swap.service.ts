@@ -286,9 +286,9 @@ export class PreviewSwapService {
           }
           return of(false);
         }),
-        tap(isManualClose => {
+        tap(isManualClose$ => {
           this.modalService.closeSwapRetryModal();
-          if (isManualClose) {
+          if (isManualClose$) {
             this.backToForm();
           }
         })

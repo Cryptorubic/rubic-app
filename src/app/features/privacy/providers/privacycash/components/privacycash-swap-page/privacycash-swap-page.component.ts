@@ -97,7 +97,7 @@ export class PrivacycashSwapPageComponent implements OnInit {
       });
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
     try {
       const pcSupportedSrcToken = {
         ...swapInfo.fromAsset,
@@ -118,7 +118,7 @@ export class PrivacycashSwapPageComponent implements OnInit {
       );
       const srcTokenFeePercent = withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4);
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Swap',

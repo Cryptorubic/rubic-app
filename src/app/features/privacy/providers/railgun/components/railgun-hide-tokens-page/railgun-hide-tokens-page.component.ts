@@ -79,11 +79,11 @@ export class RailgunHideTokensPageComponent {
     token,
     balanceToken,
     loadingCallback,
-    openPreview
+    openPreview$
   }: PrivateEvent): Promise<void> {
     // const gasInfo: AppGasData = { amount, amountInUsd, symbol: token.symbol };
     try {
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Shield',

@@ -5,7 +5,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom } from 'rxjs';
 import { PrivacyAuthService } from '../services/privacy-auth.service';
 
-export const privacyDisclaimerGuard: CanActivateFn = async () => {
+export const privacyDisclaimerGuard$: CanActivateFn = async () => {
   const modalService = inject(ModalService);
   const store = inject(StoreService);
   const router = inject(Router);

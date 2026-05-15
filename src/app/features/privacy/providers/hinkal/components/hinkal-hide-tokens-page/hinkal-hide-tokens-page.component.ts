@@ -81,13 +81,13 @@ export class HinkalHideTokensPageComponent implements OnInit {
       });
   }
 
-  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const steps = await this.hinkalFacadeService.prepareDepositSteps(
         token as TokenAmount<EvmBlockchainName>
       );
 
-      const preview$ = openPreview({ steps });
+      const preview$ = openPreview$({ steps });
       await firstValueFrom(preview$);
     } finally {
       loadingCallback();

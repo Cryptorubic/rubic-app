@@ -4,7 +4,7 @@ import { SwapFormInput } from '../../models/swap-form-controls';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SolanaGaslessStateService } from './solana-gasless-state.service';
 import { HttpService } from '@app/core/services/http/http.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE } from '@cryptorubic/core';
 

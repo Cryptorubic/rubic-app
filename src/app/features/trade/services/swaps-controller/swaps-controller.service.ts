@@ -549,12 +549,12 @@ export class SwapsControllerService {
   }
 
   private subscribeOnSettings(): void {
-    this.settingsService.crossChainRoutingValueChanges
+    this.settingsService.crossChainRoutingValueChanges$
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
         distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
         combineLatestWith(
-          this.settingsService.instantTradeValueChanges.pipe(
+          this.settingsService.instantTradeValueChanges$.pipe(
             startWith(this.settingsService.instantTradeValue),
             distinctUntilChanged(
               (prev, next) => prev.useMevBotProtection !== next.useMevBotProtection

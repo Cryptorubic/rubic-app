@@ -1,6 +1,6 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Injectable, inject, DestroyRef } from '@angular/core';
-import { BehaviorSubject, Observable, fromEvent, map, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, fromEvent, map, tap } from 'rxjs';
 import { getMinimalTokensByChain } from './utils/get-minimal-tokens-by-chain';
 import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { MinimalTokenWithBalance } from '../../../models/privacycash-tokens-facade-models';

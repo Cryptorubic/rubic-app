@@ -86,13 +86,13 @@ export class ZamaRevealTokensPageComponent implements OnInit {
       });
   }
 
-  public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async reveal({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const steps = await this.zamaFacadeService.prepareUnwrapSteps(
         token as TokenAmount<EvmBlockchainName>,
         this.receiverCtrl.value
       );
-      const preview$ = openPreview({ steps });
+      const preview$ = openPreview$({ steps });
 
       await firstValueFrom(preview$);
     } finally {

@@ -316,7 +316,7 @@ export class PrivacycashSwapService {
             }
           );
           break;
-        } catch (err) {
+        } catch {
           retries++;
           successfullSteps.push(`retry_deposit_dst_coin(count: ${retries})`);
           console.debug(

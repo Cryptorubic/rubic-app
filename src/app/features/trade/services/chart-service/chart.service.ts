@@ -1,6 +1,6 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Inject, Injectable, Renderer2, DestroyRef, inject } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DOCUMENT } from '@angular/common';

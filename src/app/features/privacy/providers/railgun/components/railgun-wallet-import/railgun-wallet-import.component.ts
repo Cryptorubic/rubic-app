@@ -32,7 +32,7 @@ export function mnemonicValidator(): ValidatorFn {
     try {
       const isValid = Mnemonic.isValidMnemonic(value);
       return isValid ? null : { mnemonic: 'Invalid checksum or unknown words' };
-    } catch (e) {
+    } catch {
       return { mnemonic: 'Invalid mnemonic phrase format' };
     }
   };

@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PolymorpheusTemplate, PolymorpheusOutlet } from '@taiga-ui/polymorpheus';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';

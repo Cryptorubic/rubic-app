@@ -119,7 +119,7 @@ export class RevealWindowComponent {
       token,
       balanceToken: revealAsset,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal(revealAsset)
+      openPreview$: this.createPreviewModal(revealAsset)
     });
   }
 

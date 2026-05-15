@@ -78,9 +78,9 @@ export class RailgunRevealPageComponent implements OnInit {
   }
 
   public async reveal(params: PrivateEvent): Promise<void> {
-    const { balanceToken, token, loadingCallback, openPreview } = params;
+    const { balanceToken, token, loadingCallback, openPreview$ } = params;
     try {
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Unshield',

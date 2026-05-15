@@ -14,7 +14,7 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
     private readonly notificationsService: NotificationsService
   ) {}
 
-  public quoteCallback(
+  public quoteCallback$(
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount

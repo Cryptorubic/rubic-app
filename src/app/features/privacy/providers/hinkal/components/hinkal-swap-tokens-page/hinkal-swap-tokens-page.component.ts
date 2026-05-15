@@ -133,7 +133,7 @@ export class HinkalSwapTokensPageComponent implements OnInit {
   public async handleSwap({
     swapInfo,
     loadingCallback,
-    openPreview
+    openPreview$
   }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
@@ -151,7 +151,7 @@ export class HinkalSwapTokensPageComponent implements OnInit {
         toToken as TokenAmount<EvmBlockchainName>
       );
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps,
         warnings: HINKAL_WARNINGS
       });

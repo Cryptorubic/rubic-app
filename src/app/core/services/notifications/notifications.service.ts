@@ -21,7 +21,6 @@ export class NotificationsService {
   private readonly SHORT_DELAY = 5000;
 
   constructor(
-    // eslint-disable-next-line rxjs/finnish
     @Inject(TuiAlertService) private readonly tuiNotificationsService: TuiAlertService,
     private readonly ngZone: NgZone,
     private readonly translateService: TranslateService

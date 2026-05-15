@@ -66,7 +66,7 @@ export class PrivacycashHidePageComponent implements OnInit {
       .subscribe();
   }
 
-  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const nativeToken = nativeTokensList.SOLANA;
       const nativeTokenPrice = await this.tokenService.getTokenPrice(nativeToken);
@@ -74,7 +74,7 @@ export class PrivacycashHidePageComponent implements OnInit {
         this.hideWindowService.hideAsset.amount,
         this.hideWindowService.hideAsset.decimals
       );
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Shield',

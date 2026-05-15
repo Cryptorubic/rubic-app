@@ -39,7 +39,6 @@ export class RefreshButtonComponent implements OnInit {
   constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
 
   public ngOnInit(): void {
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     this.isRotating$
       .pipe(
         pairwise(),

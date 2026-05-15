@@ -271,8 +271,7 @@ export class ModalService {
     isDisabled: boolean,
     hintText: string,
     totalBlockchains: number,
-    // eslint-disable-next-line rxjs/finnish
-    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    blockchainsToShow$: Observable<AvailableBlockchain[]>,
     handleSearchQuery?: (query: string) => void,
     handleSelection?: (selection: AssetListType) => void
   ): void {
@@ -287,8 +286,7 @@ export class ModalService {
           isDisabled,
           hintText,
           totalBlockchains,
-          // eslint-disable-next-line rxjs/finnish
-          blockchainsToShow,
+          blockchainsToShow$,
           handleSearchQuery,
           handleSelection
         }

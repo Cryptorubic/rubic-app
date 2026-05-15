@@ -114,7 +114,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
@@ -144,7 +144,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
       }
 
       const currentTrade = this.houdiniSwapService.currentTrade;
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Swap',

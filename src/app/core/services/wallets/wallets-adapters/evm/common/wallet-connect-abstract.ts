@@ -81,7 +81,7 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();
-    } catch (error) {
+    } catch {
       throw new WalletlinkError();
     }
   }

@@ -50,7 +50,7 @@ export class BlockchainsListComponent {
 
   @PolymorpheusInput()
   @Input({ required: true })
-  blockchainsToShow$: Observable<AvailableBlockchain[]> = this.context?.data?.blockchainsToShow;
+  blockchainsToShow$: Observable<AvailableBlockchain[]> = this.context?.data?.blockchainsToShow$;
 
   @Output() handleSearchQuery = new EventEmitter<string>();
 
@@ -73,8 +73,7 @@ export class BlockchainsListComponent {
         isDisabled?: boolean;
         hintText: string;
         totalBlockchains: number;
-        // eslint-disable-next-line rxjs/finnish
-        blockchainsToShow: Observable<AvailableBlockchain[]>;
+        blockchainsToShow$: Observable<AvailableBlockchain[]>;
         handleSearchQuery?: (query: string) => void;
         handleSelection?: (selection: AssetListType) => void;
       }
@@ -83,7 +82,7 @@ export class BlockchainsListComponent {
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.context.data?.blockchainsToShow.subscribe(el => {
+    this.context.data?.blockchainsToShow$.subscribe(el => {
       this.blockchainsToShow = el;
       this.cdr.detectChanges();
     });

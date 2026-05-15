@@ -90,7 +90,7 @@ export class RailgunLoginPageComponent {
       this.secretForm.disable();
       await this.railgunFacade.unlockFromPassword(password);
       this.formSubmit.emit({ password, phrase: '' });
-    } catch (error) {
+    } catch {
       this.secretForm.enable();
 
       const passwordControl = this.secretForm.get('password');

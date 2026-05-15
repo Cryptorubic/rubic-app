@@ -76,6 +76,7 @@ export class MevBotComponent {
       )
       .subscribe(([prev, curr]) => {
         if (prev.useMevBotProtection !== curr.useMevBotProtection && curr.useMevBotProtection) {
+          // eslint-disable-next-line rxjs-x/no-nested-subscribe
           this.modalService.openMevBotModal().subscribe();
         }
       });

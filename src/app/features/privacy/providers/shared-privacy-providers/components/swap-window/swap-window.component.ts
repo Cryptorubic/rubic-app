@@ -206,7 +206,7 @@ export class SwapWindowComponent implements OnInit {
     this._loading$.next(true);
 
     return this.quoteAdapter
-      .quoteCallback(swapInfo.fromAsset, swapInfo.toAsset, swapInfo.fromAmount)
+      .quoteCallback$(swapInfo.fromAsset, swapInfo.toAsset, swapInfo.fromAmount)
       .pipe(
         tap(({ toAmountWei, tradeId }) => {
           this.patchSwapInfo({
@@ -281,7 +281,7 @@ export class SwapWindowComponent implements OnInit {
     this.swapClicked.emit({
       swapInfo: this.privateSwapWindowService.swapInfo,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal()
+      openPreview$: this.createPreviewModal()
     });
   }
 

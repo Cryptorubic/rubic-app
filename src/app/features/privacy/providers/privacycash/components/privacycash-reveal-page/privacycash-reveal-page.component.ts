@@ -100,7 +100,7 @@ export class PrivacycashRevealPageComponent implements OnInit {
       });
   }
 
-  public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
+  public async reveal({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
     try {
       const pcSupportedToken = new TokenAmount({
         ...token.asStructWithAmount,
@@ -117,7 +117,7 @@ export class PrivacycashRevealPageComponent implements OnInit {
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
 
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Reveal Tokens',

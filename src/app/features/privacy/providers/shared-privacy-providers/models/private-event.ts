@@ -7,11 +7,11 @@ export interface PrivateEvent<T extends BlockchainName = BlockchainName> {
   token: TokenAmount<T>;
   balanceToken?: BalanceToken;
   loadingCallback: () => void;
-  openPreview: PreviewSwapModalFactory;
+  openPreview$: PreviewSwapModalFactory;
 }
 
 export interface PrivateSwapEvent {
   swapInfo: PrivateSwapInfo;
   loadingCallback: () => void;
-  openPreview: PreviewSwapModalFactory;
+  openPreview$: PreviewSwapModalFactory;
 }

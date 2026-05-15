@@ -59,10 +59,10 @@ export class SwapFormPageComponent {
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
       this.toAsset$,
-      this.settingsService.crossChainRoutingValueChanges.pipe(
+      this.settingsService.crossChainRoutingValueChanges$.pipe(
         startWith(this.settingsService.crossChainRoutingValue)
       ),
-      this.settingsService.instantTradeValueChanges.pipe(
+      this.settingsService.instantTradeValueChanges$.pipe(
         startWith(this.settingsService.instantTradeValue)
       )
     ),

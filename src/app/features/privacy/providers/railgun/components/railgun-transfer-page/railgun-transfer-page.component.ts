@@ -137,10 +137,10 @@ export class RailgunTransferPageComponent implements OnInit {
     balanceToken,
     token,
     loadingCallback,
-    openPreview
+    openPreview$
   }: PrivateEvent): Promise<void> {
     try {
-      const preview$ = openPreview({
+      const preview$ = openPreview$({
         steps: [
           {
             label: 'Transfer',
