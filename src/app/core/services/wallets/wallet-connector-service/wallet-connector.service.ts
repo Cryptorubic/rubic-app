@@ -3,6 +3,7 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
+import { MetamaskMobileWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-mobile-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
 import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/coin-base-wallet-adapter';
 import { StoreService } from '@core/services/store/store.service';
@@ -138,6 +139,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.METAMASK_MOBILE) {
+      return new MetamaskMobileWalletAdapter(...defaultConstructorParameters, this.isIos);
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {

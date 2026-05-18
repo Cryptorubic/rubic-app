@@ -132,17 +132,17 @@ export class WalletsModalComponent implements OnInit {
       let provider = providerName;
       if (provider === WALLET_NAME.METAMASK) {
         provider = await this.getMetamaskBasedOnNetwork();
-        if (!provider) {
-          return;
-        }
+        if (!provider) return;
       }
 
       this.gtmService.fireClickOnWalletProviderEvent(provider);
 
       if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-        const redirected = await this.deepLinkRedirectIfSupported(provider);
-        if (redirected) {
-          return;
+        if (provider === WALLET_NAME.METAMASK || provider === WALLET_NAME.METAMASK_SOLANA) {
+          provider = WALLET_NAME.METAMASK_MOBILE;
+        } else {
+          const redirected = await this.deepLinkRedirectIfSupported(provider);
+          if (redirected) return;
         }
       }
 
