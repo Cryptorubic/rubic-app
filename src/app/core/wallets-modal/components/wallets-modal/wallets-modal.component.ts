@@ -6,7 +6,6 @@ import {
   OnInit
 } from '@angular/core';
 import { WA_WINDOW, WA_USER_AGENT } from '@ng-web-apis/common';
-import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
@@ -62,7 +61,7 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public get isMobile(): boolean {
-    return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
+    return this.headerStore.isMobile;
   }
 
   // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
