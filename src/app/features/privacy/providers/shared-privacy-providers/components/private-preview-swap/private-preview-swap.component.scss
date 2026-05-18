@@ -251,9 +251,11 @@ app-swap-data-element ::ng-deep {
     border-radius: 50%;
 
     animation: pulse 1.4s infinite linear;
+
     &:nth-child(3) {
       animation-delay: 0.2s;
     }
+
     &:nth-child(4) {
       animation-delay: 0.4s;
     }
@@ -264,9 +266,11 @@ app-swap-data-element ::ng-deep {
   0% {
     opacity: 0.2;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.2;
   }
