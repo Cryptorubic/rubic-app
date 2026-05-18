@@ -30,7 +30,8 @@ export class RevealService {
     tokenAddress: string,
     tokenAmount: string,
     proofProgress: (progress: string) => void,
-    tokenBlockchain: RailgunSupportedChain
+    tokenBlockchain: RailgunSupportedChain,
+    receiverAddress: string
   ): Promise<void> {
     try {
       if (this._inProgress$.value === true) {
@@ -38,7 +39,7 @@ export class RevealService {
       }
       this._inProgress$.next(true);
       const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
+        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiverAddress)
       ];
       const chain = fromRubicToPrivateChainMap[tokenBlockchain];
 

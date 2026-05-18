@@ -90,7 +90,7 @@ export class RailgunHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield',
+            label: 'Shield Tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               await this.hideService.shield(

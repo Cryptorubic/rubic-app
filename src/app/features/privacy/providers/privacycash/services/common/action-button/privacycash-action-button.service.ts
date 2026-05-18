@@ -198,7 +198,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
 
   private async getRevealState(
     network: BlockchainName | null,
-    _userAddr: string,
+    userAddr: string,
     revealAsset: BalanceToken | null,
     revealAmount: SwapAmount | null,
     receiver: string
@@ -226,7 +226,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (srcUsdAmount.lt(2)) {
       return {
         type: 'error',
-        text: 'Minimum unshield is $2.'
+        text: 'Minimum transfer is $2.'
       };
     }
     if (revealAsset.amount.lt(revealAmount.actualValue)) {
@@ -235,6 +235,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         text: 'Insufficient balance'
       };
     }
+
     if (receiver) {
       const isAddressCorrect = await Web3Pure.getInstance(revealAsset.blockchain).isAddressCorrect(
         receiver
@@ -245,11 +246,23 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
           text: 'Incorrect receiver address'
         };
       }
+
+      if (compareAddresses(userAddr, receiver)) {
+        return {
+          type: 'error',
+          text: 'Recipient address must be different'
+        };
+      }
+    } else {
+      return {
+        type: 'error',
+        text: 'Enter receiver address'
+      };
     }
 
     return {
       type: 'parent',
-      text: 'Unshield token'
+      text: 'Private Transfer'
     };
   }
 
@@ -295,7 +308,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     }
     return {
       type: 'parent',
-      text: 'Shield token'
+      text: 'Shield tokens'
     };
   }
 

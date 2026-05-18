@@ -122,7 +122,7 @@ export class PrivacycashRevealPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Reveal Tokens',
+            label: 'Private Transfer',
             action: () => this.privacycashSwapService.unshield(token, receiverAddr)
           }
         ],

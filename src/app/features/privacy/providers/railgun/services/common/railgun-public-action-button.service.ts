@@ -95,7 +95,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
         action: this.connectWallet.bind(this)
       };
     }
-    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+    if (user && !compareAddresses(railgunWallet?.evmWalletAddress, user.address)) {
       return {
         type: 'error',
         text: 'Switch to your seed phrase wallet'
@@ -122,7 +122,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
     }
     return {
       type: 'parent',
-      text: 'Shield'
+      text: 'Shield Tokens'
     };
   }
 }

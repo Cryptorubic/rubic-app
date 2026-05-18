@@ -196,7 +196,7 @@ export class HinkalFacadeService {
     }
 
     steps.push({
-      label: 'Shield',
+      label: 'Shield Tokens',
       action: () =>
         this.hinkalSwapService.deposit(token).then(isSuccess => {
           if (isSuccess) {
@@ -233,7 +233,7 @@ export class HinkalFacadeService {
     this.addSwitchNetworkStep(token.blockchain, steps);
 
     steps.push({
-      label: 'Unshield',
+      label: 'Private Transfer',
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         return this.hinkalSwapService
@@ -241,7 +241,7 @@ export class HinkalFacadeService {
           .then(isSuccess => {
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
-                'UNSHIELD',
+                'TRANSFER',
                 'HINKAL',
                 this.walletConnectorService.address,
                 token.address,
@@ -389,7 +389,7 @@ export class HinkalFacadeService {
       );
 
       if (isSuccess) {
-        this.privatePageTypeService.activePage = { type: 'hide', label: 'Shield' };
+        this.privatePageTypeService.activePage = { type: 'hide', label: 'Shield Tokens' };
       }
     } catch {}
   }

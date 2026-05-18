@@ -5,6 +5,8 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { ZamaSwapService } from '../../../services/zama-sdk/zama-swap.service';
 import { ZamaBalanceService } from '../../../services/zama-sdk/zama-balance.service';
 import { BehaviorSubject } from 'rxjs';
+import { PrivateStatisticsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-pending-unshield-element',
@@ -23,7 +25,9 @@ export class PendingUnshieldElementComponent {
 
   constructor(
     private readonly zamaSwapService: ZamaSwapService,
-    private readonly zamaBalanceService: ZamaBalanceService
+    private readonly zamaBalanceService: ZamaBalanceService,
+    private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public onImageError($event: Event): void {
@@ -35,7 +39,20 @@ export class PendingUnshieldElementComponent {
     try {
       await this.zamaSwapService
         .finalizeUnwrap(this.token, this.token.encryptedAmount)
-        .then(() => this.zamaBalanceService.refreshPendingUnshieldBalances());
+        .then(isSuccess => {
+          if (isSuccess) {
+            this.privateStatisticsService.saveAction(
+              'UNSHIELD',
+              'ZAMA',
+              this.walletConnectorService.address,
+              this.token.address,
+              this.token.encryptedAmount,
+              this.token.blockchain
+            );
+          }
+
+          this.zamaBalanceService.refreshPendingUnshieldBalances();
+        });
     } finally {
       this._unwrapLoading$.next(false);
     }

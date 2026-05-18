@@ -77,7 +77,7 @@ export class PrivacycashHidePageComponent implements OnInit {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield',
+            label: 'Shield Tokens',
             action: () => this.privacycashSwapService.shield(token)
           }
         ],

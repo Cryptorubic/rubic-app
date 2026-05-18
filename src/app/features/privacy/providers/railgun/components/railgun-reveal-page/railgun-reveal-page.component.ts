@@ -6,7 +6,7 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
@@ -66,7 +66,18 @@ export class RailgunRevealPageComponent {
 
   private readonly tokensBalanceService = inject(TokensBalanceService);
 
+  private readonly actionButtonService = inject(PrivateActionButtonService);
+
   ngOnInit() {
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.actionButtonService.setReceiverAddress(address);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
     this.railgunFacade.completedChains$
       .pipe(takeUntil(this.destroy$))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
@@ -78,7 +89,7 @@ export class RailgunRevealPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Unshield',
+            label: 'Private Transfer',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
@@ -92,7 +103,8 @@ export class RailgunRevealPageComponent {
                 token.address,
                 bigintAmount.toString(),
                 () => {},
-                token.blockchain as RailgunSupportedChain
+                token.blockchain as RailgunSupportedChain,
+                this.receiverCtrl.value
               );
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',
@@ -105,7 +117,7 @@ export class RailgunRevealPageComponent {
                 }
               );
               this.privateStatisticsService.saveAction(
-                'UNSHIELD',
+                'TRANSFER',
                 'RAILGUN',
                 this.authService.userAddress,
                 token.address,

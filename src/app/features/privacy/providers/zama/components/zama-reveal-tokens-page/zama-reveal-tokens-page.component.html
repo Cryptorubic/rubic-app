@@ -6,7 +6,7 @@
   ></app-reveal-window>
 
   <app-zama-pending-unshield-list
-    *ngIf="pendingUnshieldBalance.length"
+    *ngIf="pendingUnshieldBalance?.length"
     [tokens]="pendingUnshieldBalance"
   ></app-zama-pending-unshield-list>
 </ng-container>

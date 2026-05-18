@@ -30,7 +30,7 @@ export const HINKAL_PAGES: PageType[] = [
 export const HINKAL_LIGTH_PAGES: PageType[] = [
   {
     type: 'hide',
-    label: 'Shield'
+    label: 'Shield Tokens'
   },
   {
     type: 'reveal',

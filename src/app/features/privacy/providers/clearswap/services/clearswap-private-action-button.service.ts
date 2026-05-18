@@ -159,7 +159,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
     }
     return {
       type: 'parent',
-      text: 'Transfer token'
+      text: 'Private Transfer'
     };
   }
 }

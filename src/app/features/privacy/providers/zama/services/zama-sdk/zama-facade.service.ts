@@ -137,7 +137,7 @@ export class ZamaFacadeService {
     }
 
     steps.push({
-      label: 'Shield',
+      label: 'Shield Tokens',
       action: () =>
         this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
           if (isSuccess) {

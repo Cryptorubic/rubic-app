@@ -102,6 +102,7 @@ export const ERC7984_TOKEN_ABI: Abi = [
     anonymous: false,
     inputs: [
       { indexed: true, internalType: 'address', name: 'receiver', type: 'address' },
+      { indexed: true, internalType: 'bytes32', name: 'unwrapRequestId', type: 'bytes32' },
       { indexed: false, internalType: 'euint64', name: 'amount', type: 'bytes32' }
     ],
     name: 'UnwrapRequested',

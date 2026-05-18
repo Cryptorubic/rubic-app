@@ -45,7 +45,7 @@ export class ZamaRevealTokensPageComponent {
     withMaxBtn: true,
     receiverPlaceholder: 'Enter receiver’s EVM wallet address',
     direction: 'from',
-    showPresets: false,
+    showPresets: true,
     showWarnings: false
   };
 

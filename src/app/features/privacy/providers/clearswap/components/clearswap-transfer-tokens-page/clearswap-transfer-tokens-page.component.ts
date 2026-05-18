@@ -137,7 +137,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
             displayAmount,
             steps: [
               {
-                label: 'Transfer tokens',
+                label: 'Private Transfer',
                 action: () =>
                   this.clearswapSwapService
                     .transfer(
