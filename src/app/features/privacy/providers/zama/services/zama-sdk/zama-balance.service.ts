@@ -207,6 +207,7 @@ export class ZamaBalanceService {
         return pendingBalances.map(pendingBalance => {
           return {
             tokenAddress: pendingBalance.tokenAddress,
+            encryptedAmount: pendingBalance.encryptedAmount,
             decryptedWeiAmount: new BigNumber(
               decryptedBalances[pendingBalance?.encryptedAmount as `0x${string}`]?.toString() || '0'
             )
