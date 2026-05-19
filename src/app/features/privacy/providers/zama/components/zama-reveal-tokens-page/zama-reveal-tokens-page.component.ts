@@ -70,7 +70,10 @@ export class ZamaRevealTokensPageComponent {
               const pendingToken: PendingUnshieldToken = {
                 ...unshieldToken,
                 encryptedAmount: pendingBalance.encryptedAmount,
-                decryptedWeiAmount: pendingBalance.decryptedWeiAmount
+                decryptedNonWeiAmount: Token.fromWei(
+                  pendingBalance.decryptedWeiAmount,
+                  unshieldToken.decimals
+                )
               };
 
               return pendingToken;

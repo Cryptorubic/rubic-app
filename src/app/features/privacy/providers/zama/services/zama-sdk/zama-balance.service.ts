@@ -156,6 +156,9 @@ export class ZamaBalanceService {
       const zamaInstance = this.zamaInstanceService.getInstance(blockchain);
       const signatureInfo = this.zamaSignatureService.signatureInfo;
 
+      const erc7984Addresses = this.zamaTokensService.supportedTokensMapping[blockchain].map(
+        token => token.shieldedTokenAddress
+      );
       const checksumAddress = getAddress(userAddress);
 
       const decryptedBalances = await zamaInstance.userDecrypt(
@@ -163,7 +166,7 @@ export class ZamaBalanceService {
         signatureInfo.privateKey,
         signatureInfo.publicKey,
         signatureInfo.signature.replace('0x', ''),
-        handlePairs.map(v => v.contractAddress),
+        erc7984Addresses,
         checksumAddress,
         signatureInfo.startTimeStamp,
         signatureInfo.durationDays
@@ -171,7 +174,6 @@ export class ZamaBalanceService {
 
       return decryptedBalances;
     } catch (err) {
-      console.log(err);
       return {};
     }
   }
@@ -190,20 +192,23 @@ export class ZamaBalanceService {
           )
         ).flat();
 
-        const handlePairs = shieldTokens.map((t, i) => {
-          return {
-            handle: pendingBalances[i].encryptedAmount,
-            contractAddress: t.shieldedTokenAddress
-          };
-        });
+        const handlePairs = shieldTokens
+          .map((t, i) => {
+            if (!pendingBalances[i]) return null;
+            return {
+              handle: pendingBalances[i].encryptedAmount,
+              contractAddress: t.shieldedTokenAddress
+            };
+          })
+          .filter(v => !isNil(v));
 
         const decryptedBalances = await this.decryptBalances(handlePairs, walletAddress, chain);
 
         return pendingBalances.map(pendingBalance => {
           return {
-            ...pendingBalance,
+            tokenAddress: pendingBalance.tokenAddress,
             decryptedWeiAmount: new BigNumber(
-              decryptedBalances[pendingBalance.encryptedAmount as `0x${string}`]?.toString() || '0'
+              decryptedBalances[pendingBalance?.encryptedAmount as `0x${string}`]?.toString() || '0'
             )
           };
         });
@@ -276,6 +281,8 @@ export class ZamaBalanceService {
         tokenAddress: token.tokenAddress,
         encryptedAmount: log.args.amount
       }));
-    } catch {}
+    } catch {
+      return [];
+    }
   }
 }

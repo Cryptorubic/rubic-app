@@ -3,5 +3,5 @@ import BigNumber from 'bignumber.js';
 
 export interface PendingUnshieldToken extends Token {
   encryptedAmount: string;
-  decryptedWeiAmount: BigNumber;
+  decryptedNonWeiAmount: BigNumber;
 }
