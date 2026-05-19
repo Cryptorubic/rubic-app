@@ -180,7 +180,7 @@ export class ZamaFacadeService {
     };
 
     steps.push({
-      label: 'Unshield',
+      label: 'Unshield Tokens',
       action: () => this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess)
     });
 
