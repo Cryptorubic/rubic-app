@@ -12,8 +12,7 @@ import {
 } from './workers/models/worker-params';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
-import { ExternalActionId, getFeeStructure } from '@hinkal/common';
-import BigNumber from 'bignumber.js';
+import { ExternalActionId, FeeStructure, getFeeStructure } from '@hinkal/common';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
 
@@ -82,6 +81,7 @@ export class HinkalSwapService {
   public async withdraw(
     token: TokenAmount<EvmBlockchainName>,
     feeToken: string,
+    feeStructure: FeeStructure,
     receiver?: string
   ): Promise<boolean> {
     try {
@@ -92,7 +92,8 @@ export class HinkalSwapService {
           isNative: token.isNative
         },
         receiver,
-        feeToken
+        feeToken,
+        feeStructure
       };
 
       await this.hinkalWorker.request({
@@ -171,7 +172,7 @@ export class HinkalSwapService {
     }
   }
 
-  public async estimateFee(params: EstimateFeeStructureParams): Promise<BigNumber> {
+  public async estimateFee(params: EstimateFeeStructureParams): Promise<FeeStructure> {
     const { operation, feeTokenAddress, fromToken } = params;
 
     const chainId = blockchainId[fromToken.blockchain];
@@ -185,10 +186,13 @@ export class HinkalSwapService {
         isSwap ? ExternalActionId.Emporium : ExternalActionId.Transact
       );
 
-      return new BigNumber(fee.flatFee.toString());
-    } catch (err) {
-      console.log(err);
-      return new BigNumber(0);
+      return fee;
+    } catch {
+      return {
+        feeToken: params.feeTokenAddress,
+        flatFee: 0n,
+        variableRate: 0n
+      };
     }
   }
 }

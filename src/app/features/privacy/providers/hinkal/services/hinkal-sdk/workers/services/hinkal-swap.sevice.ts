@@ -1,5 +1,6 @@
 import {
   emporiumOp,
+  FeeStructure,
   generateFundAndApproveOps,
   Hinkal,
   networkRegistry,
@@ -57,6 +58,7 @@ export class HinkalWorkerSwapService {
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
     feeToken: string,
+    feeStructure: FeeStructure,
     receiver?: string
   ): Promise<string> {
     try {
@@ -68,7 +70,8 @@ export class HinkalWorkerSwapService {
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
         false,
-        feeToken
+        feeToken,
+        feeStructure
       )) as ethers.TransactionResponse;
 
       console.log(resp);

@@ -46,7 +46,7 @@ export class PendingUnshieldElementComponent {
               'ZAMA',
               this.walletConnectorService.address,
               this.token.address,
-              this.token.encryptedAmount,
+              this.token.decryptedWeiAmount.toFixed(),
               this.token.blockchain
             );
           }

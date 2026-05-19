@@ -134,7 +134,7 @@ export class PrivacycashRevealPageComponent {
             }
           }
         },
-        swapType: 'unshield',
+        swapType: 'transfer',
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

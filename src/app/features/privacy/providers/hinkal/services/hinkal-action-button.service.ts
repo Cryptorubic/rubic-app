@@ -184,7 +184,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
 
         if (!estimatedFee) return false;
 
-        return new BigNumber(tokenBalance.amount).minus(estimatedFee.fee).gte(0);
+        return new BigNumber(tokenBalance.amount).minus(estimatedFee.flatFee.toString()).gte(0);
       });
 
       if (!isTokenWithEnoughBalanceExist) {
@@ -193,7 +193,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
         );
 
         if (
-          Token.fromWei(estimatedFee.fee, fromAsset.decimals)
+          Token.fromWei(estimatedFee.flatFee.toString(), fromAsset.decimals)
             .plus(assetAmount.visibleValue)
             .gt(fromAsset.amount)
         ) {

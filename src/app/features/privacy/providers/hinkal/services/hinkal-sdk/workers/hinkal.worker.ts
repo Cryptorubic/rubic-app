@@ -55,8 +55,13 @@ addEventListener('message', async ({ data }: { data: WorkerParams }) => {
       }
 
       if (type === 'withdraw') {
-        const { token, receiver, feeToken } = params as WithdrawParams;
-        const resp = await hinkalWorkerLogic.swapService.withdraw(token, feeToken, receiver);
+        const { token, receiver, feeToken, feeStructure } = params as WithdrawParams;
+        const resp = await hinkalWorkerLogic.swapService.withdraw(
+          token,
+          feeToken,
+          feeStructure,
+          receiver
+        );
         postMessage({ success: true, result: resp, type });
       }
 

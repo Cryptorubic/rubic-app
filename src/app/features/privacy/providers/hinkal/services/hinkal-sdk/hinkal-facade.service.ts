@@ -10,7 +10,8 @@ import {
   firstValueFrom,
   skip,
   Subscription,
-  switchMap
+  switchMap,
+  timer
 } from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
@@ -36,7 +37,6 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import BigNumber from 'bignumber.js';
 import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { HinkalSwapTokensFacadeService } from '../token-facades/hinkal-swap-tokens-facade.service';
 import { HINKAL_SUPPORTED_GAS_TOKENS } from '../../constants/hinkal-supported-gas-tokens';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
@@ -45,6 +45,7 @@ import {
   HINKAL_PRIVATE_OPERATION,
   HinkalPrivateOperation
 } from '../../constants/hinkal-private-operations';
+import { FeeStructure } from '@hinkal/common';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -56,20 +57,14 @@ export class HinkalFacadeService {
 
   public readonly balanceLoading$ = this._balanceLoading$.asObservable();
 
-  private readonly _estimatedFeeMapping: Partial<
-    Record<BlockchainName, { feeToken: string; fee: BigNumber }[]>
-  > = {};
+  private readonly _estimatedFeeMapping: Partial<Record<BlockchainName, FeeStructure[]>> = {};
 
-  public getEstimatedFeesByChain(
-    blockchain: BlockchainName
-  ): { feeToken: string; fee: BigNumber }[] {
+  public getEstimatedFeesByChain(blockchain: BlockchainName): FeeStructure[] {
     return this._estimatedFeeMapping[blockchain] || [];
   }
 
   private async updateActiveChainFees(blockchain: BlockchainName): Promise<void> {
     try {
-      if (this._estimatedFeeMapping[blockchain]) return;
-
       const supportedTokens = PRIVATE_MODE_SUPPORTED_TOKENS[blockchain];
 
       const estimatedFees = await Promise.all(
@@ -85,10 +80,7 @@ export class HinkalFacadeService {
         )
       );
 
-      this._estimatedFeeMapping[blockchain] = supportedTokens.map((token, i) => ({
-        feeToken: token,
-        fee: estimatedFees[i]
-      }));
+      this._estimatedFeeMapping[blockchain] = supportedTokens.map((_, i) => estimatedFees[i]);
     } catch (err) {
       console.log(err);
     }
@@ -131,8 +123,13 @@ export class HinkalFacadeService {
 
     const instanceSub = this.subscribeOnInstanceChanged();
     const estimateFeeSub = this.activeChain$
-      .pipe(filter(Boolean))
-      .subscribe(chain => this.updateActiveChainFees(chain));
+      .pipe(
+        filter(Boolean),
+        switchMap(aciveChain =>
+          timer(0, 120_000).pipe(switchMap(() => this.updateActiveChainFees(aciveChain)))
+        )
+      )
+      .subscribe();
 
     this.subs.push(activeNetworkSub, pollSub, balanceSub, instanceSub, estimateFeeSub);
   }
@@ -236,8 +233,12 @@ export class HinkalFacadeService {
       label: 'Private Transfer',
       action: () => {
         const selectedGasToken = getSelectedGasToken();
+        const estimatedFee = this.getEstimatedFeesByChain(token.blockchain).find(({ feeToken }) =>
+          compareAddresses(feeToken, selectedGasToken)
+        );
+
         return this.hinkalSwapService
-          .withdraw(token, selectedGasToken, receiver)
+          .withdraw(token, selectedGasToken, estimatedFee, receiver)
           .then(isSuccess => {
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
@@ -295,33 +296,35 @@ export class HinkalFacadeService {
     return steps;
   }
 
-  private async estimateGas(params: EstimateFeeStructureParams): Promise<BigNumber> {
-    const result = await this.hinkalSwapService.estimateFee(params);
-
-    console.log(`GAS ESTIMATE RESPONSE FOR ${params.feeTokenAddress} = ${result}`);
-
-    return result;
-  }
-
   public async prepareGasTokens(
     fromToken: TokenAmount<EvmBlockchainName>,
-    operation: HinkalPrivateOperation,
-    toToken?: TokenAmount<EvmBlockchainName>
+    _operation: HinkalPrivateOperation,
+    _toToken?: TokenAmount<EvmBlockchainName>
   ): Promise<GasToken[]> {
     const availableGasTokens = await this.getGasTokens(fromToken);
 
-    const estimates = await Promise.all(
-      availableGasTokens.map(async token => ({
-        ...token,
-        estimatedFee: await this.hinkalSwapService.estimateFee({
-          feeTokenAddress: token.address,
-          fromToken,
-          toToken,
-          operation
-        })
-      }))
-    );
+    // const estimates = await Promise.all(
+    //   availableGasTokens.map(async token => ({
+    //     ...token,
+    //     estimatedFee: await this.hinkalSwapService.estimateFee({
+    //       feeTokenAddress: token.address,
+    //       fromToken,
+    //       toToken,
+    //       operation
+    //     })
+    //   }))
+    // );
 
+    const fees = this.getEstimatedFeesByChain(fromToken.blockchain);
+
+    const estimates = availableGasTokens.map(token => {
+      const fee = fees.find(({ feeToken }) => compareAddresses(feeToken, token.address));
+
+      return {
+        ...token,
+        estimatedFee: new BigNumber(fee?.flatFee?.toString() || 0)
+      };
+    });
     return estimates.map(({ estimatedFee, ...token }) => {
       const feeAmount = Token.fromWei(estimatedFee, token.decimals);
       const gasFeeUsd = feeAmount.multipliedBy(token.price);

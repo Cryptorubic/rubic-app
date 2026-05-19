@@ -45,7 +45,7 @@ export class ZamaRevealTokensPageComponent {
     withMaxBtn: true,
     receiverPlaceholder: 'Enter receiver’s EVM wallet address',
     direction: 'from',
-    showPresets: true,
+    showPresets: false,
     showWarnings: false
   };
 
@@ -69,15 +69,15 @@ export class ZamaRevealTokensPageComponent {
 
               const pendingToken: PendingUnshieldToken = {
                 ...unshieldToken,
-                encryptedAmount: pendingBalance.encryptedAmount
+                encryptedAmount: pendingBalance.encryptedAmount,
+                decryptedWeiAmount: pendingBalance.decryptedWeiAmount
               };
 
               return pendingToken;
             });
           })
         );
-    }),
-    tap(console.log)
+    })
   );
 
   constructor(

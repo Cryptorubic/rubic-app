@@ -115,7 +115,7 @@ export class HinkalRevealTokensPageComponent {
 
       if (!estimatedFee) return false;
 
-      return new BigNumber(tokenBalance.amount).minus(estimatedFee.fee).gte(0);
+      return new BigNumber(tokenBalance.amount).minus(estimatedFee.flatFee.toString()).gte(0);
     });
 
     if (tokenWithEnoughBalance) {
@@ -130,8 +130,9 @@ export class HinkalRevealTokensPageComponent {
     }
 
     const tokenFee =
-      estimatedFees.find(({ feeToken }) => compareAddresses(feeToken, token.address))?.fee ||
-      new BigNumber(0);
+      estimatedFees
+        .find(({ feeToken }) => compareAddresses(feeToken, token.address))
+        ?.flatFee?.toString() || new BigNumber(0);
 
     const maxAmountWithoutFee = token.amount.minus(Token.fromWei(tokenFee, token.decimals));
 
@@ -163,7 +164,8 @@ export class HinkalRevealTokensPageComponent {
       const preview$ = openPreview({
         steps,
         warnings: HINKAL_WARNINGS,
-        gasTokens
+        gasTokens,
+        swapType: 'transfer'
       });
       await firstValueFrom(preview$);
     } finally {
