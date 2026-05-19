@@ -15,6 +15,8 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WalletConnectAbstractAdapter } from './common/wallet-connect-abstract';
 import { DeviceType } from './common/models/device-type';
+import EthereumProvider from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-error';
 
 export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -33,7 +35,7 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
     super(
       {
         projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        showQrModal: true,
+        showQrModal: false,
         chains: [chainId | 1],
         optionalChains: Object.values(blockchainId)
       },
@@ -57,10 +59,29 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
 
   public async activate(): Promise<void> {
     try {
+      console.debug('this.device ==>', this.device);
       if (this.device !== 'desktop') {
-        this.initMobileSubscription(this.device === 'ios');
-        await super.activate();
-        return;
+        try {
+          this.wallet = await EthereumProvider.init({
+            ...this.providerConfig
+          });
+          this.initMobileSubscription(this.device === 'ios');
+
+          const [address] = await this.wallet.enable();
+          const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
+
+          this.isEnabled = true;
+
+          this.selectedAddress = address;
+          this.selectedChain =
+            (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
+          this.onAddressChanges$.next(address);
+          this.onNetworkChanges$.next(this.selectedChain);
+
+          this.initSubscriptionsOnChanges();
+        } catch (error) {
+          throw new WalletlinkError();
+        }
       }
 
       const provider = await this.getProvider({
