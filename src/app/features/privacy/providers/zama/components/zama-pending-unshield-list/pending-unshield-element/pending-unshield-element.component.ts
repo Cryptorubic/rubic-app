@@ -7,6 +7,7 @@ import { ZamaBalanceService } from '../../../services/zama-sdk/zama-balance.serv
 import { BehaviorSubject } from 'rxjs';
 import { PrivateStatisticsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-pending-unshield-element',
@@ -46,7 +47,7 @@ export class PendingUnshieldElementComponent {
               'ZAMA',
               this.walletConnectorService.address,
               this.token.address,
-              this.token.decryptedNonWeiAmount.toFixed(),
+              Token.toWei(this.token.decryptedNonWeiAmount, this.token.decimals),
               this.token.blockchain
             );
           }
