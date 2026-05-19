@@ -4,35 +4,65 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  EvmBlockchainName,
+  blockchainId
+} from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
-export class MetamaskWalletAdapter extends EvmWalletAdapter {
+import { WalletConnectAbstractAdapter } from './common/wallet-connect-abstract';
+import { DeviceType } from './common/models/device-type';
+
+export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
+
+  private readonly device: DeviceType;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow
+    window: RubicWindow,
+    device: DeviceType,
+    chainId?: number
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
+    super(
+      {
+        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
+        showQrModal: true,
+        chains: [chainId | 1],
+        optionalChains: Object.values(blockchainId)
+      },
+      onAddressChanges$,
+      onNetworkChanges$,
+      errorsService,
+      zone,
+      window
+    );
+    this.device = device;
   }
 
   /**
    * Checks possible metamask errors.
    */
   private checkErrors(): void {
-    if (!this.wallet?.isMetaMask) {
+    if (!(this.wallet as RubicAny)?.isMetaMask) {
       throw new MetamaskError();
     }
   }
 
   public async activate(): Promise<void> {
     try {
+      if (this.device !== 'desktop') {
+        this.initMobileSubscription(this.device === 'ios');
+        await super.activate();
+        return;
+      }
+
       const provider = await this.getProvider({
         provider: 'metamask',
         reserveProvider: 'rabby wallet'
@@ -54,7 +84,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
       [this.selectedAddress] = accounts;
       this.selectedChain =
-        (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
+        (BlockchainsInfo.getBlockchainNameById(chain as number) as EvmBlockchainName) ?? null;
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 
@@ -74,5 +104,19 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
       throw new MetamaskError();
     }
+  }
+
+  /**
+   * Subscribes to wallet connect deep link url and redirects after getting.
+   */
+  private initMobileSubscription(isIos: boolean): void {
+    //@ts-ignore
+    this.wallet.on('display_uri', (uri: string) => {
+      const encodedUri = encodeURIComponent(uri);
+      const deepLink = isIos
+        ? `https://metamask.app.link/wc?uri=${encodedUri}`
+        : `metamask://wc?uri=${encodedUri}`;
+      this.window.location.href = deepLink;
+    });
   }
 }

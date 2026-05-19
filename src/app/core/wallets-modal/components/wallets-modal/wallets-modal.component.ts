@@ -138,12 +138,8 @@ export class WalletsModalComponent implements OnInit {
       this.gtmService.fireClickOnWalletProviderEvent(provider);
 
       if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-        if (provider === WALLET_NAME.METAMASK || provider === WALLET_NAME.METAMASK_SOLANA) {
-          provider = WALLET_NAME.METAMASK_MOBILE;
-        } else {
-          const redirected = await this.deepLinkRedirectIfSupported(provider);
-          if (redirected) return;
-        }
+        const redirected = await this.deepLinkRedirectIfSupported(provider);
+        if (redirected) return;
       }
 
       this.headerStore.setWalletsLoadingStatus(true);
