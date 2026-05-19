@@ -34,7 +34,7 @@ export class RailgunEngineService {
     const shouldDebug = false;
     const useNativeArtifacts = false;
     const skipMerkletreeScans = false;
-    const poiNodeURLs = ['https://ppoi-agg.horsewithsixlegs.xyz'];
+    const poiNodeURLs = ['https://ppoi.fdi.network', 'https://ppoi-agg.horsewithsixlegs.xyz'];
     const customPOILists: POIList[] = [];
     const verboseScanLogging = false;
 

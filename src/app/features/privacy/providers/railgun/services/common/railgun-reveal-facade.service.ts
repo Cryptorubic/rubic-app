@@ -5,13 +5,14 @@ import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { BlockchainsInfo, compareAddresses, Token } from '@cryptorubic/core';
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunERC20Amount } from '@railgun-community/shared-models';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 
+@Injectable()
 export class RailgunRevealFacadeService extends TokensFacadeService {
   private readonly railgunFacade = inject(RailgunFacadeService);
 

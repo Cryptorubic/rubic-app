@@ -173,7 +173,7 @@ export class ZamaBalanceService {
       );
 
       return decryptedBalances;
-    } catch (err) {
+    } catch {
       return {};
     }
   }
@@ -192,12 +192,16 @@ export class ZamaBalanceService {
           )
         ).flat();
 
-        const handlePairs = shieldTokens
+        const handlePairs = pendingBalances
+          .filter(Boolean)
           .map((t, i) => {
+            const shieldToken = shieldTokens.find(token =>
+              compareAddresses(token.tokenAddress, t.tokenAddress)
+            );
             if (!pendingBalances[i]) return null;
             return {
               handle: pendingBalances[i].encryptedAmount,
-              contractAddress: t.shieldedTokenAddress
+              contractAddress: shieldToken.shieldedTokenAddress
             };
           })
           .filter(v => !isNil(v));
