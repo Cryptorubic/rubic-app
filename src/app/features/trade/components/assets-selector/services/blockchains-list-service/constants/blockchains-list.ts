@@ -9,7 +9,7 @@ export interface RankedBlockchain {
 
 function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-    return 0.74;
+    return 0.76;
   }
   if (blockchain === BLOCKCHAIN_NAME.SUI) {
     return 0.7;
@@ -196,13 +196,8 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   {
     name: BLOCKCHAIN_NAME.ARBITRUM,
-    rank: 0.75,
+    rank: 0.76,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
-    name: BLOCKCHAIN_NAME.POLYGON,
-    rank: 0.75,
-    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -224,6 +219,11 @@ export const blockchainsList: RankedBlockchain[] = [
     name: BLOCKCHAIN_NAME.TRON,
     rank: 0.74,
     tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
+  },
+  {
+    name: BLOCKCHAIN_NAME.POLYGON,
+    rank: 0.74,
+    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.MONAD,

@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { PrivateStatisticsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Token } from '@cryptorubic/core';
+import { ZamaHideTokensFacadeService } from '../../../services/zama-hide-tokens-facade.service';
 
 @Component({
   selector: 'app-pending-unshield-element',
@@ -28,7 +29,8 @@ export class PendingUnshieldElementComponent {
     private readonly zamaSwapService: ZamaSwapService,
     private readonly zamaBalanceService: ZamaBalanceService,
     private readonly privateStatisticsService: PrivateStatisticsService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensFacade: ZamaHideTokensFacadeService
   ) {}
 
   public onImageError($event: Event): void {
@@ -38,6 +40,11 @@ export class PendingUnshieldElementComponent {
   public async finalizeUnwrap(): Promise<void> {
     this._unwrapLoading$.next(true);
     try {
+      const publicToken = await this.tokensFacade.findToken({
+        address: this.token.address,
+        blockchain: this.token.blockchain
+      });
+
       await this.zamaSwapService
         .finalizeUnwrap(this.token, this.token.encryptedAmount)
         .then(isSuccess => {
@@ -47,7 +54,7 @@ export class PendingUnshieldElementComponent {
               'ZAMA',
               this.walletConnectorService.address,
               this.token.address,
-              Token.toWei(this.token.decryptedNonWeiAmount, this.token.decimals),
+              Token.toWei(this.token.decryptedNonWeiAmount, publicToken.decimals),
               this.token.blockchain
             );
           }
