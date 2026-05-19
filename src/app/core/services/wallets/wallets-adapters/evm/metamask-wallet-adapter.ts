@@ -59,13 +59,12 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
 
   public async activate(): Promise<void> {
     try {
-      console.debug('this.device ==>', this.device);
       if (this.device !== 'desktop') {
         try {
           this.wallet = await EthereumProvider.init({
             ...this.providerConfig
           });
-          this.initMobileSubscription(this.device === 'ios');
+          // this.initMobileSubscription(this.device === 'ios');
 
           const [address] = await this.wallet.enable();
           const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
@@ -131,14 +130,14 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
   /**
    * Subscribes to wallet connect deep link url and redirects after getting.
    */
-  private initMobileSubscription(isIos: boolean): void {
-    //@ts-ignore
-    this.wallet.on('display_uri', (uri: string) => {
-      const encodedUri = encodeURIComponent(uri);
-      const deepLink = isIos
-        ? `https://metamask.app.link/wc?uri=${encodedUri}`
-        : `metamask://wc?uri=${encodedUri}`;
-      this.window.location.href = deepLink;
-    });
-  }
+  // private initMobileSubscription(isIos: boolean): void {
+  //   //@ts-ignore
+  //   this.wallet.on('display_uri', (uri: string) => {
+  //     const encodedUri = encodeURIComponent(uri);
+  //     const deepLink = isIos
+  //       ? `https://metamask.app.link/wc?uri=${encodedUri}`
+  //       : `metamask://wc?uri=${encodedUri}`;
+  //     this.window.location.href = deepLink;
+  //   });
+  // }
 }
