@@ -15,8 +15,8 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WalletConnectAbstractAdapter } from './common/wallet-connect-abstract';
 import { DeviceType } from './common/models/device-type';
-import EthereumProvider from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-error';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
