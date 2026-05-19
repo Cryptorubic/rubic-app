@@ -79,6 +79,7 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
           this.onNetworkChanges$.next(this.selectedChain);
 
           this.initSubscriptionsOnChanges();
+          return;
         } catch (error) {
           throw new WalletlinkError();
         }
