@@ -143,10 +143,6 @@ export class WalletConnectorService {
       return new MetamaskWalletAdapter(...defaultConstructorParameters, device, chainId);
     }
 
-    // if (walletName === WALLET_NAME.METAMASK_MOBILE) {
-    //   return new MetamaskMobileWalletAdapter(...defaultConstructorParameters, this.isIos, chainId);
-    // }
-
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
       return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
