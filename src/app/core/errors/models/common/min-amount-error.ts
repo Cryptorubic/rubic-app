@@ -1,6 +1,6 @@
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { MinAmountError as SdkMinAmountError } from '@cryptorubic/sdk';
+import { MinAmountError as SdkMinAmountError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { formatBigNumber } from '@app/shared/utils/format-big-number';
 

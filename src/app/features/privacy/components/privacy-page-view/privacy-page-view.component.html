@@ -1,0 +1,34 @@
+<div
+  class="swap-container"
+  [class.large-iframe-swap-container]="useLargeIframe"
+  *ngLet="{
+    providers: privateProviders$ | async,
+    selectedTradeType: selectedTradeType$ | async,
+    lastActivity: lastActivity$ | async,
+    selectedTab: selectedTab$ | async
+  } as state"
+>
+  <div class="form-and-activity">
+    <app-tab-bar
+      [tabs]="tabs"
+      [selectedTab]="state.selectedTab"
+      (tabClicked)="handleTabSelected($event)"
+    ></app-tab-bar>
+
+    <app-private-main-page-swap
+      [creationConfig]="
+        state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
+      "
+      (formChanged)="handleSwapWindowChanged($event)"
+    ></app-private-main-page-swap>
+  </div>
+
+  <app-private-providers-list-general
+    *ngIf="!useLargeIframe && state.providers?.length"
+    @inOutAnimation
+    [states]="state.providers"
+    [selectedTradeType]="state.selectedTradeType"
+    (selectTrade)="selectProvider($event)"
+  >
+  </app-private-providers-list-general>
+</div>

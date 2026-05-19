@@ -51,6 +51,9 @@ import {
   nativeTokensList
 } from '@cryptorubic/core';
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
+import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
+import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
+import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -236,6 +239,17 @@ export class WalletConnectorService {
       return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
 
+    if (walletName === WALLET_NAME.LOBSTR) {
+      return new LobstrWalletAdapter(...defaultConstructorParameters, this.storeService);
+    }
+
+    if (walletName === WALLET_NAME.FREIGHTER) {
+      return new FreighterWalletAdapter(...defaultConstructorParameters);
+    }
+    if (walletName === WALLET_NAME.STELLAR_WALLET_CONNECT) {
+      return new StellarWalletConnectAdapter(...defaultConstructorParameters);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
@@ -270,6 +284,9 @@ export class WalletConnectorService {
     }
     if (this.chainType === CHAIN_TYPE.BITCOIN) {
       return [BLOCKCHAIN_NAME.BITCOIN];
+    }
+    if (this.chainType === CHAIN_TYPE.STELLAR) {
+      return [BLOCKCHAIN_NAME.STELLAR];
     }
 
     throw new Error('Blockchain is not supported');

@@ -1,0 +1,37 @@
+<div class="token-card-container">
+  <div class="token-card">
+    <div class="token-card__image-container">
+      <img
+        class="token-card__image-container-token"
+        [src]="token.image || DEFAULT_TOKEN_IMAGE"
+        [alt]="token.name"
+        (error)="onImageError($event)"
+      />
+    </div>
+
+    <div class="token-card__symbol-name-container">
+      <div class="token-card__symbol-container">
+        <span class="token-card__symbol"
+          >{{ token.amount | bigNumberFormat }} {{ token.symbol | shortenAmount : 6 : 4 }}</span
+        >
+      </div>
+
+      <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
+    </div>
+
+    <div class="token-card__right">
+      <div *ngLet="countdown$ | async as countdown">
+        <div>{{ countdown }}</div>
+        <div class="token-card__description">
+          {{
+            countdown === 'Completed'
+              ? 'Shield mined. POI finalized.'
+              : 'Shield mined. POI in progress...'
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-dropdown-options-shielded-token [token]="token"></app-dropdown-options-shielded-token>
+</div>

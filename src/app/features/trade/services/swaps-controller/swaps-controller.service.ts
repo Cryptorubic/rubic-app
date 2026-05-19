@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Inject, Injectable } from '@angular/core';
 import {
   combineLatestWith,
   concatMap,
-  firstValueFrom,
   forkJoin,
   from,
   Observable,
   of,
-  Subject
+  Subject,
+  Subscription
 } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
@@ -30,23 +30,15 @@ import { AuthService } from '@core/services/auth/auth.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
-  BLOCKCHAIN_NAME,
-  CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
-  CrossChainTradeType,
-  Injector,
   LowSlippageError,
   NoLinkedAccountError,
   NotSupportedTokensError,
-  OnChainTrade,
-  OnChainTradeType,
   RubicSdkError,
-  SymbiosisEvmCcrTrade,
+  SimulationFailedError as SdkSimulationFailedError,
   UnsupportedReceiverAddressError,
-  UserRejectError,
-  Web3Pure,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  UserRejectError as SdkUserRejectError
+} from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
@@ -69,15 +61,50 @@ import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cr
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import BigNumber from 'bignumber.js';
+import {
+  BLOCKCHAIN_NAME,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  OnChainTradeType,
+  Token
+} from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { RateChangeInfo } from '../../models/rate-change-info';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
+import { TrustlineService } from '../trustline-service/trustline.service';
+import { ApiSocketManager } from './socket-managers/socket-manager';
+import { WINDOW } from '@ng-web-apis/common';
+import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
+
+const SENTRY_CF_STATUS = {
+  hadFilledForm: false,
+  didntReachQuoteEnd: true
+};
 
 @Injectable()
 export class SwapsControllerService {
+  private readonly platformConfigService = inject(PlatformConfigurationService);
+
   private readonly _calculateTrade$ = new Subject<{
     isForced?: boolean;
     stop?: boolean;
   }>();
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
+
+  private readonly socketSubs: Array<Subscription> = [];
+
+  private socketManager: ApiSocketManager = new CloudflareSocketManager(
+    this.rubicApiService,
+    this,
+    this.turnstileService
+  );
 
   /**
    * Contains trades types, which were disabled due to critical errors.
@@ -102,8 +129,13 @@ export class SwapsControllerService {
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly rubicApiService: RubicApiService,
+    private readonly turnstileService: TurnstileService,
+    private readonly trustlineService: TrustlineService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
+    this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
@@ -111,6 +143,19 @@ export class SwapsControllerService {
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
     this.subscribeOnSwapFormFilled();
+
+    this.addSentryEvent();
+  }
+
+  private addSentryEvent(): void {
+    this.window.addEventListener('beforeunload', () => {
+      if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
+        console.debug(
+          '[SwapsControllerService_subscribeOnCalculation] user did not reach providers',
+          { ...SENTRY_CF_STATUS, sessionID: this.turnstileService.sessionID }
+        );
+      }
+    });
   }
 
   /**
@@ -123,17 +168,27 @@ export class SwapsControllerService {
     });
   }
 
-  private startRecalculation(isForced = false): void {
+  public startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
   }
 
+  private async subscribeOnSocketStatusChanges(): Promise<void> {
+    this.platformConfigService.useCloudflareProtection$.subscribe(useCloudflare => {
+      this.socketManager.removeSubs();
+      this.socketManager = useCloudflare
+        ? new CloudflareSocketManager(this.rubicApiService, this, this.turnstileService)
+        : new DefaultSocketManager(this.rubicApiService, this);
+      this.socketManager.initSubs();
+    });
+  }
+
   private subscribeOnCalculation(): void {
-    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(220),
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
+            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled && !calculateData.stop;
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };
           }
@@ -172,16 +227,24 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken?.blockchain === toToken?.blockchain) {
-            return this.onChainService.calculateTrades([
-              ...this.disabledTradesTypes.onChain,
-              ...onChainBlacklistProviders
-            ]);
-          }
-          return this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
+          const trades$ =
+            fromToken?.blockchain === toToken?.blockchain
+              ? this.onChainService.calculateTrades([
+                  ...this.disabledTradesTypes.onChain,
+                  ...onChainBlacklistProviders
+                ])
+              : this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
+
+          return from(trades$).pipe(
+            catchError(err => {
+              console.debug(err);
+              return of(null);
+            })
+          );
         }),
         catchError(err => {
           console.debug(err);
+          this.refreshService.setStopped();
           return of(null);
         })
       )
@@ -205,10 +268,13 @@ export class SwapsControllerService {
 
   public async swap(
     tradeState: SelectedTrade,
+    checkSlippageAndPI?: boolean,
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
-      onError?: () => void;
+      onError?: (err: RubicError<ERROR_TYPE> | null) => void;
+      onSimulationSuccess?: () => Promise<boolean>;
+      onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -219,50 +285,71 @@ export class SwapsControllerService {
       if (!isEqulaFromAmount) {
         throw new Error('Trade has invalid from amount');
       }
-      const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
-        trade instanceof CrossChainTrade
-          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-        trade
-      );
+
+      const allowSlippageAndPI = checkSlippageAndPI
+        ? await this.settingsService.checkSlippageAndPriceImpact(
+            trade instanceof CrossChainTrade
+              ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+              : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+            trade
+          )
+        : true;
 
       if (!allowSlippageAndPI) {
-        callback.onError?.();
+        callback.onError?.(null);
         return;
       }
       if (trade instanceof CrossChainTrade) {
-        txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
+        txHash = await this.crossChainService.swapTrade(
+          trade,
+          callback.onHash,
+          callback.onSimulationSuccess
+        );
       } else {
-        txHash = await this.onChainService.swapTrade(trade, callback.onHash);
+        txHash = await this.onChainService.swapTrade(
+          trade,
+          callback.onHash,
+          callback.onSimulationSuccess
+        );
       }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
-        const allowSwap = await firstValueFrom(
-          this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.oldAmount, trade.to.decimals),
-            Web3Pure.fromWei(err.newAmount, trade.to.decimals),
-            trade.to.symbol
-          )
-        );
+        const rateChangeInfo = {
+          oldAmount: Token.fromWei(err.oldAmount, trade.to.decimals),
+          newAmount: Token.fromWei(err.newAmount, trade.to.decimals),
+          tokenSymbol: trade.to.symbol
+        };
+
+        const allowSwap = await callback.onRateChange(rateChangeInfo);
 
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, {
-                skipAmountCheck: true,
-                useCacheData: true
-              });
+              txHash = await this.crossChainService.swapTrade(
+                trade,
+                callback.onHash,
+                callback.onSimulationSuccess,
+                {
+                  skipAmountCheck: true,
+                  useCacheData: true
+                }
+              );
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash, {
-                skipAmountCheck: true,
-                useCacheData: true
-              });
+              txHash = await this.onChainService.swapTrade(
+                trade,
+                callback.onHash,
+                callback.onSimulationSuccess,
+                {
+                  skipAmountCheck: true,
+                  useCacheData: true
+                }
+              );
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(new UserRejectError(), tradeState, callback?.onError);
+          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -331,7 +418,7 @@ export class SwapsControllerService {
       });
   }
 
-  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+  private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
       return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
@@ -349,20 +436,37 @@ export class SwapsControllerService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
-    if (error?.message?.includes('No available routes')) {
+    if (error instanceof SdkSimulationFailedError) {
+      return new SimulationFailedError(error.apiError);
+    }
+    if (
+      error instanceof SdkUserRejectError &&
+      error?.message.includes('manual transaction reject')
+    ) {
+      const manualReject = new UserRejectError();
+      manualReject.showAlert = false;
+      return manualReject;
+    }
+
+    if (error instanceof UserRejectError && error?.message.includes('manual transaction reject')) {
+      error.showAlert = false;
+      return error;
+    }
+
+    if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
-    if (error?.message?.includes('There are no providers for trade')) {
+    if (error.message?.includes('There are no providers for trade')) {
       return new RubicError('There are no providers for trade.');
     }
-    if (error?.message?.includes('Representation of ')) {
+    if (error.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
-    if (error?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
+    if (error.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
       return new RubicError('Please, increase the slippage or amount and try again!');
     }
 
-    const parsedError = error && RubicSdkErrorParser.parseError(error);
+    const parsedError = RubicSdkErrorParser.parseError(error);
     if (!parsedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
@@ -387,7 +491,11 @@ export class SwapsControllerService {
     if (error && error instanceof NoLinkedAccountError) {
       return of(true);
     }
-    if (trade instanceof SymbiosisEvmCcrTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
+    if (
+      trade instanceof CrossChainTrade &&
+      trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      trade.to.blockchain === BLOCKCHAIN_NAME.SEI
+    ) {
       return from(trade.checkBlockchainRequirements());
     }
     return of(false);
@@ -403,7 +511,7 @@ export class SwapsControllerService {
   private catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
-    onError?: () => void
+    onError?: (err: RubicError<ERROR_TYPE> | null) => void
   ): void {
     console.error(err);
     const parsedError = this.parseCalculationError(err);
@@ -423,12 +531,21 @@ export class SwapsControllerService {
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         false,
-        false
+        false,
+        {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
       );
       this.swapsStateService.pickProvider(true);
     }
-    onError?.();
-    this.errorsService.catch(parsedError);
+
+    if (this.showErrorAlert(parsedError)) this.errorsService.catch(parsedError);
+    onError?.(parsedError);
+  }
+
+  private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
+    return error.showAlert && !(error instanceof SimulationFailedError);
   }
 
   private subscribeOnSettings(): void {
@@ -463,11 +580,20 @@ export class SwapsControllerService {
       });
   }
 
-  private handleWs(): void {
-    Injector.rubicApiService
+  public handleWs(): Subscription[] {
+    this.socketSubs.forEach(sub => sub.unsubscribe());
+    this.socketSubs.length = 0;
+
+    const sub1 = this.rubicApiService.handleWsExceptions().subscribe(needRecalculate => {
+      if (needRecalculate) {
+        this.startRecalculation(true);
+        this.swapsStateService.clearProviders(false);
+      }
+    });
+
+    const sub2 = this.rubicApiService
       .handleQuotesAsync()
       .pipe(
-        // @ts-ignore
         tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
@@ -488,12 +614,6 @@ export class SwapsControllerService {
           const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade && this.swapFormService.isFilled) {
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-              wrappedTrade.trade,
-              wrappedTrade?.error
-            );
-
             const isEqualFromAmount = this.checkIsEqualFromAmount(
               wrappedTrade.trade.from.tokenAmount
             );
@@ -502,23 +622,42 @@ export class SwapsControllerService {
               wrappedTrade.trade = null;
             }
 
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
+            );
+
+            const needAddTrustline = this.trustlineService.checkTrustline(
+              wrappedTrade.trade,
+              this.authService.userAddress,
+              this.targetNetworkAddressService.address
+            );
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$
+              isNotLinkedAccount$,
+              needAddTrustline
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount, needTrustline]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-
+                    SENTRY_CF_STATUS.didntReachQuoteEnd = false;
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
-                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
+                    this.swapsStateService.updateTrade(
+                      trade,
+                      type,
+                      needApprove,
+                      needAuthWallet,
+                      needTrustline
+                    );
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,
@@ -565,13 +704,15 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+    this.socketSubs.push(sub1, sub2);
+    return [sub1, sub2];
   }
 
   private subscribeOnSwapFormFilled(): void {
     this.swapFormService.isFilled$
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(isFilled => {
-        if (!isFilled) Injector.rubicApiService.stopCalculation();
+        if (!isFilled) this.rubicApiService.stopCalculation();
       });
   }
 
@@ -580,8 +721,8 @@ export class SwapsControllerService {
     const formSourceToken = this.swapFormService.inputValue;
     const formSourceTokenAmount = formSourceToken.fromAmount.actualValue;
     const formSourceTokenDecimals = formSourceToken.fromToken.decimals;
-    const formSourceTokenWeiAmount = Web3Pure.toWei(formSourceTokenAmount, formSourceTokenDecimals);
-    const formSourceTokenNonWeiAmount = Web3Pure.fromWei(
+    const formSourceTokenWeiAmount = Token.toWei(formSourceTokenAmount, formSourceTokenDecimals);
+    const formSourceTokenNonWeiAmount = Token.fromWei(
       formSourceTokenWeiAmount,
       formSourceTokenDecimals
     );

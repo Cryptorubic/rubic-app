@@ -1,0 +1,59 @@
+<app-window-container
+  *ngLet="{
+    hideAsset: hideAsset$ | async,
+    hideAmount: hideAmount$ | async,
+    loading: loading$ | async,
+    displayReceiver: displayReceiver$ | async
+  } as state"
+>
+  <app-input-output-container
+    [round]="creationConfig.withReceiver && state.displayReceiver ? 'top' : 'all'"
+    [marginTop]="false"
+  >
+    <app-asset-selector
+      left
+      selectorType="from"
+      (handleAssetSelection)="openSelector()"
+      [asset]="state.hideAsset"
+      [isDisabled]="state.loading"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        formType="from"
+        [selectedToken]="state.hideAsset"
+        inputMode="input"
+        (amountUpdated)="updateInputValue($event)"
+        [amountValue]="state.hideAmount"
+      ></app-amount-transput>
+      <app-user-balance-container
+        [fromToken$]="hideAsset$"
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+
+  <app-target-network-address
+    *ngIf="state.displayReceiver && creationConfig.withReceiver"
+    [addressCtrl]="receiverCtrl"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <ng-content></ng-content>
+
+  <div
+    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    class="buttons-container"
+  >
+    <app-private-action-button
+      *ngIf="creationConfig.withActionButton"
+      [showLoader]="state.loading"
+      (onClick)="hide()"
+    ></app-private-action-button>
+
+    <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
+      [toBlockchain]="state.hideAsset ? state.hideAsset.blockchain : 'target network'"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
+  </div>
+</app-window-container>

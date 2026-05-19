@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
@@ -68,7 +68,22 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.AVNU]: {
     name: 'Avnu',
     image: `${imageBasePath}avnu.png`,
-    color: 'white'
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: {
+    name: 'AethonSwap',
+    image: `${imageBasePath}aethon_swap.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.ATLANTIS]: {
+    name: 'Atlantis',
+    image: `${imageBasePath}atlantis.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.AQUARIUS]: {
+    name: 'Aquarius',
+    image: `${imageBasePath}aquarius.svg`,
+    color: '#FFFFFF'
   },
 
   //BBBBBBBBBBBBBBBBBBBBB
@@ -168,6 +183,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Curve',
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
+  },
+  [ON_CHAIN_TRADE_TYPE.CLOBER]: {
+    name: 'Clober',
+    image: `${imageBasePath}clober.svg`,
+    color: '#000000'
   },
 
   //EEEEEEEEEEEEEEEEEEEE
@@ -282,6 +302,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'HorizonDEX',
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
+  },
+  [ON_CHAIN_TRADE_TYPE.HYPERCAT]: {
+    name: 'HyperCat',
+    image: `${imageBasePath}hypercat.svg`,
+    color: '#1a2833'
   },
 
   //IIIIIIIIIIIIIIIIIIIIIIII
@@ -457,6 +482,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}../bridge/osmosis.svg`,
     color: '#5E12A0'
   },
+  [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: {
+    name: 'OctoSwap',
+    image: `${imageBasePath}octoswap.svg`,
+    color: '#FFFFFF'
+  },
 
   //PPPPPPPPPPPPPPPPPPPPPPPPPP
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: {
@@ -547,6 +577,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Router DEX',
     image: 'assets/images/icons/providers/bridge/router.svg',
     color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.RUBIC_STELLAR_API]: {
+    name: `Rubic's Stellar API`,
+    color: '#00ff73',
+    image: `${imageBasePath}rubic-stellar-api.svg`
   },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
@@ -666,6 +701,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}sparkdex.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.SOROSWAP]: {
+    name: 'SoroSwap',
+    image: `${imageBasePath}soroswap.svg`,
+    color: '#FFFFFF'
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
@@ -779,6 +819,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}wynd.svg`,
     color: '#7e8087'
   },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V2]: {
+    name: 'WarpX V2',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V3]: {
+    name: 'WarpX V3',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
+  },
 
   //XXXXXXXXXXXXXXXXXXXXXXXXXXX
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: {
@@ -829,6 +879,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Cetus',
     image: `${imageBasePath}cetus.png`,
     color: '#61e0af'
+  },
+  [ON_CHAIN_TRADE_TYPE.CLEARSWAP]: {
+    name: 'Clearswap',
+    image: `${imageBasePath}clearswap.svg`,
+    color: '#ffffff'
   }
 };
 

@@ -1,0 +1,166 @@
+<div
+  class="deposit-swap-info"
+  *ngLet="{
+    isMobile: isMobile$ | async
+  } as state"
+>
+  <ng-container *ngIf="paymentInfo?.depositAddress">
+    <div
+      @showDepositAddressAnimation
+      class="deposit-swap-info__target-address"
+      [ngClass]="{ 'deposit-swap-info__disabled': status === 'expired' }"
+    >
+      <div class="deposit-swap-info__title">Deposit address to transfer funds</div>
+      <div class="deposit-swap-info__text">
+        {{
+          paymentInfo.depositAddress
+            | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
+        }}
+        <button
+          *ngIf="status !== 'expired'"
+          [cdkCopyToClipboard]="paymentInfo.depositAddress"
+          class="deposit-swap-info__copy-icon"
+          inlineSVG="assets/images/icons/copy.svg"
+          (click)="copyToClipboard(paymentInfo.depositAddress)"
+          [tuiHint]="template"
+          [tuiHintManual]="hintShown"
+        ></button>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="deposit-swap-info__status">
+    <div class="deposit-swap-info__status-item">
+      <div class="deposit-swap-info__spinner" *ngIf="status === 'waiting'"></div>
+      <div
+        class="deposit-swap-info__circle_complete"
+        *ngIf="status !== 'waiting' && status !== 'expired'"
+      >
+        <img src="assets/images/icons/checkmark/checkmark-bold-black.svg" alt="" />
+      </div>
+      <ng-container *ngIf="status === 'expired'">
+        <ng-container *ngTemplateOutlet="failedStatus"></ng-container>
+      </ng-container>
+
+      <div
+        class="deposit-swap-info__label"
+        [ngClass]="{
+          'deposit-swap-info__label_complete': status !== 'expired',
+          'deposit-swap-info__label_failed': status === 'expired'
+        }"
+      >
+        {{ status === 'expired' ? 'Expired' : 'Awaiting deposit' }}
+      </div>
+    </div>
+    <img
+      class="deposit-swap-info__arrow"
+      src="assets/images/icons/arrow/arrow-right-white.svg"
+      alt="Next step"
+    />
+
+    <div class="deposit-swap-info__status-item">
+      <div
+        class="deposit-swap-info__circle"
+        *ngIf="status === 'waiting' || status === 'expired'"
+      ></div>
+      <div class="deposit-swap-info__spinner" *ngIf="status === 'confirming'"></div>
+      <div
+        class="deposit-swap-info__circle_complete"
+        *ngIf="
+          status === 'exchanging' ||
+          status === 'sending' ||
+          status === 'finished' ||
+          status === 'failed'
+        "
+      >
+        <img src="assets/images/icons/checkmark/checkmark-bold-black.svg" alt="" />
+      </div>
+      <div
+        class="deposit-swap-info__label"
+        [ngClass]="{
+          'deposit-swap-info__label_complete':
+            status === 'confirming' ||
+            status === 'exchanging' ||
+            status === 'sending' ||
+            status === 'finished' ||
+            status === 'failed'
+        }"
+      >
+        Confirming
+      </div>
+    </div>
+    <img
+      class="deposit-swap-info__arrow"
+      src="assets/images/icons/arrow/arrow-right-white.svg"
+      alt="Next step"
+    />
+
+    <div class="deposit-swap-info__status-item">
+      <div
+        class="deposit-swap-info__circle"
+        *ngIf="
+          status === 'waiting' ||
+          status === 'confirming' ||
+          status === 'failed' ||
+          status === 'expired'
+        "
+      ></div>
+      <div class="deposit-swap-info__spinner" *ngIf="status === 'exchanging'"></div>
+      <div
+        class="deposit-swap-info__circle_complete"
+        *ngIf="status === 'sending' || status === 'finished'"
+      >
+        <img src="assets/images/icons/checkmark/checkmark-bold-black.svg" alt="" />
+      </div>
+      <div
+        class="deposit-swap-info__label"
+        [ngClass]="{
+          'deposit-swap-info__label_complete':
+            status === 'exchanging' || status === 'sending' || status === 'finished'
+        }"
+      >
+        Exchanging
+      </div>
+    </div>
+    <img
+      class="deposit-swap-info__arrow"
+      src="assets/images/icons/arrow/arrow-right-white.svg"
+      alt="Next step"
+    />
+
+    <div class="deposit-swap-info__status-item">
+      <div
+        class="deposit-swap-info__circle"
+        *ngIf="
+          status === 'waiting' ||
+          status === 'confirming' ||
+          status === 'exchanging' ||
+          status === 'expired'
+        "
+      ></div>
+      <div class="deposit-swap-info__spinner" *ngIf="status === 'sending'"></div>
+      <ng-container *ngIf="status === 'failed'">
+        <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
+      </ng-container>
+      <div class="deposit-swap-info__circle_complete" *ngIf="status === 'finished'">
+        <img src="assets/images/icons/checkmark/checkmark-bold-black.svg" alt="" />
+      </div>
+      <div
+        class="deposit-swap-info__label"
+        [ngClass]="{
+          'deposit-swap-info__label_complete': status === 'sending' || status === 'finished'
+        }"
+      >
+        Sending to you
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>Address copied on clipboard!</ng-template>
+
+<ng-template #failedStatus>
+  <div class="deposit-swap-info__circle_failed">
+    <img src="assets/images/icons/checkmark/failed-checkmark.svg" alt="" />
+  </div>
+</ng-template>

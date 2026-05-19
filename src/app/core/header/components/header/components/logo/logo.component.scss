@@ -1,0 +1,7 @@
+@use 'src/scss/core' as *;
+
+@include b($tablet) {
+  img {
+    width: 93px;
+  }
+}

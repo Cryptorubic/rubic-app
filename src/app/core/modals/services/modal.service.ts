@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -20,8 +20,6 @@ import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
-import BigNumber from 'bignumber.js';
-import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
@@ -32,7 +30,6 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { TonOnChainTrade } from '@cryptorubic/sdk';
 import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { DepositRateChangedModalComponent } from '@app/shared/components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
@@ -40,6 +37,25 @@ import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
+import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
+import { TradeInfo } from '@app/features/trade/models/trade-info';
+import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
+import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
+import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
+import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
+import { Asset, AssetListType } from '@features/trade/models/asset';
+import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
+import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
+import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
+import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
+import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
+import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
+import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
+import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
+import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +83,11 @@ export class ModalService {
     this.openedModal.context.completeWith(null);
   }
 
+  public closeSwapRetryModal(): void {
+    if (!this.openedModal) return;
+    this.openedModal.context.completeWith(null);
+  }
+
   constructor(
     private readonly modalService: AbstractModalService,
     private readonly mobileModalService$: MobileNativeModalService,
@@ -78,9 +99,9 @@ export class ModalService {
   /**
    * Show tokens dialog.
    */
-  public openAssetsSelector(formType: FormType, injector: Injector): Observable<void> {
+  public openAssetsSelector(formType: FormType, injector: Injector): Observable<Asset> {
     this.setOpenedModalName('token-selector');
-    return this.showDialog<TokenSelectorPageComponent, void>(
+    return this.showDialog<TokenSelectorPageComponent, Asset>(
       TokenSelectorPageComponent,
       {
         title: '',
@@ -89,22 +110,6 @@ export class ModalService {
         data: {
           formType
         }
-      },
-      injector
-    );
-  }
-
-  /**
-   * Show Old claims dialog.
-   */
-  public openOldClaims(isModal: boolean, injector: Injector): Observable<void> {
-    this.setOpenedModalName('claim');
-    return this.showDialog<ClaimContainerComponent, void>(
-      ClaimContainerComponent,
-      {
-        title: 'Old Claims',
-        scrollableContent: true,
-        data: { isModal }
       },
       injector
     );
@@ -141,11 +146,36 @@ export class ModalService {
   }
 
   /**
+   * Show Other private providers list dialog.
+   */
+  public openOtherPrivateProvidersList(
+    states: PrivateProviderInfoUI[],
+    selectedTradeType: PrivateTradeType,
+    isModal: true,
+    injector: Injector
+  ): Observable<PrivateTradeType> {
+    this.setOpenedModalName('other-provider-list');
+    return this.showDialog<PrivateProvidersListComponent, PrivateTradeType>(
+      PrivateProvidersListComponent,
+      {
+        title: 'Available Cross-Chain Providers',
+        scrollableContent: true,
+        data: {
+          states,
+          selectedTradeType,
+          isModal
+        }
+      },
+      injector
+    );
+  }
+
+  /**
    * Show Rubic Menu dialog.
    */
-  public openRubicMenu(): Observable<void> {
+  public openRubicMenu(): Observable<NavigationItem> {
     this.setOpenedModalName('rubic-menu');
-    return this.showDialog<RubicMenuComponent, void>(RubicMenuComponent, {
+    return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
       title: 'Menu',
       scrollableContent: true
     });
@@ -223,16 +253,46 @@ export class ModalService {
 
   /**
    * Show Blockchain List dialog.
-   * @param _injector Injector.
+   * @param injector
+   * @param type
+   * @param searchQuery
+   * @param isDisabled
+   * @param hintText
+   * @param totalBlockchains
+   * @param blockchainsToShow
+   * @param handleSearchQuery
+   * @param handleSelection
    */
-  public openMobileBlockchainList(_injector: Injector): void {
+  public openMobileBlockchainList(
+    injector: Injector,
+    type: 'from' | 'to',
+    searchQuery: string,
+    isDisabled: boolean,
+    hintText: string,
+    totalBlockchains: number,
+    // eslint-disable-next-line rxjs/finnish
+    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    handleSearchQuery?: (query: string) => void,
+    handleSelection?: (selection: AssetListType) => void
+  ): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
       {
         title: '',
-        scrollableContent: true
+        scrollableContent: true,
+        data: {
+          type,
+          searchQuery,
+          isDisabled,
+          hintText,
+          totalBlockchains,
+          // eslint-disable-next-line rxjs/finnish
+          blockchainsToShow,
+          handleSearchQuery,
+          handleSelection
+        }
       },
-      _injector
+      injector
     );
   }
 
@@ -240,12 +300,99 @@ export class ModalService {
    * Show Wallet Modal dialog.
    * @param injector Injector
    */
-  public openWalletModal(injector: Injector): Observable<void> {
+  public openWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
     this.setOpenedModalName('wallet');
     return this.showDialog<WalletsModalComponent, void>(
       WalletsModalComponent,
-      { title: 'Connect wallet', size: 'm', fitContent: true },
+      { title: 'Connect wallet', size: 'm', fitContent: true, data },
       injector
+    );
+  }
+
+  /**
+   * Show All Swap Backups Failed dialog.
+   */
+  public openAllSwapBackupsFailedModal(): Observable<void> {
+    this.setOpenedModalName('all-swap-backups-failed');
+    return this.openClosableDialog(AllSwapBackupsFailedModalComponent, {
+      title: 'All Swap Backups Failed',
+      size: 's',
+      dismissible: true,
+      fitContent: true
+    });
+  }
+
+  /**
+   * Show Swap Retry dialog.
+   * @param backups$ Backup Trades observable
+   */
+  public openSwapRetryPendingModal(
+    swapRetryModalInput$: Observable<SwapRetryModalInput>,
+    injector: Injector
+  ): Observable<void> {
+    this.setOpenedModalName('swap-retry-pending');
+    return this.openClosableDialog(
+      SwapRetryPendingModalComponent,
+      {
+        title: 'Swap Retry Pending',
+        size: 's',
+        fitContent: true,
+        dismissible: true,
+        data: { swapRetryModalInput$ }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openSwapRetryProviderSelectModal(
+    trade: SelectedTrade,
+    tradeInfo$: Observable<TradeInfo>,
+    rateChangeInfo: RateChangeInfo,
+    injector: Injector
+  ): Promise<boolean> {
+    this.setOpenedModalName('swap-backup-rate-changed');
+    return firstValueFrom(
+      this.showDialog(
+        SwapBackupRateChangedModalComponent,
+        {
+          title: 'Swap Retry Provider Select',
+          size: 's',
+          fitContent: true,
+          data: { trade, tradeInfo$, rateChangeInfo }
+        },
+        injector
+      )
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openTurnstileModal(injector: Injector): Promise<boolean> {
+    this.setOpenedModalName('cloudflare-validation');
+    return firstValueFrom(
+      this.showDialog(
+        TurnstileCheckComponent,
+        {
+          title: 'Verifying you are human...',
+          size: 's',
+          fitContent: true,
+          closeable: false,
+          dismissible: false
+        },
+        injector
+      )
     );
   }
 
@@ -286,7 +433,22 @@ export class ModalService {
         currentComponent: component,
         ...options
       })
-      .pipe(finalize(() => this.setOpenedModalName(null)));
+      .pipe(
+        finalize(() => {
+          this.setOpenedModalName(null);
+        })
+      );
+  }
+
+  public openClosableDialog<Component, ClosableDialogOutput>(
+    component: Type<Component & object>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    injector?: Injector
+  ): Observable<ClosableDialogOutput> {
+    return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(
+      first(),
+      catchError(() => of(null))
+    );
   }
 
   /**
@@ -309,15 +471,24 @@ export class ModalService {
     );
   }
 
-  public openRateChangedModal(
-    oldAmount: BigNumber,
-    newAmount: BigNumber,
-    tokenSymbol: string
-  ): Observable<boolean> {
+  public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
+    this.setOpenedModalName('trustline-modal');
+    return firstValueFrom(
+      this.showDialog(TrustlineModalComponent, {
+        size: 's',
+        closeable: true,
+        dismissible: false,
+        fitContent: true,
+        data: options
+      }).pipe(catchError(() => of(false))) as Observable<boolean>
+    );
+  }
+
+  public openRateChangedModal(rateChangeInfo: RateChangeInfo): Observable<boolean> {
     this.setOpenedModalName('rate-change');
     return this.showDialog(RateChangedModalComponent, {
       size: 's',
-      data: { oldAmount, newAmount, tokenSymbol },
+      data: { ...rateChangeInfo },
       required: true
     });
   }
@@ -361,6 +532,24 @@ export class ModalService {
         size: 'auto',
         closeable: true,
         fitContent: true
+      })
+    );
+  }
+
+  public async openPrivacyAuthModal(): Promise<{ valid: boolean; forceClosed: boolean }> {
+    return firstValueFrom(
+      this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
+        PrivacyAuthWindowComponent,
+        { size: 'page' }
+      )
+    );
+  }
+
+  public showDisclaimer(): Promise<boolean> {
+    this.setOpenedModalName('privacy-disclaimer');
+    return firstValueFrom(
+      this.showDialog(PrivacyDisclaimerModalComponent, {
+        size: 's'
       })
     );
   }

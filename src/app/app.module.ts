@@ -12,11 +12,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
-import * as Sentry from '@sentry/angular-ivy';
+import * as Sentry from '@sentry/angular';
+import { privacyInitializer } from './features/privacy/utils/privacy-initializer';
+import { PrivateLocalStorageService } from './features/privacy/services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     CoreModule,
     SharedModule,
     TuiRootModule,
@@ -26,8 +30,6 @@ import * as Sentry from '@sentry/angular-ivy';
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'
     }),
-    BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     NgxGoogleAnalyticsModule
@@ -35,10 +37,14 @@ import * as Sentry from '@sentry/angular-ivy';
   providers: [
     MOBILE_NATIVE_MODAL_PROVIDER,
     {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [],
+      multi: true
+    },
+    {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        showDialog: false
-      })
+      useValue: Sentry.createErrorHandler()
     },
     {
       provide: Sentry.TraceService,
@@ -48,6 +54,12 @@ import * as Sentry from '@sentry/angular-ivy';
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: privacyInitializer,
+      deps: [PrivateLocalStorageService],
       multi: true
     }
   ],

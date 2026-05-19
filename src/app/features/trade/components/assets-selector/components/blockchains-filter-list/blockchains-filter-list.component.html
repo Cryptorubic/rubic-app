@@ -2,10 +2,9 @@
   <ng-container *ngFor="let filter of BLOCKCHAIN_FILTERS">
     <ng-container *ngIf="!isMobile || (isMobile && filter !== 'All')">
       <app-filter-list-element
-        *ngLet="currentFilter$ | async as currentFilter"
         [blockchainFilter]="filter"
         (click)="onSelectFilter(filter)"
-        [isSelected]="currentFilter === filter"
+        [isSelected]="selectedFilter === filter"
       ></app-filter-list-element>
     </ng-container>
   </ng-container>

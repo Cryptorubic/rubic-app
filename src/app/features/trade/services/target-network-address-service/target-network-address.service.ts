@@ -6,9 +6,10 @@ import {
   distinctUntilChanged,
   map,
   skip,
+  startWith,
   tap
 } from 'rxjs';
-import { BlockchainsInfo, ChainType } from '@cryptorubic/sdk';
+import { BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
@@ -19,6 +20,7 @@ export class TargetNetworkAddressService {
 
   public readonly address$ = this.addressControl.valueChanges.pipe(
     tap(() => this.addressControl.clearAsyncValidators()),
+    startWith(this.addressControl.value),
     debounceTime(100),
     distinctUntilChanged(),
     tap(() => this.setCorrectAddressValidator())

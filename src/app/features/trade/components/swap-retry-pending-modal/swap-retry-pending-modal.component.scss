@@ -1,0 +1,67 @@
+@use 'src/scss/core' as *;
+
+.modal {
+  &__content {
+    text-align: center;
+
+    @include b($tablet) {
+      padding: 10px;
+    }
+  }
+
+  &__body {
+    @include flex(column, center, center);
+    gap: 20px;
+    height: 100%;
+  }
+
+  &__spinner {
+    animation: spin 2s linear infinite;
+  }
+
+  &__hints,
+  &__hint {
+    @include flex(column, center, unset);
+    display: flex;
+    gap: 20px;
+  }
+
+  &__provider {
+    @include flex(row, center, center);
+    gap: 8px;
+
+    img {
+      width: 24px;
+      height: 24px;
+      padding: 4px;
+
+      border-radius: 100%;
+      
+      box-shadow: 
+        -4px 0 0 0 rgba(255, 255, 255, 0.8),
+        -8px 0 0 0 rgba(255, 255, 255, 0.4),
+        -12px 0 0 0 rgba(255, 255, 255, 0.2),
+        -16px 0 0 0 rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  &__footer button {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  p,
+  span {
+    margin: 0;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

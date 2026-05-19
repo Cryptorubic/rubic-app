@@ -24,6 +24,62 @@ export class NotificationsService {
     private readonly translateService: TranslateService
   ) {}
 
+  public showSuccess(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'success',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
+  public showError(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'error',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
+  public showWarning(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'warning',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
+  public showInfo(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'info',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
   public showSwapWarning(error: ErrorInterface): Subscription {
     return this.ngZone.run(() =>
       this.tuiNotificationsService
@@ -45,6 +101,16 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService.open(content, { ...options }).subscribe()
     );
+  }
+
+  public showInvalidPrivacyCodeWarning(): Subscription {
+    return this.show('Your referral code is invalid.', {
+      status: 'warning',
+      autoClose: 10_000,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
   }
 
   public showWithoutSubscribe<I = unknown, O = undefined>(

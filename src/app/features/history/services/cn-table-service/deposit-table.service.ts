@@ -1,20 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, forkJoin, from, Observable, of } from 'rxjs';
-import { filter, map, share, startWith, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
-import {
-  RubicSdkError,
-  CrossChainDepositStatus,
-  CROSS_CHAIN_DEPOSIT_STATUS,
-  getDepositStatus,
-  CrossChainTradeType,
-  OnChainTradeType
-} from '@cryptorubic/sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -23,6 +15,16 @@ import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import {
+  API_STATUS_TO_DEPOSIT_STATUS,
+  CROSS_CHAIN_DEPOSIT_STATUS,
+  CrossChainDepositStatus
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { RubicSdkError } from '@cryptorubic/web3';
+import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
+import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
 
 @Injectable()
 export class DepositTableService extends TableService<
@@ -51,7 +53,7 @@ export class DepositTableService extends TableService<
 
   public readonly totalPages$ = this.total$.pipe(
     combineLatestWith(this.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
+    map(([total, size]) => Math.ceil(total / size))
   );
 
   public readonly data$: Observable<DepositTableData[]> = this.request$.pipe(
@@ -62,7 +64,8 @@ export class DepositTableService extends TableService<
 
   constructor(
     protected readonly walletConnector: WalletConnectorService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly rubicApiService: RubicApiService
   ) {
     super('date');
   }
@@ -71,9 +74,23 @@ export class DepositTableService extends TableService<
     data: DepositTableData[];
     total: number;
   }> {
-    const data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
+    // @FIX after 24.02.2026 use const
+    let data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
+
+    /**
+     * @FIX remove after 24.02.2026
+     * Cause in prev versions RUBIC_DEPOSIT_RECENT_TRADE didn't contain field `rubicId`.
+     * It causes 404 response of `statusExtended` call.
+     */
+    const dataLen = data.length;
+    data = data.filter(deposit => !!deposit.rubicId);
+    const filteredDataLen = data.length;
+    if (dataLen !== filteredDataLen) {
+      this.storeService.setItem('RUBIC_DEPOSIT_RECENT_TRADE', data);
+    }
+
     const tradeStatuses = data.map(trade => {
-      return this.getDepositStatus(trade.id, trade.tradeType);
+      return this.getDepositStatus(trade);
     });
 
     return forkJoin(tradeStatuses).pipe(
@@ -84,7 +101,7 @@ export class DepositTableService extends TableService<
           const fromToken = {
             symbol: tradeData.fromToken.symbol,
             image: tradeData.fromToken.image,
-            amount: new BigNumber(tradeData.fromAmount)
+            amount: new BigNumber(TokenAmountDirective.replaceCommas(tradeData.fromAmount))
           };
 
           const toToken = {
@@ -141,17 +158,13 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(
-    id: string,
-    tradeType: CrossChainTradeType | OnChainTradeType
-  ): Observable<CrossChainDepositStatus> {
-    if (!id) {
-      throw new RubicSdkError(`Must provide ${tradeType} trade id`);
-    }
+  public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
+    if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
 
     try {
-      return from(getDepositStatus(id, tradeType)).pipe(
-        map(el => el.status as CrossChainDepositStatus)
+      return from(this.rubicApiService.fetchCrossChainTxStatusExtended(trade.rubicId)).pipe(
+        catchError(() => of({ status: 'PENDING' } as CrossChainTxStatusConfig)),
+        map(response => API_STATUS_TO_DEPOSIT_STATUS[response.status])
       );
     } catch {
       return of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
@@ -168,7 +181,8 @@ export class DepositTableService extends TableService<
       finished: { appearance: 'success', label: 'Success' },
       failed: { appearance: 'error', label: 'Failed' },
       refunded: { appearance: 'success', label: 'Refunded' },
-      verifying: { appearance: 'info', label: 'Verifying' }
+      verifying: { appearance: 'info', label: 'Verifying' },
+      expired: { appearance: 'info', label: 'Expired' }
     };
     return txStatusMapping[originalStatus];
   }

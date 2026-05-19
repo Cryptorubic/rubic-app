@@ -1,5 +1,5 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
@@ -7,10 +7,10 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { getWallets } from '@wallet-standard/core';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { Wallet } from '@mysten/wallet-standard';
-import { StandardEventsFeature } from '@wallet-standard/features/src/events';
 import { StandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-adapter';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { StoreService } from '@app/core/services/store/store.service';
+import { StandardEventsFeature } from '@wallet-standard/features';
 
 export abstract class StandardWalletAdapter<
   SpecificFeatures extends Wallet['features']

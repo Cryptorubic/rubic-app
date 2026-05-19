@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
-import { debounceTime, distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { combineLatestWith, Observable } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
-import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { FromAssetsService } from '../assets-selector/services/from-assets.service';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -15,16 +14,24 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserBalanceContainerComponent {
-  private readonly _triggerRefresh$ = new BehaviorSubject(null);
+  @Input() set fromToken$(fromToken$: Observable<BalanceToken>) {
+    this.token$ = fromToken$.pipe(
+      combineLatestWith(
+        this.tokensFacade.tokens$,
+        this.fromAssetsService.assetListType$.pipe(
+          switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
+          filter(loading => !loading)
+        )
+      ),
+      filter(() => !!this.tokensFacade.tokens),
+      map(([fromToken]) => {
+        const foundToken = this.tokensFacade.tokens.find(token => compareTokens(fromToken, token));
+        return { ...foundToken, amount: fromToken?.amount };
+      })
+    );
+  }
 
-  public readonly token$ = this.swapsFormService.fromToken$.pipe(
-    combineLatestWith(this._triggerRefresh$.pipe(startWith()), this.tokensStoreService.tokens$),
-    filter(() => !!this.tokensStoreService.tokens),
-    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-    map(([fromToken]) =>
-      this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
-    )
-  );
+  public token$: Observable<BalanceToken>;
 
   @Input() public hide: 'maxButton' | 'balance';
 
@@ -34,30 +41,7 @@ export class UserBalanceContainerComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensStoreService: TokensStoreService,
-    private readonly swapsFormService: SwapsFormService,
-    private readonly previewSwapService: PreviewSwapService,
-    private readonly walletConnectorService: WalletConnectorService
-  ) {
-    this.tokensStoreService.tokens$
-      .pipe(
-        combineLatestWith(this.previewSwapService.transactionState$),
-        distinctUntilChanged(),
-        debounceTime(20),
-        filter(([_, state]) => state.step === 'success' || state.step === 'inactive'),
-        tap(([, state]) => {
-          if (state.step === 'success') {
-            const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
-            this.tokensStoreService.startBalanceCalculating(fromBlockchain);
-            this._triggerRefresh$.next(null);
-          }
-        })
-      )
-      .subscribe();
-
-    this.walletConnectorService.addressChange$.subscribe(() => {
-      const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
-      this.tokensStoreService.startBalanceCalculating(fromBlockchain);
-    });
-  }
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly fromAssetsService: FromAssetsService
+  ) {}
 }

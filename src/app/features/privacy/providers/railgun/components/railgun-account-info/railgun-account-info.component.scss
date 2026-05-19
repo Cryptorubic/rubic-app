@@ -1,0 +1,63 @@
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__wrapper {
+    padding: var(--tui-padding-m);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-s);
+  }
+
+  &__label {
+    margin-top: 0;
+    margin-bottom: var(--tui-padding-xs);
+
+    color: var(--tui-primary);
+    font-size: 12px;
+  }
+
+  &__text {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    color: var(--tui-text-01);
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  &__button {
+    width: 100%;
+    margin-top: var(--tui-padding-m);
+  }
+
+  &__copy-icon {
+    margin-left: auto;
+  }
+
+  &__public-chains {
+    display: flex;
+    gap: var(--tui-padding-s);
+    margin-top: var(--tui-padding-m);
+
+    > img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    width: 100%;
+  }
+
+  &__progress-wrapper {
+    display: flex;
+    gap: var(--tui-padding-m);
+  }
+}
+
+app-copy-container {
+  margin-left: auto;
+}

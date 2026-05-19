@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-switch-list-type-button',
@@ -9,24 +8,23 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwitchTokensListTypeButtonComponent {
-  public readonly buttonData$ = this.tokensListTypeService.listType$.pipe(
-    map(listType => {
-      const icon = listType === 'default' ? 'star.svg' : 'back.svg';
-      const hintText =
-        listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list';
-      return {
-        icon,
-        hintText
-      };
-    })
-  );
+  public icon = '';
 
-  constructor(private readonly tokensListTypeService: TokensListTypeService) {}
+  public hintText = '';
+
+  @Input({ required: true }) set assetListType(value: AssetListType) {
+    this.icon = value === 'favorite' ? 'back.svg' : 'star.svg';
+    this.hintText = value === 'favorite' ? 'Back to whole tokens list' : 'List of favorite tokens';
+  }
+
+  @Output() switchListType = new EventEmitter<void>();
+
+  constructor() {}
 
   /**
    * Switches tokens display mode (default or favorite).
    */
   public switchMode(): void {
-    this.tokensListTypeService.switchListType();
+    this.switchListType.emit();
   }
 }

@@ -39,6 +39,27 @@ export const sorterByChain: TokensSorter = (
   );
 };
 
+export const sorterByBalance: TokensSorter = (
+  a: AvailableTokenAmount,
+  b: AvailableTokenAmount
+): number => {
+  const aAmountInDollars = a.amount.isFinite()
+    ? a.amount.multipliedBy(a.price === null ? 0 : a.price)
+    : new BigNumber(0);
+  const bAmountInDollars = b.amount.isFinite()
+    ? b.amount.multipliedBy(b.price === null ? 0 : b.price)
+    : new BigNumber(0);
+
+  const aBalaceAvailability = a.amount?.gt(0);
+  const bBalaceAvailability = b.amount?.gt(0);
+
+  const availabilityComparison = Number(b.available) - Number(a.available);
+  const amountsComparison = bAmountInDollars.minus(aAmountInDollars).toNumber();
+  const balanceComparison = Number(bBalaceAvailability) - Number(aBalaceAvailability);
+
+  return availabilityComparison || amountsComparison || balanceComparison;
+};
+
 export const sorterByTokenRank: TokensSorter = (
   a: AvailableTokenAmount,
   b: AvailableTokenAmount

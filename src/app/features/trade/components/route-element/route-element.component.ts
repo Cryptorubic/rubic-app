@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BridgeType, CrossChainTradeType, OnChainTradeType, RubicStep } from '@cryptorubic/sdk';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { BRIDGE_PROVIDERS } from '@features/trade/constants/bridge-providers';
 import { ON_CHAIN_PROVIDERS } from '@features/trade/constants/on-chain-providers';
 import { ProviderInfo } from '../../models/provider-info';
+import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
+import { RubicStep } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/rubicStep';
 
 interface ProviderStep {
   provider: {

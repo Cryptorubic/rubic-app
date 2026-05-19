@@ -1,0 +1,18 @@
+<app-window-container>
+  <div *ngIf="walletPrivateReceiverInfo$ | async as info" class="info-container">
+    <div class="header">
+      <span>Wallet stealth address:</span>
+      <span>Use this stealth address as the recipient for private transfers via Hinkal.</span>
+    </div>
+    <div class="info-container__text" (click)="copyToClipboard(info)">
+      <span>{{ info | shortAddress : 8 : 8 }}</span>
+    </div>
+    <tui-notification
+      >Reusing it lowers privacy. A new randomized address is generated after each page
+      reload.</tui-notification
+    >
+    <button tuiButton type="button" size="m" appearance="primary" (click)="copyToClipboard(info)">
+      {{ addressCopied ? 'Copied' : 'Copy stealth address' }}
+    </button>
+  </div>
+</app-window-container>

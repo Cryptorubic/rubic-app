@@ -2,26 +2,19 @@ import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  CHAIN_TYPE,
-  EvmWeb3Pure,
-  Web3Pure
-} from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { AssetType } from '@features/trade/models/asset';
-import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -36,10 +29,9 @@ export class SwapFormQueryService {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -62,26 +54,26 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnQueryParams(): void {
-    this.tokensStoreService.tokens$
+    this.tokensFacade.tokens$
       .pipe(first(tuiIsPresent))
       .pipe(
         switchMap(tokens => {
           const queryParams = this.queryParamsService.queryParams;
           const protectedParams = this.getProtectedSwapParams(queryParams);
-
           const fromBlockchain = protectedParams.fromChain as BlockchainName;
           const toBlockchain = protectedParams.toChain;
+          const isSameToken =
+            protectedParams.from === protectedParams.to && fromBlockchain === toBlockchain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
+            List(tokens),
             protectedParams.from,
-            fromBlockchain
+            fromBlockchain,
+            false
           );
-          const findToToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
-            protectedParams.to,
-            toBlockchain
-          );
+          const findToToken$ = isSameToken
+            ? of(null)
+            : this.getTokenBySymbolOrAddress(List(tokens), protectedParams.to, toBlockchain, false);
 
           return forkJoin([findFromToken$, findToToken$]).pipe(
             map(([fromToken, toToken]) => ({
@@ -97,7 +89,6 @@ export class SwapFormQueryService {
       )
       .subscribe(({ fromBlockchain, toToken, fromToken, toBlockchain, amount }) => {
         this.gtmService.needTrackFormEventsNow = false;
-
         this.swapsFormService.inputControl.patchValue({
           fromBlockchain,
           toBlockchain,
@@ -115,42 +106,34 @@ export class SwapFormQueryService {
       });
   }
 
-  private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
-    let fromChain: AssetType;
+  public getProtectedSwapParams(queryParams: QueryParams): QueryParams {
+    let fromChain: AssetListType;
     if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
     } else if (this.walletConnectorService.network) {
       fromChain = this.walletConnectorService.network;
-    } else {
-      fromChain = defaultFormParameters.swap.fromChain;
     }
 
-    const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
-      ? queryParams.toChain
-      : defaultFormParameters.swap.toChain;
+    let toChain: AssetListType;
+    if (BlockchainsInfo.isBlockchainName(queryParams?.toChain)) {
+      toChain = queryParams.toChain;
+    }
 
     const newParams = {
       ...queryParams,
-      fromChain,
-      toChain
+      ...(fromChain && { fromChain: fromChain as BlockchainName }),
+      ...(toChain && { toChain: toChain as BlockchainName })
     };
-
-    // if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-    //   if (newParams.from === defaultFormParameters.swap.from[fromChain as DefaultParametersFrom]) {
-    //     newParams.from = defaultFormParameters.swap.to[fromChain as DefaultParametersTo];
-    //   } else {
-    //     newParams.to = defaultFormParameters.swap.from[fromChain as DefaultParametersFrom];
-    //   }
-    // }
 
     return newParams;
   }
 
-  private getTokenBySymbolOrAddress(
-    tokens: List<TokenAmount>,
+  public getTokenBySymbolOrAddress(
+    tokens: List<BalanceToken>,
     token: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount> {
+    chain: BlockchainName,
+    syncOnly: boolean
+  ): Observable<BalanceToken | null> {
     if (!token) {
       return of(null);
     }
@@ -158,23 +141,22 @@ export class SwapFormQueryService {
     const chainType = BlockchainsInfo.getChainType(chain);
 
     // @TODO refactoring.
-    return from(Web3Pure[chainType].isAddressCorrect(token)).pipe(
+    return from(Web3Pure.isAddressCorrect(chain, token)).pipe(
       switchMap(isAddressCorrect => {
         if (chainType && isAddressCorrect) {
           const address =
-            chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
-          return this.searchTokenByAddress(tokens, address, chain);
+            chainType === CHAIN_TYPE.EVM ? EvmAdapter.toChecksumAddress(token) : token;
+          return this.searchTokenByAddress(tokens, address, chain, syncOnly);
         }
-
-        return this.searchTokenBySymbol(tokens, token, chain);
+        return this.searchTokenBySymbol(tokens, token, chain, syncOnly);
       }),
       catchError(() => {
-        return this.searchTokenBySymbol(tokens, token, chain);
+        return this.searchTokenBySymbol(tokens, token, chain, syncOnly);
       }),
       switchMap(foundToken =>
         forkJoin([
           of(foundToken),
-          from(this.tokensService.getAndUpdateTokenBalance(foundToken)).pipe(
+          from(this.tokensFacade.getAndUpdateTokenBalance(foundToken)).pipe(
             catchError(() => of(new BigNumber(NaN)))
           )
         ])
@@ -187,57 +169,58 @@ export class SwapFormQueryService {
   }
 
   private searchTokenBySymbol(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     symbol: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount | null> {
+    chain: BlockchainName,
+    syncOnly: boolean
+  ): Observable<BalanceToken | null> {
     const similarTokens = tokens.filter(
       token => token.symbol.toLowerCase() === symbol.toLowerCase() && token.blockchain === chain
     );
+    if (similarTokens.size) return of(similarTokens.first());
+    if (syncOnly) return of(null);
 
-    if (!similarTokens.size) {
-      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
-        map(foundTokens => {
-          if (foundTokens?.size) {
-            const token =
-              foundTokens?.size > 1
-                ? foundTokens.find(el => el.symbol.toLowerCase() === symbol.toLowerCase())
-                : foundTokens.first();
-            if (!token) {
-              return null;
-            }
-            const newToken = { ...token, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
-            return newToken;
-          }
-          return null;
-        })
-      );
-    }
+    return this.tokensFacade.fetchQueryTokens({ symbol, blockchain: chain }).pipe(
+      map(foundTokens => {
+        if (foundTokens?.length) {
+          const token = foundTokens.find(el => el.symbol.toLowerCase() === symbol.toLowerCase());
+          if (!token) return { ...foundTokens[0], amount: new BigNumber(NaN) } as BalanceToken;
 
-    return of(similarTokens.first());
+          const newToken = { ...token, amount: new BigNumber(NaN) } as BalanceToken;
+          this.tokensFacade.addToken(newToken);
+
+          return newToken;
+        }
+        return null;
+      })
+    );
   }
 
   private searchTokenByAddress(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     address: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount> {
+    chain: BlockchainName,
+    syncOnly: boolean
+  ): Observable<BalanceToken> {
     const searchingToken = tokens.find(
       token => compareAddresses(token.address, address) && token.blockchain === chain
     );
+    if (syncOnly) return of(searchingToken ?? null);
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.fetchQueryTokens(address, chain).pipe(
+      : this.tokensFacade.fetchQueryTokens({ query: address, blockchain: chain }).pipe(
           switchIif(
-            backendTokens => Boolean(backendTokens?.size),
-            backendTokens => of(backendTokens.first()),
-            () => this.tokensStoreService.addTokenByAddress(address, chain).pipe(first())
+            backendTokens => Boolean(backendTokens?.length),
+            backendTokens => of(backendTokens?.[0]),
+            () => this.tokensFacade.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
-            const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
+            const newToken = {
+              ...fetchedToken,
+              amount: new BigNumber(NaN)
+            } as unknown as BalanceToken;
+            this.tokensFacade.addToken(newToken);
             return newToken;
           })
         );

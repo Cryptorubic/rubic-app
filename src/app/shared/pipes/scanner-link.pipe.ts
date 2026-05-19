@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, ChainType, Web3Pure } from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Pipe({ name: 'scannerLink' })
 export class ScannerLinkPipe implements PipeTransform {
@@ -20,8 +21,8 @@ export class ScannerLinkPipe implements PipeTransform {
       chainType = BlockchainsInfo.getChainType(blockchainName);
     } catch {}
     if (
-      (chainType && Web3Pure[chainType].isNativeAddress(address)) ||
-      address === Web3Pure[chainType].EMPTY_ADDRESS
+      (chainType && Web3Pure.isNativeAddress(blockchainName, address)) ||
+      address === Web3Pure.getEmptyTokenAddress(blockchainName)
     ) {
       return baseUrl + scannerInfo.nativeCoinUrl;
     }

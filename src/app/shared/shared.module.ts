@@ -10,6 +10,7 @@ import {
   TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
+  TuiInputNumberModule,
   TuiProgressModule,
   TuiTabsModule,
   TuiTagModule,
@@ -22,6 +23,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiNotificationModule,
   TuiScrollbarModule,
   TuiSvgModule,
   TuiTextfieldControllerModule,
@@ -57,7 +59,6 @@ import { WindowContainerComponent } from './components/window-container/window-c
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
-import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
@@ -79,10 +80,13 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
-import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
+import { InputNumberComponent } from './components/input-number/input-number.component';
+import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
+import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
+import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
 @NgModule({
   declarations: [
@@ -99,7 +103,6 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     RefreshButtonComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
-    ClaimRoundRowComponent,
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
@@ -137,10 +140,13 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent,
+    TrustlineModalComponent,
+    TrustlineComponent,
+    PrivacyDisclaimerModalComponent
   ],
   imports: [
     CommonModule,
@@ -174,7 +180,9 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
     TuiHoveredModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    TuiInputNumberModule,
+    TuiNotificationModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -204,7 +212,6 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     InputOutputContainerComponent,
     AmountTransputComponent,
     NoResultComponent,
-    ClaimRoundRowComponent,
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,
@@ -221,10 +228,11 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent,
+    TrustlineComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
