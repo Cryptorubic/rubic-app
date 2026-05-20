@@ -6,7 +6,7 @@ import {
 } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, nativeTokensList } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { Observable, combineLatest, filter, switchMap } from 'rxjs';
 import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../../constants/wallets';
@@ -277,6 +277,14 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+
+    if (BlockchainsInfo.getChainType(network) !== CHAIN_TYPE.SOLANA) {
+      return {
+        type: 'action',
+        text: 'Switch Wallet',
+        action: () => this.connectWallet()
       };
     }
 

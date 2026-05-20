@@ -24,7 +24,7 @@ export class PresetAmountListComponent {
     this.tokenSymbol = value.symbol;
     const presets: string[] = [];
 
-    if (value.price) {
+    if (value.price && value.type !== 'STABLE') {
       for (const fiatAmount of FIAT_AMOUNTS) {
         if (presets.length === this.quantity) break;
 
@@ -39,7 +39,7 @@ export class PresetAmountListComponent {
 
       this.presets = presets;
     } else {
-      this.presets = DEFAULT_PRESETS;
+      this.presets = DEFAULT_PRESETS.slice(0, this.quantity);
     }
   }
 
