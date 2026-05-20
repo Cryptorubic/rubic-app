@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Inject, Injectable } from '@angular/core';
 import {
   EvmBlockchainName,
   QuoteAllInterface,
@@ -59,11 +59,14 @@ import {
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
+  private readonly configService = inject(PlatformConfigurationService);
+
   private get apiUrl(): string {
     const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
 
@@ -107,28 +110,23 @@ export class RubicApiService {
    * @description tries get token immediately after call
    * and refresh CF token every 4.5 minutes  and send it to rubic-api
    */
-  public initCfTokenAutoRefresh(): Observable<{ success: boolean; alreadyOpened: boolean }> {
+  public initCfTokenAutoRefresh(): Observable<{ success: boolean }> {
     this.refreshCloudflareToken(true);
     return interval(4.5 * 60 * 1_000).pipe(switchMap(() => this.refreshCloudflareToken(false)));
   }
 
-  public async refreshCloudflareToken(
-    needRecalculation: boolean
-  ): Promise<{ success: boolean; alreadyOpened: boolean }> {
-    const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
-    if (alreadyOpened) return { alreadyOpened: true, success: false };
-
-    await this.turnstileService.askForCloudflareToken();
-
+  public async refreshCloudflareToken(needRecalculation: boolean): Promise<{ success: boolean }> {
+    const shouldSendToken = await this.turnstileService.askForCloudflareToken();
     const token = await firstValueFrom(this.turnstileService.token$);
 
     if (!this.client?.connected) {
-      return { alreadyOpened: false, success: false };
+      return { success: false };
+    }
+    if (shouldSendToken) {
+      this.client.emit('auth_cloudflare', { token, needRecalculation });
     }
 
-    this.client.emit('auth_cloudflare', { token, needRecalculation });
-
-    return { alreadyOpened: false, success: token !== null };
+    return { success: token !== null };
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
@@ -323,8 +321,10 @@ export class RubicApiService {
   }
 
   public handleQuotesAsync(): Observable<WrappedAsyncTradeOrNull> {
-    return this.turnstileService.token$.pipe(
-      first(el => el !== null),
+    return this.configService.useCloudflareProtection$.pipe(
+      switchMap(useCFProtection =>
+        useCFProtection ? this.turnstileService.token$.pipe(first(el => el !== null)) : of('token')
+      ),
       switchMap(token => {
         if (!token) return throwError(() => 'cloudflare token is undefined');
 

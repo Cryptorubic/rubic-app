@@ -14,5 +14,6 @@ export abstract class ApiSocketManager {
 
   public removeSubs(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+    this.subs.length = 0;
   }
 }

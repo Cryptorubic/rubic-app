@@ -5,9 +5,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   EvmBasicTransactionOptions,
-  NotWhitelistedProviderError,
-  UnapprovedContractError,
-  UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError
 } from '@cryptorubic/web3';
@@ -178,22 +175,6 @@ export class CrossChainService {
     ) as Record<CrossChainTradeType, boolean>;
   }
 
-  private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError | UnapprovedMethodError,
-    blockchain: BlockchainName,
-    tradeType: CrossChainTradeType
-  ): void {
-    if (error instanceof NotWhitelistedProviderError) {
-      this.crossChainApiService
-        .saveNotWhitelistedProvider(error, blockchain, tradeType)
-        .subscribe();
-    } else {
-      this.crossChainApiService
-        .saveNotWhitelistedCcrProvider(error, blockchain, tradeType)
-        .subscribe();
-    }
-  }
-
   /**
    *
    * @param trade trade data
@@ -281,14 +262,6 @@ export class CrossChainService {
 
       return transactionHash;
     } catch (error) {
-      if (
-        error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError ||
-        error instanceof UnapprovedMethodError
-      ) {
-        this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
-      }
-
       const parsedError = RubicSdkErrorParser.parseError(error);
       if (!(error instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);

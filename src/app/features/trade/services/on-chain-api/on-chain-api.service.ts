@@ -6,11 +6,6 @@ import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
-import {
-  NotWhitelistedProviderError,
-  UnapprovedContractError,
-  UnapprovedMethodError
-} from '@cryptorubic/web3';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
@@ -110,43 +105,6 @@ export class OnChainApiService {
     return this.httpService
       .post<InstantTradesResponseApi>('v2/trades/onchain/new_extended', tradeInfo)
       .pipe(delay(1000));
-  }
-
-  public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): Observable<void> {
-    return this.httpService.post(`info/new_provider`, {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: tradeType,
-      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: 'on-chain'
-    });
-  }
-
-  public saveNotWhitelistedOnChainProvider(
-    error: UnapprovedContractError | UnapprovedMethodError,
-    blockchain: BlockchainName,
-    tradeType: OnChainTradeType
-  ): Observable<void> {
-    if (error instanceof UnapprovedContractError) {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: tradeType,
-        address: error.contract,
-        cause: 'on-chain',
-        selector: 'unknown'
-      });
-    } else {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: tradeType,
-        address: 'unknown',
-        cause: 'on-chain',
-        selector: error.method
-      });
-    }
   }
 
   public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {

@@ -18,7 +18,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
@@ -136,7 +135,6 @@ import { RouterModule } from '@angular/router';
     SwapsFormService,
     PreviewSwapService,
     SwapsStateService,
-    SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,
