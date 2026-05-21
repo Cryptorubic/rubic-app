@@ -67,6 +67,8 @@ export class PrivatePreviewSwapComponent {
 
   private readonly swapOptions: PrivateSwapOptions;
 
+  public txScannerUrl: string | null = null;
+
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
   }
@@ -105,7 +107,7 @@ export class PrivatePreviewSwapComponent {
 
     const [initialStep, ...steps] = context.data.swapOptions.steps;
     this._currentStep$.next(initialStep);
-    this.steps = steps;
+    this.steps = [...steps, this.doneStep()];
 
     this.warnings = context.data.swapOptions.warnings;
     this.swapType = context.data.swapType;
@@ -154,21 +156,33 @@ export class PrivatePreviewSwapComponent {
   private setLoadingState(): void {
     this._currentStep$.next({
       label: 'Transaction in process',
-      action: async () => {},
+      action: async () => ({}),
       disabled: true
     });
   }
 
+  private doneStep(): PrivateStep {
+    return {
+      label: 'Done',
+      action: async () => {
+        this.context.completeWith();
+        return {};
+      },
+      disabled: false
+    };
+  }
+
   public async handleStep(step: PrivateStep): Promise<void> {
     try {
-      this.setLoadingState();
+      if (step.label !== 'Done') this.setLoadingState();
 
-      await step.action();
+      const res = await step.action();
+      if (typeof res === 'object' && res.txScannerUrl) this.txScannerUrl = res.txScannerUrl;
 
       const [nextStep, ...steps] = this.steps;
 
       if (!nextStep) {
-        this.context.completeWith();
+        // this.context.completeWith();
         return;
       }
 

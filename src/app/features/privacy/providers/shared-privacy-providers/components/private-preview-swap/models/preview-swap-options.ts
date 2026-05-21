@@ -8,9 +8,12 @@ export type PreviewSwapWarning = { text: string; link?: string };
 
 export type PrivateSwapType = 'shield' | 'unshield' | 'transfer' | 'swap' | 'refund';
 
+export type PrivateActionRes = { txScannerUrl?: string };
+
 export interface PrivateStep {
   label: string;
-  action: () => Promise<void | boolean>;
+  // @TODO_2273 remove `void | boolean` after all private providers changes
+  action: () => Promise<PrivateActionRes | void | boolean>;
   disabled?: boolean;
 }
 
