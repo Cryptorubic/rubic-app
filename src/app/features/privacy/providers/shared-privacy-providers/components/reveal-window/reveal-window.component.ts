@@ -5,10 +5,11 @@ import {
   inject,
   Injector,
   Input,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter, takeUntil } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -19,13 +20,16 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { RevealWindowService } from '../../services/reveal-window/reveal-window.service';
 import { PrivateUnshieldFormConfig } from '@features/privacy/providers/shared-privacy-providers/models/swap-form-types';
+import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-reveal-window',
   templateUrl: './reveal-window.component.html',
   styleUrls: ['./reveal-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [receiverAnimation()]
+  animations: [receiverAnimation()],
+  providers: [TuiDestroyService]
 })
 export class RevealWindowComponent {
   @Input() receiverCtrl: FormControl<string>;
@@ -63,6 +67,26 @@ export class RevealWindowComponent {
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
+
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+
+  ngOnInit() {
+    this.revealWindowService.revealAsset$
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .subscribe(token => {
+        this.receiverCtrl.clearAsyncValidators();
+        this.receiverCtrl.setAsyncValidators(
+          getCorrectAddressValidator(
+            {
+              fromAssetType: token.blockchain,
+              validatedChain: token.blockchain
+            },
+            { requiredReceiver: true }
+          )
+        );
+        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
+  }
 
   public openSelector(): void {
     this.modalService

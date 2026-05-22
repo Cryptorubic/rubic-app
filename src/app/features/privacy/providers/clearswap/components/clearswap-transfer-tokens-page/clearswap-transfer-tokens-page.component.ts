@@ -27,7 +27,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
-import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -49,9 +48,7 @@ import { compareTokens } from '@app/shared/utils/utils';
 export class ClearswapTransferTokensPageComponent implements OnInit {
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
-  public readonly receiverCtrl = new FormControl<string>('', {
-    asyncValidators: [isReceiverCorrect()]
-  });
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly clearswapFormConfig: PrivateTransferFormConfig = {
     ...clearswapFormConfig,

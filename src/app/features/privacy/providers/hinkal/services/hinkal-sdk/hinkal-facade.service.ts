@@ -185,16 +185,13 @@ export class HinkalFacadeService {
 
     const needApprove = await this.hinkalSwapService.needApproveBeforeShield(token);
 
-    if (needApprove) {
-      steps.push({
-        label: 'Approve',
-        action: () => this.hinkalSwapService.approveBeforeShield(token)
-      });
-    }
-
     steps.push({
       label: 'Shield Tokens',
-      action: () =>
+      action: async () => {
+        if (needApprove) {
+          await this.hinkalSwapService.approveBeforeShield(token);
+        }
+
         this.hinkalSwapService.deposit(token).then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
@@ -214,7 +211,8 @@ export class HinkalFacadeService {
               });
             });
           }
-        })
+        });
+      }
     });
 
     return steps;

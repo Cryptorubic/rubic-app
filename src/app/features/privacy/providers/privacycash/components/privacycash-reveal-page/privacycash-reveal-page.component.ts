@@ -12,7 +12,6 @@ import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/to
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateUnshieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
-import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -68,19 +67,6 @@ export class PrivacycashRevealPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    this.revealWindowService.revealAsset$
-      .pipe(filter(Boolean), takeUntil(this.destroy$))
-      .subscribe(token => {
-        this.receiverCtrl.clearAsyncValidators();
-        this.receiverCtrl.setAsyncValidators(
-          getCorrectAddressValidator({
-            fromAssetType: token.blockchain,
-            validatedChain: token.blockchain
-          })
-        );
-        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
-      });
 
     this.subscribeOnPrivateBalanceChanges();
   }

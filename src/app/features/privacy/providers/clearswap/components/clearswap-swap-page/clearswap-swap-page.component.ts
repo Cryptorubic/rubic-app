@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -31,9 +30,7 @@ import { compareTokens } from '@app/shared/utils/utils';
   providers: [TuiDestroyService]
 })
 export class ClearswapSwapPageComponent implements OnInit {
-  public readonly receiverCtrl = new FormControl<string>('', {
-    asyncValidators: [isReceiverCorrect()]
-  });
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,

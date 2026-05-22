@@ -134,10 +134,15 @@ export class ZamaSwapService {
 
       if (!needApprove) return;
 
+      const gasPriceOptions = await this.getGasPriceOptions(pureTokenAmount.blockchain);
+
       await adapter.approveTokens(
         pureTokenAmount.address,
         shieldedTokenAddress,
-        pureTokenAmount.weiAmount
+        pureTokenAmount.weiAmount,
+        {
+          gasPriceOptions
+        }
       );
     } catch (err) {
       throw err;

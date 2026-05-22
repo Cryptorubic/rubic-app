@@ -100,8 +100,9 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Transfer',
-      action: () =>
-        this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'TRANSFER',
@@ -116,7 +117,8 @@ export class ZamaFacadeService {
             );
             this.refreshBalancesAfterAction();
           }
-        })
+        });
+      }
     });
     return steps;
   }
@@ -129,17 +131,14 @@ export class ZamaFacadeService {
     const pureTokenAmount = await this.zamaSwapService.getPureTokenAmount(wrapToken);
     const needApprove = await this.zamaSwapService.needApprove(pureTokenAmount);
 
-    if (needApprove) {
-      steps.push({
-        label: 'Approve',
-        action: () => this.zamaSwapService.approve(pureTokenAmount)
-      });
-    }
-
     steps.push({
       label: 'Shield Tokens',
-      action: () =>
-        this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
+      action: async () => {
+        if (needApprove) {
+          await this.zamaSwapService.approve(pureTokenAmount);
+        }
+
+        return this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'SHIELD',
@@ -159,7 +158,8 @@ export class ZamaFacadeService {
               });
             });
           }
-        })
+        });
+      }
     });
 
     return steps;
@@ -181,7 +181,10 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Unshield Tokens',
-      action: () => this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess)
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess);
+      }
     });
 
     steps.push({

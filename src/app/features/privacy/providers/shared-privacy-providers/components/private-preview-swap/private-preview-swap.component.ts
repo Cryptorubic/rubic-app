@@ -75,7 +75,7 @@ export class PrivatePreviewSwapComponent {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
     gasIcon: 'assets/images/icons/gas-private.svg',
     withVerboseFeeHint: false,
-    zeroFeeText: 'Zero fee',
+    zeroFeeText: 'Zero provider fee',
     direction: 'vertical'
   };
 

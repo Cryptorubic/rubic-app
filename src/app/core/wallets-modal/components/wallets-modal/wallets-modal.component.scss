@@ -39,7 +39,7 @@
     display: grid;
     grid-row-gap: var(--tui-padding-4xl);
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 
   &__provider {

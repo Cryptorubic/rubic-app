@@ -10,19 +10,34 @@ import {
   TransferParams,
   WithdrawParams
 } from './workers/models/worker-params';
-import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { EvmTransactionConfig, GasPrice } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
 import { ExternalActionId, FeeStructure, getFeeStructure } from '@hinkal/common';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
+import { GasService } from '@app/core/services/gas-service/gas.service';
+import { InsufficientShieldedFundsError } from '@app/core/errors/models/common/insufficient-shielded-funds.error';
 
 @Injectable()
 export class HinkalSwapService {
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly errorService: ErrorsService,
-    private readonly hinkalWorker: HinkalWorkerService
+    private readonly hinkalWorker: HinkalWorkerService,
+    private readonly gasService: GasService
   ) {}
+
+  private async getGasPriceOptions(blockchain: EvmBlockchainName): Promise<GasPrice | null> {
+    try {
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
+
+      return shouldCalculateGasPrice ? gasPriceOptions : null;
+    } catch {
+      return null;
+    }
+  }
 
   public async needApproveBeforeShield(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     if (token.isNative) return false;
@@ -43,7 +58,11 @@ export class HinkalSwapService {
 
       const adapter = this.adapterFactory.getAdapter(token.blockchain);
 
-      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount);
+      const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
+
+      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount, {
+        gasPriceOptions
+      });
     } catch (err) {
       console.error('APPROVE FAILED: ', err);
       throw err;
@@ -67,8 +86,13 @@ export class HinkalSwapService {
 
       const adapter = this.adapterFactory.getAdapter(token.blockchain);
 
+      const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
+
       await adapter.signer.trySendTransaction({
-        txOptions: txData
+        txOptions: {
+          ...txData,
+          gasPriceOptions
+        }
       });
 
       return true;
@@ -103,7 +127,12 @@ export class HinkalSwapService {
 
       return true;
     } catch (err) {
-      this.errorService.catch(err);
+      if ('message' in err && err.message?.includes('Insufficient funds')) {
+        this.errorService.catch(new InsufficientShieldedFundsError());
+      } else {
+        this.errorService.catch(err);
+      }
+
       return false;
     }
   }

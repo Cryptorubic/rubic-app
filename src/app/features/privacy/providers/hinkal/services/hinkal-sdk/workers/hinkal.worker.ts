@@ -21,8 +21,6 @@ const mutex = new Mutex();
 
 process.on('message', async (event: { type: string }) => {
   if (event.type === EventType.BalanceChange) {
-    console.log('BALANCE CHANGED EVENT', event);
-
     await mutex.runExclusive(async () => {
       try {
         const balances = await hinkalWorkerLogic.balanceService.getBalances();

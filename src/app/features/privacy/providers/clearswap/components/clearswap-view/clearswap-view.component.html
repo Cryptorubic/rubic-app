@@ -3,17 +3,15 @@
     <app-mobile-stub *ngIf="isMobile; else desktop"></app-mobile-stub>
 
     <ng-template #desktop>
-      <app-page-navigation
+      <!-- <app-page-navigation
         [activePage]="activePage"
         [pages]="pages"
         (onSelect)="onPageSelect($event)"
-      ></app-page-navigation>
+      ></app-page-navigation> -->
 
       <div class="privacy-content">
-        <app-clearswap-transfer-tokens-page
-          *ngIf="activePage.type === 'transfer'"
-        ></app-clearswap-transfer-tokens-page>
-        <app-clearswap-swap-page *ngIf="activePage.type === 'swap'"></app-clearswap-swap-page>
+        <app-clearswap-transfer-tokens-page></app-clearswap-transfer-tokens-page>
+        <!-- <app-clearswap-swap-page *ngIf="activePage.type === 'swap'"></app-clearswap-swap-page> -->
       </div>
     </ng-template>
   </div>

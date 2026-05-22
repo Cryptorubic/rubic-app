@@ -88,7 +88,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
     if (!signatureInfo) {
       return {
         type: 'action',
-        text: 'Login',
+        text: 'Sign to enable Private Mode',
         action: () => this.zamaFacade.updateSignature()
       };
     }
