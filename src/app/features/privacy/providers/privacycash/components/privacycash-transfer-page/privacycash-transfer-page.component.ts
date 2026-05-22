@@ -18,6 +18,7 @@ import { PrivacycashPrivateTransferTokensFacadeService } from '../../services/co
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -126,8 +127,10 @@ export class PrivacycashTransferPageComponent implements OnInit {
         steps: [
           {
             label: 'Transfer tokens',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.transfer(token, receiverAddr)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {

@@ -19,6 +19,7 @@ import { PrivacycashPrivateSwapTokensFacadeService } from '../../services/common
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -120,13 +121,15 @@ export class PrivacycashSwapPageComponent {
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.privacycashSwapService.swapPartialPrivateBalance(
                 pcSupportedSrcToken,
                 pcSupportedDstToken,
                 new BigNumber(srcAmountWei)
               )
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {

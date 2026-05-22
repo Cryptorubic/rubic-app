@@ -19,6 +19,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Injectable()
 export class ZamaFacadeService {
@@ -85,6 +86,7 @@ export class ZamaFacadeService {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
+        showLoaderOnAction: false,
         action: () => this.walletConnectorService.switchChain(fromBlockchain)
       });
     }
@@ -100,6 +102,7 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Transfer',
+      showLoaderOnAction: true,
       action: () =>
         this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
           if (isSuccess) {
@@ -118,6 +121,8 @@ export class ZamaFacadeService {
           }
         })
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 
@@ -132,12 +137,14 @@ export class ZamaFacadeService {
     if (needApprove) {
       steps.push({
         label: 'Approve',
+        showLoaderOnAction: true,
         action: () => this.zamaSwapService.approve(pureTokenAmount)
       });
     }
 
     steps.push({
       label: 'Shield Tokens',
+      showLoaderOnAction: true,
       action: () =>
         this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
           if (isSuccess) {
@@ -161,6 +168,7 @@ export class ZamaFacadeService {
           }
         })
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -181,11 +189,13 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Unshield Tokens',
+      showLoaderOnAction: true,
       action: () => this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess)
     });
 
     steps.push({
       label: 'Finalize unshield',
+      showLoaderOnAction: true,
       action: () =>
         this.zamaSwapService.finalizeUnwrap(unwrapToken, burntAmount).then(isSuccess => {
           if (isSuccess) {
@@ -207,6 +217,8 @@ export class ZamaFacadeService {
           this.zamaBalanceService.refreshPendingUnshieldBalances();
         })
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 

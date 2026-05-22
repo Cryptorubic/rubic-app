@@ -21,6 +21,7 @@ import { PrivateActionButtonService } from '@features/privacy/providers/shared-p
 import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -91,6 +92,7 @@ export class RailgunHideTokensPageComponent {
         steps: [
           {
             label: 'Shield Tokens',
+            showLoaderOnAction: true,
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               await this.hideService.shield(
@@ -121,7 +123,8 @@ export class RailgunHideTokensPageComponent {
                 }
               );
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'shield',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),

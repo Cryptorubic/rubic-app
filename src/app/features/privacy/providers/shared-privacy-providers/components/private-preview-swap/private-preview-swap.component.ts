@@ -107,7 +107,7 @@ export class PrivatePreviewSwapComponent {
 
     const [initialStep, ...steps] = context.data.swapOptions.steps;
     this._currentStep$.next(initialStep);
-    this.steps = [...steps, this.doneStep()];
+    this.steps = steps;
 
     this.warnings = context.data.swapOptions.warnings;
     this.swapType = context.data.swapType;
@@ -157,26 +157,16 @@ export class PrivatePreviewSwapComponent {
     this._currentStep$.next({
       label: 'Transaction in process',
       action: async () => ({}),
-      disabled: true
+      disabled: true,
+      showLoaderOnAction: false
     });
-  }
-
-  private doneStep(): PrivateStep {
-    return {
-      label: 'Done',
-      action: async () => {
-        this.context.completeWith();
-        return {};
-      },
-      disabled: false
-    };
   }
 
   public async handleStep(step: PrivateStep): Promise<void> {
     try {
-      if (step.label !== 'Done') this.setLoadingState();
+      if (step.showLoaderOnAction) this.setLoadingState();
 
-      const res = await step.action();
+      const res = await step.action(this.context);
       if (typeof res === 'object' && res.txScannerUrl) this.txScannerUrl = res.txScannerUrl;
 
       const [nextStep, ...steps] = this.steps;

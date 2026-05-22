@@ -20,6 +20,7 @@ import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/to
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -78,8 +79,10 @@ export class PrivacycashHidePageComponent implements OnInit {
         steps: [
           {
             label: 'Shield Tokens',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.shield(token)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {

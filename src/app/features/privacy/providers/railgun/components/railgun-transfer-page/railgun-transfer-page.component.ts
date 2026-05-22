@@ -23,6 +23,7 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -138,6 +139,7 @@ export class RailgunTransferPageComponent implements OnInit {
         steps: [
           {
             label: 'Transfer',
+            showLoaderOnAction: true,
             action: async () => {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',
@@ -183,7 +185,8 @@ export class RailgunTransferPageComponent implements OnInit {
                 );
               }, 10_000);
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'transfer',
         dstTokenAmount: token.tokenAmount.toFixed()

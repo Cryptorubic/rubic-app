@@ -18,6 +18,7 @@ import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/co
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -123,8 +124,10 @@ export class PrivacycashRevealPageComponent {
         steps: [
           {
             label: 'Private Transfer',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.unshield(token, receiverAddr)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {

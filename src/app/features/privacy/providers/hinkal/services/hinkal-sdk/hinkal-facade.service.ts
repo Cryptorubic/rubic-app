@@ -46,6 +46,7 @@ import {
   HinkalPrivateOperation
 } from '../../constants/hinkal-private-operations';
 import { FeeStructure } from '@hinkal/common';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -148,6 +149,7 @@ export class HinkalFacadeService {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
+        showLoaderOnAction: false,
         action: () => this.walletConnectorService.switchChain(fromBlockchain)
       });
     }
@@ -188,12 +190,14 @@ export class HinkalFacadeService {
     if (needApprove) {
       steps.push({
         label: 'Approve',
+        showLoaderOnAction: true,
         action: () => this.hinkalSwapService.approveBeforeShield(token)
       });
     }
 
     steps.push({
       label: 'Shield Tokens',
+      showLoaderOnAction: true,
       action: () =>
         this.hinkalSwapService.deposit(token).then(isSuccess => {
           if (isSuccess) {
@@ -216,6 +220,7 @@ export class HinkalFacadeService {
           }
         })
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -231,6 +236,7 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Private Transfer',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         const estimatedFee = this.getEstimatedFeesByChain(token.blockchain).find(({ feeToken }) =>
@@ -256,6 +262,7 @@ export class HinkalFacadeService {
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -271,6 +278,7 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Transfer tokens',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         return this.hinkalSwapService
@@ -292,6 +300,7 @@ export class HinkalFacadeService {
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -348,6 +357,7 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Swap',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         console.log(`SELECTED GAS TOKEN`, selectedGasToken);
@@ -371,6 +381,7 @@ export class HinkalFacadeService {
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }

@@ -22,6 +22,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -97,6 +98,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.clearswapSwapService
                 .transfer(
@@ -174,7 +176,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                     });
                   }
                 })
-          }
+          },
+          donePrivateStep()
         ]
       });
       await firstValueFrom(preview$);

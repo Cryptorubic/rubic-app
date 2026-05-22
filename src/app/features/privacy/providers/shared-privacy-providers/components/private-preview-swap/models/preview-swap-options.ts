@@ -3,6 +3,7 @@ import { AppGasData } from '@app/features/trade/models/provider-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { SwapAmount } from '../../../models/swap-info';
 import { GasToken } from '@app/shared/models/tokens/gas-token';
+import { TuiDialogContext } from '@taiga-ui/core';
 
 export type PreviewSwapWarning = { text: string; link?: string };
 
@@ -13,7 +14,14 @@ export type PrivateActionRes = { txScannerUrl?: string };
 export interface PrivateStep {
   label: string;
   // @TODO_2273 remove `void | boolean` after all private providers changes
-  action: () => Promise<PrivateActionRes | void | boolean>;
+  action: (
+    context: TuiDialogContext<void, PreviewPrivateSwapOptions>
+  ) => Promise<PrivateActionRes | void | boolean>;
+  /**
+   * if true - when step.action() method invoked - it calls setLoadingState() in private-preview-swap.component.ts
+   * and shows loader
+   */
+  showLoaderOnAction: boolean;
   disabled?: boolean;
 }
 

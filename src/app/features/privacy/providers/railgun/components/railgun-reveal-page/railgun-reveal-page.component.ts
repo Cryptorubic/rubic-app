@@ -18,6 +18,7 @@ import { PrivateActionButtonService } from '@features/privacy/providers/shared-p
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -90,6 +91,7 @@ export class RailgunRevealPageComponent {
         steps: [
           {
             label: 'Private Transfer',
+            showLoaderOnAction: true,
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
@@ -136,7 +138,8 @@ export class RailgunRevealPageComponent {
                 );
               }, 10_000);
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'transfer',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
