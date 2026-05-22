@@ -22,7 +22,7 @@ export class ZamaHideTokensFacadeService extends TokensFacadeService {
     const supportedTokensMapping = this.tokensService.supportedTokensMapping;
 
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput())
+      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
       .pipe(
         map(tokens => {
           const supportedTokens = tokens.filter(({ blockchain, address }) => {
