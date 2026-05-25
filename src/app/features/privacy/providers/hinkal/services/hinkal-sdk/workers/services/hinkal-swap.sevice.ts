@@ -14,7 +14,6 @@ import { HinkalUtils } from '../../utils/hinkal-utils';
 import { ContractTransaction, ethers, Wallet } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
-import BigNumber from 'bignumber.js';
 
 export class HinkalWorkerSwapService {
   private readonly hinkal: Hinkal<unknown>;
@@ -55,6 +54,9 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
     feeToken: string,
@@ -82,6 +84,9 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
     feeToken: string,
@@ -105,11 +110,14 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
     toToken: PureTokenAmount<EvmBlockchainName>,
     feeToken: string
-  ): Promise<string | BigNumber> {
+  ): Promise<string> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');

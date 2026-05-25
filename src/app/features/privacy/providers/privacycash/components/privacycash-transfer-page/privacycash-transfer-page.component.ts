@@ -118,6 +118,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
       ]);
 
       const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
+      const pcFeeUsd = pcFeeNonWei.multipliedBy(tokenPrice).toFixed(2);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -139,6 +140,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
             }
           }
         },
+        displayAmount: `~ $${pcFeeUsd}`,
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

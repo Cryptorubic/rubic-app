@@ -175,10 +175,7 @@ export class PrivatePreviewSwapComponent {
 
       const [nextStep, ...steps] = this.steps;
 
-      if (!nextStep) {
-        // this.context.completeWith();
-        return;
-      }
+      if (!nextStep) return;
 
       this._currentStep$.next(nextStep);
       this.steps = steps;

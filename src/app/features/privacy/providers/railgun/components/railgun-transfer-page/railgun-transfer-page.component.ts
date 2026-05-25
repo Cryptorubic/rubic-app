@@ -24,6 +24,7 @@ import { RailgunPrivateActionButtonService } from '@features/privacy/providers/r
 import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -151,7 +152,7 @@ export class RailgunTransferPageComponent implements OnInit {
                   defaultAutoCloseTime: 0
                 }
               );
-              await this.transferService.transferTokens(
+              const txHash = await this.transferService.transferTokens(
                 token.address,
                 token.stringWeiAmount,
                 this.receiverCtrl.value,
@@ -184,6 +185,7 @@ export class RailgunTransferPageComponent implements OnInit {
                   [token.blockchain as RailgunSupportedChain]
                 );
               }, 10_000);
+              return { txScannerUrl: getScannerUrl(token, txHash) };
             }
           },
           donePrivateStep()

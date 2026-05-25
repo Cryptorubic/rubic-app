@@ -115,6 +115,7 @@ export class PrivacycashSwapPageComponent {
         toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
         swapInfo.fromAmount.actualValue
       );
+      const withdrawalFeeUsd = withdrawalFee.multipliedBy(swapInfo.fromAsset.price).toFixed(2);
 
       const preview$ = openPreview({
         steps: [
@@ -140,7 +141,8 @@ export class PrivacycashSwapPageComponent {
               })
             }
           }
-        }
+        },
+        displayAmount: `~ $${withdrawalFeeUsd}`
       });
       await firstValueFrom(preview$);
     } finally {

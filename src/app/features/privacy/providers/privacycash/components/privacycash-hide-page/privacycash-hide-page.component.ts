@@ -75,6 +75,7 @@ export class PrivacycashHidePageComponent implements OnInit {
         this.hideWindowService.hideAsset.amount,
         this.hideWindowService.hideAsset.decimals
       );
+      const pcFeeUsd = nativeTokenPrice.multipliedBy(0.002).toFixed(2);
       const preview$ = openPreview({
         steps: [
           {
@@ -92,6 +93,7 @@ export class PrivacycashHidePageComponent implements OnInit {
             }
           }
         },
+        displayAmount: `~ $${pcFeeUsd}`,
         dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

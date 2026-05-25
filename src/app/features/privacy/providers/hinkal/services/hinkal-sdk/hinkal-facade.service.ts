@@ -150,7 +150,7 @@ export class HinkalFacadeService {
       steps.push({
         label: 'Switch network',
         showLoaderOnAction: false,
-        action: () => this.walletConnectorService.switchChain(fromBlockchain)
+        action: () => this.walletConnectorService.switchChain(fromBlockchain).then(() => ({}))
       });
     }
   }
@@ -199,7 +199,8 @@ export class HinkalFacadeService {
       label: 'Shield Tokens',
       showLoaderOnAction: true,
       action: () =>
-        this.hinkalSwapService.deposit(token).then(isSuccess => {
+        this.hinkalSwapService.deposit(token).then(res => {
+          const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'SHIELD',
@@ -218,6 +219,7 @@ export class HinkalFacadeService {
               });
             });
           }
+          return res;
         })
     });
     steps.push(donePrivateStep());
@@ -245,7 +247,8 @@ export class HinkalFacadeService {
 
         return this.hinkalSwapService
           .withdraw(token, selectedGasToken, estimatedFee, receiver)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
@@ -259,6 +262,7 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });
@@ -283,7 +287,8 @@ export class HinkalFacadeService {
         const selectedGasToken = getSelectedGasToken();
         return this.hinkalSwapService
           .privateTransfer(token, receiverPrivateShieldedKey, selectedGasToken)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
@@ -297,6 +302,7 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });
@@ -364,7 +370,8 @@ export class HinkalFacadeService {
 
         return this.hinkalSwapService
           .privateSwap(fromToken, toToken, selectedGasToken)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'PRIVATE_ONCHAIN_SWAP',
@@ -378,6 +385,7 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });

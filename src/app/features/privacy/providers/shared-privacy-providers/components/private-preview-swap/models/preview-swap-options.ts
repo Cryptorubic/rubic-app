@@ -27,9 +27,7 @@ export type PrivateActionRes = { txScannerUrl?: string };
 export interface PrivateStep {
   label: PrivateSwapLabel;
   // @TODO_2273 remove `void | boolean` after all private providers changes
-  action: (
-    context: TuiDialogContext<void, PreviewPrivateSwapOptions>
-  ) => Promise<PrivateActionRes | void | boolean>;
+  action: (context: TuiDialogContext<void, PreviewPrivateSwapOptions>) => Promise<PrivateActionRes>;
   /**
    * if true - when step.action() method invoked - it calls setLoadingState() in private-preview-swap.component.ts
    * and shows loader
