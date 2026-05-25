@@ -204,5 +204,6 @@ export class ClearswapSwapService {
       );
       if (statusResp.dstTxHash) return statusResp.dstTxHash;
     }
+    return '';
   }
 }

@@ -592,5 +592,6 @@ export class HoudiniSwapService {
       );
       if (statusResp.dstTxHash) return statusResp.dstTxHash;
     }
+    return '';
   }
 }
