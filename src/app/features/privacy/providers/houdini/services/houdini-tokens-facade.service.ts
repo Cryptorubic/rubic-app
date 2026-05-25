@@ -14,7 +14,7 @@ export class HoudiniTokensFacadeService extends TokensFacadeService {
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    return this.tokensBuilderService.getTokensList(type, query, direction, inputValue).pipe(
+    return this.tokensBuilderService.getTokensList(type, query, direction, inputValue, true).pipe(
       map(tokens => {
         return tokens.filter(token =>
           HOUDINI_SUPPORTED_CHAINS.some(supportedChain => supportedChain === token.blockchain)

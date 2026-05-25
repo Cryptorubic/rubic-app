@@ -123,8 +123,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     // {
     //   fullHost: 'https://go.getblock.io/adeeade0e28e4b879ac4340637e0946d'
     // },
+    // {
+    //   fullHost: 'https://api.trongrid.io'
+    // }
     {
-      fullHost: 'https://api.trongrid.io'
+      fullHost: 'https://x-api.rubic.exchange/trongrid'
     }
   ],
   [BLOCKCHAIN_NAME.BITGERT]: [
