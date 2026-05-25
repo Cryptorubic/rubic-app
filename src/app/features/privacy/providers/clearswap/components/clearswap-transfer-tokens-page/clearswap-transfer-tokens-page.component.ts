@@ -38,6 +38,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -138,6 +139,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
             steps: [
               {
                 label: 'Private Transfer',
+                showLoaderOnAction: true,
                 action: () =>
                   this.clearswapSwapService
                     .transfer(
@@ -146,7 +148,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                       { ...token } as Token,
                       this.receiverCtrl.value
                     )
-                    .then(async () => {
+                    .then(async res => {
                       this.privateStatisticsService.saveAction(
                         'TRANSFER',
                         PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -166,6 +168,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                           amount: newBalance
                         });
                       }
+
+                      return res;
                     })
                     .catch(async err => {
                       if (!(err instanceof UserRejectError)) {
@@ -191,8 +195,11 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                           amount: nativeBalance
                         });
                       }
+
+                      return {};
                     })
-              }
+              },
+              donePrivateStep()
             ]
           });
         }

@@ -67,6 +67,10 @@ export class PrivatePreviewSwapComponent {
 
   private readonly swapOptions: PrivateSwapOptions;
 
+  private readonly _txScannerUrl$ = new BehaviorSubject<string | null>(null);
+
+  public readonly txScannerUrl$ = this._txScannerUrl$.asObservable();
+
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
   }
@@ -74,7 +78,7 @@ export class PrivatePreviewSwapComponent {
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
     gasIcon: 'assets/images/icons/gas-private.svg',
-    withVerboseFeeHint: false,
+    withVerboseFeeHint: true,
     zeroFeeText: 'Zero fee',
     direction: 'vertical'
   };
@@ -154,23 +158,24 @@ export class PrivatePreviewSwapComponent {
   private setLoadingState(): void {
     this._currentStep$.next({
       label: 'Transaction in process',
-      action: async () => {},
-      disabled: true
+      action: async () => ({}),
+      disabled: true,
+      showLoaderOnAction: false
     });
   }
 
   public async handleStep(step: PrivateStep): Promise<void> {
     try {
-      this.setLoadingState();
+      if (step.showLoaderOnAction) this.setLoadingState();
 
-      await step.action();
+      const res = await step.action(this.context);
+      if (res.txScannerUrl) {
+        this._txScannerUrl$.next(res.txScannerUrl);
+      }
 
       const [nextStep, ...steps] = this.steps;
 
-      if (!nextStep) {
-        this.context.completeWith();
-        return;
-      }
+      if (!nextStep) return;
 
       this._currentStep$.next(nextStep);
       this.steps = steps;

@@ -46,6 +46,7 @@ import {
   HinkalPrivateOperation
 } from '../../constants/hinkal-private-operations';
 import { FeeStructure } from '@hinkal/common';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Injectable()
 export class HinkalFacadeService {
@@ -148,7 +149,8 @@ export class HinkalFacadeService {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
-        action: () => this.walletConnectorService.switchChain(fromBlockchain)
+        showLoaderOnAction: false,
+        action: () => this.walletConnectorService.switchChain(fromBlockchain).then(() => ({}))
       });
     }
   }
@@ -188,14 +190,17 @@ export class HinkalFacadeService {
     if (needApprove) {
       steps.push({
         label: 'Approve',
+        showLoaderOnAction: true,
         action: () => this.hinkalSwapService.approveBeforeShield(token)
       });
     }
 
     steps.push({
       label: 'Shield Tokens',
+      showLoaderOnAction: true,
       action: () =>
-        this.hinkalSwapService.deposit(token).then(isSuccess => {
+        this.hinkalSwapService.deposit(token).then(res => {
+          const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'SHIELD',
@@ -214,8 +219,10 @@ export class HinkalFacadeService {
               });
             });
           }
+          return res;
         })
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -231,6 +238,7 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Private Transfer',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         const estimatedFee = this.getEstimatedFeesByChain(token.blockchain).find(({ feeToken }) =>
@@ -239,7 +247,8 @@ export class HinkalFacadeService {
 
         return this.hinkalSwapService
           .withdraw(token, selectedGasToken, estimatedFee, receiver)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
@@ -253,9 +262,11 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -271,11 +282,13 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Transfer tokens',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         return this.hinkalSwapService
           .privateTransfer(token, receiverPrivateShieldedKey, selectedGasToken)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
@@ -289,9 +302,11 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -348,13 +363,15 @@ export class HinkalFacadeService {
 
     steps.push({
       label: 'Swap',
+      showLoaderOnAction: true,
       action: () => {
         const selectedGasToken = getSelectedGasToken();
         console.log(`SELECTED GAS TOKEN`, selectedGasToken);
 
         return this.hinkalSwapService
           .privateSwap(fromToken, toToken, selectedGasToken)
-          .then(isSuccess => {
+          .then(res => {
+            const isSuccess = !!res.txScannerUrl;
             if (isSuccess) {
               this.privateStatisticsService.saveAction(
                 'PRIVATE_ONCHAIN_SWAP',
@@ -368,9 +385,11 @@ export class HinkalFacadeService {
                 'Transaction sent. This may take a moment. Please keep Rubic App open'
               );
             }
+            return res;
           });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }

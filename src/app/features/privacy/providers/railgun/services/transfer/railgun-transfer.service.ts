@@ -23,13 +23,16 @@ export class RailgunTransferService {
 
   private readonly gasService = inject(GasService);
 
+  /**
+   * @returns tx hash
+   */
   public async transferTokens(
     tokenAddress: string,
     tokenAmount: string,
     receiver: string,
     proofProgress: (progress: string) => void,
     blockchain: RailgunSupportedChain
-  ): Promise<void> {
+  ): Promise<string> {
     try {
       if (this._inProgress$.value === true) {
         throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
@@ -71,7 +74,8 @@ export class RailgunTransferService {
         overallBatchMinGasPrice
       );
 
-      await wallet.sendTransaction(transaction);
+      const res = await wallet.sendTransaction(transaction);
+      return res.hash;
     } catch (err) {
       throw err;
     } finally {
