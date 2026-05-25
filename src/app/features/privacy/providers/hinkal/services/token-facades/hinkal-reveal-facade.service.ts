@@ -23,7 +23,7 @@ export class HinkalRevealFacadeService extends TokensFacadeService {
     return this.balanceService.balances$.pipe(
       switchMap(shieldedBalances => {
         return this.tokensBuilderService
-          .getTokensList(type, _query, direction, getEmptySwapFormInput())
+          .getTokensList(type, _query, direction, getEmptySwapFormInput(), false)
           .pipe(
             map(tokens => {
               const supportedTokens = tokens

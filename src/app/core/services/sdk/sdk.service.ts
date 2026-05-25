@@ -59,7 +59,10 @@ export class SdkService {
       clientParams: {
         envType: ENVIRONMENT.environmentName,
         lazyLoadWeb3: true,
-        viemConfig: rubicSdkDefaultConfig.viemConfig
+        viemConfig: rubicSdkDefaultConfig.viemConfig,
+        tronwebHeaders: {
+          apikey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+        }
       }
     });
 
