@@ -148,7 +148,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                       { ...token } as Token,
                       this.receiverCtrl.value
                     )
-                    .then(async () => {
+                    .then(async res => {
                       this.privateStatisticsService.saveAction(
                         'TRANSFER',
                         PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -168,6 +168,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                           amount: newBalance
                         });
                       }
+
+                      return res;
                     })
                     .catch(async err => {
                       if (!(err instanceof UserRejectError)) {
@@ -193,6 +195,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                           amount: nativeBalance
                         });
                       }
+
+                      return {};
                     })
               },
               donePrivateStep()

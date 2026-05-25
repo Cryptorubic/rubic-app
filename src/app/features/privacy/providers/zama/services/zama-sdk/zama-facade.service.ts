@@ -101,7 +101,7 @@ export class ZamaFacadeService {
     this.addSwitchNetworkStep(token.blockchain, steps);
 
     steps.push({
-      label: 'Transfer',
+      label: 'Private Transfer',
       showLoaderOnAction: true,
       action: () =>
         this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {

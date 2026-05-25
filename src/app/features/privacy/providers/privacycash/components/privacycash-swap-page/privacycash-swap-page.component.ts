@@ -8,7 +8,7 @@ import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceTokenAmount, Token } from '@cryptorubic/core';
+import { PriceToken, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -115,7 +115,6 @@ export class PrivacycashSwapPageComponent {
         toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
         swapInfo.fromAmount.actualValue
       );
-      const srcTokenFeePercent = withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4);
 
       const preview$ = openPreview({
         steps: [
@@ -133,11 +132,10 @@ export class PrivacycashSwapPageComponent {
         ],
         feeInfo: {
           provider: {
-            platformFee: {
-              percent: srcTokenFeePercent.toNumber(),
-              token: new PriceTokenAmount({
+            cryptoFee: {
+              amount: withdrawalFee,
+              token: new PriceToken({
                 ...swapInfo.fromAsset,
-                tokenAmount: swapInfo.fromAmount.actualValue,
                 price: new BigNumber(swapInfo.fromAsset.price)
               })
             }

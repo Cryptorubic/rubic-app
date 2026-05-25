@@ -108,7 +108,7 @@
     {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
   </div>
   <div *ngIf="feeInfo?.provider?.cryptoFee?.amount.gt(0)">
-    Provider Native Fee:
+    Provider Fee:
     {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.provider.cryptoFee.token.symbol }}
   </div>

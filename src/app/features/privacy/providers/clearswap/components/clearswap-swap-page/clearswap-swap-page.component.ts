@@ -107,7 +107,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                   swapInfo.toAsset,
                   this.receiverCtrl.value
                 )
-                .then(async () => {
+                .then(async res => {
                   this.privateStatisticsService.saveAction(
                     'TRANSFER',
                     PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -146,6 +146,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                   ) {
                     this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                   }
+
+                  return res;
                 })
                 .catch(async err => {
                   if (!(err instanceof UserRejectError)) {
@@ -175,6 +177,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                       }
                     });
                   }
+
+                  return {};
                 })
           },
           donePrivateStep()

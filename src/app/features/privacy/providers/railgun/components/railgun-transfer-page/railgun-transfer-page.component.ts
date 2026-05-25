@@ -138,7 +138,7 @@ export class RailgunTransferPageComponent implements OnInit {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Transfer',
+            label: 'Private Transfer',
             showLoaderOnAction: true,
             action: async () => {
               this.notificationService.show(

@@ -5,7 +5,7 @@ import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
+import { PriceToken, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
@@ -118,7 +118,6 @@ export class PrivacycashTransferPageComponent implements OnInit {
       ]);
 
       const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
-      const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -134,9 +133,9 @@ export class PrivacycashTransferPageComponent implements OnInit {
         ],
         feeInfo: {
           provider: {
-            platformFee: {
-              percent: pcFeePercent.toNumber(),
-              token: new PriceTokenAmount({ ...token.asStructWithAmount, price: tokenPrice })
+            cryptoFee: {
+              amount: pcFeeNonWei,
+              token: new PriceToken({ ...token.asStruct, price: tokenPrice })
             }
           }
         },

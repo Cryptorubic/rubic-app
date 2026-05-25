@@ -67,7 +67,9 @@ export class PrivatePreviewSwapComponent {
 
   private readonly swapOptions: PrivateSwapOptions;
 
-  public txScannerUrl: string | null = null;
+  private readonly _txScannerUrl$ = new BehaviorSubject<string | null>(null);
+
+  public readonly txScannerUrl$ = this._txScannerUrl$.asObservable();
 
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
@@ -76,7 +78,7 @@ export class PrivatePreviewSwapComponent {
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
     gasIcon: 'assets/images/icons/gas-private.svg',
-    withVerboseFeeHint: false,
+    withVerboseFeeHint: true,
     zeroFeeText: 'Zero fee',
     direction: 'vertical'
   };
@@ -167,7 +169,9 @@ export class PrivatePreviewSwapComponent {
       if (step.showLoaderOnAction) this.setLoadingState();
 
       const res = await step.action(this.context);
-      if (typeof res === 'object' && res.txScannerUrl) this.txScannerUrl = res.txScannerUrl;
+      if (typeof res === 'object' && res.txScannerUrl) {
+        this._txScannerUrl$.next(res.txScannerUrl);
+      }
 
       const [nextStep, ...steps] = this.steps;
 

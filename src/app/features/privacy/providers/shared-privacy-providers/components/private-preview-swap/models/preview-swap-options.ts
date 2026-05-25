@@ -9,10 +9,23 @@ export type PreviewSwapWarning = { text: string; link?: string };
 
 export type PrivateSwapType = 'shield' | 'unshield' | 'transfer' | 'swap' | 'refund';
 
+export type PrivateSwapLabel =
+  | 'Done'
+  | 'Transaction in process'
+  | 'Private Transfer'
+  | 'Transfer tokens'
+  | 'Switch network'
+  | 'Shield Tokens'
+  | 'Approve'
+  | 'Swap'
+  | 'Refund tokens'
+  | 'Unshield Tokens'
+  | 'Finalize unshield';
+
 export type PrivateActionRes = { txScannerUrl?: string };
 
 export interface PrivateStep {
-  label: string;
+  label: PrivateSwapLabel;
   // @TODO_2273 remove `void | boolean` after all private providers changes
   action: (
     context: TuiDialogContext<void, PreviewPrivateSwapOptions>

@@ -25,6 +25,8 @@ import {
   switchMap,
   takeWhile
 } from 'rxjs';
+import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -83,7 +85,7 @@ export class ClearswapSwapService {
     fromToken: TokenAmount<BlockchainName>,
     toToken: Token,
     receiver: string
-  ): Promise<void> {
+  ): Promise<PrivateActionRes> {
     try {
       const swapResponse = await lastValueFrom(
         defer(() =>
@@ -166,6 +168,7 @@ export class ClearswapSwapService {
 
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
         this.notificationsService.showSuccess('The operation was successful.');
+        return { txScannerUrl: getScannerUrl(fromToken, txHash) };
       } else {
         if (txStatus === TX_STATUS.FAIL) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txHash);
