@@ -47,19 +47,17 @@ export class PendingUnshieldElementComponent {
 
       await this.zamaSwapService
         .finalizeUnwrap(this.token, this.token.encryptedAmount)
-        .then(isSuccess => {
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'UNSHIELD',
-              'ZAMA',
-              this.walletConnectorService.address,
-              this.token.address,
-              Token.toWei(this.token.decryptedNonWeiAmount, publicToken.decimals),
-              this.token.blockchain
-            );
-          }
-
+        .then(res => {
+          this.privateStatisticsService.saveAction(
+            'UNSHIELD',
+            'ZAMA',
+            this.walletConnectorService.address,
+            this.token.address,
+            Token.toWei(this.token.decryptedNonWeiAmount, publicToken.decimals),
+            this.token.blockchain
+          );
           this.zamaBalanceService.refreshPendingUnshieldBalances();
+          return res;
         });
     } finally {
       this._unwrapLoading$.next(false);

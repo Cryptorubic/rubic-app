@@ -169,7 +169,7 @@ export class PrivatePreviewSwapComponent {
       if (step.showLoaderOnAction) this.setLoadingState();
 
       const res = await step.action(this.context);
-      if (res.txScannerUrl) {
+      if (res && res.txScannerUrl) {
         this._txScannerUrl$.next(res.txScannerUrl);
       }
 
