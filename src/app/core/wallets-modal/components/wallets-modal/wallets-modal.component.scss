@@ -46,8 +46,9 @@
     &-row {
       display: grid;
       grid-auto-flow: column;
+      justify-content: start;
       padding-bottom: 16px;
-      overflow-x: scroll;
+      overflow-x: auto;
 
       column-gap: 10px;
 
