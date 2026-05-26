@@ -67,6 +67,7 @@ import { PrivateActionRes } from '../../shared-privacy-providers/components/priv
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 import { waitFor } from '@cryptorubic/web3';
 import { SdkService } from '@app/core/services/sdk/sdk.service';
+import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -585,11 +586,13 @@ export class HoudiniSwapService {
     const deadlineMs = 30 * 60 * 1_000;
     while (startMs + deadlineMs >= Date.now()) {
       await waitFor(30_000);
-      const statusResp = await this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
-        this.currentTrade.rubicId,
-        srcTxHash,
-        this.currentTrade.to.blockchain
-      );
+      const statusResp = await this.sdkService.crossChainStatusManager
+        .getCrossChainStatusExtended(
+          this.currentTrade.rubicId,
+          srcTxHash,
+          this.currentTrade.to.blockchain
+        )
+        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
       if (statusResp.dstTxHash) return statusResp.dstTxHash;
     }
     return '';

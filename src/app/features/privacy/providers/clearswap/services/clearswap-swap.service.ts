@@ -28,6 +28,7 @@ import { PrivateActionRes } from '../../shared-privacy-providers/components/priv
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 import { SdkService } from '@app/core/services/sdk/sdk.service';
 import { SwapResponseInterface } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/swap-response-interface';
+import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -197,11 +198,13 @@ export class ClearswapSwapService {
     const deadlineMs = 30 * 60 * 1_000;
     while (startMs + deadlineMs >= Date.now()) {
       await waitFor(30_000);
-      const statusResp = await this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
-        swapResp.quote.id,
-        srcTxHash,
-        swapResp.quote.srcTokenBlockchain
-      );
+      const statusResp = await this.sdkService.crossChainStatusManager
+        .getCrossChainStatusExtended(
+          swapResp.quote.id,
+          srcTxHash,
+          swapResp.quote.srcTokenBlockchain
+        )
+        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
       if (statusResp.dstTxHash) return statusResp.dstTxHash;
     }
     return '';

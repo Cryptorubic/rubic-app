@@ -24,7 +24,9 @@
   <div
     *ngIf="displayAmount"
     class="provider-info__element"
-    [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
+    [tuiHint]="
+      creationConfig.withVerboseFeeHint && feeMoreThanZero() ? verboseFeeHint : shortFeeHint
+    "
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
     [tuiHintHideDelay]="hideHint ? 0 : 200"
