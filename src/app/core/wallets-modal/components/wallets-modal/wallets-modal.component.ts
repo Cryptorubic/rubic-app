@@ -98,7 +98,9 @@ export class WalletsModalComponent implements OnInit {
     private readonly modalService: ModalService
   ) {
     this.allProviders = context.data?.providers
-      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
+      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value)).map(
+          provider => ({ ...provider, display: true })
+        )
       : PROVIDERS_LIST;
 
     const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>

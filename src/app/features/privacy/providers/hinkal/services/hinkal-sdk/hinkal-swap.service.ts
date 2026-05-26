@@ -106,7 +106,7 @@ export class HinkalSwapService {
       return { txScannerUrl: getScannerUrl(token, txRes.transactionHash) };
     } catch (err) {
       this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 
@@ -143,7 +143,7 @@ export class HinkalSwapService {
         this.errorService.catch(err);
       }
 
-      return {};
+      throw err;
     }
   }
 
@@ -171,7 +171,7 @@ export class HinkalSwapService {
       return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
       this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 
@@ -207,7 +207,7 @@ export class HinkalSwapService {
     } catch (err) {
       console.log('FAILED TO SWAP', err);
       this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 

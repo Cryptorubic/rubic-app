@@ -171,7 +171,6 @@ export class ClearswapSwapService {
       const dstTxHash = await this.waitForDstTxSuccess(swapResponse, txHash);
 
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
-        this.notificationsService.showSuccess('The operation was successful.');
         return { txScannerUrl: getScannerUrl(toToken, dstTxHash) };
       } else {
         if (txStatus === TX_STATUS.FAIL) {

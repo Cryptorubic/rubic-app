@@ -269,7 +269,7 @@ export class HoudiniSwapService {
       }
     } catch (err) {
       this.showSwapError(err);
-      return {};
+      throw err;
     }
   }
 
@@ -285,10 +285,6 @@ export class HoudiniSwapService {
       await this.crossChainService.approveTrade(trade, callback.onHash);
       callback?.onSwap();
     } catch (err) {
-      if (err?.message?.includes('Method is not supported')) {
-        return Promise.resolve();
-      }
-
       console.error(err);
       callback?.onError();
       let error = err;
@@ -296,7 +292,6 @@ export class HoudiniSwapService {
         error = new DelayedApproveError();
       }
       throw error;
-      // this.errorsService.catch(error);
     }
   }
 

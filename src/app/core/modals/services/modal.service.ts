@@ -535,12 +535,13 @@ export class ModalService {
     );
   }
 
-  public openMetamaskModal(): Promise<WALLET_NAME> {
+  public openMetamaskModal(walletsToHide: WALLET_NAME[] = []): Promise<WALLET_NAME> {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
         closeable: true,
-        fitContent: true
+        fitContent: true,
+        data: { walletsToHide }
       })
     );
   }

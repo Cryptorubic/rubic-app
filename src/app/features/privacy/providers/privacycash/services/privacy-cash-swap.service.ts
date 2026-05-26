@@ -126,7 +126,6 @@ export class PrivacycashSwapService {
       recipientPK
     );
 
-    this.notificationsService.showInfo(`Transfer successful. Check the receiver’s wallet balance.`);
     this.privacycashTokensService.updatePrivateBalances();
     this.privateStatisticsService.saveAction(
       'TRANSFER',
@@ -154,7 +153,6 @@ export class PrivacycashSwapService {
         (tx: VersionedTransaction) => wallet.signTransaction(tx)
       );
 
-      this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
       this.privacycashTokensService.updatePrivateBalances();
       this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
       this.privateStatisticsService.saveAction(
@@ -199,9 +197,6 @@ export class PrivacycashSwapService {
       recipientPK
     );
 
-    this.notificationsService.showInfo(
-      'Unshielding successful. Check the receiver’s wallet balance.'
-    );
     this.privacycashTokensService.updatePrivateBalances();
     this.privateStatisticsService.saveAction(
       'UNSHIELD',
@@ -335,9 +330,7 @@ export class PrivacycashSwapService {
       }
 
       successfullSteps.push('success');
-      this.notificationsService.showInfo('Swap successful.');
-
-      return { txScannerUrl: getScannerUrl(srcToken, txHash) };
+      return { txScannerUrl: getScannerUrl(dstToken, txHash) };
     } catch (err) {
       this.notificationsService.showInfo('Transaction failed. Please request a refund.');
       failedSteps.push(err.message);

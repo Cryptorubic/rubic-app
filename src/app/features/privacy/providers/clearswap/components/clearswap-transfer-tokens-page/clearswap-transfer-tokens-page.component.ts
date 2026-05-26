@@ -215,7 +215,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                         });
                       }
 
-                      return {};
+                      throw err;
                     })
               },
               donePrivateStep()
