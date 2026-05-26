@@ -192,7 +192,7 @@ export class HinkalFacadeService {
           await this.hinkalSwapService.approveBeforeShield(token);
         }
 
-        this.hinkalSwapService.deposit(token).then(isSuccess => {
+        return this.hinkalSwapService.deposit(token).then(isSuccess => {
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'SHIELD',

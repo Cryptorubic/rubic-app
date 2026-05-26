@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonService } from '../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { PrivateActionButtonState } from '../../shared-privacy-providers/models/private-action-button-state';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, compareAddresses } from '@cryptorubic/core';
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
@@ -43,6 +43,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
 
         return combineLatest([
           this.walletConnector.networkChange$,
+          this.walletConnector.addressChange$,
           asset$,
           assetAmount$,
           this._receiverAddress$,
@@ -60,6 +61,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
 
   private async getButtonState(
     network: BlockchainName | null,
+    userAddr: string,
     asset: BalanceToken | null,
     assetAmount: {
       visibleValue: string;
@@ -140,6 +142,13 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
         return {
           type: 'error',
           text: 'Enter correct receiver address'
+        };
+      }
+
+      if (compareAddresses(userAddr, receiver) && currPage.type === 'transfer') {
+        return {
+          type: 'error',
+          text: 'Recipient address must be different'
         };
       }
     }

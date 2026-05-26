@@ -252,6 +252,8 @@ app-swap-data-element ::ng-deep {
   &__element {
     position: absolute;
     top: 50%;
+    
+    left: 0;
     z-index: 1;
 
     width: 45px;
@@ -261,19 +263,21 @@ app-swap-data-element ::ng-deep {
     transform: translateY(-50%);
 
     animation: pulse 0.8s ease-in-out infinite alternate;
-  }
 
+    will-change: transform;
+  }
 }
 
 @keyframes pulse {
   0% {
-    left: -50px;
+    transform: translateY(-50%) translateX(-100%); 
   }
 
   100% {
-    left: calc(100% + 10px);
+    transform: translateY(-50%) translateX(200px);
   }
 }
+
 
 :host ::ng-deep .window-container {
   padding: 0 !important;

@@ -8,8 +8,10 @@ import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import {
   catchError,
   defer,
+  filter,
   finalize,
   from,
+  map,
   Observable,
   of,
   retry,
@@ -37,6 +39,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { ClearswapTokensFacadeService } from '../../services/clearswap-tokens-facade.service';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -65,7 +68,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly tokensBalanceService: TokensBalanceService,
     private readonly privateTransferWindowService: PrivateTransferWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly tokensFacade: ClearswapTokensFacadeService
   ) {}
 
   ngOnInit(): void {
@@ -85,6 +89,24 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.tokensFacade.tokens$
+      .pipe(
+        filter(() => !!this.privateTransferWindowService.transferAsset?.address),
+        map(tokens =>
+          tokens.find(token =>
+            compareTokens(token, this.privateTransferWindowService.transferAsset)
+          )
+        ),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(token => {
+        this.privateTransferWindowService.setTransferAsset({
+          ...this.privateTransferWindowService.transferAsset,
+          amount: token.amount
+        });
+      });
   }
 
   private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {
