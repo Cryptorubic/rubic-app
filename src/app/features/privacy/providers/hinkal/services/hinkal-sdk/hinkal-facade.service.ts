@@ -187,19 +187,15 @@ export class HinkalFacadeService {
 
     const needApprove = await this.hinkalSwapService.needApproveBeforeShield(token);
 
-    if (needApprove) {
-      steps.push({
-        label: 'Approve',
-        showLoaderOnAction: true,
-        action: () => this.hinkalSwapService.approveBeforeShield(token)
-      });
-    }
-
     steps.push({
       label: 'Shield Tokens',
       showLoaderOnAction: true,
-      action: () =>
-        this.hinkalSwapService.deposit(token).then(res => {
+      action: async () => {
+        if (needApprove) {
+          await this.hinkalSwapService.approveBeforeShield(token);
+        }
+
+        return this.hinkalSwapService.deposit(token).then(res => {
           const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
@@ -220,7 +216,8 @@ export class HinkalFacadeService {
             });
           }
           return res;
-        })
+        });
+      }
     });
     steps.push(donePrivateStep());
 

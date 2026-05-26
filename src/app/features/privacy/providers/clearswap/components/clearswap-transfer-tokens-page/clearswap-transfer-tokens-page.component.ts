@@ -8,8 +8,10 @@ import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import {
   catchError,
   defer,
+  filter,
   finalize,
   from,
+  map,
   Observable,
   of,
   retry,
@@ -27,7 +29,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
-import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -39,6 +40,7 @@ import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.s
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { ClearswapTokensFacadeService } from '../../services/clearswap-tokens-facade.service';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -50,9 +52,7 @@ import { donePrivateStep } from '@features/privacy/providers/shared-privacy-prov
 export class ClearswapTransferTokensPageComponent implements OnInit {
   public readonly nextTransfer$ = new Subject<PrivateEvent>();
 
-  public readonly receiverCtrl = new FormControl<string>('', {
-    asyncValidators: [isReceiverCorrect()]
-  });
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly clearswapFormConfig: PrivateTransferFormConfig = {
     ...clearswapFormConfig,
@@ -69,7 +69,8 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly tokensBalanceService: TokensBalanceService,
     private readonly privateTransferWindowService: PrivateTransferWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly tokensFacade: ClearswapTokensFacadeService
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +90,24 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.tokensFacade.tokens$
+      .pipe(
+        filter(() => !!this.privateTransferWindowService.transferAsset?.address),
+        map(tokens =>
+          tokens.find(token =>
+            compareTokens(token, this.privateTransferWindowService.transferAsset)
+          )
+        ),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(token => {
+        this.privateTransferWindowService.setTransferAsset({
+          ...this.privateTransferWindowService.transferAsset,
+          amount: token.amount
+        });
+      });
   }
 
   private transfer({ token, loadingCallback, openPreview }: PrivateEvent): Observable<void> {

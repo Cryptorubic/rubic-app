@@ -237,10 +237,8 @@
 
       <ng-template #loader>
         <div class="loader">
-          <span>{{ state.currentStep.label }}</span>
-          <span class="loader__dot"></span>
-          <span class="loader__dot"></span>
-          <span class="loader__dot"></span>
+          <div class="loader__element"></div>
+          <span class="loader__text">{{ state.currentStep.label }}</span>
         </div>
       </ng-template>
     </ng-container>

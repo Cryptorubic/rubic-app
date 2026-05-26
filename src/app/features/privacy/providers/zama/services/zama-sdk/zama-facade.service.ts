@@ -103,8 +103,9 @@ export class ZamaFacadeService {
     steps.push({
       label: 'Private Transfer',
       showLoaderOnAction: true,
-      action: () =>
-        this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
           const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
@@ -121,7 +122,8 @@ export class ZamaFacadeService {
             this.refreshBalancesAfterAction();
           }
           return res;
-        })
+        });
+      }
     });
     steps.push(donePrivateStep());
 
@@ -136,19 +138,15 @@ export class ZamaFacadeService {
     const pureTokenAmount = await this.zamaSwapService.getPureTokenAmount(wrapToken);
     const needApprove = await this.zamaSwapService.needApprove(pureTokenAmount);
 
-    if (needApprove) {
-      steps.push({
-        label: 'Approve',
-        showLoaderOnAction: true,
-        action: () => this.zamaSwapService.approve(pureTokenAmount).then(() => ({}))
-      });
-    }
-
     steps.push({
       label: 'Shield Tokens',
       showLoaderOnAction: true,
-      action: () =>
-        this.zamaSwapService.wrap(wrapToken).then(res => {
+      action: async () => {
+        if (needApprove) {
+          await this.zamaSwapService.approve(pureTokenAmount);
+        }
+
+        return this.zamaSwapService.wrap(wrapToken).then(res => {
           const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
@@ -170,7 +168,8 @@ export class ZamaFacadeService {
             });
           }
           return res;
-        })
+        });
+      }
     });
     steps.push(donePrivateStep());
 
@@ -194,8 +193,10 @@ export class ZamaFacadeService {
     steps.push({
       label: 'Unshield Tokens',
       showLoaderOnAction: true,
-      action: () =>
-        this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess).then(() => ({}))
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess).then(() => ({}));
+      }
     });
 
     steps.push({

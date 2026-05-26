@@ -1,6 +1,13 @@
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 
+export type TokenType =
+  | 'NATIVE'
+  | 'STABLE'
+  | 'WRAPPED_NATIVE'
+  | 'NATIVE_ETH'
+  | 'TOKEN'
+  | 'BRIDGED_NATIVE';
 export interface Token extends BlockchainToken {
   image: string;
   rank: number;
@@ -13,7 +20,7 @@ export interface Token extends BlockchainToken {
    */
   tokenSecurity?: TokenSecurity | null;
 
-  type?: 'NATIVE' | 'STABLE' | 'WRAPPED_NATIVE' | 'NATIVE_ETH' | 'TOKEN' | 'BRIDGED_NATIVE';
+  type?: TokenType;
 }
 
 export interface RatedToken extends Token {

@@ -59,7 +59,7 @@
               class="tokens-list__item"
               [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
               [tuiHint]="!token.available ? disabledTokenHint : null"
-              tuiHintAppearance="error"
+              tuiHintAppearance="warning-hint"
               tuiHintDirection="bottom-right"
             >
               <app-tokens-list-element

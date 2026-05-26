@@ -5,7 +5,7 @@
       <ng-container *ngIf="hasAccount; else actions">
         <p>Welcome back! Please enter your password to access your wallet.</p>
         <form [formGroup]="secretForm" (ngSubmit)="onSubmit()">
-          <tui-input-password formControlName="password">
+          <tui-input-password formControlName="password" [tuiTextfieldSize]="'m'">
             Input password
             <span class="tui-required"></span>
           </tui-input-password>
@@ -15,11 +15,11 @@
           ></tui-error>
 
           <div class="buttons">
-            <button type="submit" size="l" tuiButton class="tui-form__button">Confirm</button>
+            <button type="submit" size="m" tuiButton class="tui-form__button">Confirm</button>
             <button
               (click)="handleReset()"
               type="button"
-              size="l"
+              size="m"
               tuiButton
               appearance="outline"
               class="tui-form__button"
@@ -35,7 +35,7 @@
         <div class="buttons">
           <button
             (click)="handleImport()"
-            size="l"
+            size="m"
             tuiButton
             type="submit"
             class="tui-form__button"
@@ -44,7 +44,7 @@
           </button>
           <button
             (click)="handleCreate()"
-            size="l"
+            size="m"
             tuiButton
             type="submit"
             class="tui-form__button"

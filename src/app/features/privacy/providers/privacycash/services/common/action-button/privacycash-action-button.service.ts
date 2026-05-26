@@ -291,7 +291,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (!signature) {
       return {
         type: 'action',
-        text: 'Login',
+        text: 'Sign to enable Private Mode',
         action: () => this.signatureService.makeSignature()
       };
     }

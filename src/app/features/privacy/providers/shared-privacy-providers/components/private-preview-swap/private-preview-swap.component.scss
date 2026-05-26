@@ -237,43 +237,46 @@ app-swap-data-element ::ng-deep {
 }
 
 .loader {
-  display: flex;
-  gap: 5px;
-  align-items: center;
+  position: relative;
 
-  &__dot {
-    width: 5px;
-    height: 5px;
-    margin-top: 6px;
+  display: inline-block;
+  padding: 10px 0;
+  overflow: hidden;
 
-    background-color: #333;
-    border-radius: 50%;
+  &__text {
+    position: relative;
+    z-index: 0;            
+  }
 
-    animation: pulse 1.4s infinite linear;
+  &__element {
+    position: absolute;
+    top: 50%;
+    
+    left: 0;
+    z-index: 1;
 
-    &:nth-child(3) {
-      animation-delay: 0.2s;
-    }
+    width: 45px;
+    height: 20px;
 
-    &:nth-child(4) {
-      animation-delay: 0.4s;
-    }
+    background-color: var(--tui-primary);
+    transform: translateY(-50%);
+
+    animation: pulse 0.8s ease-in-out infinite alternate;
+
+    will-change: transform;
   }
 }
 
 @keyframes pulse {
   0% {
-    opacity: 0.2;
-  }
-
-  20% {
-    opacity: 1;
+    transform: translateY(-50%) translateX(-100%); 
   }
 
   100% {
-    opacity: 0.2;
+    transform: translateY(-50%) translateX(200px);
   }
 }
+
 
 :host ::ng-deep .window-container {
   padding: 0 !important;

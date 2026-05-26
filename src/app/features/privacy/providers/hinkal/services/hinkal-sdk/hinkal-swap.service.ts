@@ -10,7 +10,7 @@ import {
   TransferParams,
   WithdrawParams
 } from './workers/models/worker-params';
-import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { EvmTransactionConfig, GasPrice } from '@cryptorubic/web3';
 import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address';
 import { ExternalActionId, FeeStructure, getFeeStructure } from '@hinkal/common';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
@@ -19,14 +19,29 @@ import { PrivateActionRes } from '../../../shared-privacy-providers/components/p
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 type TxHash = string;
+import { GasService } from '@app/core/services/gas-service/gas.service';
+import { InsufficientShieldedFundsError } from '@app/core/errors/models/common/insufficient-shielded-funds.error';
 
 @Injectable()
 export class HinkalSwapService {
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly errorService: ErrorsService,
-    private readonly hinkalWorker: HinkalWorkerService
+    private readonly hinkalWorker: HinkalWorkerService,
+    private readonly gasService: GasService
   ) {}
+
+  private async getGasPriceOptions(blockchain: EvmBlockchainName): Promise<GasPrice | null> {
+    try {
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
+
+      return shouldCalculateGasPrice ? gasPriceOptions : null;
+    } catch {
+      return null;
+    }
+  }
 
   public async needApproveBeforeShield(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
     if (token.isNative) return false;
@@ -49,7 +64,11 @@ export class HinkalSwapService {
 
       const adapter = this.adapterFactory.getAdapter(token.blockchain);
 
-      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount);
+      const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
+
+      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount, {
+        gasPriceOptions
+      });
 
       return {};
     } catch (err) {
@@ -75,8 +94,13 @@ export class HinkalSwapService {
 
       const adapter = this.adapterFactory.getAdapter(token.blockchain);
 
+      const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
+
       const txRes = await adapter.signer.trySendTransaction({
-        txOptions: txData
+        txOptions: {
+          ...txData,
+          gasPriceOptions
+        }
       });
 
       return { txScannerUrl: getScannerUrl(token, txRes.transactionHash) };
@@ -112,6 +136,13 @@ export class HinkalSwapService {
       return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
       this.errorService.catch(err);
+
+      if ('message' in err && err.message?.includes('Insufficient funds')) {
+        this.errorService.catch(new InsufficientShieldedFundsError());
+      } else {
+        this.errorService.catch(err);
+      }
+
       return {};
     }
   }
