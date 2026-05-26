@@ -83,6 +83,8 @@ export class WalletsModalComponent implements OnInit {
     tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
   );
 
+  public readonly modalDirection: 'column' | 'row';
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
@@ -106,6 +108,8 @@ export class WalletsModalComponent implements OnInit {
     const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>
       this.allProviders.some(v => v.value === provider)
     );
+
+    this.modalDirection = context.data?.direction || 'row';
 
     if (metamaskProviders.length < 2) {
       this.showMetamaskModal = false;

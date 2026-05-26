@@ -3,7 +3,7 @@
   <form [formGroup]="secretForm" (ngSubmit)="handleConfirm()">
     <p>Your wallet data is encrypted using your hash and stored securely in your browser.</p>
 
-    <tui-input-password formControlName="mnemonic">
+    <tui-input-password formControlName="mnemonic" [tuiTextfieldSize]="'m'">
       Seed phrase
       <span class="tui-required"></span>
     </tui-input-password>
@@ -12,7 +12,7 @@
       [error]="['required', 'mnemonic'] | tuiFieldError | async"
     ></tui-error>
 
-    <tui-input-password formControlName="password">
+    <tui-input-password formControlName="password" [tuiTextfieldSize]="'m'">
       Password
       <span class="tui-required"></span>
     </tui-input-password>
