@@ -9,7 +9,7 @@ import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/mode
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
-import { RubicSdkError, TronAdapter, TX_STATUS, waitFor } from '@cryptorubic/web3';
+import { RubicSdkError, TronAdapter, TX_STATUS } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import {
   timer,
@@ -27,8 +27,6 @@ import {
 import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 import { SdkService } from '@app/core/services/sdk/sdk.service';
-import { SwapResponseInterface } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/swap-response-interface';
-import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -168,10 +166,8 @@ export class ClearswapSwapService {
         )
       );
 
-      const dstTxHash = await this.waitForDstTxSuccess(swapResponse, txHash);
-
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
-        return { txScannerUrl: getScannerUrl(toToken, dstTxHash) };
+        return { txScannerUrl: getScannerUrl(toToken, apiResponse.destTxHash) };
       } else {
         if (txStatus === TX_STATUS.FAIL) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txHash);
@@ -184,28 +180,5 @@ export class ClearswapSwapService {
       }
       throw new RubicError<ERROR_TYPE.TEXT>('Something went wrong. Please, try again later.');
     }
-  }
-
-  /**
-   * @returns dst tx hash
-   */
-  private async waitForDstTxSuccess(
-    swapResp: SwapResponseInterface<{ depositAddress: string }>,
-    srcTxHash: string
-  ): Promise<string> {
-    const startMs = Date.now();
-    const deadlineMs = 30 * 60 * 1_000;
-    while (startMs + deadlineMs >= Date.now()) {
-      await waitFor(30_000);
-      const statusResp = await this.sdkService.crossChainStatusManager
-        .getCrossChainStatusExtended(
-          swapResp.quote.id,
-          srcTxHash,
-          swapResp.quote.srcTokenBlockchain
-        )
-        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
-      if (statusResp.dstTxHash) return statusResp.dstTxHash;
-    }
-    return '';
   }
 }
