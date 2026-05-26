@@ -11,7 +11,7 @@ import {
 import { PureTokenAmount } from '../models/worker-params';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import { HinkalUtils } from '../../utils/hinkal-utils';
-import { ContractTransaction, ethers, Wallet } from 'ethers';
+import { ContractTransaction, Wallet } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
 
@@ -40,8 +40,6 @@ export class HinkalWorkerSwapService {
         true,
         true
       )) as ContractTransaction;
-
-      console.log(resp);
 
       return {
         data: resp.data,
@@ -74,10 +72,9 @@ export class HinkalWorkerSwapService {
         false,
         feeToken,
         feeStructure
-      )) as ethers.TransactionResponse;
+      )) as string;
 
-      console.log(resp);
-      return resp.hash;
+      return resp;
     } catch (err) {
       console.log(err);
       throw err;

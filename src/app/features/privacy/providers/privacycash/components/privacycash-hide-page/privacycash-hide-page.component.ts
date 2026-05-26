@@ -6,7 +6,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
 import {
@@ -21,6 +21,7 @@ import { PrivateActionButtonService } from '../../../shared-privacy-providers/se
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { compareTokens } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -37,6 +38,8 @@ export class PrivacycashHidePageComponent implements OnInit {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
+
+  private readonly hideTokensFacade = inject(PrivacycashPublicTokensFacadeService);
 
   private readonly tokenService = inject(TokenService);
 
@@ -65,6 +68,20 @@ export class PrivacycashHidePageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.hideTokensFacade.tokens$
+      .pipe(
+        filter(() => !!this.hideWindowService.hideAsset?.address),
+        map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
+        filter(Boolean),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(token => {
+        this.hideWindowService.setHideAsset({
+          ...this.hideWindowService.hideAsset,
+          amount: token.amount
+        });
+      });
   }
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {

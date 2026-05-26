@@ -124,7 +124,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
     if (!userSignature) {
       return {
         type: 'action',
-        text: 'Login',
+        text: 'Sign to enable Private Mode',
         action: () => this.hinkalFacadeService.updateInstance()
       };
     }

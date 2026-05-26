@@ -17,7 +17,8 @@ import {
   TuiErrorModule,
   TuiHintModule,
   TuiLoaderModule,
-  TuiNotificationModule
+  TuiNotificationModule,
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
@@ -78,7 +79,8 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     InlineSVGModule,
     ClipboardModule,
     TuiHintModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiTextfieldControllerModule
   ],
   providers: [
     RailgunFacadeService,
