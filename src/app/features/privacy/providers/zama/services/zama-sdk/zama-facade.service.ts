@@ -19,6 +19,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Injectable()
 export class ZamaFacadeService {
@@ -85,7 +86,8 @@ export class ZamaFacadeService {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
-        action: () => this.walletConnectorService.switchChain(fromBlockchain)
+        showLoaderOnAction: false,
+        action: () => this.walletConnectorService.switchChain(fromBlockchain).then(() => ({}))
       });
     }
   }
@@ -99,10 +101,12 @@ export class ZamaFacadeService {
     this.addSwitchNetworkStep(token.blockchain, steps);
 
     steps.push({
-      label: 'Transfer',
+      label: 'Private Transfer',
+      showLoaderOnAction: true,
       action: async () => {
         await waitFor(0); // Delay to allow UI to rerender
-        return this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
+        return this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
+          const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'TRANSFER',
@@ -117,9 +121,12 @@ export class ZamaFacadeService {
             );
             this.refreshBalancesAfterAction();
           }
+          return res;
         });
       }
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 
@@ -133,12 +140,14 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Shield Tokens',
+      showLoaderOnAction: true,
       action: async () => {
         if (needApprove) {
           await this.zamaSwapService.approve(pureTokenAmount);
         }
 
-        return this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
+        return this.zamaSwapService.wrap(wrapToken).then(res => {
+          const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'SHIELD',
@@ -158,9 +167,11 @@ export class ZamaFacadeService {
               });
             });
           }
+          return res;
         });
       }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -181,16 +192,19 @@ export class ZamaFacadeService {
 
     steps.push({
       label: 'Unshield Tokens',
+      showLoaderOnAction: true,
       action: async () => {
         await waitFor(0); // Delay to allow UI to rerender
-        return this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess);
+        return this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess).then(() => ({}));
       }
     });
 
     steps.push({
       label: 'Finalize unshield',
+      showLoaderOnAction: true,
       action: () =>
-        this.zamaSwapService.finalizeUnwrap(unwrapToken, burntAmount).then(isSuccess => {
+        this.zamaSwapService.finalizeUnwrap(unwrapToken, burntAmount).then(res => {
+          const isSuccess = !!res.txScannerUrl;
           if (isSuccess) {
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
@@ -208,8 +222,11 @@ export class ZamaFacadeService {
           }
 
           this.zamaBalanceService.refreshPendingUnshieldBalances();
+          return res;
         })
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 

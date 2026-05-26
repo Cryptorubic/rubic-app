@@ -21,6 +21,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -94,6 +95,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.clearswapSwapService
                 .transfer(
@@ -102,7 +104,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                   swapInfo.toAsset,
                   this.receiverCtrl.value
                 )
-                .then(async () => {
+                .then(async res => {
                   this.privateStatisticsService.saveAction(
                     'TRANSFER',
                     PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -141,6 +143,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                   ) {
                     this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                   }
+
+                  return res;
                 })
                 .catch(async err => {
                   if (!(err instanceof UserRejectError)) {
@@ -170,8 +174,11 @@ export class ClearswapSwapPageComponent implements OnInit {
                       }
                     });
                   }
+
+                  return {};
                 })
-          }
+          },
+          donePrivateStep()
         ]
       });
       await firstValueFrom(preview$);

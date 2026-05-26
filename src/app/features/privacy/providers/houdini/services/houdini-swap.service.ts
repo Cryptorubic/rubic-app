@@ -63,6 +63,8 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { isReceiverCorrect } from '../constants/receiver-validator';
 import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
+import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -210,7 +212,7 @@ export class HoudiniSwapService {
   public async swap(
     fromToken: TokenAmount<BlockchainName>,
     receiverAddress: string
-  ): Promise<void> {
+  ): Promise<PrivateActionRes> {
     try {
       const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
       const isTransferTrade =
@@ -243,7 +245,12 @@ export class HoudiniSwapService {
         };
 
         await this.handleApprove(this.currentTrade, approveCallback);
-        await this.handleSwap(this.currentTrade, receiverAddress, true, swapCallback);
+        const txHash = await this.handleSwap(
+          this.currentTrade,
+          receiverAddress,
+          true,
+          swapCallback
+        );
 
         this.privateStatisticsService.saveAction(
           'PRIVATE_CROSSCHAIN_SWAP',
@@ -253,9 +260,11 @@ export class HoudiniSwapService {
           fromToken.weiAmount.toFixed(),
           fromToken.blockchain
         );
+        return { txScannerUrl: getScannerUrl(fromToken, txHash) };
       }
     } catch (err) {
       this.showSwapError(err);
+      return {};
     }
   }
 
@@ -286,6 +295,9 @@ export class HoudiniSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async handleSwap(
     trade: CrossChainTrade,
     receiverAddress: string,
@@ -297,7 +309,7 @@ export class HoudiniSwapService {
       onSimulationSuccess?: () => Promise<boolean>;
       onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
     }
-  ): Promise<void> {
+  ): Promise<string> {
     let txHash: string;
 
     try {
@@ -367,6 +379,8 @@ export class HoudiniSwapService {
     if (txHash) {
       callback.onSwap?.();
     }
+
+    return txHash;
   }
 
   public resetCurrentTrade(): void {

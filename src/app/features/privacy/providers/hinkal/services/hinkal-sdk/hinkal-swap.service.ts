@@ -15,6 +15,10 @@ import { HINKAL_CONTRACT_ADDRESS } from '../../constants/hinkal-contract-address
 import { ExternalActionId, FeeStructure, getFeeStructure } from '@hinkal/common';
 import { EstimateFeeStructureParams } from './workers/models/estimate-fee-structure-params';
 import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
+import { PrivateActionRes } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+
+type TxHash = string;
 import { GasService } from '@app/core/services/gas-service/gas.service';
 import { InsufficientShieldedFundsError } from '@app/core/errors/models/common/insufficient-shielded-funds.error';
 
@@ -52,7 +56,9 @@ export class HinkalSwapService {
     );
   }
 
-  public async approveBeforeShield(token: TokenAmount<EvmBlockchainName>): Promise<void> {
+  public async approveBeforeShield(
+    token: TokenAmount<EvmBlockchainName>
+  ): Promise<PrivateActionRes> {
     try {
       if (token.isNative) return;
 
@@ -63,13 +69,15 @@ export class HinkalSwapService {
       await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount, {
         gasPriceOptions
       });
+
+      return {};
     } catch (err) {
       console.error('APPROVE FAILED: ', err);
       throw err;
     }
   }
 
-  public async deposit(token: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+  public async deposit(token: TokenAmount<EvmBlockchainName>): Promise<PrivateActionRes> {
     try {
       const params: DepositParams = {
         token: {
@@ -88,17 +96,17 @@ export class HinkalSwapService {
 
       const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
 
-      await adapter.signer.trySendTransaction({
+      const txRes = await adapter.signer.trySendTransaction({
         txOptions: {
           ...txData,
           gasPriceOptions
         }
       });
 
-      return true;
+      return { txScannerUrl: getScannerUrl(token, txRes.transactionHash) };
     } catch (err) {
       this.errorService.catch(err);
-      return false;
+      return {};
     }
   }
 
@@ -107,7 +115,7 @@ export class HinkalSwapService {
     feeToken: string,
     feeStructure: FeeStructure,
     receiver?: string
-  ): Promise<boolean> {
+  ): Promise<PrivateActionRes> {
     try {
       const params: WithdrawParams = {
         token: {
@@ -120,20 +128,22 @@ export class HinkalSwapService {
         feeStructure
       };
 
-      await this.hinkalWorker.request({
+      const txHash = await this.hinkalWorker.request<TxHash>({
         type: 'withdraw',
         params
       });
 
-      return true;
+      return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
+      this.errorService.catch(err);
+
       if ('message' in err && err.message?.includes('Insufficient funds')) {
         this.errorService.catch(new InsufficientShieldedFundsError());
       } else {
         this.errorService.catch(err);
       }
 
-      return false;
+      return {};
     }
   }
 
@@ -141,7 +151,7 @@ export class HinkalSwapService {
     token: TokenAmount<EvmBlockchainName>,
     recipientStealthAddress: string,
     feeToken: string
-  ): Promise<boolean> {
+  ): Promise<PrivateActionRes> {
     try {
       const params: TransferParams = {
         token: {
@@ -153,15 +163,15 @@ export class HinkalSwapService {
         feeToken
       };
 
-      await this.hinkalWorker.request({
+      const txHash = await this.hinkalWorker.request<TxHash>({
         type: 'transfer',
         params
       });
 
-      return true;
+      return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
       this.errorService.catch(err);
-      return false;
+      return {};
     }
   }
 
@@ -169,7 +179,7 @@ export class HinkalSwapService {
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>,
     feeToken: string
-  ): Promise<boolean> {
+  ): Promise<PrivateActionRes> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');
@@ -188,16 +198,16 @@ export class HinkalSwapService {
         feeToken
       };
 
-      await this.hinkalWorker.request({
+      const txHash = await this.hinkalWorker.request<TxHash>({
         type: 'swap',
         params
       });
 
-      return true;
+      return { txScannerUrl: getScannerUrl(fromToken, txHash) };
     } catch (err) {
       console.log('FAILED TO SWAP', err);
       this.errorService.catch(err);
-      return false;
+      return {};
     }
   }
 

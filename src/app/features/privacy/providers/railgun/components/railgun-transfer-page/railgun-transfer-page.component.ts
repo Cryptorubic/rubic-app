@@ -23,6 +23,8 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -137,7 +139,8 @@ export class RailgunTransferPageComponent implements OnInit {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Transfer',
+            label: 'Private Transfer',
+            showLoaderOnAction: true,
             action: async () => {
               this.notificationService.show(
                 'Transfer in progress. This may take a moment. Please keep Rubic App open',
@@ -149,7 +152,7 @@ export class RailgunTransferPageComponent implements OnInit {
                   defaultAutoCloseTime: 0
                 }
               );
-              await this.transferService.transferTokens(
+              const txHash = await this.transferService.transferTokens(
                 token.address,
                 token.stringWeiAmount,
                 this.receiverCtrl.value,
@@ -182,8 +185,10 @@ export class RailgunTransferPageComponent implements OnInit {
                   [token.blockchain as RailgunSupportedChain]
                 );
               }, 10_000);
+              return { txScannerUrl: getScannerUrl(token, txHash) };
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'transfer',
         dstTokenAmount: token.tokenAmount.toFixed()
