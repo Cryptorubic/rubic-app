@@ -67,7 +67,8 @@ export class HinkalSwapService {
       const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
 
       await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount, {
-        gasPriceOptions
+        gasPriceOptions,
+        gasLimitRatio: 1.3
       });
 
       return {};
@@ -99,7 +100,8 @@ export class HinkalSwapService {
       const txRes = await adapter.signer.trySendTransaction({
         txOptions: {
           ...txData,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
 

@@ -143,7 +143,8 @@ export class ZamaSwapService {
         shieldedTokenAddress,
         pureTokenAmount.weiAmount,
         {
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       );
     } catch (err) {
@@ -227,7 +228,8 @@ export class ZamaSwapService {
       const res = await adapter.signer.trySendTransaction({
         txOptions: {
           ...callData,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
       return { txScannerUrl: getScannerUrl(pureTokenAmount, res.transactionHash) };
@@ -272,7 +274,8 @@ export class ZamaSwapService {
       const res = await adapter.signer.trySendTransaction({
         txOptions: {
           ...callData,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
       return { txScannerUrl: getScannerUrl(transferToken, res.transactionHash) };
@@ -320,7 +323,8 @@ export class ZamaSwapService {
       const receipt = await adapter.signer.trySendTransaction({
         txOptions: {
           ...unshieldTx,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
 
