@@ -40,7 +40,10 @@ export class LoginButtonComponent {
       this.gtmService.fireClickOnConnectWalletButtonEvent(this.buttonHierarchy);
     }
     const wallets = this.filterWallets();
-    this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
+    const modalDirection = this.router.url.includes('privacy') ? 'row' : 'column';
+    this.modalService
+      .openWalletModal(this.injector, { providers: wallets, direction: modalDirection })
+      .subscribe();
   }
 
   private filterWallets(): WALLET_NAME[] {
