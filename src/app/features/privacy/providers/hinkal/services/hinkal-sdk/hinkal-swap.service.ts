@@ -107,7 +107,6 @@ export class HinkalSwapService {
 
       return { txScannerUrl: getScannerUrl(token, txRes.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
       throw err;
     }
   }
@@ -137,14 +136,9 @@ export class HinkalSwapService {
 
       return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
-      this.errorService.catch(err);
-
       if ('message' in err && err.message?.includes('Insufficient funds')) {
-        this.errorService.catch(new InsufficientShieldedFundsError());
-      } else {
-        this.errorService.catch(err);
+        throw new InsufficientShieldedFundsError();
       }
-
       throw err;
     }
   }
@@ -172,7 +166,6 @@ export class HinkalSwapService {
 
       return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
-      this.errorService.catch(err);
       throw err;
     }
   }
@@ -208,7 +201,6 @@ export class HinkalSwapService {
       return { txScannerUrl: getScannerUrl(fromToken, txHash) };
     } catch (err) {
       console.log('FAILED TO SWAP', err);
-      this.errorService.catch(err);
       throw err;
     }
   }

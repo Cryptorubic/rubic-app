@@ -585,7 +585,7 @@ export class HoudiniSwapService {
         .getCrossChainStatusExtended(
           this.currentTrade.rubicId,
           srcTxHash,
-          this.currentTrade.to.blockchain
+          this.currentTrade.from.blockchain
         )
         .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
       if (statusResp.dstTxHash) return statusResp.dstTxHash;

@@ -234,7 +234,6 @@ export class ZamaSwapService {
       });
       return { txScannerUrl: getScannerUrl(pureTokenAmount, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
       throw err;
     }
   }
@@ -280,7 +279,6 @@ export class ZamaSwapService {
       });
       return { txScannerUrl: getScannerUrl(transferToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
       throw err;
     }
   }
@@ -382,7 +380,6 @@ export class ZamaSwapService {
       const res = await adapter.signer.trySendTransaction({ txOptions: finilizeWrapTx });
       return { txScannerUrl: getScannerUrl(unwrapToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
       throw err;
     }
   }
