@@ -155,6 +155,7 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
           return openPreview({
             dstTokenAmount,
             displayAmount,
+            hideFeeInfo: true,
             steps: [
               {
                 label: 'Private Transfer',
