@@ -366,7 +366,7 @@ export class ZamaSwapService {
 
       const decryptedBurnAmount = await zamaInstance.publicDecrypt([burntAmount]);
 
-      const finilizeWrapTx = EvmAdapter.encodeMethodCall(
+      const finilizeUnwrapTx = EvmAdapter.encodeMethodCall(
         shieldedTokenAddress,
         ERC7984_TOKEN_ABI,
         'finalizeUnwrap',
@@ -377,7 +377,17 @@ export class ZamaSwapService {
         ]
       );
 
-      const res = await adapter.signer.trySendTransaction({ txOptions: finilizeWrapTx });
+      const gasPriceOptions = await this.getGasPriceOptions(
+        unwrapToken.blockchain as EvmBlockchainName
+      );
+
+      const res = await adapter.signer.trySendTransaction({
+        txOptions: {
+          ...finilizeUnwrapTx,
+          gasPriceOptions,
+          gasLimitRatio: 1.3
+        }
+      });
       return { txScannerUrl: getScannerUrl(unwrapToken, res.transactionHash) };
     } catch (err) {
       throw err;
