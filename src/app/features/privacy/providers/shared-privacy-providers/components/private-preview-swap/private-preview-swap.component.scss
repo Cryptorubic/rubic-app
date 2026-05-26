@@ -128,6 +128,10 @@
     width: 100%;
 
     text-decoration: none;
+
+    ::ng-deep .t-wrapper {
+      pointer-events: none;
+    }
   }
 
   &__success-info {
@@ -273,7 +277,7 @@ app-swap-data-element ::ng-deep {
   }
 
   100% {
-    transform: translateY(-50%) translateX(200px);
+    transform: translateY(-50%) translateX(170px);
   }
 }
 
