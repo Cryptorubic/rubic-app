@@ -13,6 +13,7 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
 import { HoudiniSwapService } from './houdini-swap.service';
+import { HOUDINI_SUPPORTED_WALLETS } from '../constants/wallets';
 
 @Injectable()
 export class HoudiniPrivateActionButtonService extends PrivateActionButtonService {
@@ -37,7 +38,9 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
   protected connectWallet(): void {
     super.connectWallet();
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService
+      .openWalletModal(this.injector, { providers: HOUDINI_SUPPORTED_WALLETS })
+      .subscribe();
   }
 
   private async getSwapState(
