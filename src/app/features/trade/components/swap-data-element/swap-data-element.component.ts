@@ -174,4 +174,12 @@ export class SwapDataElementComponent {
           : '0'
     };
   }
+
+  public feeMoreThanZero(): boolean {
+    return (
+      this.feeInfo?.rubicProxy?.fixedFee?.amount.gt(this.minAmountToShowProtocolFee) ||
+      this.feeInfo?.provider?.cryptoFee?.amount.gt(0) ||
+      this.feeInfo?.provider?.platformFee?.percent > 0
+    );
+  }
 }

@@ -72,16 +72,6 @@ export class ZamaFacadeService {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
-  private showSuccessNotification(message: string): void {
-    this.notificationService.show(message, {
-      status: 'info',
-      autoClose: 15_000,
-      data: null,
-      icon: '',
-      defaultAutoCloseTime: 0
-    });
-  }
-
   private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
@@ -106,21 +96,15 @@ export class ZamaFacadeService {
       action: async () => {
         await waitFor(0); // Delay to allow UI to rerender
         return this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
-          const isSuccess = !!res.txScannerUrl;
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'TRANSFER',
-              'ZAMA',
-              this.walletConnectorService.address,
-              token.address,
-              token.weiAmount.toFixed(),
-              token.blockchain
-            );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
-            this.refreshBalancesAfterAction();
-          }
+          this.privateStatisticsService.saveAction(
+            'TRANSFER',
+            'ZAMA',
+            this.walletConnectorService.address,
+            token.address,
+            token.weiAmount.toFixed(),
+            token.blockchain
+          );
+          this.refreshBalancesAfterAction();
           return res;
         });
       }
@@ -147,26 +131,22 @@ export class ZamaFacadeService {
         }
 
         return this.zamaSwapService.wrap(wrapToken).then(res => {
-          const isSuccess = !!res.txScannerUrl;
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'SHIELD',
-              'ZAMA',
-              this.walletConnectorService.address,
-              wrapToken.address,
-              wrapToken.weiAmount.toFixed(),
-              wrapToken.blockchain
-            );
-            this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
-            this.refreshBalancesAfterAction();
-            this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
-            this.tokensFacade.getAndUpdateTokenBalance(wrapToken).then(balance => {
-              this.hideWindowService.setHideAsset({
-                ...this.hideWindowService.hideAsset,
-                amount: balance
-              });
+          this.privateStatisticsService.saveAction(
+            'SHIELD',
+            'ZAMA',
+            this.walletConnectorService.address,
+            wrapToken.address,
+            wrapToken.weiAmount.toFixed(),
+            wrapToken.blockchain
+          );
+          this.refreshBalancesAfterAction();
+          this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
+          this.tokensFacade.getAndUpdateTokenBalance(wrapToken).then(balance => {
+            this.hideWindowService.setHideAsset({
+              ...this.hideWindowService.hideAsset,
+              amount: balance
             });
-          }
+          });
           return res;
         });
       }
@@ -203,9 +183,9 @@ export class ZamaFacadeService {
       label: 'Finalize unshield',
       showLoaderOnAction: true,
       action: () =>
-        this.zamaSwapService.finalizeUnwrap(unwrapToken, burntAmount).then(res => {
-          const isSuccess = !!res.txScannerUrl;
-          if (isSuccess) {
+        this.zamaSwapService
+          .finalizeUnwrap(unwrapToken, burntAmount)
+          .then(res => {
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
               'ZAMA',
@@ -214,16 +194,13 @@ export class ZamaFacadeService {
               unwrapToken.weiAmount.toFixed(),
               unwrapToken.blockchain
             );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
             this.refreshBalancesAfterAction();
-            return;
-          }
-
-          this.zamaBalanceService.refreshPendingUnshieldBalances();
-          return res;
-        })
+            return res;
+          })
+          .catch(err => {
+            this.zamaBalanceService.refreshPendingUnshieldBalances();
+            throw err;
+          })
     });
     steps.push(donePrivateStep());
 

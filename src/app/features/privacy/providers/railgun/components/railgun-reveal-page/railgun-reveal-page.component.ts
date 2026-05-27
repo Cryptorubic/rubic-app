@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -8,7 +8,6 @@ import { ToAssetsService } from '@features/trade/components/assets-selector/serv
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -16,7 +15,6 @@ import { PrivateStatisticsService } from '@features/privacy/providers/shared-pri
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
-import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
@@ -35,7 +33,7 @@ import { getScannerUrl } from '../../../privacycash/services/common/token-facade
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
 })
-export class RailgunRevealPageComponent {
+export class RailgunRevealPageComponent implements OnInit {
   @Input({ required: true }) public readonly railgunId: string;
 
   @Input({ required: true }) balances: Record<
@@ -54,8 +52,6 @@ export class RailgunRevealPageComponent {
 
   private readonly revealService = inject(RevealService);
 
-  private readonly notificationService = inject(NotificationsService);
-
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
@@ -65,8 +61,6 @@ export class RailgunRevealPageComponent {
   private readonly destroy$ = inject(TuiDestroyService);
 
   private readonly windowService = inject(RevealWindowService);
-
-  private readonly tokensBalanceService = inject(TokensBalanceService);
 
   private readonly actionButtonService = inject(PrivateActionButtonService);
 
@@ -95,29 +89,12 @@ export class RailgunRevealPageComponent {
             showLoaderOnAction: true,
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              this.notificationService.show('This may take a moment. Please keep Rubic App open', {
-                status: 'info',
-                autoClose: 10_000,
-                data: null,
-                icon: '',
-                defaultAutoCloseTime: 0
-              });
               const txHash = await this.revealService.unshield(
                 token.address,
                 bigintAmount.toString(),
                 () => {},
                 token.blockchain as RailgunSupportedChain,
                 this.receiverCtrl.value
-              );
-              this.notificationService.show(
-                'Tokens were successfully unshielded to public wallet',
-                {
-                  status: 'success',
-                  autoClose: 5_000,
-                  data: null,
-                  icon: '',
-                  defaultAutoCloseTime: 0
-                }
               );
               this.privateStatisticsService.saveAction(
                 'TRANSFER',

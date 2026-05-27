@@ -65,6 +65,9 @@ import { isReceiverCorrect } from '../constants/receiver-validator';
 import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { waitFor } from '@cryptorubic/web3';
+import { SdkService } from '@app/core/services/sdk/sdk.service';
+import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -116,7 +119,8 @@ export class HoudiniSwapService {
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly settingsService: SettingsService,
     private readonly houdiniErrorService: HoudiniErrorService,
-    private readonly privateStatisticsService: PrivateStatisticsService
+    private readonly privateStatisticsService: PrivateStatisticsService,
+    private readonly sdkService: SdkService
   ) {
     this.subscribeOnStatusUpdate();
   }
@@ -245,12 +249,13 @@ export class HoudiniSwapService {
         };
 
         await this.handleApprove(this.currentTrade, approveCallback);
-        const txHash = await this.handleSwap(
+        const srcTxHash = await this.handleSwap(
           this.currentTrade,
           receiverAddress,
           true,
           swapCallback
         );
+        const dstTxHash = await this.waitForDstTxSuccess(srcTxHash);
 
         this.privateStatisticsService.saveAction(
           'PRIVATE_CROSSCHAIN_SWAP',
@@ -260,11 +265,11 @@ export class HoudiniSwapService {
           fromToken.weiAmount.toFixed(),
           fromToken.blockchain
         );
-        return { txScannerUrl: getScannerUrl(fromToken, txHash) };
+        return { txScannerUrl: getScannerUrl(this.currentTrade.to, dstTxHash) };
       }
     } catch (err) {
       this.showSwapError(err);
-      return {};
+      throw err;
     }
   }
 
@@ -280,10 +285,6 @@ export class HoudiniSwapService {
       await this.crossChainService.approveTrade(trade, callback.onHash);
       callback?.onSwap();
     } catch (err) {
-      if (err?.message?.includes('Method is not supported')) {
-        return Promise.resolve();
-      }
-
       console.error(err);
       callback?.onError();
       let error = err;
@@ -291,7 +292,6 @@ export class HoudiniSwapService {
         error = new DelayedApproveError();
       }
       throw error;
-      // this.errorsService.catch(error);
     }
   }
 
@@ -571,5 +571,25 @@ export class HoudiniSwapService {
     }
 
     return Promise.resolve();
+  }
+
+  /**
+   * @returns dst tx hash
+   */
+  private async waitForDstTxSuccess(srcTxHash: string): Promise<string> {
+    const startMs = Date.now();
+    const deadlineMs = 30 * 60 * 1_000;
+    while (startMs + deadlineMs >= Date.now()) {
+      await waitFor(30_000);
+      const statusResp = await this.sdkService.crossChainStatusManager
+        .getCrossChainStatusExtended(
+          this.currentTrade.rubicId,
+          srcTxHash,
+          this.currentTrade.from.blockchain
+        )
+        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
+      if (statusResp.dstTxHash) return statusResp.dstTxHash;
+    }
+    return '';
   }
 }

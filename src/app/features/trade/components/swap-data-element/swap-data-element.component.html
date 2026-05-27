@@ -21,17 +21,26 @@
     </div>
   </div>
 
-  <div
-    *ngIf="displayAmount"
-    class="provider-info__element"
-    [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
-    [tuiHintAppearance]="hintAppearance"
-    [tuiHintDirection]="hintDirection"
-    [tuiHintHideDelay]="hideHint ? 0 : 200"
-  >
-    <img [src]="creationConfig.feeIcon" alt="Fee" />
-    {{ displayAmount }}
-  </div>
+  <ng-container *ngIf="displayAmount">
+    <div
+      *ngIf="feeMoreThanZero(); else withoutHint"
+      class="provider-info__element"
+      [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
+      [tuiHintAppearance]="hintAppearance"
+      [tuiHintDirection]="hintDirection"
+      [tuiHintHideDelay]="hideHint ? 0 : 200"
+    >
+      <img [src]="creationConfig.feeIcon" alt="Fee" />
+      {{ displayAmount }}
+    </div>
+
+    <ng-template #withoutHint>
+      <div class="provider-info__element">
+        <img [src]="creationConfig.feeIcon" alt="Fee" />
+        {{ displayAmount }}
+      </div>
+    </ng-template>
+  </ng-container>
 
   <div *ngIf="gasTokenAssets?.length > 0" class="provider-info__element gas-tokens">
     <div class="provider-info__selected-asset" (click)="toggleGasTokensDropdown()">

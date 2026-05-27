@@ -234,8 +234,7 @@ export class ZamaSwapService {
       });
       return { txScannerUrl: getScannerUrl(pureTokenAmount, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 
@@ -280,8 +279,7 @@ export class ZamaSwapService {
       });
       return { txScannerUrl: getScannerUrl(transferToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 
@@ -392,8 +390,7 @@ export class ZamaSwapService {
       });
       return { txScannerUrl: getScannerUrl(unwrapToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return {};
+      throw err;
     }
   }
 }
