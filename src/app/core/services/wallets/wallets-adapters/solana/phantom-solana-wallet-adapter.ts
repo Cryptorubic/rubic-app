@@ -17,7 +17,7 @@ import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
 
-export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
+export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM;
   }

@@ -23,7 +23,7 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
-import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
+import { PhantomSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-solana-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
@@ -55,6 +55,7 @@ import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-a
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { PhantomBitcoinWalletAdapter } from '../wallets-adapters/bitcoin/phantom-bitcoin-wallet-adapter';
+import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -171,6 +172,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.PHANTOM) {
       return new PhantomWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.PHANTOM_SOLANA) {
+      return new PhantomSolanaWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.PHANTOM_BITCOIN) {

@@ -76,6 +76,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Phantom',
+    value: WALLET_NAME.PHANTOM_SOLANA,
+    img: './assets/images/icons/wallets/phantom.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: false,
+    disabled: false
+  },
+  {
+    name: 'Phantom',
     value: WALLET_NAME.PHANTOM_BITCOIN,
     img: './assets/images/icons/wallets/phantom.svg',
     supportsDesktop: true,

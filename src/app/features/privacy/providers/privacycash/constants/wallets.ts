@@ -3,6 +3,7 @@ import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/mo
 export const PRIVACYCASH_SUPPORTED_WALLETS = [
   WALLET_NAME.SOLFLARE,
   WALLET_NAME.PHANTOM,
+  WALLET_NAME.PHANTOM_SOLANA,
   WALLET_NAME.METAMASK_SOLANA,
   WALLET_NAME.METAMASK
 ];

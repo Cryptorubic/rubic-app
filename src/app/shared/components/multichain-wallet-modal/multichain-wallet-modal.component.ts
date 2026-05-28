@@ -29,7 +29,7 @@ export class MultichainWalletModalComponent {
     this.walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);
     this.supportedOptionsText = this.walletOptions.reduce(
       (acc, cur, i) =>
-        `${acc}${i === 0 ? '' : i < this.walletOptions.length - 1 ? ',' : ' and '}${cur.label}`,
+        `${acc}${i === 0 ? '' : i < this.walletOptions.length - 1 ? ', ' : ' and '}${cur.label}`,
       ''
     );
   }
