@@ -48,7 +48,7 @@ export class PendingUnshieldElementComponent {
         address: this.token.address,
         blockchain: this.token.blockchain
       });
-      
+
       const resp = await this.zamaSwapService.finalizeUnwrap(
         this.token,
         this.token.encryptedAmount
