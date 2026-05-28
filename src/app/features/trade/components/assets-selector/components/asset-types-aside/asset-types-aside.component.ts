@@ -30,6 +30,8 @@ export class AssetTypesAsideComponent {
 
   @Input({ required: true }) showAllChains: boolean;
 
+  @Input() hidePromoBadges = false;
+
   @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
 
   @Output() handleFilterSelect = new EventEmitter<BlockchainFilters>();

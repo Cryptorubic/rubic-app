@@ -12,18 +12,18 @@ export const NAVIGATION_LIST = [
     link: EXTERNAL_LINKS.AIRDROP,
     imagePath: `assets/images/rbc.svg`
   },
-  {
-    translateKey: 'navigation.sdk',
-    type: 'external',
-    link: EXTERNAL_LINKS.LANDING_SDK,
-    imagePath: `${defaultSrc}sdk.svg`
-  },
-  {
-    translateKey: 'navigation.setupWidget',
-    type: 'external',
-    link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
-    imagePath: `${defaultSrc}widget.svg`
-  },
+  // {
+  //   translateKey: 'navigation.sdk',
+  //   type: 'external',
+  //   link: EXTERNAL_LINKS.LANDING_SDK,
+  //   imagePath: `${defaultSrc}sdk.svg`
+  // },
+  // {
+  //   translateKey: 'navigation.setupWidget',
+  //   type: 'external',
+  //   link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
+  //   imagePath: `${defaultSrc}widget.svg`
+  // },
   {
     translateKey: 'navigation.about',
     type: 'external',
