@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <div class="selectors-wrapper">
+  <div class="selectors-wrapper" [class.transfer-selector]="!hasOutputContainer">
     <div
       class="selectors-container"
       [class.without-output]="!hasOutputContainer"
@@ -61,16 +61,28 @@
           ></ng-container>
         </ng-template>
       </app-asset-selector>
+
+      <div
+        class="instruction-wrapper"
+        *ngIf="!hasOutputContainer && !isMobile"
+        [style.padding]="hasOutputContainer ? '0 12px' : '0'"
+      >
+        <div class="instruction-container">
+          {{
+            !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
+              ? 'Enter a token for your transfer'
+              : 'Set a provider for the next step'
+          }}
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="instruction-wrapper">
+  <div class="instruction-wrapper" *ngIf="hasOutputContainer || isMobile">
     <div class="instruction-container">
       {{
         !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
-          ? hasOutputContainer
-            ? 'Enter a pair for your swap'
-            : 'Enter a token for your transfer'
+          ? 'Enter a pair for your swap'
           : 'Set a provider for the next step'
       }}
     </div>

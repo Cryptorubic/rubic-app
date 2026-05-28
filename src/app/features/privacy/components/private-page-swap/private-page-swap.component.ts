@@ -27,6 +27,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
 import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@app/core/services/google-tag-manager/models/google-tag-manager';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-private-main-page-swap',
@@ -74,6 +75,8 @@ export class PrivatePageSwapComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   public get swapInfo(): PrivacyFormValue {
     return this.privacyMainPageService.formValue;
   }
@@ -81,18 +84,22 @@ export class PrivatePageSwapComponent implements OnInit {
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privacyMainPageService: PrivacyMainPageService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
 
     this.showAllProviders$.pipe(takeUntil(this.destroy$)).subscribe(showAllProviders => {
-      if (showAllProviders)
+      if (showAllProviders) {
         this.patchSwapInfo({
           fromAsset: null,
           toAsset: null
         });
+      } else {
+        this.patchSwapInfo(this.privacyMainPageService.prevFormValue || {});
+      }
     });
   }
 
