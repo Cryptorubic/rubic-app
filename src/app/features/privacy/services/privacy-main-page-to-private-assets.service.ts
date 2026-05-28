@@ -26,7 +26,7 @@ export class PrivacyMainPageToPrivateAssetsService extends PrivateAssetsService 
           ) {
             this.setBlockchainList(
               PRIVATE_MODE_SUPPORTED_CHAINS[tab].filter(
-                supportedChain => supportedChain !== swapInfo.fromAsset.blockchain
+                supportedChain => supportedChain !== swapInfo.fromAsset?.blockchain
               )
             );
           } else {
