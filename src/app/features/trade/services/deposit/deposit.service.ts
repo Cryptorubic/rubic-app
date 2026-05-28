@@ -80,12 +80,12 @@ export class DepositService {
 
       const response = await this.rubicApiService.fetchCrossChainTxStatusExtended(rubicId);
 
-      if (!response.subStatus) {
-        return API_STATUS_TO_DEPOSIT_STATUS[response.status];
-      }
-
       if (response.status === 'SUCCESS') {
         return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+      }
+
+      if (!response.subStatus) {
+        return API_STATUS_TO_DEPOSIT_STATUS[response.status];
       }
 
       return API_SUBSTATUS_TO_DEPOSIT_STATUS[response.subStatus];
