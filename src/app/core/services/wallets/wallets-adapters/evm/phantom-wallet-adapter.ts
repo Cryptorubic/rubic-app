@@ -23,9 +23,6 @@ export class PhantomWalletAdapter extends EvmWalletAdapter {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
 
-  /**
-   * Checks possible metamask errors.
-   */
   private checkErrors(): void {
     if (!this.wallet || !this.wallet?.isPhantom) {
       throw new WalletNotInstalledError();
