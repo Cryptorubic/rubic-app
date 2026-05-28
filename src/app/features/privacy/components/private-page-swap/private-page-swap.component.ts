@@ -86,6 +86,14 @@ export class PrivatePageSwapComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+
+    this.showAllProviders$.pipe(takeUntil(this.destroy$)).subscribe(showAllProviders => {
+      if (showAllProviders)
+        this.patchSwapInfo({
+          fromAsset: null,
+          toAsset: null
+        });
+    });
   }
 
   private subscribeOnFormInputChanged(): void {
