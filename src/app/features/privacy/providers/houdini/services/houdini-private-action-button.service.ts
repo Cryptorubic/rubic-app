@@ -45,7 +45,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
   private async getSwapState(
     network: BlockchainName | null,
-    userAddr: string,
+    userAddr: string | null,
     swapInfo: PrivateSwapInfo,
     receiver: string,
     tradeError: Partial<ErrorInterface>,
@@ -105,7 +105,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       };
     }
 
-    if (compareAddresses(userAddr, receiver)) {
+    if (userAddr && compareAddresses(userAddr, receiver)) {
       return {
         type: 'error',
         text: 'Recipient address must be different'
