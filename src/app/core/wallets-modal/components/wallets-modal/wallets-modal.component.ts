@@ -100,9 +100,7 @@ export class WalletsModalComponent implements OnInit {
     private readonly modalService: ModalService
   ) {
     this.allProviders = context.data?.providers
-      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value)).map(
-          provider => ({ ...provider, display: true })
-        )
+      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
       : PROVIDERS_LIST;
 
     const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>
@@ -114,6 +112,11 @@ export class WalletsModalComponent implements OnInit {
     if (metamaskProviders.length < 2) {
       this.showMetamaskModal = false;
       this.supportedMetamaskProvider = metamaskProviders[0];
+      this.allProviders = this.allProviders.map(provider =>
+        provider.value === this.supportedMetamaskProvider
+          ? { ...provider, display: true }
+          : provider
+      );
     } else {
       this.showMetamaskModal = true;
     }
