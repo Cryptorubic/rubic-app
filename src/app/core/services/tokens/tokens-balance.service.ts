@@ -51,7 +51,7 @@ import { getChainTypeSafe } from './utils/get-chain-type-safe';
 export class TokensBalanceService {
   private readonly formService = inject(SwapsFormService);
 
-  private readonly authService = inject(AuthService);
+  // private readonly authService = inject(AuthService);
 
   private readonly tokensStore = inject(NewTokensStoreService);
 
@@ -79,9 +79,9 @@ export class TokensBalanceService {
     return null;
   }
 
-  private get userAddress(): string | undefined {
-    return this.authService.userAddress;
-  }
+  // private get userAddress(): string | undefined {
+  //   return this.authService.userAddress;
+  // }
 
   public async waitForBalanceChangeAndCall<T>(
     token: {

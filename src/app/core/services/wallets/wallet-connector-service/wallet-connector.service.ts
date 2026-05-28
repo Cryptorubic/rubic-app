@@ -41,12 +41,9 @@ import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter
 import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
 import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/binance-wallet-adapter';
 import {
-  BLOCKCHAIN_NAME,
   blockchainId,
   BlockchainName,
-  CHAIN_TYPE,
   ChainType,
-  EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName,
   nativeTokensList
 } from '@cryptorubic/core';
@@ -54,6 +51,7 @@ import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
+import { WalletsManager } from '../wallets-manager/wallets-manager';
 
 @Injectable({
   providedIn: 'root'
@@ -63,11 +61,22 @@ export class WalletConnectorService {
 
   private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
 
-  private privateProvider: CommonWalletAdapter;
+  private readonly walletsManager = new WalletsManager();
 
-  public get address(): string {
-    return this.provider?.address;
+  /**
+   * @TODO_530 вместо privateProvider будут walletsManager.activeWallets
+   */
+  // private privateProvider: CommonWalletAdapter;
+
+  public get activeWallets(): CommonWalletAdapter[] {
+    return this.walletsManager.activeWallets;
   }
+
+  public readonly activeWallets$ = this.walletsManager.activeWallets$;
+
+  // public get address(): string {
+  //   return this.provider?.address;
+  // }
 
   private _selectedChainId = 1;
 
@@ -78,16 +87,41 @@ export class WalletConnectorService {
     }
   }
 
-  public get chainType(): ChainType {
-    return this.provider?.chainType;
+  // public get chainType(): ChainType {
+  //   return this.provider?.chainType;
+  // }
+
+  /**
+   * supported chain types by activated wallets
+   */
+  public get chainTypes(): ChainType[] {
+    return this.activeWallets.map(wallet => wallet.chainType);
   }
 
-  public get network(): BlockchainName | null {
-    return this.provider?.network;
+  // public get network(): BlockchainName | null {
+  //   return this.provider?.network;
+  // }
+
+  public get networks(): BlockchainName[] {
+    return this.activeWallets.map(wallet => wallet.network);
   }
 
-  public get provider(): CommonWalletAdapter {
-    return this.privateProvider;
+  // public get provider(): CommonWalletAdapter {
+  //   return this.privateProvider;
+  // }
+
+  public getActiveProvider(
+    options: { chainType?: ChainType; walletName?: WALLET_NAME } = {}
+  ): CommonWalletAdapter | null {
+    const walletAdapter = this.activeWallets.find(wallet => {
+      if (options.walletName && options.chainType) {
+        return wallet.walletName === options.walletName && wallet.chainType === options.chainType;
+      }
+      if (options.walletName) return wallet.walletName === options.walletName;
+      if (options.chainType) return wallet.chainType === options.chainType;
+      return false;
+    });
+    return walletAdapter ?? null;
   }
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
@@ -115,16 +149,25 @@ export class WalletConnectorService {
   public async setupProvider(): Promise<boolean> {
     const isSafeEnv = this.checkIfSafeEnv();
     console.info('isSafeEnv: ', isSafeEnv);
-    const provider = this.storeService.getItem('RUBIC_PROVIDER');
-    if (!provider && !isSafeEnv) {
+
+    const providers = this.storeService.getItem('RUBIC_PROVIDERS');
+    if ((!providers || !providers.length) && !isSafeEnv) {
       return false;
     }
-    this.connectProvider(isSafeEnv ? WALLET_NAME.SAFE : provider);
+
+    if (isSafeEnv) {
+      this.connectProvider(WALLET_NAME.SAFE);
+    } else {
+      for (const provider of providers) this.connectProvider(provider);
+    }
+
     return true;
   }
 
   public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
-    this.privateProvider = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
+    const walletAdapter = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
+    // this.privateProvider = walletAdapter;
+    this.walletsManager.addWallet(walletAdapter);
   }
 
   private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
@@ -253,44 +296,54 @@ export class WalletConnectorService {
     this.errorService.catch(new WalletNotInstalledError());
   }
 
-  public async activate(): Promise<void> {
-    await this.provider.activate();
+  public async activate(provider: CommonWalletAdapter): Promise<void> {
+    await provider.activate();
     if (
-      this.provider.walletName !== WALLET_NAME.SAFE &&
-      this.provider.walletName !== WALLET_NAME.TON_CONNECT
+      provider.walletName !== WALLET_NAME.SAFE &&
+      provider.walletName !== WALLET_NAME.TON_CONNECT
     ) {
-      this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
+      const providers = this.activeWallets.map(wallet => wallet.walletName);
+      this.storeService.setItem('RUBIC_PROVIDERS', providers);
     }
   }
 
-  public deactivate(): void {
-    this.storeService.deleteItem('RUBIC_PROVIDER');
-    this.storeService.deleteItem('RUBIC_CHAIN_ID');
-    return this.provider?.deactivate();
+  public deactivate(walletName: WALLET_NAME): void {
+    const walletAdapter = this.getActiveProvider({ walletName });
+    if (!walletAdapter) return;
+
+    walletAdapter.deactivate();
+    this.walletsManager.removeWallet(walletAdapter);
+
+    const providers = this.activeWallets.map(wallet => wallet.walletName);
+    if (providers.length) {
+      this.storeService.setItem('RUBIC_PROVIDERS', providers);
+    } else {
+      this.storeService.deleteItem('RUBIC_PROVIDERS');
+    }
   }
 
-  public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    if (this.chainType === CHAIN_TYPE.EVM) {
-      return Object.values(EVM_BLOCKCHAIN_NAME);
-    }
-    if (this.chainType === CHAIN_TYPE.TRON) {
-      return [BLOCKCHAIN_NAME.TRON];
-    }
-    if (this.chainType === CHAIN_TYPE.SOLANA) {
-      return [BLOCKCHAIN_NAME.SOLANA];
-    }
-    if (this.chainType === CHAIN_TYPE.TON) {
-      return [BLOCKCHAIN_NAME.TON];
-    }
-    if (this.chainType === CHAIN_TYPE.BITCOIN) {
-      return [BLOCKCHAIN_NAME.BITCOIN];
-    }
-    if (this.chainType === CHAIN_TYPE.STELLAR) {
-      return [BLOCKCHAIN_NAME.STELLAR];
-    }
+  // public getBlockchainsBasedOnWallet(): BlockchainName[] {
+  //   if (this.chainType === CHAIN_TYPE.EVM) {
+  //     return Object.values(EVM_BLOCKCHAIN_NAME);
+  //   }
+  //   if (this.chainType === CHAIN_TYPE.TRON) {
+  //     return [BLOCKCHAIN_NAME.TRON];
+  //   }
+  //   if (this.chainType === CHAIN_TYPE.SOLANA) {
+  //     return [BLOCKCHAIN_NAME.SOLANA];
+  //   }
+  //   if (this.chainType === CHAIN_TYPE.TON) {
+  //     return [BLOCKCHAIN_NAME.TON];
+  //   }
+  //   if (this.chainType === CHAIN_TYPE.BITCOIN) {
+  //     return [BLOCKCHAIN_NAME.BITCOIN];
+  //   }
+  //   if (this.chainType === CHAIN_TYPE.STELLAR) {
+  //     return [BLOCKCHAIN_NAME.STELLAR];
+  //   }
 
-    throw new Error('Blockchain is not supported');
-  }
+  //   throw new Error('Blockchain is not supported');
+  // }
 
   /**
    * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
@@ -302,19 +355,21 @@ export class WalletConnectorService {
     evmBlockchainName: EvmBlockchainName,
     customRpcUrl?: string
   ): Promise<boolean> {
-    if (!(this.provider instanceof EvmWalletAdapter)) {
+    const provider = this.getActiveProvider({ chainType: 'EVM' });
+
+    if (!(provider instanceof EvmWalletAdapter)) {
       throw new RubicError("Can't switch chain in non evm wallet!");
     }
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
 
     try {
-      await this.provider.switchChain(chainId);
+      await provider.switchChain(chainId);
       return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
           await this.addChain(evmBlockchainName, customRpcUrl);
-          await this.provider.switchChain(chainId);
+          await provider.switchChain(chainId);
           return true;
         } catch (err) {
           this.errorService.catch(err);
@@ -325,20 +380,20 @@ export class WalletConnectorService {
         switchError.message.includes(
           'Missing or invalid. request() method: wallet_switchEthereumChain'
         ) &&
-        this.provider instanceof HoldstationWalletAdapter
+        provider instanceof HoldstationWalletAdapter
       ) {
         const reconnect = await firstValueFrom(
-          this.modalsService.openWcChangeNetworkModal(this.network, evmBlockchainName)
+          this.modalsService.openWcChangeNetworkModal(provider.network, evmBlockchainName)
         );
 
         if (reconnect) {
           try {
-            await this.provider.deactivate();
+            await provider.deactivate();
             const decimalId = parseInt(chainId, 16);
-            await this.provider.updateDefaultChain(decimalId);
-            await this.provider.activate();
+            await provider.updateDefaultChain(decimalId);
+            await provider.activate();
           } catch (err) {
-            await this.provider.deactivate();
+            await provider.deactivate();
             this.errorService.catch(err);
           }
         }
@@ -358,8 +413,9 @@ export class WalletConnectorService {
     evmBlockchainName: EvmBlockchainName,
     customRpcUrl?: string
   ): Promise<void> {
+    const provider = this.getActiveProvider({ chainType: 'EVM' });
     const params = this.getRpcParams(evmBlockchainName, customRpcUrl);
-    await (this.provider as EvmWalletAdapter).addChain(params);
+    await (provider as EvmWalletAdapter).addChain(params);
   }
 
   private getRpcParams(

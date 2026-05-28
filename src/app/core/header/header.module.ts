@@ -44,6 +44,7 @@ import { ProfileMenuTogglerComponent } from '@core/header/components/header/comp
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
 import { BannersService } from './services/banners.service';
+import { UserProfileWalletsComponent } from './components/header/components/user-profile-wallets/user-profile-wallets.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { BannersService } from './services/banners.service';
     SettingsComponent,
     ProfileMenuTogglerComponent,
     HistoryButtonComponent,
-    BannersComponent
+    BannersComponent,
+    UserProfileWalletsComponent
   ],
   imports: [
     CommonModule,

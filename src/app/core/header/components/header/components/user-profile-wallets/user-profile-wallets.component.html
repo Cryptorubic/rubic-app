@@ -1,0 +1,16 @@
+<div class="user-profile-wallets">
+  <tui-carousel [draggable]="true" [itemsCount]="6" [(index)]="currentIdx">
+    <ng-container *ngFor="let item of TOKEN_FILTERS_UI; let i = index">
+      <div
+        *tuiItem
+        [draggable]="false"
+        class="token-filter"
+        [class.token-filter__active]="assetListType === item.value"
+        (click)="selectFilter(item)"
+      >
+        <p class="token-filter__text">{{ item.label }}</p>
+        <img class="token-filter__icon" [src]="item.img" alt="token-filter" />
+      </div>
+    </ng-container>
+  </tui-carousel>
+</div>
