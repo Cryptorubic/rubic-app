@@ -19,7 +19,7 @@ import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctr
 
 export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
-    return WALLET_NAME.PHANTOM;
+    return WALLET_NAME.PHANTOM_SOLANA;
   }
 
   constructor(
