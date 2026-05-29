@@ -55,7 +55,6 @@
     white-space: nowrap;
 
     @include b($mobile-md) {
-      width: calc(100% - 60px);
       margin-right: 40px;
     }
   }
@@ -131,8 +130,8 @@
 
 @include b($mobile-md) {
   .token-card {
-    flex-wrap: wrap;
     gap: var(--tui-padding-s);
+    justify-content: space-between;
     width: 100%;
     padding: var(--tui-padding-s);
 
@@ -150,6 +149,7 @@
 
     &__image-container {
       display: flex;
+      margin-right: 0;
 
       &-token {
         width: 35px;
@@ -163,14 +163,20 @@
 
     &__symbol {
       font-weight: 500;
-      font-size: 18px;
+      font-size: 12px;
       letter-spacing: 0.54px;
     }
 
     &__amount {
       font-weight: 500;
-      font-size: 14px;
+      font-size: 12px;
       letter-spacing: 0.54px;
+    }
+
+    &__right {
+      button {
+        font-size: 11px;
+      }
     }
   }
 }

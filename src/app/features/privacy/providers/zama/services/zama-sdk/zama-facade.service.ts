@@ -180,7 +180,7 @@ export class ZamaFacadeService {
     });
 
     steps.push({
-      label: 'Finalize unshield',
+      label: 'Complete Unshielding',
       showLoaderOnAction: true,
       action: () =>
         this.zamaSwapService

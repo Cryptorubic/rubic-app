@@ -179,7 +179,7 @@
       </div>
 
       <div *ngIf="state.currentStep.label === 'Done'" class="preview__success-info">
-        <app-success-swap-info></app-success-swap-info>
+        <app-success-swap-info [title]="'Success'"></app-success-swap-info>
       </div>
 
       <div *ngIf="!hideFeeInfo && state.currentStep.label !== 'Done'" class="preview__swap-info">

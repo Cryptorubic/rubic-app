@@ -69,7 +69,8 @@
       >
         <div class="instruction-container">
           {{
-            !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
+            (!state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)) &&
+            !state.showAllProviders
               ? 'Enter a token for your transfer'
               : 'Set a provider for the next step'
           }}
@@ -81,7 +82,8 @@
   <div class="instruction-wrapper" *ngIf="hasOutputContainer || isMobile">
     <div class="instruction-container">
       {{
-        !state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)
+        (!state.swapInfo.fromAsset || (hasOutputContainer && !state.swapInfo.toAsset)) &&
+        !state.showAllProviders
           ? 'Enter a pair for your swap'
           : 'Set a provider for the next step'
       }}

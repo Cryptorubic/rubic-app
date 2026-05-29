@@ -130,7 +130,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
     return {
       type: 'parent',
-      text: 'Preview swap'
+      text: 'Swap Privately'
     };
   }
 }

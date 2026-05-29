@@ -11,7 +11,7 @@ export type PrivateSwapType = 'shield' | 'unshield' | 'transfer' | 'swap' | 'ref
 
 export type PrivateSwapLabel =
   | 'Done'
-  | 'Transaction in process'
+  | 'Transaction in progress'
   | 'Private Transfer'
   | 'Transfer tokens'
   | 'Switch network'
@@ -20,7 +20,7 @@ export type PrivateSwapLabel =
   | 'Swap'
   | 'Refund tokens'
   | 'Unshield Tokens'
-  | 'Finalize unshield';
+  | 'Complete Unshielding';
 
 export type PrivateActionRes = { txScannerUrl?: string };
 
