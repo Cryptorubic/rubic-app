@@ -39,8 +39,9 @@ export class LoginButtonComponent {
     if (this.buttonHierarchy) {
       this.gtmService.fireClickOnConnectWalletButtonEvent(this.buttonHierarchy);
     }
-    const wallets = this.filterWallets();
-    this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
+    this.authService.connectWallet({ walletName: WALLET_NAME.WEB3AUTH });
+    // const wallets = this.filterWallets();
+    // this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
   }
 
   private filterWallets(): WALLET_NAME[] {

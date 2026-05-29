@@ -95,8 +95,10 @@
     "@wallet-standard/app": "^1.1.0",
     "@wallet-standard/base": "^1.1.0",
     "@wallet-standard/features": "^1.1.0",
-    "@walletconnect/ethereum-provider": "^2.13.3",
+    "@walletconnect/ethereum-provider": "^2.22.4",
     "@walletconnect/modal": "^2.5.9",
+    "@web3-name-sdk/core": "^0.4.1",
+    "@web3auth/modal": "^10.4.0",
     "@zama-fhe/relayer-sdk": "0.4.1",
     "bignumber.js": "9.1.2",
     "browserify-zlib": "^0.2.0",
@@ -115,6 +117,8 @@
     "patch-package": "^8.0.1",
     "privacycash": "^1.1.15",
     "querystring-es3": "^0.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "rpc-websockets": "7.9.0",
     "rxjs": "7.8.1",
     "snarkjs": "^0.7.6",
@@ -194,6 +198,7 @@
   },
   "resolutions": {
     "libsodium-wrappers": "npm:libsodium-wrappers-sumo@0.8.2",
-    "ethers": "6.14.3"
+    "ethers": "6.14.3",
+    "viem": "2.7.6"
   }
 }

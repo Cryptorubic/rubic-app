@@ -13,7 +13,6 @@ import SafeAppsSDK, {
   SendTransactionsParams,
   SendTransactionsResponse
 } from '@safe-global/safe-apps-sdk';
-
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 
