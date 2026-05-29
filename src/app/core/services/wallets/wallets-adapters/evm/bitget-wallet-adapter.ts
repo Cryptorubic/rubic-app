@@ -26,6 +26,8 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
     return false;
   }
 
+  public readonly walletNameUI: string = 'Bitget';
+
   get walletType(): ChainType {
     return CHAIN_TYPE.EVM;
   }

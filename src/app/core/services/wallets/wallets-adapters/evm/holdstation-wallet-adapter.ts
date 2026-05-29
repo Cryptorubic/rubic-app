@@ -10,6 +10,8 @@ import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.HOLD_STATION;
 
+  public readonly walletNameUI: string = 'Holdstation';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

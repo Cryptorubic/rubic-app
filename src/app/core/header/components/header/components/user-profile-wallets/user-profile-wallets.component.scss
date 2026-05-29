@@ -1,1 +1,104 @@
 @use 'src/scss/core' as *;
+
+.user-profile-wallets {
+  @include flex(column, center, center);
+  gap: 16px;
+  width: 100%;
+  max-width: 384px;
+
+  .title {
+    width: 100%;
+    text-align: center;
+  }
+
+  .body {
+    @include flex(column, center, center);
+    gap: 12px;
+    width: 100%;
+
+    .chain-types {
+      @include flex(row, center, space-between);
+      gap: 12px;
+      width: 100%;
+
+      .chain-type {
+        @include flex(column, center, center);
+        gap: 2px;
+        border-radius: var(--tui-radius-m);
+        background-color: var(--tui-base-01);
+        font-size: 12px;
+
+        &__active {
+          background-color: var(--tui-secondary-active);
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    }
+
+    .wallet-container {
+      @include flex(row, center, space-between);
+      width: 100%;
+      background-color: var(--tui-secondary-active);
+      height: 112px;
+
+      .wallet-info {
+        @include flex(column, start, space-between);
+        gap: 16px;
+
+        .name {
+          font-size: 15px;
+        }
+
+        .central-part {
+          &__left {
+            position: reltive;
+            font-size: 21px;
+
+            .wallet-icon {
+              position: reltive;
+              z-index: 0;
+            }
+            .chain-icon {
+              position: reltive;
+              z-index: 1;
+              margin-left: -10px;
+            }
+          }
+          &__right {
+            img {
+              animation: spin 500ms linear infinite;
+            }
+            @keyframes spin {
+              from {
+                transform: rotate(0deg);
+              }
+              to {
+                transform: rotate(360deg);
+              }
+            }
+          }
+        }
+      }
+
+      .actions {
+        @include flex(column, center, center);
+        gap: 12px;
+      }
+    }
+
+    .empty-wallet-container {
+      @include flex(row, center, center);
+      width: 100%;
+      height: 84px;
+      background-color: var(--tui-base-01);
+      text-align: center;
+    }
+
+    .button-wrapper {
+      width: 100%;
+    }
+  }
+}

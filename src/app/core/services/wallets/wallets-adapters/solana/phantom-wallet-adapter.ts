@@ -22,6 +22,8 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
     return WALLET_NAME.PHANTOM;
   }
 
+  public readonly walletNameUI: string = 'Phantom';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

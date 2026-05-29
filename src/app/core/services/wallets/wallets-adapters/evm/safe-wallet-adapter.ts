@@ -20,6 +20,8 @@ import { EvmTransactionConfig } from '@cryptorubic/web3';
 export class SafeWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.SAFE;
 
+  public readonly walletNameUI: string = 'Safe';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

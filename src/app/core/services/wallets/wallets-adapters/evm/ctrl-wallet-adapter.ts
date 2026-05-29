@@ -21,6 +21,8 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   public readonly chainType = CHAIN_TYPE.BITCOIN;
 
+  public readonly walletNameUI: string = 'Ctrl';
+
   public readonly walletName = WALLET_NAME.CTRL;
 
   constructor(

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
@@ -57,10 +57,7 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
-  // public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
-  //   map(user => (user?.name ? user.name : user?.address)),
-  //   startWith(this.authService.userAddress)
-  // );
+  public readonly profileText$: Observable<string> = of('My Profile');
 
   // public readonly avatar$ = this.authService.currentUser$.pipe(
   //   combineLatestWith(this.walletConnectorService.networkChange$),

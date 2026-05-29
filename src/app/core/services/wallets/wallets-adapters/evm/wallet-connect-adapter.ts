@@ -10,6 +10,8 @@ import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.WALLET_CONNECT;
 
+  public readonly walletNameUI: string = 'WalletConnect';
+
   /**
    * Gets detailed provider name with peer meta information.
    */

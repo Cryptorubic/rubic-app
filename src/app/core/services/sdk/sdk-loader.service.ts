@@ -6,6 +6,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { WINDOW } from '@ng-web-apis/common';
 import { createWalletClient, custom } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SdkLoaderService {
@@ -22,9 +23,12 @@ export class SdkLoaderService {
   }
 
   public onAddressChange(address: string): void {
-    const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
-    const provider = this.walletConnectorService.provider;
-    if (!chainType) return;
+    const activeWallets = this.walletConnectorService.activeWallets;
+    const provider = activeWallets.find(wallet => compareAddresses(wallet.address, address));
+    if (!provider) return;
+
+    const chainType = provider.chainType;
+    const blockchain = provider.network;
 
     const chainTypeMap = {
       [CHAIN_TYPE.TRON]: provider.wallet?.tronWeb,
@@ -40,6 +44,6 @@ export class SdkLoaderService {
     } as const;
     const core = chainTypeMap?.[chainType as keyof typeof chainTypeMap];
     const walletProviderCore: WalletProviderCore = { address, core };
-    this.sdkService.updateWallet(this.walletConnectorService.network, walletProviderCore);
+    this.sdkService.updateWallet(blockchain, walletProviderCore);
   }
 }

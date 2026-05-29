@@ -11,6 +11,8 @@ import { StoreService } from '@app/core/services/store/store.service';
 export class TelegramWalletAdapter extends TonConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TELEGRAM_WALLET;
 
+  public readonly walletNameUI: string = 'TelegramWallet';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

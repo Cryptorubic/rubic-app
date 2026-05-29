@@ -12,6 +12,8 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;
 
+  public readonly walletNameUI: string = 'Argent';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

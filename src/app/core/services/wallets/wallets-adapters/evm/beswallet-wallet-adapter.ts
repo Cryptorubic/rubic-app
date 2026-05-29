@@ -10,6 +10,8 @@ import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 export class BestwalletWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.BEST_WALLET;
 
+  public readonly walletNameUI: string = 'Bestwallet';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

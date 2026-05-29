@@ -11,6 +11,8 @@ import { TokenPocketError } from '@core/errors/models/provider/token-pocket-erro
 export class TokenPocketWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.TOKEN_POCKET;
 
+  public readonly walletNameUI: string = 'TokenPocket';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

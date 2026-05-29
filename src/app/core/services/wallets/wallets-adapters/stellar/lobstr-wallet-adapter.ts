@@ -18,6 +18,8 @@ import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet
 export class LobstrWalletAdapter extends CommonStellarWalletAdapter {
   protected readonly walletId = LOBSTR_ID;
 
+  public readonly walletNameUI: string = 'Lobstr';
+
   protected readonly walletModule = new LobstrModule();
 
   public walletName = WALLET_NAME.LOBSTR;

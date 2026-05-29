@@ -10,6 +10,8 @@ import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 export class BinanceWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.BINANCE_WALLET;
 
+  public readonly walletNameUI: string = 'BinanceWallet';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

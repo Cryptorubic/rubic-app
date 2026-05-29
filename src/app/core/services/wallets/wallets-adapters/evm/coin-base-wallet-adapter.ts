@@ -13,6 +13,8 @@ import { CoinBaseError } from '@core/errors/models/provider/coinbase-error';
 export class CoinBaseWalletAdapter extends EvmWalletAdapter<ProviderInterface> {
   public readonly walletName = WALLET_NAME.COIN_BASE;
 
+  public readonly walletNameUI: string = 'CoinbaseWallet';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

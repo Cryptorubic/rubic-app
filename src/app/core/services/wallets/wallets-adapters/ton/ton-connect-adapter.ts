@@ -11,6 +11,8 @@ import { StoreService } from '@app/core/services/store/store.service';
 export class TonConnectAdapter extends TonConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TON_CONNECT;
 
+  public readonly walletNameUI: string = 'TonConnect';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

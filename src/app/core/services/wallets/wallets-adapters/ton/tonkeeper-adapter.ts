@@ -11,6 +11,8 @@ import { StoreService } from '@app/core/services/store/store.service';
 export class TonkeeperAdapter extends TonConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TONKEEPER;
 
+  public readonly walletNameUI: string = 'Tonkeeper';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

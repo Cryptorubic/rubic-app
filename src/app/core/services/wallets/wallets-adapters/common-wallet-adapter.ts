@@ -11,6 +11,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   public abstract readonly walletName: WALLET_NAME;
 
+  public abstract readonly walletNameUI: string;
+
   protected selectedAddress: string;
 
   protected selectedChain: BlockchainName | null;

@@ -16,6 +16,8 @@ export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWal
     return WALLET_NAME.SOLFLARE;
   }
 
+  public readonly walletNameUI: string = 'Solflare';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

@@ -10,6 +10,8 @@ import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TRUST_WALLET;
 
+  public readonly walletNameUI: string = 'TrustWallet';
+
   constructor(
     accountChange$: BehaviorSubject<string>,
     chainChange$: BehaviorSubject<BlockchainName | null>,

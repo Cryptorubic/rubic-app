@@ -12,6 +12,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
+  public readonly walletNameUI: string = 'MetaMask';
+
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,

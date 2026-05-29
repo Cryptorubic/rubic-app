@@ -10,6 +10,8 @@ import { WatchWalletChanges } from '@stellar/freighter-api';
 export class FreighterWalletAdapter extends CommonStellarWalletAdapter {
   protected readonly walletId = FREIGHTER_ID;
 
+  public readonly walletNameUI: string = 'Freighter';
+
   protected readonly walletModule = new FreighterModule();
 
   public walletName = WALLET_NAME.FREIGHTER;

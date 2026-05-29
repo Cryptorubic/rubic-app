@@ -20,6 +20,8 @@ import { switchTap } from '@shared/utils/utils';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
+  public readonly walletNameUI: string = 'TronLink';
+
   public readonly chainType = CHAIN_TYPE.TRON;
 
   public readonly walletName = WALLET_NAME.TRON_LINK;

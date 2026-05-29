@@ -1,16 +1,95 @@
-<div class="user-profile-wallets">
-  <tui-carousel [draggable]="true" [itemsCount]="6" [(index)]="currentIdx">
-    <ng-container *ngFor="let item of TOKEN_FILTERS_UI; let i = index">
-      <div
-        *tuiItem
-        [draggable]="false"
-        class="token-filter"
-        [class.token-filter__active]="assetListType === item.value"
-        (click)="selectFilter(item)"
-      >
-        <p class="token-filter__text">{{ item.label }}</p>
-        <img class="token-filter__icon" [src]="item.img" alt="token-filter" />
+<div
+  *ngLet="{
+    selectedChainType: selectedChainType$ | async,
+    selectedWallet: selectedWallet$ | async
+  } as state"
+  class="user-profile-wallets"
+>
+  <div class="title">My Wallets</div>
+
+  <div class="body">
+    <div class="chain-types">
+      <tui-carousel [draggable]="true" [itemsCount]="6">
+        <ng-container *ngFor="let chainType of USER_WALLETS_CHAIN_TYPES">
+          <div
+            *tuiItem
+            [draggable]="false"
+            class="chain-type"
+            [class.chain-type__active]="state.selectedChainType === chainType.value"
+            (click)="selectChainType(chainType.value)"
+          >
+            <button tuiIconButton appearance="secondary" type="button" size="m">
+              <img [src]="chainType.img" width="13" height="13" alt="ChainType" />
+              <p>{{ chainType.label }}</p>
+            </button>
+          </div>
+        </ng-container>
+      </tui-carousel>
+    </div>
+
+    <ng-container>
+      <div *ngIf="state.selectedWallet; else #notConnectedWallet" class="wallet-container">
+        <div class="wallet-info">
+          <div class="name">{{ state.selectedWallet.walletNameUI }} Wallet connected</div>
+
+          <div class="central-part">
+            <div class="central-part__left">
+              <img
+                class="wallet-icon"
+                width="25"
+                height="25"
+                [src]="getWalletIcon(state.selectedWallet.walletName)"
+              />
+              <img
+                class="chain-icon"
+                width="25"
+                height="25"
+                [src]="getBlockchainIcon(state.selectedWallet.network)"
+              />
+              <!-- @TODO_530 add real balance -->
+              <span class="balance">{{ ' ' }}$0</span>
+            </div>
+
+            <div *ngIf="(balanceLoading$ | async) === true" class="central-part__right">
+              <img src="assets/images/icons/reload.svg" width="16" height="16" />
+            </div>
+          </div>
+
+          <div class="address">{{ selectedWallet.address | shortAddress : 5 : 7 }}</div>
+        </div>
+
+        <div class="actions">
+          <button
+            tuiIconButton
+            appearance="secondary"
+            type="button"
+            size="m"
+            (click)="copyAddress(state.selectedWallet.address)"
+          >
+            <img width="14" height="14" [src]="getCopyBtnIcon()" />
+          </button>
+
+          <button
+            tuiIconButton
+            appearance="secondary"
+            type="button"
+            size="m"
+            (click)="logoutWallet(state.selectedWallet.walletName)"
+          >
+            <img width="14" height="14" src="assets/images/wallets/icons/logout.png" />
+          </button>
+        </div>
       </div>
+
+      <ng-template #notConnectedWallet>
+        <div class="empty-wallet-container">There are no connected wallets yet.</div>
+      </ng-template>
     </ng-container>
-  </tui-carousel>
+
+    <div class="button-wrapper">
+      <app-rubic-button fullWidth appearance="primary" (click)="connectWallet()">
+        {{ state.selectedWallet ? 'Connect new wallet' : 'Select chain and wallet' }}
+      </app-rubic-button>
+    </div>
+  </div>
 </div>
