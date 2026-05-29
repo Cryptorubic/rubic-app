@@ -12,3 +12,9 @@ export type HintDirection =
   | 'right-top'
   | 'right'
   | 'right-bottom';
+
+export interface SwapDataElementConfig {
+  feeIcon: string;
+  withVerboseFeeHint: boolean;
+  zeroFeeText?: string;
+}

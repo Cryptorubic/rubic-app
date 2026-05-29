@@ -1,0 +1,22 @@
+<app-hide-tokens-window
+  (handleHide)="hide($event)"
+  [receiverCtrl]="receiverCtrl"
+  [creationConfig]="{
+    withActionButton: true,
+    withReceiver: false,
+    withSrcAmount: true,
+    withMaxBtn: true,
+    assetsSelectorConfig: {
+      withChainsFilter: false,
+      withTokensFilter: false,
+      withFavoriteTokens: false,
+      showAllChains: false
+    }
+  }"
+>
+  <tui-notification class="notification" status="warning">
+    The shielding process take 1 hour due to an AML check.
+  </tui-notification>
+</app-hide-tokens-window>
+
+<app-shielded-tokens-list [tokens]="pendingBalances"></app-shielded-tokens-list>

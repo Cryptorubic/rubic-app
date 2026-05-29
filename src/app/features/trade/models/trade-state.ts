@@ -1,7 +1,11 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
-import { CrossChainTrade, OnChainTrade, RubicStep } from '@cryptorubic/sdk';
 import { CentralizationStatus } from '../constants/centralization-status';
 import { SolanaGaslessStateService } from '../services/solana-gasless/solana-gasless-state.service';
+import { RubicStep } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/rubicStep';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { NeedTrustlineOptions } from '../services/trustline-service/models/need-trustline-options';
+import { ErrorInterface } from '@cryptorubic/core';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
@@ -24,8 +28,10 @@ export type TradeState = (TradefullState | TradelessState) & {
   };
   needApprove: boolean;
   needAuthWallet?: boolean;
+  needTrustlineOptions: NeedTrustlineOptions;
   routes: RubicStep[];
   badges?: BadgeInfoForComponent[];
+  warnings: ErrorInterface[];
   centralizationStatus: CentralizationStatus;
 };
 

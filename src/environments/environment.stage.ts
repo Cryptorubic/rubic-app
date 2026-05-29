@@ -2,8 +2,10 @@ import { STAKING_CONFIG_DEVELOP } from './constants/staking';
 import { Env } from './models/env';
 
 export const ENVIRONMENT: Env = {
-  environmentName: 'rubic',
+  environmentName: 'stage',
   production: true,
+  local: false,
+  googleAnalyticsId: 'G-QHYCGJXV8G',
 
   apiBaseUrl: '//stage-api.rubic.exchange/api',
   apiTokenUrl: 'https://stage-api.rubic.exchange/api',

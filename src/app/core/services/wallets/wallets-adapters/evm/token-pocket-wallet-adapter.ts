@@ -1,7 +1,7 @@
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';

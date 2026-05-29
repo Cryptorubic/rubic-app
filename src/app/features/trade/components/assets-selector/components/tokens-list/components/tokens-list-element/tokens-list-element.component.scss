@@ -57,6 +57,7 @@
   &__right {
     @include flex(column, center, center);
     gap: 2px;
+    margin-left: auto;
   }
 
   &__actions {

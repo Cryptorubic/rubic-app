@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  Self
+  Self,
+  TemplateRef
 } from '@angular/core';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -14,9 +16,9 @@ import { AssetSelector } from '@shared/models/asset-selector';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-asset-selector',
@@ -30,7 +32,7 @@ export class AssetSelectorComponent implements OnInit {
 
   @Input({ required: true }) selectorType: 'from' | 'to';
 
-  @Input() set asset(value: TokenAmount | null) {
+  @Input() set asset(value: BalanceToken | null) {
     if (value) {
       this.visibleAsset = this.getTokenAsset(value);
     } else {
@@ -41,17 +43,21 @@ export class AssetSelectorComponent implements OnInit {
 
   @Output() public handleAssetSelection = new EventEmitter<void>();
 
+  @ContentChild('emptySelector', { read: TemplateRef })
+  emptySelectorTemplate?: TemplateRef<unknown>;
+
   public visibleAsset: AssetSelector | null = null;
 
   public emptySelectorText: string = '';
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
+  public isQueryDisabled = false;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly tokenService: TokensService
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -63,15 +69,15 @@ export class AssetSelectorComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
         if (this.selectorType === 'from') {
-          this.isDisabled = hideSelectionFrom;
+          this.isQueryDisabled = hideSelectionFrom;
         } else {
-          this.isDisabled = hideSelectionTo;
+          this.isQueryDisabled = hideSelectionTo;
         }
         this.cdr.markForCheck();
       });
   }
 
-  private getTokenAsset(token: TokenAmount): AssetSelector {
+  private getTokenAsset(token: BalanceToken): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
     const color = blockchainColor[token.blockchain];
 
@@ -85,12 +91,12 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   public handleSelection(): void {
-    if (this.isDisabled) return;
+    if (this.isDisabled || this.isQueryDisabled) return;
     this.handleAssetSelection.emit();
   }
 
   public onTokenImageError($event: Event): void {
-    this.tokenService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 
   private getEmptySelectorText(): string {

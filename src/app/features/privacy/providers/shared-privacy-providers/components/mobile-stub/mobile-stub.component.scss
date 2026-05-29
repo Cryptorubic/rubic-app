@@ -1,0 +1,15 @@
+.stub-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  align-items: center;
+  justify-content: center;
+}
+
+img {
+  margin-top: var(--tui-padding-m);;
+}
+
+button {
+  width: 100%;
+}

@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProofInfo } from '@features/testnet-promo/interfaces/api-models';
 import { TestnetPromoClaimService } from '@features/testnet-promo/services/testnet-promo-claim.service';
-import { Web3Pure } from '@cryptorubic/sdk';
+import { Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-active-claim',
@@ -23,7 +23,7 @@ export class ActiveClaimComponent implements AfterViewInit {
       this.round.contractAddress,
       {
         index: this.round.index,
-        amount: Web3Pure.toWei(this.round.amount),
+        amount: Token.toWei(this.round.amount),
         account: this.round.address
       },
       this.round.proof

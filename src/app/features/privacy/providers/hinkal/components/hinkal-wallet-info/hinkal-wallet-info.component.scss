@@ -1,0 +1,51 @@
+@use 'src/scss/core' as *;
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  span { 
+    font-size: 15px;
+  }
+
+  &__text {
+    padding: var(--tui-padding-m);
+
+    text-decoration: underline;
+    word-break: break-all;
+
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  tui-notification {
+    color: #0d75e8;
+    font-weight: 500;
+    font-size: 15px;
+
+    background: #1c4c81;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--tui-padding-m);
+  padding-bottom: 0;
+
+  font-weight: 500;
+
+  span {
+    @include b($mobile-md) {
+      &:nth-of-type(1) {
+        align-self: center;
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { AbiItem } from 'web3-utils';
+import { AbiItem } from '@cryptorubic/web3';
 
 export interface ContractData {
   address: string;

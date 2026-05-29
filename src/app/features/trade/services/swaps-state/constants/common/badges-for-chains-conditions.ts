@@ -1,9 +1,7 @@
-import {
-  BLOCKCHAIN_NAME,
-  CrossChainTrade,
-  OnChainTrade,
-  transferTradeSupportedProviders
-} from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { transferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 export function showTaikoPointsPromoLabel(trade: CrossChainTrade): boolean {
   return (

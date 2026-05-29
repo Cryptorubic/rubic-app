@@ -1,11 +1,11 @@
 <div class="network-container">
   <tui-input
-    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
+    [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
     tuiTextfieldSize="l"
-    [formControl]="address"
-    [pseudoFocus]="address.invalid"
-    [pseudoInvalid]="address.invalid"
-    [tuiTextfieldCleaner]="!!address.value"
+    [formControl]="addressCtrl"
+    [pseudoFocus]="addressCtrl.invalid"
+    [pseudoInvalid]="addressCtrl.invalid"
+    [tuiTextfieldCleaner]="false"
     [tuiTextfieldLabelOutside]="false"
     (focusedChange)="onFocusChange($event)"
   >
@@ -14,11 +14,18 @@
         {{
           isIntegratorWidget
             ? 'You must be the owner and have access to this wallet'
-            : 'You must have access to this address'
+            : placeholderText
         }}
       </label>
     </div>
   </tui-input>
+
+  <span
+    *ngIf="!!addressCtrl.value"
+    class="clear-btn"
+    [inlineSVG]="'assets/images/icons/close.svg'"
+    (click)="clear()"
+  ></span>
 
   <ng-template #success>
     <div

@@ -1,0 +1,26 @@
+<div class="modal">
+  <div class="modal__content">
+    <div class="modal__header">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">You’re using Rubic Private Mode Beta</h3>
+    </div>
+
+    <div class="modal__body">
+      It may not work perfectly yet. Explore the
+      <a target="_blank" href="https://rubic.exchange/blog/rubics-private-mode-a-users-guide/"
+        >User Guide</a
+      >
+      or contact support if you need help.
+    </div>
+
+    <div class="modal__footer">
+      <app-rubic-button fullWidth appearance="primary" size="l" (click)="confirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>

@@ -12,7 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { BlockchainsInfo, ChainType, EvmBlockchainName } from '@cryptorubic/sdk';
+import { BlockchainsInfo, ChainType, EvmBlockchainName } from '@cryptorubic/core';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { createWalletClient, custom } from 'viem';
 

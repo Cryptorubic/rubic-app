@@ -33,23 +33,29 @@
     flex-wrap: wrap;
     gap: var(--tui-padding-s);
     justify-content: flex-end;
+
+    opacity: 1;
   }
 
   &__amounts-container {
     display: flex;
+    gap: var(--tui-padding-s);
     align-items: center;
     justify-content: space-between;
   }
 
   &__amount {
     display: flex;
+    flex: auto;
     align-items: center;
+    min-width: 0;
   }
 
   &__token {
     display: flex;
     flex-direction: column;
     gap: var(--tui-padding-xs);
+    min-width: 0;
   }
 
   &__token-info {
@@ -71,12 +77,8 @@
   }
 
   &__token-amount {
-    max-width: 145px;
-    overflow: hidden;
-
     font-weight: 700;
     font-size: 18px;
-    text-overflow: ellipsis;
   }
 
   &__token-symbol {
@@ -121,7 +123,7 @@
     font-weight: 700 !important;
     text-transform: uppercase;
 
-    background: linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%);
+    background: #05cc05;
     cursor: pointer;
   }
 
@@ -162,9 +164,11 @@
 
   &__right {
     display: flex;
+    flex: none;
     flex-direction: column;
     gap: var(--tui-padding-xs);
     align-items: flex-end;
+    min-width: 0;
   }
 
   &__expandable {
@@ -175,7 +179,6 @@
       @include flex(row, center, normal);
       gap: 7px;
 
-      
       &-text {
         color: var(--tui-text-03);
         line-height: 10px;

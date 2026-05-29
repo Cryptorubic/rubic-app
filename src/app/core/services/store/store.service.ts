@@ -48,7 +48,7 @@ export class StoreService {
       const storeObject = Object.entries(storeRecord);
       const rubicStoreFields = storeObject
         .map(([key]) => [key, storage?.[key] ? JSON.parse(storage[key]) : null])
-        .filter(([, value]) => Boolean(value));
+        .filter(([, value]) => value !== null);
       const rubicStorage = Object.fromEntries(rubicStoreFields);
       return rubicStorage as unknown as Store;
     } catch (err: unknown) {

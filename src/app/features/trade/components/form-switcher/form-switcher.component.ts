@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Input,
   Output
 } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -15,6 +16,10 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormSwitcherComponent {
+  @Input() set isDisabled(value: boolean) {
+    this.disabled = value;
+  }
+
   @Output() public readonly switcherClick: EventEmitter<MouseEvent> = new EventEmitter();
 
   public readonly showTokenSwitcher$ = this.queryParamsService.queryParams$.pipe(

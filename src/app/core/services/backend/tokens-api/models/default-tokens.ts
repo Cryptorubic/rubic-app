@@ -1048,5 +1048,17 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.HEMI]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.HEMI], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.PLASMA]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.PLASMA], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MONAD]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MONAD], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.HYPER_EVM]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.HYPER_EVM], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MEGAETH]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MEGAETH], ...defaultTokenParams } as Token
   ]
 };

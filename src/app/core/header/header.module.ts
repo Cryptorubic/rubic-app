@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowsernimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiButtonModule,
@@ -68,7 +68,6 @@ import { BannersService } from './services/banners.service';
     SharedModule,
     TranslateModule,
     RouterModule,
-    BrowserAnimationsModule,
     A11yModule,
     OverlayModule,
     InlineSVGModule.forRoot(),

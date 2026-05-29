@@ -1,10 +1,16 @@
-import { BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { AssetType } from '@features/trade/models/asset';
+import { AssetListType } from '@features/trade/models/asset';
+import { Web3Pure } from '@cryptorubic/web3';
+
+export interface ReceiverAddressValidatorOptions {
+  requiredReceiver: boolean;
+}
 
 export function correctAddressValidator(
-  fromAssetType: AssetType,
-  validatedChain: BlockchainName
+  fromAssetType: AssetListType,
+  validatedChain: BlockchainName,
+  options: ReceiverAddressValidatorOptions
 ): AsyncValidatorFn {
   const validatedChainType = BlockchainsInfo.getChainType(validatedChain);
   const fromChainType = BlockchainsInfo.getChainType(fromAssetType as BlockchainName);
@@ -13,8 +19,11 @@ export function correctAddressValidator(
     const address = control.value;
 
     const isAddressCorrectValue =
-      address === '' || (await Web3Pure[validatedChainType].isAddressCorrect(address));
+      !Boolean(address) || (await Web3Pure.isAddressCorrect(validatedChain, address));
 
+    if (address && options.requiredReceiver && !isAddressCorrectValue) {
+      return { wrongAddress: address };
+    }
     if (!isAddressCorrectValue && (address || fromChainType !== validatedChainType)) {
       return { wrongAddress: address };
     }

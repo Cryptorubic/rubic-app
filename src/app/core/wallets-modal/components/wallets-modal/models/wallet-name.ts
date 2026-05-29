@@ -23,6 +23,8 @@ export enum WALLET_NAME {
   METAMASK_SOLANA = 'metamask_solana',
   BINANCE_WALLET = 'binance_wallet',
   BACKPACK = 'backpack',
-
+  LOBSTR = 'lobstr',
+  FREIGHTER = 'freighter',
+  STELLAR_WALLET_CONNECT = 'stellar_wallectconnect',
   WEB3AUTH = 'web3auth'
 }

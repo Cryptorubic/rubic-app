@@ -2,7 +2,7 @@ import { SourceTxStatus } from '@features/history/models/source-tx-status';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
 import { HistoryRequestToken } from '@features/history/models/history-request-token';
 import { HistoryRequestTx } from '@features/history/models/history-request-tx';
-import { BackendBlockchain } from '@cryptorubic/sdk';
+import { BackendBlockchain } from '@cryptorubic/core';
 
 export interface OnChainTableResponse {
   count: number;

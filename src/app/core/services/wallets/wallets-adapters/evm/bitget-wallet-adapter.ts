@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { Token } from '@shared/models/tokens/token';
@@ -17,7 +16,7 @@ import {
   CHAIN_TYPE,
   ChainType,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { NgZone } from '@angular/core';
 import { NeedDisableTokenPocketWalletError } from '@app/core/errors/models/provider/token-pocket-enabled-error';
@@ -100,7 +99,7 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
   }
 
   public async signPersonal(message: string): Promise<string> {
-    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
+    return this.wallet.eth.personal.sign(message, this.address, undefined);
   }
 
   public async activate(params?: unknown[]): Promise<void> {

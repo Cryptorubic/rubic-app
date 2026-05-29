@@ -5,7 +5,8 @@ import { TokenSecurity } from '@shared/models/tokens/token-security';
 export enum ENDPOINTS {
   TOKENS = 'v2/tokens/',
   FAVORITE_TOKENS = 'v2/tokens/favorite/',
-  TOKENS_SECURITY = 'v2/tokens_security/unknown_token'
+  TOKENS_SECURITY = 'v2/tokens_security/unknown_token',
+  NEW_TOKENS = 'v3/tmp/tokens/all'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -25,7 +26,14 @@ export interface BackendToken {
   coingeckoId: string;
   usdPrice: number;
   token_security: TokenSecurity | null;
+  networkRank?: number;
+  balance?: string;
   type: Token['type'];
+}
+
+export interface BackendBalanceToken extends BackendToken {
+  balance: string;
+  balanceUsd: string;
 }
 
 export interface BackendTokenForAllChains extends BackendToken {
@@ -45,6 +53,23 @@ export interface TokensBackendResponse {
   readonly next: string | null;
   readonly previous: string | null;
   readonly results: BackendToken[];
+}
+
+export interface UtilityBackendResponse {
+  trending: RatedBackendToken[];
+  gainers: RatedBackendToken[];
+  losers: RatedBackendToken[];
+}
+
+export interface BalanceTokensBackendResponse {
+  readonly supported_networks: BlockchainName[];
+  readonly tokens: Partial<Record<BlockchainName, BackendBalanceToken[]>>;
+}
+
+export interface NewTokensBackendResponse {
+  readonly count: number;
+  readonly next_page: string | null;
+  readonly tokens: BackendToken[];
 }
 
 export interface TokenSecurityBackendResponse {

@@ -1,9 +1,6 @@
-import {
-  CROSS_CHAIN_TRADE_TYPE,
-  MaxAmountError,
-  MinAmountError,
-  WrappedCrossChainTradeOrNull
-} from '@cryptorubic/sdk';
+import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
+import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 
 // eslint-disable-next-line complexity

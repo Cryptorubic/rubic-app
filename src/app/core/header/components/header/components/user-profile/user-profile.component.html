@@ -1,7 +1,7 @@
 <ng-container>
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
-      <button tuiButton appearance="secondary" type="button" size="m">
+      <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
         <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
           <div class="user-profile__avatar">
             <img [src]="profile.img" alt="User avatar" width="24" height="24" />
@@ -22,11 +22,10 @@
       <tui-opt-group>
         <button
           tuiButton
-          class="data-list__element"
+          class="data-list__element user-profile__logout"
           appearance="secondary"
           type="button"
           size="m"
-          class="user-profile__logout"
           (click)="logout()"
         >
           <div class="data-list__link-container">

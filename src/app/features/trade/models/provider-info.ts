@@ -1,6 +1,6 @@
+import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { Token } from '@app/shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { FeeInfo } from '@cryptorubic/sdk';
 
 export type ProviderInfo = {
   name: string;

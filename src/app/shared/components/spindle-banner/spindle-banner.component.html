@@ -1,4 +1,9 @@
-<ng-container *ngLet="{ src: iframeSrc$ | async, size: iframeSize$ | async } as state">
+<ng-container
+  *ngLet="{
+    src: iframeSrc$ | async,
+    size: iframeSize$ | async
+  } as state"
+>
   <div *ngIf="state.src" class="spindle-banner">
     <iframe
       [src]="state.src | safeSanitizer : 'resourceUrl'"

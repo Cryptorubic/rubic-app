@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 
 export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes
@@ -56,6 +56,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.WYND]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.AQUARIUS]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.SOROSWAP]: 'unknown',
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
@@ -156,7 +158,12 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: 'kyo_finance',
   [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus',
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'orca',
-  [ON_CHAIN_TRADE_TYPE.DFLOW]: 'dflow'
+  [ON_CHAIN_TRADE_TYPE.DFLOW]: 'dflow',
+  [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: 'aethon_swap',
+  [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: 'octo_swap',
+  [ON_CHAIN_TRADE_TYPE.ATLANTIS]: 'atlantis',
+  [ON_CHAIN_TRADE_TYPE.CLOBER]: 'clober',
+  [ON_CHAIN_TRADE_TYPE.RUBIC_STELLAR_API]: 'rubic_stellar_api'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

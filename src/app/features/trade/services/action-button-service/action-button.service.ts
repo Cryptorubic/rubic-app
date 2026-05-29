@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, CrossChainTransferTrade } from '@cryptorubic/sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -8,9 +7,22 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
-import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
+import { BlockchainsInfo } from '@cryptorubic/core';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { SwapsFormService } from '../swaps-form/swaps-form.service';
+import { SwapFormInput } from '../../models/swap-form-controls';
+import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 
-type StateOptions = [SelectedTrade, boolean, boolean, string, boolean, boolean, string];
+type StateOptions = [
+  SelectedTrade,
+  boolean,
+  boolean,
+  string,
+  boolean,
+  boolean,
+  string,
+  SwapFormInput
+];
 
 @Injectable()
 export class ActionButtonService {
@@ -23,7 +35,7 @@ export class ActionButtonService {
         this.targetNetworkAddressService.isAddressValid$,
         this.targetNetworkAddressService.isAddressRequired$,
         this.targetNetworkAddressService.address$,
-        this.formsTogglerService.selectedForm$
+        this.swapsFormService.inputValueDistinct$
       ])
     )
     .pipe(
@@ -40,7 +52,7 @@ export class ActionButtonService {
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly swapsFormService: SwapsFormService
   ) {}
 
   private swap(): void {
@@ -62,28 +74,42 @@ export class ActionButtonService {
     address: string,
     isReceiverValid: boolean,
     isAddressRequired: boolean,
-    receiverAddress: string
+    receiverAddress: string,
+    formInput: SwapFormInput
   ): {
     type: 'error' | 'action';
     text: string;
     action: () => void;
   } {
-    if (!currentTrade) {
-      return {
-        type: 'error',
-        text: 'Select tokens',
-        action: () => {}
-      };
+    if (!currentTrade || !currentTrade.trade) {
+      if (!formInput.fromToken || !formInput.toToken) {
+        return {
+          type: 'error',
+          text: 'Select tokens',
+          action: () => {}
+        };
+      }
+      if (!formInput.fromAmount || formInput.fromAmount?.actualValue.eq(0)) {
+        return {
+          type: 'error',
+          text: 'Enter amount',
+          action: () => {}
+        };
+      }
     }
+    const isTransferFromNonEvm =
+      currentTrade.trade instanceof CrossChainTransferTrade &&
+      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
     if (currentTrade.error) {
       return {
         type: 'error',
-        text: currentTrade.error.message,
+        text: this.getShortErrorMessage(currentTrade.error.message),
         action: () => {}
       };
     }
 
-    if (!address) {
+    if (!address && !isTransferFromNonEvm) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -97,9 +123,6 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-    const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
     if (
       currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
@@ -165,7 +188,23 @@ export class ActionButtonService {
     };
   }
 
-  private getDefaultParams(): [SelectedTrade, boolean, boolean, string, boolean, boolean, string] {
-    return [null, false, false, '', true, false, ''];
+  private getShortErrorMessage(errorMessage: string): string {
+    if (errorMessage.toLowerCase().includes('trustline not detected'))
+      return 'Will be available soon';
+
+    return errorMessage;
+  }
+
+  private getDefaultParams(): [
+    SelectedTrade,
+    boolean,
+    boolean,
+    string,
+    boolean,
+    boolean,
+    string,
+    SwapFormInput
+  ] {
+    return [null, false, false, '', true, false, '', getEmptySwapFormInput()];
   }
 }

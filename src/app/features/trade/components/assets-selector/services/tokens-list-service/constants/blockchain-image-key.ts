@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainImageKey: Record<BlockchainName, string> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(

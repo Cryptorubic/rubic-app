@@ -1,0 +1,70 @@
+@use 'src/scss/core' as *;
+//
+//:host {
+//  --tui-font-text-s: normal 16px/20px var(--tui-font-text);
+//}
+//
+//.t-placeholder {
+//  color: var(--secondary-text);
+//
+//  font-size: 16px;
+//}
+//
+//tui-input {
+//  ::ng-deep {
+//    input {
+//      padding: 0 5px 0 40px !important;
+//
+//      @include b($mobile-sm-middle) {
+//        font-size: 16px !important;
+//      }
+//    }
+//
+//    .t-placeholder {
+//      color: var(--secondary-text);
+//
+//      font-size: 16px;
+//
+//      @include b($mobile-sm-middle) {
+//        font-size: 14px;
+//      }
+//    }
+//
+//    .t-wrapper {
+//      z-index: auto;
+//
+//      order: 1;
+//    }
+//
+//    .t-icon {
+//      margin-right: 10px !important;
+//
+//      use {
+//        font-size: 0.7rem;
+//      }
+//    }
+//  }
+//}
+//
+//.expandable-input {
+//  width: 50px;
+//
+//  transition: 0.2s width ease-in-out;
+//
+//  tui-input ::ng-deep {
+//    --tui-height-l: 54px;
+//
+//    .t-wrapper[data-appearance='textfield'] {
+//      background: #282828;
+//    }
+//
+//    .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+//      border: 0;
+//    }
+//  }
+//
+//  &_expanded {
+//    width: 300px;
+//  }
+//}
+//

@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
-import { AssetType } from '@app/features/trade/models/asset';
-import { BlockchainsListService } from '../../services/blockchains-list-service/blockchains-list.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AssetListType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
+import { temporarelyDisabledBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-assets-type-aside-element',
@@ -14,39 +14,44 @@ import { BlockchainItem } from '../../services/blockchains-list-service/models/a
 export class AssetsTypeAsideElementComponent {
   @Input({ required: true }) blockchainItem: BlockchainItem;
 
-  @Input({ required: true }) selectedAssetType: AssetType;
+  @Input({ required: true }) selectedAssetType: AssetListType;
 
   @Input({ required: true }) isMobile: boolean = false;
 
+  @Input({ required: true }) type: 'from' | 'to';
+
+  @Output() handleClick = new EventEmitter<BlockchainItem>();
+
   private get isAllChains(): boolean {
-    return this.blockchainItem.name === null;
+    const isBlocklchain = BlockchainsInfo.isBlockchainName(this.selectedAssetType);
+    return this.blockchainItem.name === null && !isBlocklchain;
   }
 
   public get isSelected(): boolean {
+    return this.selectedAssetType === this.blockchainItem.name || this.isAllChains;
+  }
+
+  public get isDisabled(): boolean {
     return (
-      this.selectedAssetType === this.blockchainItem.name ||
-      (this.isAllChains && this.selectedAssetType === 'allChains')
+      this.blockchainItem.disabledConfiguration ||
+      (this.type === 'from' && this.blockchainItem.disabledFrom)
     );
+  }
+
+  public get hintText(): string | null {
+    if (this.isDisabled) {
+      return temporarelyDisabledBlockchains.includes(this.blockchainItem.name)
+        ? 'Сoming soon'
+        : 'Temporary disabled';
+    }
+    return null;
   }
 
   public get id(): string {
     return !this.isAllChains ? `idPrefixNetwork_${this.blockchainItem.name}` : 'allChainsSelector';
   }
 
-  constructor(
-    private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly blockchainsListService: BlockchainsListService
-  ) {}
-
-  public isItemDisabled(item: BlockchainItem): boolean {
-    if (this.isAllChains) return false;
-    return this.blockchainsListService.isDisabled(item);
-  }
-
-  public getHintText(item: BlockchainItem): string | null {
-    if (this.isAllChains) return 'Show tokens of all chains.';
-    return this.blockchainsListService.getHintText(item);
-  }
+  constructor() {}
 
   public getBlockchainTag(item: BlockchainItem): string | null {
     if (this.isAllChains) return null;
@@ -54,7 +59,6 @@ export class AssetsTypeAsideElementComponent {
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (this.isAllChains) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(item.name);
+    this.handleClick.emit(item);
   }
 }

@@ -1,17 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType,
-  RangoTradeType,
-  LifiSubProvider,
-  RANGO_TO_RUBIC_PROVIDERS,
-  LIFI_API_CROSS_CHAIN_PROVIDERS
-} from '@cryptorubic/sdk';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
@@ -20,7 +8,21 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { TokensNetworkStateService } from '../tokens/tokens-network-state.service';
+import {
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType
+} from '@cryptorubic/core';
+import {
+  RANGO_TO_RUBIC_PROVIDERS,
+  RangoTradeType
+} from '../sdk/sdk-legacy/features/common/providers/rango/models/rango-api-trade-types';
+import {
+  LIFI_API_CROSS_CHAIN_PROVIDERS,
+  LifiSubProvider
+} from '../sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 
 @Injectable({
   providedIn: 'root'
@@ -86,7 +88,6 @@ export class QueryParamsService {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly router: Router,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
@@ -175,6 +176,15 @@ export class QueryParamsService {
     });
   }
 
+  public updateQueryParams(params: Partial<QueryParams>, currRoute: ActivatedRoute): void {
+    this.queryParams = params;
+
+    this.router.navigate([], {
+      queryParams: this.queryParams,
+      relativeTo: currRoute
+    });
+  }
+
   private setIframeInfo(queryParams: QueryParams): void {
     if (queryParams.hideUnusedUI) {
       this.setLanguage(queryParams);
@@ -194,26 +204,7 @@ export class QueryParamsService {
     });
 
     this.setHideSelectionStatus(queryParams);
-    this.setAdditionalIframeTokens(queryParams);
     this.setLanguage(queryParams);
-  }
-
-  private setAdditionalIframeTokens(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME).map(el => el.toLowerCase());
-
-    const tokensQueryParams = Object.fromEntries(
-      Object.entries(queryParams).filter(([key]) =>
-        tokensFilterKeys.includes(key as BlockchainName)
-      )
-    );
-
-    if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkStateService.setTokensRequestParameters(tokensQueryParams);
-    }
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
