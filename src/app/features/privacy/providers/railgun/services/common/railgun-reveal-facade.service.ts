@@ -31,7 +31,7 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
           const availableTokensForBlockchains = event[blockchain].Spendable.erc20Amounts;
 
           return this.tokensBuilderService
-            .getTokensList(blockchain, _query, direction, inputValue)
+            .getTokensList(blockchain, _query, direction, inputValue, false)
             .pipe(
               map(tokens => {
                 return tokens
@@ -71,35 +71,37 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
               blockchain
             }));
           });
-          return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue).pipe(
-            map(tokens => {
-              return tokens
-                .filter(token =>
-                  PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
-                )
-                .filter(token => {
-                  const isAvailable = availableTokens.some(
-                    availableToken =>
-                      compareAddresses(availableToken.tokenAddress, token.address) &&
-                      availableToken.blockchain === token.blockchain &&
-                      availableToken.amount > 0n
-                  );
-                  return isAvailable;
-                })
-                .map(token => {
-                  const balance = availableTokens.find(
-                    availableToken =>
-                      compareAddresses(availableToken.tokenAddress, token.address) &&
-                      availableToken.blockchain === token.blockchain
-                  )?.amount;
+          return this.tokensBuilderService
+            .getTokensList(type, _query, direction, inputValue, false)
+            .pipe(
+              map(tokens => {
+                return tokens
+                  .filter(token =>
+                    PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
+                  )
+                  .filter(token => {
+                    const isAvailable = availableTokens.some(
+                      availableToken =>
+                        compareAddresses(availableToken.tokenAddress, token.address) &&
+                        availableToken.blockchain === token.blockchain &&
+                        availableToken.amount > 0n
+                    );
+                    return isAvailable;
+                  })
+                  .map(token => {
+                    const balance = availableTokens.find(
+                      availableToken =>
+                        compareAddresses(availableToken.tokenAddress, token.address) &&
+                        availableToken.blockchain === token.blockchain
+                    )?.amount;
 
-                  return {
-                    ...token,
-                    amount: Token.fromWei(balance.toString(), token.decimals) || token.amount
-                  };
-                });
-            })
-          );
+                    return {
+                      ...token,
+                      amount: Token.fromWei(balance.toString(), token.decimals) || token.amount
+                    };
+                  });
+              })
+            );
         }
       })
     );

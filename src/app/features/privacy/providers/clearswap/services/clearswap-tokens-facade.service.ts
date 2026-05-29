@@ -27,7 +27,7 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
     _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput())
+      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
       .pipe(
         distinctObjectUntilChanged(),
         map(tokens => {
