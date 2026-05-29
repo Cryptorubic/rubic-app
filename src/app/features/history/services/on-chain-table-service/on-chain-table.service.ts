@@ -79,8 +79,8 @@ export class OnChainTableService extends TableService<
     data: OnChainTableData[];
     total: number;
   }> {
-    const address = this.walletConnector.address;
-
+    // @TODO_530 load history for all connected wallets
+    const address = this.walletConnector.activeWallets[0].address;
     const params: OnChainTableRequest = {
       address,
       page: page + 1,

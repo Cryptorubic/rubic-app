@@ -5,6 +5,7 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { BlockchainName, ChainType } from '@cryptorubic/core';
+import { AddressChangedMsg } from '../models/events';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   public abstract readonly chainType: ChainType;
@@ -55,7 +56,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   }
 
   protected constructor(
-    protected readonly onAddressChanges$: BehaviorSubject<string>,
+    protected readonly onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     protected readonly onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     protected readonly errorsService: ErrorsService,
     protected readonly zone: NgZone,

@@ -15,6 +15,7 @@ import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not
 import { FeatureName } from '@suiet/wallet-sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { AddressChangedMsg } from '../../models/events';
 
 interface WalletChange {
   accounts: WalletAccount[];
@@ -28,7 +29,7 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
   public abstract readonly extensionName: string;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -58,8 +59,13 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
       this.selectedAddress = account.address;
       this.isEnabled = true;
 
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
       this.onNetworkChanges$.next(this.selectedChain);
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next(addressChangedMsg);
 
       this.initSubscriptionsOnChanges();
     } catch (err) {
@@ -100,7 +106,12 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
         }
         this.selectedAddress = changes.accounts?.[0].address || null;
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       }
     );

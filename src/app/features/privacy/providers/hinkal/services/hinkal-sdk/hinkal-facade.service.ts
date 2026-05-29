@@ -84,7 +84,7 @@ export class HinkalFacadeService {
   }
 
   private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
-    if (fromBlockchain !== this.walletConnectorService.network) {
+    if (!this.walletConnectorService.networks.includes(fromBlockchain)) {
       steps.push({
         label: 'Switch network',
         action: () => this.walletConnectorService.switchChain(fromBlockchain)
@@ -111,10 +111,15 @@ export class HinkalFacadeService {
       action: () =>
         this.hinkalSwapService.deposit(token).then(isSuccess => {
           if (isSuccess) {
+            const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+              blockchain: token.blockchain
+            });
+            if (!walletAddr) return;
+
             this.privateStatisticsService.saveAction(
               'SHIELD',
               'HINKAL',
-              this.walletConnectorService.address,
+              walletAddr,
               token.address,
               token.weiAmount.toFixed(),
               token.blockchain
@@ -147,10 +152,15 @@ export class HinkalFacadeService {
       action: () => {
         return this.hinkalSwapService.withdraw(token, receiver).then(isSuccess => {
           if (isSuccess) {
+            const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+              blockchain: token.blockchain
+            });
+            if (!walletAddr) return;
+
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
               'HINKAL',
-              this.walletConnectorService.address,
+              walletAddr,
               token.address,
               token.weiAmount.toFixed(),
               token.blockchain
@@ -181,10 +191,15 @@ export class HinkalFacadeService {
           .privateTransfer(token, receiverPrivateShieldedKey)
           .then(isSuccess => {
             if (isSuccess) {
+              const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+                blockchain: token.blockchain
+              });
+              if (!walletAddr) return;
+
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
                 'HINKAL',
-                this.walletConnectorService.address,
+                walletAddr,
                 token.address,
                 token.weiAmount.toFixed(),
                 token.blockchain
@@ -213,10 +228,15 @@ export class HinkalFacadeService {
       action: () => {
         return this.hinkalSwapService.privateSwap(fromToken, toToken).then(isSuccess => {
           if (isSuccess) {
+            const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+              blockchain: fromToken.blockchain
+            });
+            if (!walletAddr) return;
+
             this.privateStatisticsService.saveAction(
               'PRIVATE_ONCHAIN_SWAP',
               'HINKAL',
-              this.walletConnectorService.address,
+              walletAddr,
               fromToken.address,
               fromToken.weiAmount.toFixed(),
               fromToken.blockchain
@@ -238,13 +258,17 @@ export class HinkalFacadeService {
 
   public async updateInstance(): Promise<void> {
     try {
-      if (!this.walletConnectorService.address) {
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: this._activeChain$.value
+      });
+
+      if (!walletAddr) {
         this.notificationService.showWarning('Wallet not connected');
         return;
       }
 
       const isSuccess = await this.hinkalInstanceService.updateInstance(
-        this.walletConnectorService.address,
+        walletAddr,
         (this._activeChain$.value || BLOCKCHAIN_NAME.ETHEREUM) as EvmBlockchainName
       );
 
@@ -261,12 +285,15 @@ export class HinkalFacadeService {
         skip(1),
         distinctUntilChanged(),
         switchMap(chain => {
+          const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+            blockchain: this._activeChain$.value
+          });
           this._balanceLoading$.next(true);
           return this.hinkalWorkerService
             .request<void>({
               params: {
                 chainId: blockchainId[chain],
-                address: this.walletConnectorService.address
+                address: walletAddr
               },
               type: 'switchNetwork'
             })

@@ -8,7 +8,7 @@ import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/
 import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap/utils/clearswap-quote-adapter';
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, TokenAmount } from '@cryptorubic/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -16,12 +16,12 @@ import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';
 
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { ErrorsService } from '@app/core/errors/errors.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -49,12 +49,12 @@ export class ClearswapSwapPageComponent implements OnInit {
     private readonly clearswapErrorService: ClearswapErrorService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly authService: AuthService,
     private readonly errorService: ErrorsService,
     private readonly privateStatisticsService: PrivateStatisticsService,
     private readonly tokensBalanceService: TokensBalanceService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +75,11 @@ export class ClearswapSwapPageComponent implements OnInit {
         ...swapInfo.fromAsset,
         tokenAmount: swapInfo.fromAmount.actualValue
       });
-      const userAddress = this.authService.userAddress;
+      const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+      const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+      if (!walletAdapter) return;
+
+      const userAddress = walletAdapter.address;
 
       const balance = await this.tokensBalanceService.getAndUpdateTokenBalance(fromToken, 5);
       this.privateSwapWindowService.patchSwapInfo({

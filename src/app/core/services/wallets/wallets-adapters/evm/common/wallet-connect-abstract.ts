@@ -17,13 +17,14 @@ import {
   EthereumProviderOptions,
   IEthereumProvider
 } from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
   protected providerConfig: EthereumProviderOptions;
 
   protected constructor(
     providerConfig: EthereumProviderOptions,
-    accountChange$: BehaviorSubject<string>,
+    accountChange$: BehaviorSubject<AddressChangedMsg>,
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -77,7 +78,13 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
       this.selectedAddress = address;
       this.selectedChain =
         (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
-      this.onAddressChanges$.next(address);
+
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
+      this.onAddressChanges$.next(addressChangedMsg);
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();

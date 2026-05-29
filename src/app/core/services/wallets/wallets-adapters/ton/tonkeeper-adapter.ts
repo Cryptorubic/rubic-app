@@ -7,6 +7,7 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { HttpService } from '@app/core/services/http/http.service';
 import { StoreService } from '@app/core/services/store/store.service';
+import { AddressChangedMsg } from '../../models/events';
 
 export class TonkeeperAdapter extends TonConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TONKEEPER;
@@ -14,7 +15,7 @@ export class TonkeeperAdapter extends TonConnectAbstractAdapter {
   public readonly walletNameUI: string = 'Tonkeeper';
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

@@ -6,6 +6,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { NgZone } from '@angular/core';
 import { BlockchainName } from '@cryptorubic/core';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
+import { AddressChangedMsg } from '../../models/events';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TRUST_WALLET;
@@ -13,7 +14,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletNameUI: string = 'TrustWallet';
 
   constructor(
-    accountChange$: BehaviorSubject<string>,
+    accountChange$: BehaviorSubject<AddressChangedMsg>,
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

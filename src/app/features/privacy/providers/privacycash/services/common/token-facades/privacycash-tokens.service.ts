@@ -123,6 +123,9 @@ export class PrivacycashTokensService {
   }
 
   public async loadBalances(): Promise<void> {
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({ chainType: 'SOLANA' });
+    if (!walletAddr) return;
+
     const pcAllSupportedMinimalTokens: MinimalToken[] = getMinimalTokensByChain('allChains').map(
       token => ({ ...token, address: toPrivacyCashTokenAddr(token.address) })
     );
@@ -130,7 +133,7 @@ export class PrivacycashTokensService {
 
     this.sendMsgToWorker({
       type: 'getBalances',
-      walletAddr: this.walletConnectorService.address,
+      walletAddr,
       tokens: pcAllSupportedMinimalTokens,
       useCache: false
     });

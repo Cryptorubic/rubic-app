@@ -11,7 +11,6 @@ import { TransactionReceipt } from 'viem';
 import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
@@ -33,7 +32,6 @@ export class CommonTableService {
     private readonly http: HttpService,
     private readonly rubicApiService: RubicApiService,
     private readonly adaptersFactory: BlockchainAdapterFactoryService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService
   ) {}
 
@@ -118,7 +116,7 @@ export class CommonTableService {
     );
   }
 
-  public async revertSymbiosis(srcTxHash: string): Promise<TransactionReceipt> {
+  public async revertSymbiosis(walletAddr: string, srcTxHash: string): Promise<TransactionReceipt> {
     let tradeInProgressSubscription$: Subscription;
     let transactionReceipt: TransactionReceipt;
     const onTransactionHash = () => {
@@ -136,13 +134,9 @@ export class CommonTableService {
     };
 
     try {
-      transactionReceipt = await this.sdkService.symbiosis.revertTrade(
-        srcTxHash,
-        this.walletConnectorService.address,
-        {
-          onConfirm: onTransactionHash
-        }
-      );
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, walletAddr, {
+        onConfirm: onTransactionHash
+      });
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {

@@ -24,6 +24,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
+import { AddressChangedMsg } from './core/services/wallets/models/events';
 
 @Component({
   selector: 'app-root',
@@ -71,11 +72,10 @@ export class AppComponent implements AfterViewInit {
     this.walletConnectorService.addressChange$
       .pipe(
         switchIif(
-          () =>
-            this.walletConnectorService.chainType === CHAIN_TYPE.SOLANA &&
-            this.walletConnectorService.provider.walletName === WALLET_NAME.BACKPACK,
-          (address: string) => of(address).pipe(delay(1_000)),
-          (address: string) => of(address)
+          (msg: AddressChangedMsg) =>
+            msg.chainType === CHAIN_TYPE.SOLANA && msg.walletName === WALLET_NAME.BACKPACK,
+          (msg: AddressChangedMsg) => of(msg.address).pipe(delay(1_000)),
+          (msg: AddressChangedMsg) => of(msg.address)
         )
       )
       .subscribe(userAddress => {

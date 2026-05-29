@@ -62,7 +62,6 @@ import { PrivateStatisticsService } from '../../shared-privacy-providers/service
 import { compareTokens } from '@app/shared/utils/utils';
 import { AsyncValidatorFn, FormControl } from '@angular/forms';
 import { isReceiverCorrect } from '../constants/receiver-validator';
-import { EvmWalletAdapter } from '@app/core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
 @Injectable()
 export class HoudiniSwapService {
@@ -134,9 +133,8 @@ export class HoudiniSwapService {
     this.resetCurrentTrade();
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const fromAddress = this.walletConnectorService?.address;
-    const receiverAddress =
-      this.requireReceiverAddress || receiver ? receiver : this.walletConnectorService?.address;
+    const fromAddress = this.walletConnectorService.getActiveWalletAddress({ chainType });
+    const receiverAddress = this.requireReceiverAddress || receiver ? receiver : fromAddress;
 
     const quoteRequest: QuoteRequestInterface = {
       srcTokenBlockchain: fromToken.blockchain,
@@ -245,10 +243,13 @@ export class HoudiniSwapService {
         await this.handleApprove(this.currentTrade, approveCallback);
         await this.handleSwap(this.currentTrade, receiverAddress, true, swapCallback);
 
+        const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+          blockchain: fromToken.blockchain
+        });
         this.privateStatisticsService.saveAction(
           'PRIVATE_CROSSCHAIN_SWAP',
           'HOUDINI',
-          this.walletConnectorService.address,
+          walletAddr,
           fromToken.address,
           fromToken.weiAmount.toFixed(),
           fromToken.blockchain
@@ -543,15 +544,16 @@ export class HoudiniSwapService {
   }
 
   private async switchWalletChainIfNeeded(blockchain: BlockchainName): Promise<void> {
-    if (!this.walletConnectorService?.address || !blockchain) return Promise.resolve();
+    const activeWallets = this.walletConnectorService.activeWallets;
+    if (!activeWallets.length || !blockchain) return Promise.resolve();
 
     const chainType = BlockchainsInfo.getChainType(blockchain);
-    const isEvmWallet = this.walletConnectorService?.provider instanceof EvmWalletAdapter;
+    const evmWalletAdapter = this.walletConnectorService.getActiveProvider({ chainType: 'EVM' });
 
     if (
-      isEvmWallet &&
+      evmWalletAdapter &&
       chainType === CHAIN_TYPE.EVM &&
-      blockchain !== this.walletConnectorService.network
+      blockchain !== evmWalletAdapter.network
     ) {
       await this.walletConnectorService.switchChain(blockchain as EvmBlockchainName);
     }

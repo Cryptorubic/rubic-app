@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { WalletNotConnectedError } from '@cryptorubic/web3';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EncryptionService } from 'privacycash/utils';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, takeUntil } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Injectable()
 export class PrivacycashSignatureService {
@@ -51,17 +51,19 @@ export class PrivacycashSignatureService {
   }
 
   private subscribeOnWalletChanged(): void {
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this._signature$.next(null);
-    });
+    this.walletConnectorService.addressChange$
+      .pipe(
+        filter(msg => msg.chainType === CHAIN_TYPE.SOLANA),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this._signature$.next(null);
+      });
   }
 
   public async makeSignature(): Promise<Uint8Array> {
-    const wallet = this.walletConnectorService.provider?.wallet;
-    const userAddr = this.walletConnectorService.address;
-    const userNetwork = this.walletConnectorService.network;
-
-    if (!userAddr || !wallet || userNetwork !== BLOCKCHAIN_NAME.SOLANA) {
+    const solanaProvider = this.walletConnectorService.getActiveProvider({ chainType: 'SOLANA' });
+    if (!solanaProvider) {
       this.notificationsService.showWarning('Connect solana wallet to sign.');
       throw new WalletNotConnectedError();
     }
@@ -69,7 +71,7 @@ export class PrivacycashSignatureService {
     const encodedMessage = new TextEncoder().encode(`Privacy Money account sign in`);
 
     try {
-      const resp = await wallet.signMessage(encodedMessage, 'utf8');
+      const resp = await solanaProvider.wallet.signMessage(encodedMessage, 'utf8');
       this.setSignature(resp.signature);
       this.encryptionService.deriveEncryptionKeyFromSignature(resp.signature);
       return resp.signature;
@@ -79,16 +81,15 @@ export class PrivacycashSignatureService {
   }
 
   public async checkRequirements(): Promise<void> {
-    const wallet = this.walletConnectorService.provider?.wallet;
-    const userAddr = this.walletConnectorService.address;
-    const connectedChain = this.walletConnectorService.network;
+    const walletConnected = this.walletConnectorService.activeWallets.length > 0;
+    const solanaProvider = this.walletConnectorService.getActiveProvider({ chainType: 'SOLANA' });
 
-    if (!wallet || !userAddr) {
+    if (!walletConnected) {
       const msg = 'Wallet not connected';
       this.notificationsService.showWarning(msg);
       throw new Error(msg);
     }
-    if (connectedChain !== BLOCKCHAIN_NAME.SOLANA) {
+    if (!solanaProvider) {
       const msg = 'SOLANA network not connected';
       this.notificationsService.showWarning(msg);
       throw new Error(msg);

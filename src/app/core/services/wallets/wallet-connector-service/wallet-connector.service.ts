@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
@@ -43,6 +43,7 @@ import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/ev
 import {
   blockchainId,
   BlockchainName,
+  BlockchainsInfo,
   ChainType,
   EvmBlockchainName,
   nativeTokensList
@@ -52,6 +53,7 @@ import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-a
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { WalletsManager } from '../wallets-manager/wallets-manager';
+import { AddressChangedMsg } from '../models/events';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +61,8 @@ import { WalletsManager } from '../wallets-manager/wallets-manager';
 export class WalletConnectorService {
   private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
 
-  private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
+  private readonly addressChangeSubject$: BehaviorSubject<AddressChangedMsg | null> =
+    new BehaviorSubject<AddressChangedMsg | null>(null);
 
   private readonly walletsManager = new WalletsManager();
 
@@ -111,22 +114,38 @@ export class WalletConnectorService {
   // }
 
   public getActiveProvider(
-    options: { chainType?: ChainType; walletName?: WALLET_NAME } = {}
+    options: { chainType?: ChainType; walletName?: WALLET_NAME; blockchain?: BlockchainName } = {}
   ): CommonWalletAdapter | null {
     const walletAdapter = this.activeWallets.find(wallet => {
-      if (options.walletName && options.chainType) {
-        return wallet.walletName === options.walletName && wallet.chainType === options.chainType;
+      let accepted = false;
+      if (options.walletName) {
+        accepted = wallet.walletName === options.walletName;
+        if (!accepted) return false;
       }
-      if (options.walletName) return wallet.walletName === options.walletName;
-      if (options.chainType) return wallet.chainType === options.chainType;
-      return false;
+      if (options.chainType) {
+        accepted = wallet.chainType === options.chainType;
+        if (!accepted) return false;
+      }
+      if (options.blockchain) {
+        accepted = wallet.chainType === BlockchainsInfo.getChainType(options.blockchain);
+        if (!accepted) return false;
+      }
+      return accepted;
     });
     return walletAdapter ?? null;
   }
 
+  public getActiveWalletAddress(
+    options: { chainType?: ChainType; walletName?: WALLET_NAME; blockchain?: BlockchainName } = {}
+  ): string | null {
+    const walletAdapter = this.getActiveProvider(options);
+    return walletAdapter?.address ?? null;
+  }
+
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
-  public readonly addressChange$ = this.addressChangeSubject$.asObservable();
+  public readonly addressChange$: Observable<AddressChangedMsg | null> =
+    this.addressChangeSubject$.asObservable();
 
   constructor(
     private readonly storeService: StoreService,
@@ -311,8 +330,8 @@ export class WalletConnectorService {
     const walletAdapter = this.getActiveProvider({ walletName });
     if (!walletAdapter) return;
 
-    walletAdapter.deactivate();
     this.walletsManager.removeWallet(walletAdapter);
+    walletAdapter.deactivate();
 
     const providers = this.activeWallets.map(wallet => wallet.walletName);
     if (providers.length) {

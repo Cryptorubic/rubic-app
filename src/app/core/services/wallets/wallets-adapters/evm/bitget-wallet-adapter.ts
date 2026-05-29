@@ -20,6 +20,7 @@ import {
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { NgZone } from '@angular/core';
 import { NeedDisableTokenPocketWalletError } from '@app/core/errors/models/provider/token-pocket-enabled-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class BitgetWalletAdapter extends EvmWalletAdapter {
   public get isMultiChainWallet(): boolean {
@@ -37,7 +38,7 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
   }
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -82,7 +83,12 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
       this.selectedAddress = accounts[0] || null;
 
       if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
+        const addressChangedMsg: AddressChangedMsg = {
+          address: this.selectedAddress,
+          chainType: this.chainType,
+          walletName: this.walletName
+        };
+        this.onAddressChanges$.next(addressChangedMsg);
         console.info('Selected account changed to', accounts[0]);
       }
 
@@ -118,8 +124,14 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
       this.isEnabled = true;
       this.selectedChain = BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName;
       [this.selectedAddress] = accounts;
+
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
       this.onNetworkChanges$.next(this.selectedChain);
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next(addressChangedMsg);
 
       this.initSubscriptionsOnChanges();
     } catch (error) {

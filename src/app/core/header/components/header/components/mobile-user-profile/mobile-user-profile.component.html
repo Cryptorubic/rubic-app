@@ -1,67 +1,6 @@
 <div class="mobile-user-profile">
   <div class="mobile-user-profile__card">
-    <div class="mobile-user-profile__card-header">
-      <div class="mobile-user-profile__card-header-account">
-        <ng-container *ngIf="currentUser$ | async as currentUser">
-          <img
-            [src]="currentUser.blockchainIcon"
-            [alt]="currentUser.blockchainName"
-            width="25"
-            height="25"
-          />
-          <span class="mobile-user-profile__card-header-address">{{
-            currentUser.address.length > 20
-              ? (currentUser.address | shortAddress : 6 : 6)
-              : currentUser.address
-          }}</span>
-
-          <div class="mobile-user-profile__card-header-buttons">
-            <button
-              [cdkCopyToClipboard]="currentUser.address"
-              (cdkCopyToClipboardCopied)="onWalletAddressCopied()"
-            >
-              <span
-                *ngIf="!isWalletCopied"
-                class="mobile-user-profile__icon"
-                [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-              ></span>
-              <span
-                *ngIf="isWalletCopied"
-                class="mobile-user-profile__icon"
-                [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
-              ></span>
-            </button>
-            <a
-              [safetyLink]="
-                currentUser.address | scannerLink : currentUser.blockchainName : ADDRESS_TYPE.WALLET
-              "
-            >
-              <div
-                class="mobile-user-profile__icon"
-                [inlineSVG]="'assets/images/icons/scanner.svg'"
-              ></div>
-            </a>
-            <button (click)="logout()">
-              <span
-                class="mobile-user-profile__icon"
-                [inlineSVG]="'assets/images/icons/header/logout.svg'"
-              ></span>
-            </button>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-
-    <div class="mobile-user-profile__card-body">
-      <div class="mobile-user-profile__card-body-title">Balance</div>
-
-      <ng-container *ngLet="currentBalance$ | async as currentBalance">
-        <div class="mobile-user-profile__card-body-balance" [class.tui-skeleton]="!currentBalance">
-          {{ currentBalance?.balance | bigNumberFormat | shortenAmount : 6 : 4 : true }}
-          {{ currentBalance?.symbol }}
-        </div>
-      </ng-container>
-    </div>
+    <app-user-profile-wallets></app-user-profile-wallets>
   </div>
 
   <button

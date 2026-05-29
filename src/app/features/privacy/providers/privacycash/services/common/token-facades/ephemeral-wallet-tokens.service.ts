@@ -61,7 +61,8 @@ export class EphemeralWalletTokensService {
 
   private async fetchEphemeralWalletTokens(): Promise<MinimalTokenWithBalance[]> {
     const adapter = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA);
-    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({ chainType: 'SOLANA' });
+    const senderPK = new PublicKey(walletAddr);
     const ephemeralKeypair =
       await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
         this.privacycashSignatureService.signature,

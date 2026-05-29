@@ -23,9 +23,11 @@ export class SolanaGaslessService {
   public onSwapFormInputChanged(inputValue: SwapFormInput): void {
     const isSrcTokenSelected =
       inputValue.fromToken && inputValue.fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA;
-    const userAddress = this.walletConnectorService.address;
+    const solanaWalletConnected = this.walletConnectorService.activeWallets.some(
+      wallet => wallet.chainType === CHAIN_TYPE.SOLANA
+    );
     if (
-      userAddress &&
+      solanaWalletConnected &&
       isSrcTokenSelected &&
       this.solanaGaslessStateService.madeLessThan5Txs &&
       this.solanaGaslessStateService.showInfo
@@ -57,16 +59,13 @@ export class SolanaGaslessService {
   }
 
   private subscribeOnUserAddressChange(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(userAddress => {
-        const chainType = this.walletConnectorService.chainType;
-        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
-        if (chainType === CHAIN_TYPE.SOLANA) {
-          this.updateGaslessTxCount24Hrs(userAddress);
-        } else {
-          this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
-        }
-      });
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(msg => {
+      if (msg.address) this.solanaGaslessStateService.markInfoAsNotShown();
+      if (msg.chainType === CHAIN_TYPE.SOLANA) {
+        this.updateGaslessTxCount24Hrs(msg.address);
+      } else {
+        this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
+      }
+    });
   }
 }

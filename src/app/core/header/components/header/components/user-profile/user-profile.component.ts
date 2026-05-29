@@ -7,7 +7,6 @@ import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Component({
@@ -79,8 +78,4 @@ export class UserProfileComponent {
   }
 
   public openLimitOrdersModal(): void {}
-
-  public openProfileModal(): void {
-    this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
-  }
 }

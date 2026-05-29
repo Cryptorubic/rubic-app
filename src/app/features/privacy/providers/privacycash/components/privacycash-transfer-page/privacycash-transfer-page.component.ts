@@ -118,9 +118,10 @@ export class PrivacycashTransferPageComponent implements OnInit {
 
       const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
       const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
-      const receiverAddr = this.receiverCtrl.value
-        ? this.receiverCtrl.value
-        : this.walletConnectorService.address;
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: token.blockchain
+      });
+      const receiverAddr = this.receiverCtrl.value ? this.receiverCtrl.value : walletAddr;
 
       const preview$ = openPreview({
         steps: [

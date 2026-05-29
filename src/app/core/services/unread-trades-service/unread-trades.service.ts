@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
+import { BehaviorSubject, combineLatestWith, map } from 'rxjs';
 import { StoreService } from '@core/services/store/store.service';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnreadTradesService {
-  private get userAddress(): string {
-    return this.authService.userAddress;
-  }
-
   private get unreadTrades(): { [address: string]: number } {
     const data = this.storeService.fetchData();
     return data?.['RUBIC_UNREAD_TRADES'];
@@ -20,34 +16,37 @@ export class UnreadTradesService {
     this.unreadTrades
   );
 
-  public readonly unreadTrades$ = this._unreadTrades$
-    .asObservable()
-    .pipe(map(unreadTrades => unreadTrades?.[this.userAddress] || 0));
+  public readonly unreadTrades$ = this._unreadTrades$.asObservable().pipe(
+    combineLatestWith(this.walletConnectorService.activeWallets$),
+    map(([unreadTrades, activeWallets]) =>
+      activeWallets.reduce((acc, wallet) => acc + unreadTrades?.[wallet.address], 0)
+    )
+  );
 
   constructor(
-    private readonly authService: AuthService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
-  public updateUnreadTrades(readAll = false): void {
-    const currentUsersUnreadTrades = this.unreadTrades?.[this.userAddress] || 0;
+  public updateUnreadTrades(walletAddr: string, readAll = false): void {
+    const currentUsersUnreadTrades = this.unreadTrades?.[walletAddr] || 0;
 
     if (readAll) {
       this.storeService.setItem('RUBIC_UNREAD_TRADES', {
         ...this.unreadTrades,
-        [this.userAddress]: 0
+        [walletAddr]: 0
       });
-      this._unreadTrades$.next({ ...this.unreadTrades, [this.userAddress]: 0 });
+      this._unreadTrades$.next({ ...this.unreadTrades, [walletAddr]: 0 });
       return;
     }
 
     this.storeService.setItem('RUBIC_UNREAD_TRADES', {
       ...this.unreadTrades,
-      [this.userAddress]: currentUsersUnreadTrades + 1
+      [walletAddr]: currentUsersUnreadTrades + 1
     });
     this._unreadTrades$.next({
       ...this.unreadTrades,
-      [this.userAddress]: currentUsersUnreadTrades + 1
+      [walletAddr]: currentUsersUnreadTrades + 1
     });
   }
 }

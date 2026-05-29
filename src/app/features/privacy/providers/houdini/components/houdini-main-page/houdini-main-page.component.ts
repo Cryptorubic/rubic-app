@@ -34,10 +34,10 @@ import { PrivateQueryParamsService } from '../../../shared-privacy-providers/ser
 import { List } from 'immutable';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -79,9 +79,9 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly houdiniTokensFacade: HoudiniTokensFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly authService: AuthService,
     private readonly errorService: ErrorsService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.privatePageTypeService.activePage = {
       type: 'swap',
@@ -119,9 +119,13 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
       const chainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         fromToken.blockchain as RubicAny
       );
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: fromToken.blockchain
+      });
+      if (!walletAddr) return;
 
       const isEnoughBalance = await lastValueFrom(
-        defer(() => chainAdapter.checkEnoughBalance(fromToken, this.authService.userAddress)).pipe(
+        defer(() => chainAdapter.checkEnoughBalance(fromToken, walletAddr)).pipe(
           retry({
             count: 5,
             delay: (error, retryCount) => {

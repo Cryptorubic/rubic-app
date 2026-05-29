@@ -19,13 +19,10 @@ export class LoginWindowComponent {
 
   @Output() handleClick = new EventEmitter();
 
-  public readonly currUser$ = this.authService.currentUser$;
-
-  public readonly showConnectWallet$ = this.walletConnectorService.addressChange$.pipe(
+  public readonly showConnectWallet$ = this.walletConnectorService.activeWallets$.pipe(
     map(
-      address =>
-        !address ||
-        !this.supportedWallets.includes(this.walletConnectorService.provider?.walletName)
+      activeWallets =>
+        !activeWallets.some(activeWallet => this.supportedWallets.includes(activeWallet.walletName))
     )
   );
 

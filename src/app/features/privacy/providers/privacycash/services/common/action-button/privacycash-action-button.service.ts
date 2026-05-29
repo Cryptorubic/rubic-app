@@ -6,11 +6,12 @@ import {
 } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
+import { BlockchainName, CHAIN_TYPE, nativeTokensList } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { Observable, combineLatest, filter, switchMap } from 'rxjs';
 import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../../constants/wallets';
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class PrivacycashActionButtonService extends PrivateActionButtonService {
@@ -22,7 +23,9 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
           case 'transfer':
             return combineLatest([
               this.walletConnector.networkChange$,
-              this.walletConnector.addressChange$,
+              this.walletConnector.addressChange$.pipe(
+                filter(msg => msg.chainType === CHAIN_TYPE.SOLANA)
+              ),
               this.privateTransferWindowService.transferAsset$,
               this.privateTransferWindowService.transferAmount$,
               this._receiverAddress$
@@ -41,7 +44,6 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
           case 'reveal':
             return combineLatest([
               this.walletConnector.networkChange$,
-              this.walletConnector.addressChange$,
               this.revealWindowService.revealAsset$,
               this.revealWindowService.revealAmount$,
               this._receiverAddress$
@@ -128,7 +130,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
 
   private async getTransferState(
     network: BlockchainName | null,
-    userAddr: string,
+    addrChangedMsg: AddressChangedMsg,
     transferAsset: BalanceToken | null,
     transferAmount: SwapAmount | null,
     receiver: string
@@ -171,7 +173,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         text: 'Enter receiver address'
       };
     }
-    if (compareAddresses(userAddr, receiver)) {
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
       return {
         type: 'error',
         text: 'Please enter a different wallet as the receiver.'
@@ -194,7 +196,6 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
 
   private async getRevealState(
     network: BlockchainName | null,
-    _userAddr: string,
     revealAsset: BalanceToken | null,
     revealAmount: SwapAmount | null,
     receiver: string

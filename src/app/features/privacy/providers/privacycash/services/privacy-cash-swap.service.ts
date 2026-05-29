@@ -63,7 +63,10 @@ export class PrivacycashSwapService {
     const isSrcNative = Web3Pure.isNativeAddress(rubicSrcToken.blockchain, rubicSrcToken.address);
     const isDstNative = Web3Pure.isNativeAddress(rubicDstToken.blockchain, rubicDstToken.address);
     const isDirectTransfer = compareTokens(srcToken, dstToken);
-    const walletAddr = this.walletConnectorService.address;
+
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: srcToken.blockchain
+    });
 
     if (isDirectTransfer) {
       const directWithdrawFee = await this.estimateDirectWithdrawFee(
@@ -102,7 +105,12 @@ export class PrivacycashSwapService {
 
   // withdraw private-public
   public async transfer(token: TokenAmount, receiverAddr: string): Promise<void> {
-    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: token.blockchain
+    });
+    if (!walletAddr) return;
+
+    const senderPK = new PublicKey(walletAddr);
     const recipientPK = new PublicKey(receiverAddr);
     const feesResp = await this.privacycashApiService.fetchFees();
     const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
@@ -129,7 +137,7 @@ export class PrivacycashSwapService {
     this.privateStatisticsService.saveAction(
       'TRANSFER',
       PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-      this.walletConnectorService.address,
+      walletAddr,
       token.address,
       token.stringWeiAmount,
       token.blockchain,
@@ -140,8 +148,13 @@ export class PrivacycashSwapService {
 
   public async shield(token: TokenAmount): Promise<void> {
     try {
-      const userPK = new PublicKey(this.walletConnectorService.address);
-      const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
+      const walletAdapter = this.walletConnectorService.getActiveProvider({
+        blockchain: token.blockchain
+      });
+      if (!walletAdapter) return;
+
+      const userPK = new PublicKey(walletAdapter.address);
+      const wallet: SolanaWallet = walletAdapter.wallet;
 
       await this.makeDeposit(
         toPrivacyCashTokenAddr(token.address),
@@ -156,7 +169,7 @@ export class PrivacycashSwapService {
       this.privateStatisticsService.saveAction(
         'SHIELD',
         PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
+        walletAdapter.address,
         token.address,
         token.stringWeiAmount,
         token.blockchain,
@@ -171,7 +184,12 @@ export class PrivacycashSwapService {
   }
 
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
-    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: token.blockchain
+    });
+    if (!walletAddr) return;
+
+    const senderPK = new PublicKey(walletAddr);
     const recipientPK = new PublicKey(receiverAddr);
     const feesResp = await this.privacycashApiService.fetchFees();
     const pcTokenSymbol = addr_to_symbol_map[token.address.toLowerCase()];
@@ -200,7 +218,7 @@ export class PrivacycashSwapService {
     this.privateStatisticsService.saveAction(
       'UNSHIELD',
       PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-      this.walletConnectorService.address,
+      walletAddr,
       token.address,
       token.stringWeiAmount,
       token.blockchain,
@@ -223,6 +241,12 @@ export class PrivacycashSwapService {
   ): Promise<void> {
     const successfullSteps: string[] = [];
     const failedSteps: string[] = [];
+
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: srcToken.blockchain
+    });
+    if (!walletAddr) return;
+
     try {
       await this.privacycashSignatureService.checkRequirements();
 
@@ -237,7 +261,7 @@ export class PrivacycashSwapService {
         return;
       }
 
-      const senderPK = new PublicKey(this.walletConnectorService.address);
+      const senderPK = new PublicKey(walletAddr);
       const ephemeralKeypair =
         await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
           this.privacycashSignatureService.signature,
@@ -337,7 +361,7 @@ export class PrivacycashSwapService {
       this.privateStatisticsService.saveAction(
         'PRIVATE_ONCHAIN_SWAP',
         PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
+        walletAddr,
         srcToken.address,
         srcAmountWei.toFixed(),
         srcToken.blockchain,

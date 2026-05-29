@@ -6,6 +6,7 @@ import { blockchainId, BlockchainName } from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import { AddressChangedMsg } from '../../models/events';
 
 export class BestwalletWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.BEST_WALLET;
@@ -13,7 +14,7 @@ export class BestwalletWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletNameUI: string = 'Bestwallet';
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

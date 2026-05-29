@@ -87,7 +87,8 @@ export class CrossChainTableService extends TableService<
     data: CrossChainTableData[];
     total: number;
   }> {
-    const address = this.walletConnector.address;
+    // @TODO_530 load history for all connected wallets
+    const address = this.walletConnector.activeWallets[0].address;
     const filterField = Object.entries(txStatusMapping).find(
       ([, value]) => value.label === statusFilter
     )?.[0];

@@ -6,6 +6,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class CommonSolanaWalletAdapter<
   T extends SolanaWallet
@@ -13,7 +14,7 @@ export abstract class CommonSolanaWalletAdapter<
   public readonly chainType = CHAIN_TYPE.SOLANA;
 
   protected constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

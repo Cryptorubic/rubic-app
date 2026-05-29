@@ -9,6 +9,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { ProviderInterface } from '@coinbase/wallet-sdk';
 import { CoinBaseError } from '@core/errors/models/provider/coinbase-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class CoinBaseWalletAdapter extends EvmWalletAdapter<ProviderInterface> {
   public readonly walletName = WALLET_NAME.COIN_BASE;
@@ -16,7 +17,7 @@ export class CoinBaseWalletAdapter extends EvmWalletAdapter<ProviderInterface> {
   public readonly walletNameUI: string = 'CoinbaseWallet';
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorService: ErrorsService,
     zone: NgZone,

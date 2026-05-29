@@ -9,13 +9,15 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { AddressChangedMsg } from '../../models/events';
+
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
   public readonly walletNameUI: string = 'MetaMask';
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -57,7 +59,13 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       [this.selectedAddress] = accounts;
       this.selectedChain =
         (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
-      this.onAddressChanges$.next(this.selectedAddress);
+
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
+      this.onAddressChanges$.next(addressChangedMsg);
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();

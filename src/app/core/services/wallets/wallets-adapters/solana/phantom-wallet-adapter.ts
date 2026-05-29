@@ -16,6 +16,7 @@ import CustomError from '@core/errors/models/custom-error';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
@@ -25,7 +26,7 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
   public readonly walletNameUI: string = 'Phantom';
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -48,8 +49,13 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
     this.handleDeactivation();
     this.handleAccountChange();
 
+    const addressChangedMsg: AddressChangedMsg = {
+      address: this.selectedAddress,
+      chainType: this.chainType,
+      walletName: this.walletName
+    };
     this.onNetworkChanges$.next(this.selectedChain);
-    this.onAddressChanges$.next(this.selectedAddress);
+    this.onAddressChanges$.next(addressChangedMsg);
   }
 
   private async handleDisconnect(wallet: PhantomWallet): Promise<void> {
@@ -113,7 +119,12 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
       } else {
         this.selectedAddress = address.toBase58();
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       }
     });

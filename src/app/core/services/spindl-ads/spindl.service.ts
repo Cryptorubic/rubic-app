@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import spindl from '@spindl-xyz/attribution';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
-import { BehaviorSubject, distinctUntilChanged, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, Observable } from 'rxjs';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class SpindlService {
   }
 
   constructor(
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
     private readonly httpClient: HttpClient
   ) {}
@@ -42,24 +42,24 @@ export class SpindlService {
 
     spindl.enableAutoPageViews();
 
-    this.authService.currentUser$
-      .pipe(distinctUntilChanged((prev, curr) => prev?.address === curr?.address))
-      .subscribe(user => {
-        if (user?.address) {
-          spindl.attribute(user.address);
+    this.walletConnectorService.activeWallets$
+      .pipe(filter(activeWallets => activeWallets.length > 0))
+      .subscribe(activeWallets => {
+        if (activeWallets.length === 1) {
+          spindl.attribute(activeWallets[0].address);
           // call on first selected wallet
-          if (!this.hasNoContent) this.checkForNoContent();
+          if (!this.hasNoContent) this.checkForNoContent(activeWallets[0].address);
         }
       });
   }
 
-  public sendSwapEvent(txHash: string): void {
-    spindl.track('SWAP', { txHash }, { address: this.authService.userAddress });
+  public sendSwapEvent(txHash: string, walletAddr: string): void {
+    spindl.track('SWAP', { txHash }, { address: walletAddr });
   }
 
-  private async checkForNoContent(): Promise<void> {
+  private async checkForNoContent(walletAddr: string): Promise<void> {
     const placementId = this.headerStore.isMobile ? 'under_swap_mobile' : 'under_swap_desktop';
-    const spindlUrl = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${this.authService.userAddress}`;
+    const spindlUrl = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${walletAddr}`;
     const resp = await firstValueFrom(
       this.httpClient.get<HttpResponse<string>>(spindlUrl, {
         observe: 'response',
