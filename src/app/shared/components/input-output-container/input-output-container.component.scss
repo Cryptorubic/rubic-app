@@ -2,10 +2,10 @@
 
 .io-container {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--tui-padding-m);
   justify-content: center;
   padding: var(--tui-padding-l);
-  flex-wrap: wrap;
 
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
@@ -37,7 +37,7 @@
   }
 }
 
-.io-bottom{
+.io-bottom {
   flex-basis: 100%;
 }
 
