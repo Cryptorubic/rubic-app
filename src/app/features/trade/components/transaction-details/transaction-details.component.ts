@@ -78,11 +78,12 @@ export class TransactionDetailsComponent {
         ? this.settingsService.instantTradeValue
         : this.settingsService.crossChainRoutingValue;
 
+    const walletAddr = this.swapsStateService.currentTrade.trade?.from.blockchain;
     return settings.showReceiverAddress &&
       this.targetAddressService.address &&
       this.swapsStateService.currentTrade.tradeType !== 'WRAPPED'
       ? this.targetAddressService.address
-      : this.walletConnector.address;
+      : walletAddr;
   }
 
   public showSlippageInfo(trade: CrossChainTrade | OnChainTrade): boolean {

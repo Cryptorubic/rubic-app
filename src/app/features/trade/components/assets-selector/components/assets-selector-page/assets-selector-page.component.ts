@@ -39,7 +39,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
-import { AuthService } from '@app/core/services/auth/auth.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -116,7 +116,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly fromAssetsService: FromAssetsService,
     private readonly toAssetsService: ToAssetsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly authService: AuthService
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   ngOnInit(): void {
@@ -149,7 +149,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       combineLatestWith(
         this.tokensSearchQuery$.pipe(distinctUntilChanged()),
         this.balanceLoading$.pipe(filter(loading => !loading)),
-        this.authService.currentUser$
+        this.walletConnectorService.activeWallets$
       ),
       debounceTime(50), // skip many repeated updates at the same time
       switchMap(([type, query, _, __]) =>

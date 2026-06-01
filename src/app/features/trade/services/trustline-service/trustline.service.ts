@@ -90,7 +90,7 @@ export class TrustlineService {
 
   public async checkTrustline(
     trade: CrossChainTrade | OnChainTrade,
-    fromAddress: string,
+    fromAddress?: string,
     receiver?: string
   ): Promise<NeedTrustlineOptions> {
     const { from, to, type } = trade;

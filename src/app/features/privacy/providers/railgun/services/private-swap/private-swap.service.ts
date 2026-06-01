@@ -25,9 +25,9 @@ import {
 import { OutsideZone } from '@shared/decorators/outside-zone';
 import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class PrivateSwapService {
@@ -35,7 +35,7 @@ export class PrivateSwapService {
 
   private readonly railgunFacade = inject(RailgunFacadeService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnector = inject(WalletConnectorService);
 
   private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
@@ -53,8 +53,9 @@ export class PrivateSwapService {
     receiverAddress?: string
   ): Promise<string> {
     const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
-    // const { wallet } = this.mnemonicService.getProviderWallet();
-    const walletAddress = this.authService.userAddress;
+    const walletAddr = this.walletConnector.getActiveWalletAddress({
+      blockchain: fromBlockchain
+    });
 
     const swapData = await this.apiService.quoteBestSwapData({
       srcTokenAddress: tokenFromAddress,
@@ -62,8 +63,8 @@ export class PrivateSwapService {
       srcTokenAmount: Token.fromWei(amountAfterFee.toString(), fromTokenDecimals).toFixed(),
       srcTokenBlockchain: fromBlockchain,
       dstTokenBlockchain: toBlockchain,
-      receiver: receiverAddress || walletAddress,
-      fromAddress: walletAddress,
+      receiver: receiverAddress || walletAddr,
+      fromAddress: walletAddr,
       enableChecks: false
     });
 

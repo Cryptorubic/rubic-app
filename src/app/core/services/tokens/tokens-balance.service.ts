@@ -132,7 +132,11 @@ export class TokensBalanceService {
     },
     maxRetries: number = 0
   ): Promise<BigNumber> {
-    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    let chainType = null;
+    try {
+      chainType = BlockchainsInfo.getChainType(token.blockchain);
+    } catch {}
+    if (!chainType) return new BigNumber(NaN);
     const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
     if (!walletAdapter) return new BigNumber(NaN);
 

@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, delay, first, map } from 'rxjs/operators';
+import { catchError, delay, filter, first, map, startWith } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -71,12 +71,14 @@ export class AppComponent implements AfterViewInit {
   private subscribeOnWalletChanges(): void {
     this.walletConnectorService.addressChange$
       .pipe(
+        filter(msg => Boolean(msg)),
         switchIif(
           (msg: AddressChangedMsg) =>
             msg.chainType === CHAIN_TYPE.SOLANA && msg.walletName === WALLET_NAME.BACKPACK,
           (msg: AddressChangedMsg) => of(msg.address).pipe(delay(1_000)),
           (msg: AddressChangedMsg) => of(msg.address)
-        )
+        ),
+        startWith('')
       )
       .subscribe(userAddress => {
         if (userAddress) this.sdkLoaderService.onAddressChange(userAddress);

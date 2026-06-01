@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { distinctUntilChanged, forkJoin, interval, Observable, of, shareReplay } from 'rxjs';
-import { AuthService } from '@core/services/auth/auth.service';
+import { forkJoin, interval, Observable, of, shareReplay } from 'rxjs';
 import { map, startWith, switchMap, takeWhile } from 'rxjs/operators';
 import { pageState } from '@features/testnet-promo/constants/page-state';
 import { switchIif } from '@shared/utils/utils';
@@ -8,8 +7,8 @@ import { TestnetPromoApiService } from '@features/testnet-promo/services/testnet
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { PageState } from '@features/testnet-promo/interfaces/page-state.interface';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
-import { CHAIN_TYPE } from '@cryptorubic/core';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class TestnetPromoStateService {
@@ -17,19 +16,22 @@ export class TestnetPromoStateService {
 
   public readonly tokensPerAction = 100;
 
-  private readonly currentUser$ = this.authService.currentUser$.pipe(
-    distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
-    map(user => {
-      if (user?.chainType === CHAIN_TYPE.EVM) {
-        return user;
-      }
-      if (user?.address) {
-        this.notificationService.showWrongWalletNotification();
-      }
+  private readonly currentUser$: Observable<{ address: string }> =
+    this.walletConnectorService.activeWallets$.pipe(
+      map(activeWallets => {
+        const evmWalletAdapter = this.walletConnectorService.getActiveProvider({
+          chainType: 'EVM'
+        });
+        if (evmWalletAdapter) {
+          return { address: evmWalletAdapter.address };
+        }
+        if (activeWallets.length) {
+          this.notificationService.showWrongWalletNotification();
+        }
 
-      return { ...user, address: '' };
-    })
-  );
+        return { address: '' };
+      })
+    );
 
   public readonly pageState$: Observable<PageState> = this.currentUser$.pipe(
     switchMap(user => {
@@ -71,10 +73,10 @@ export class TestnetPromoStateService {
   public readonly weekInfo$: Observable<WeekInfo> = this.verification$.pipe(
     switchIif(
       verification => verification?.isVerified,
-      () =>
+      verification =>
         forkJoin([
-          this.apiService.fetchMainnetSwaps(this.authService.userAddress),
-          this.apiService.fetchTestnetSwaps(this.authService.userAddress)
+          this.apiService.fetchMainnetSwaps(verification.address),
+          this.apiService.fetchTestnetSwaps(verification.address)
         ]).pipe(
           map(([mainnet, testnet]) => {
             const combos = Math.min(mainnet.totalTrades, Math.floor(testnet.totalTrades / 5));
@@ -100,7 +102,7 @@ export class TestnetPromoStateService {
   public readonly userProofs$ = this.verification$.pipe(
     switchIif(
       verification => verification?.isVerified,
-      () => this.apiService.fetchProofs(this.authService.userAddress),
+      verification => this.apiService.fetchProofs(verification.address),
       () => of(null)
     ),
     shareReplay(shareReplayConfig)
@@ -111,7 +113,7 @@ export class TestnetPromoStateService {
     .pipe(shareReplay(shareReplayConfig));
 
   constructor(
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly apiService: TestnetPromoApiService,
     private readonly notificationService: TestnetPromoNotificationService
   ) {}

@@ -9,26 +9,36 @@
 
   <div class="body">
     <div class="chain-types">
-      <tui-carousel [draggable]="true" [itemsCount]="6">
+      <button class="chain-types__prev-btn" (click)="prev()">
+        <img src="assets/images/icons/chevron.svg" alt="prev-button" />
+      </button>
+
+      <tui-carousel
+        [draggable]="false"
+        [itemsCount]="ITEMS_PER_SLIDE"
+        [(index)]="currentIdx"
+        [style.--tui-carousel-padding]="'0'"
+      >
         <ng-container *ngFor="let chainType of USER_WALLETS_CHAIN_TYPES">
-          <div
-            *tuiItem
-            [draggable]="false"
-            class="chain-type"
-            [class.chain-type__active]="state.selectedChainType === chainType.value"
-            (click)="selectChainType(chainType.value)"
-          >
-            <button tuiIconButton appearance="secondary" type="button" size="m">
+          <div *tuiItem [draggable]="true" (click)="selectChainType(chainType.value)">
+            <div
+              class="chain-type"
+              [class.chain-type__active]="state.selectedChainType === chainType.value"
+            >
               <img [src]="chainType.img" width="13" height="13" alt="ChainType" />
-              <p>{{ chainType.label }}</p>
-            </button>
+              <div>{{ chainType.label }}</div>
+            </div>
           </div>
         </ng-container>
       </tui-carousel>
+
+      <button class="chain-types__next-btn" (click)="next()">
+        <img src="assets/images/icons/chevron.svg" alt="next-button" />
+      </button>
     </div>
 
     <ng-container>
-      <div *ngIf="state.selectedWallet; else #notConnectedWallet" class="wallet-container">
+      <div *ngIf="state.selectedWallet; else notConnectedWallet" class="wallet-container">
         <div class="wallet-info">
           <div class="name">{{ state.selectedWallet.walletNameUI }} Wallet connected</div>
 
@@ -55,28 +65,33 @@
             </div>
           </div>
 
-          <div class="address">{{ selectedWallet.address | shortAddress : 5 : 7 }}</div>
+          <div *ngIf="state.selectedWallet.address" class="address">
+            {{ state.selectedWallet.address | shortAddress : 5 : 7 }}
+          </div>
         </div>
 
         <div class="actions">
           <button
+            class="actions-btn"
+            [class.actions-btn__active]="addressCopied"
             tuiIconButton
             appearance="secondary"
             type="button"
             size="m"
             (click)="copyAddress(state.selectedWallet.address)"
           >
-            <img width="14" height="14" [src]="getCopyBtnIcon()" />
+            <span [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"></span>
           </button>
 
           <button
+            class="actions-btn"
             tuiIconButton
             appearance="secondary"
             type="button"
             size="m"
             (click)="logoutWallet(state.selectedWallet.walletName)"
           >
-            <img width="14" height="14" src="assets/images/wallets/icons/logout.png" />
+            <img src="assets/images/wallets/icons/logout.png" />
           </button>
         </div>
       </div>

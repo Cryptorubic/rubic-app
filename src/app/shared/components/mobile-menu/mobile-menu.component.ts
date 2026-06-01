@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Injector, Inject } from '@angular/core';
 import { ModalName } from '@app/core/modals/models/mobile-native-options';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -15,10 +16,12 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 export class MobileMenuComponent {
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  public readonly currentUser$ = this.authService.currentUser$;
+  public readonly currentUser$ = this.walletConnectorService.activeWallets$.pipe(
+    map(activeWallets => activeWallets.length > 0)
+  );
 
   constructor(
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly liveChatService: LiveChatService

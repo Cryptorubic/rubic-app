@@ -13,11 +13,11 @@ import { RailgunSupportedChain } from '@features/privacy/providers/railgun/const
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -58,7 +58,7 @@ export class RailgunRevealPageComponent {
 
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly destroy$ = inject(TuiDestroyService);
 
@@ -74,6 +74,11 @@ export class RailgunRevealPageComponent {
 
   public async reveal(params: PrivateEvent): Promise<void> {
     const { balanceToken, token, loadingCallback, openPreview } = params;
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: token.blockchain
+    });
+    if (!walletAddr) return;
+
     try {
       const preview$ = openPreview({
         steps: [
@@ -107,7 +112,7 @@ export class RailgunRevealPageComponent {
               this.privateStatisticsService.saveAction(
                 'UNSHIELD',
                 'RAILGUN',
-                this.authService.userAddress,
+                walletAddr,
                 token.address,
                 token.weiAmount.toFixed(),
                 token.blockchain

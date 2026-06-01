@@ -8,7 +8,6 @@ import {
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
@@ -28,6 +27,7 @@ import {
 import { wrappedNativeTokensList } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetListType } from '@features/trade/models/asset';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-dropdown-options-token',
@@ -58,16 +58,14 @@ export class DropdownOptionsTokenComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
     private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public get canBeAddedToFavorite(): boolean {
     const tokenChainType = BlockchainsInfo.getChainType(this.token.blockchain);
-    const walletChainType = this.authService.userChainType;
-
-    return tokenChainType === walletChainType;
+    return this.walletConnectorService.chainTypes.includes(tokenChainType);
   }
 
   public get showCopyToClipboardOption(): boolean {
@@ -92,7 +90,10 @@ export class DropdownOptionsTokenComponent {
       return;
     }
 
-    if (!this.authService.userAddress) {
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: this.token.blockchain
+    });
+    if (!walletAddr) {
       this.errorsService.catch(new WalletError());
       return;
     }

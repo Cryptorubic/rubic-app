@@ -60,8 +60,8 @@ export class SolanaGaslessService {
 
   private subscribeOnUserAddressChange(): void {
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(msg => {
-      if (msg.address) this.solanaGaslessStateService.markInfoAsNotShown();
-      if (msg.chainType === CHAIN_TYPE.SOLANA) {
+      if (msg?.address) this.solanaGaslessStateService.markInfoAsNotShown();
+      if (msg?.chainType === CHAIN_TYPE.SOLANA) {
         this.updateGaslessTxCount24Hrs(msg.address);
       } else {
         this.solanaGaslessStateService.setGaslessTxCount24hrs(0);

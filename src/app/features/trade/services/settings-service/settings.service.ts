@@ -2,7 +2,6 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
-import { AuthService } from '@core/services/auth/auth.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -22,6 +21,7 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class SettingsService {
@@ -64,7 +64,7 @@ export class SettingsService {
 
   constructor(
     private readonly storeService: StoreService,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: ModalService,
@@ -84,7 +84,7 @@ export class SettingsService {
         this.parseSlippage(slippageIt) ?? this.defaultSlippageTolerance.instantTrades,
       deadline: 20,
       disableMultihops: false,
-      autoRefresh: Boolean(this.authService?.user?.address),
+      autoRefresh: this.walletConnectorService.activeWallets.length > 0,
       showReceiverAddress: false,
       useMevBotProtection: false
     };
@@ -132,9 +132,9 @@ export class SettingsService {
   }
 
   private initSubscriptions(): void {
-    this.authService.currentUser$
+    this.walletConnectorService.activeWallets$
       .pipe(
-        filter(user => Boolean(user?.address)),
+        filter(activeWallets => activeWallets.length > 0),
         tap(() => {
           const itData = this.storeService.getItem('RUBIC_OPTIONS_INSTANT_TRADE');
           if (itData) {
