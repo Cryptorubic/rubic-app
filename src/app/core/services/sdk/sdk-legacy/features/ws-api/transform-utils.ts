@@ -51,6 +51,8 @@ import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cr
 import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
 import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
 import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
+import { SuiApiCrossChainConstructor } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-constructor';
+import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-trade';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -149,6 +151,12 @@ export class TransformUtils {
         sdkLegacyService,
         rubicApiService,
         trustlineTransitTokenAddress
+      );
+    } else if (chainType === CHAIN_TYPE.SUI) {
+      trade = new SuiApiCrossChainTrade(
+        tradeParams as SuiApiCrossChainConstructor,
+        sdkLegacyService,
+        rubicApiService
       );
     }
 
