@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -9,6 +9,7 @@ import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rx
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,7 +26,8 @@ export class UserProfileComponent {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
@@ -58,6 +60,8 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
+  public isCopyClicked: boolean = false;
+
   public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
     map(user => (user?.name ? user.name : user?.address)),
     startWith(this.authService.userAddress)
@@ -86,5 +90,15 @@ export class UserProfileComponent {
 
   public openProfileModal(): void {
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
+  }
+
+  public copyToClipboard(text: string): void {
+    this.navigator.clipboard.writeText(text);
+    this.isCopyClicked = true;
+
+    setTimeout(() => {
+      this.isCopyClicked = false;
+      this.cdr.markForCheck();
+    }, 500);
   }
 }
