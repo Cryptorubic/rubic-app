@@ -1,6 +1,15 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  defaultIfEmpty,
+  finalize,
+  first,
+  firstValueFrom,
+  Observable,
+  of
+} from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -526,12 +535,13 @@ export class ModalService {
     );
   }
 
-  public openMetamaskModal(): Promise<WALLET_NAME> {
+  public openMetamaskModal(walletsToHide: WALLET_NAME[] = []): Promise<WALLET_NAME> {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
         closeable: true,
-        fitContent: true
+        fitContent: true,
+        data: { walletsToHide }
       })
     );
   }
@@ -550,7 +560,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(PrivacyDisclaimerModalComponent, {
         size: 's'
-      })
+      }).pipe(defaultIfEmpty(false)) as Observable<boolean>
     );
   }
 }

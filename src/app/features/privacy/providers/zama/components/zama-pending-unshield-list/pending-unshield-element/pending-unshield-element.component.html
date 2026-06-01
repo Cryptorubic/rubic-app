@@ -1,0 +1,35 @@
+<div class="token-card-container">
+  <div class="token-card">
+    <div class="token-card__image-container">
+      <img
+        class="token-card__image-container-token"
+        [src]="token.image || DEFAULT_TOKEN_IMAGE"
+        [alt]="token.name"
+        (error)="onImageError($event)"
+      />
+    </div>
+
+    <div class="token-card__symbol-name-container">
+      <div class="token-card__symbol-container">
+        <span class="token-card__symbol"
+          >{{ token.decryptedNonWeiAmount | bigNumberFormat }}
+          {{ token.symbol | shortenAmount : 6 : 4 }}</span
+        >
+      </div>
+
+      <span class="token-card__name">{{ token.symbol }}</span>
+    </div>
+
+    <div class="token-card__right">
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        (click)="finalizeUnwrap()"
+        [showLoader]="unwrapLoading$ | async"
+      >
+        Complete Unshielding
+      </button>
+    </div>
+  </div>
+</div>

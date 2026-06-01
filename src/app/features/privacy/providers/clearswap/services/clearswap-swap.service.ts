@@ -6,7 +6,6 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
-import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
@@ -25,6 +24,9 @@ import {
   switchMap,
   takeWhile
 } from 'rxjs';
+import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { SdkService } from '@app/core/services/sdk/sdk.service';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -37,7 +39,7 @@ export class ClearswapSwapService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly clearswapTokensFacadeService: ClearswapTokensFacadeService
+    private readonly sdkService: SdkService
   ) {}
 
   public async quote(
@@ -83,7 +85,7 @@ export class ClearswapSwapService {
     fromToken: TokenAmount<BlockchainName>,
     toToken: Token,
     receiver: string
-  ): Promise<void> {
+  ): Promise<PrivateActionRes> {
     try {
       const swapResponse = await lastValueFrom(
         defer(() =>
@@ -165,7 +167,7 @@ export class ClearswapSwapService {
       );
 
       if (apiResponse.status === CLEARSWAP_STATUS.SUCCESS) {
-        this.notificationsService.showSuccess('The operation was successful.');
+        return { txScannerUrl: getScannerUrl(toToken, apiResponse.destTxHash) };
       } else {
         if (txStatus === TX_STATUS.FAIL) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txHash);

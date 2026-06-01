@@ -23,14 +23,7 @@
         (onSelect)="onPageSelect($event)"
       ></app-page-navigation>
 
-      <div class="privacy-content">
-        <app-railgun-wallet-loading
-          *ngIf="data.activePage.type !== 'login' && (data.showBalanceLoading || data.poiLoading)"
-          [@fadeAnimation]
-          [utxoScan]="data.utxoScan"
-          [poiLoading]="data.poiLoading"
-        ></app-railgun-wallet-loading>
-
+      <div class="privacy-content" [style.width.px]="data.activePage.type === 'login' ? 360 : 600">
         <app-railgun-login-page
           *ngIf="data.activePage.type === 'login'"
           [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
@@ -38,6 +31,13 @@
           (formSubmit)="onSubmit($event)"
           [loading]="data.railgunEngineLoading"
         ></app-railgun-login-page>
+
+        <app-railgun-wallet-loading
+          *ngIf="data.activePage.type !== 'login' && (data.showBalanceLoading || data.poiLoading)"
+          [@fadeAnimation]
+          [utxoScan]="data.utxoScan"
+          [poiLoading]="data.poiLoading"
+        ></app-railgun-wallet-loading>
 
         <app-railgun-account-info
           *ngIf="data.activePage.type === 'wallet' && data.railgunAccount?.railgunAddress"
