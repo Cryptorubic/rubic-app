@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, compareAddresses, Token } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-reveal-facade.service';
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
@@ -18,6 +18,7 @@ import { RailgunPrivateActionButtonService } from '@features/privacy/providers/r
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -77,6 +78,31 @@ export class RailgunRevealPageComponent implements OnInit {
     this.railgunFacade.completedChains$
       .pipe(takeUntil(this.destroy$))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
+
+    this.railgunFacade.balancesSnapshot$
+      .pipe(
+        filter(() => !!this.windowService.revealAsset?.address),
+        map(shieldBalances => {
+          const balances =
+            shieldBalances[this.windowService.revealAsset?.blockchain as RailgunSupportedChain]
+              ?.Spendable?.erc20Amounts || [];
+
+          return balances.find(balance =>
+            compareAddresses(balance.tokenAddress, this.windowService.revealAsset.address)
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(shieldBalance => {
+        const revealAsset = this.windowService.revealAsset;
+
+        this.windowService.setRevealAsset({
+          ...revealAsset,
+          amount: shieldBalance
+            ? Token.fromWei(shieldBalance.amount.toString(), revealAsset.decimals)
+            : new BigNumber(0)
+        });
+      });
   }
 
   public async reveal(params: PrivateEvent): Promise<void> {
