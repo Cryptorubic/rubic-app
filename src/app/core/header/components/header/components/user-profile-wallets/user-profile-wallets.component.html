@@ -40,7 +40,7 @@
     <ng-container>
       <div *ngIf="state.selectedWallet; else notConnectedWallet" class="wallet-container">
         <div class="wallet-info">
-          <div class="name">{{ state.selectedWallet.walletNameUI }} Wallet connected</div>
+          <div class="name">{{ state.selectedWallet.walletNameUI }} wallet connected</div>
 
           <div class="central-part">
             <div class="central-part__left">
@@ -102,9 +102,9 @@
     </ng-container>
 
     <div class="button-wrapper">
-      <app-rubic-button fullWidth appearance="primary" (click)="connectWallet()">
+      <button tuiButton type="button" size="m" (click)="connectWallet()" [appearance]="'primary'">
         {{ state.selectedWallet ? 'Connect new wallet' : 'Select chain and wallet' }}
-      </app-rubic-button>
+      </button>
     </div>
   </div>
 </div>

@@ -1,19 +1,15 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
-import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
-import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
-import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/coin-base-wallet-adapter';
+
 import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -21,25 +17,9 @@ import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-s
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
-import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
-import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
-import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
-import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
-import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
-import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
-import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
-import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
-import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
-import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
-import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
-import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
-import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
-import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
-import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/binance-wallet-adapter';
 import {
   blockchainId,
   BlockchainName,
@@ -48,23 +28,23 @@ import {
   EvmBlockchainName,
   nativeTokensList
 } from '@cryptorubic/core';
-import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
-import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
-import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
-import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { WalletsManager } from '../wallets-manager/wallets-manager';
+import { WalletAdapterFactory } from './wallet-adapter-factory';
 import { AddressChangedMsg } from '../models/events';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletConnectorService {
-  private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
+  // private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
 
-  private readonly addressChangeSubject$: BehaviorSubject<AddressChangedMsg | null> =
-    new BehaviorSubject<AddressChangedMsg | null>(null);
+  // private readonly addressChangeSubject$: BehaviorSubject<AddressChangedMsg | null> =
+  //   new BehaviorSubject<AddressChangedMsg | null>(null);
 
-  private readonly walletsManager = new WalletsManager();
+  private readonly walletsManager: WalletsManager;
+
+  // private readonly walletAdapterFactory: WalletAdapterFactory = null;
+  private readonly walletAdapterFactory: WalletAdapterFactory;
 
   /**
    * @TODO_530 вместо privateProvider будут walletsManager.activeWallets
@@ -75,7 +55,7 @@ export class WalletConnectorService {
     return this.walletsManager.activeWallets;
   }
 
-  public readonly activeWallets$ = this.walletsManager.activeWallets$;
+  public readonly activeWallets$: Observable<CommonWalletAdapter[]>;
 
   // public get address(): string {
   //   return this.provider?.address;
@@ -142,10 +122,14 @@ export class WalletConnectorService {
     return walletAdapter?.address ?? null;
   }
 
-  public readonly networkChange$ = this.networkChangeSubject$.asObservable();
+  // public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
-  public readonly addressChange$: Observable<AddressChangedMsg | null> =
-    this.addressChangeSubject$.asObservable();
+  // public readonly addressChange$: Observable<AddressChangedMsg | null> =
+  //   this.addressChangeSubject$.asObservable();
+
+  public readonly networkChange$: Observable<BlockchainName>;
+
+  public readonly addressChange$: Observable<AddressChangedMsg>;
 
   constructor(
     private readonly storeService: StoreService,
@@ -155,7 +139,19 @@ export class WalletConnectorService {
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone,
     private readonly modalsService: ModalService
-  ) {}
+  ) {
+    this.walletAdapterFactory = new WalletAdapterFactory(
+      storeService,
+      errorService,
+      httpService,
+      zone,
+      window
+    );
+    this.walletsManager = new WalletsManager();
+    this.activeWallets$ = this.walletsManager.activeWallets$;
+    this.networkChange$ = this.walletAdapterFactory.networkChange$;
+    this.addressChange$ = this.walletAdapterFactory.addressChange$;
+  }
 
   public checkIfSafeEnv(): boolean {
     const params = new URLSearchParams(this.window.location.search);
@@ -165,7 +161,7 @@ export class WalletConnectorService {
   /**
    * Setups provider based on local storage.
    */
-  public async setupProvider(): Promise<boolean> {
+  public async setupProviders(): Promise<boolean> {
     const isSafeEnv = this.checkIfSafeEnv();
     console.info('isSafeEnv: ', isSafeEnv);
 
@@ -176,143 +172,32 @@ export class WalletConnectorService {
 
     if (isSafeEnv) {
       this.connectProvider(WALLET_NAME.SAFE);
+      const walletAdapter = this.getActiveProvider({ walletName: WALLET_NAME.SAFE });
+      this.activate(walletAdapter);
     } else {
-      for (const provider of providers) this.connectProvider(provider);
+      providers.forEach(provider => {
+        this.connectProvider(provider);
+        const walletAdapter = this.getActiveProvider({ walletName: provider });
+        this.activate(walletAdapter);
+      });
     }
 
     return true;
   }
 
   public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
-    const walletAdapter = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
-    // this.privateProvider = walletAdapter;
+    const walletAdapter = this.walletAdapterFactory.createWalletAdapter(
+      walletName,
+      this.isIos,
+      chainId || this._selectedChainId
+    );
+    const sameChainWallet = this.activeWallets.find(
+      wallet => wallet.chainType === walletAdapter.chainType
+    );
+    if (sameChainWallet) {
+      this.deactivate(sameChainWallet.walletName);
+    }
     this.walletsManager.addWallet(walletAdapter);
-  }
-
-  private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
-    const defaultConstructorParameters = [
-      this.addressChangeSubject$,
-      this.networkChangeSubject$,
-      this.errorService,
-      this.zone,
-      this.window
-    ] as const;
-
-    if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.METAMASK_SOLANA) {
-      return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
-    }
-
-    if (walletName === WALLET_NAME.WALLET_CONNECT) {
-      return new WalletConnectAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.BITGET) {
-      return new BitgetWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.COIN_BASE) {
-      return new CoinBaseWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.ARGENT) {
-      return new ArgentWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.TRUST_WALLET) {
-      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
-    }
-
-    if (walletName === WALLET_NAME.TRON_LINK) {
-      return new TronLinkAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.PHANTOM) {
-      return new PhantomWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.SOLFLARE) {
-      return new SolflareWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.SAFE) {
-      return new SafeWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.TOKEN_POCKET) {
-      return new TokenPocketWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.TON_CONNECT) {
-      return new TonConnectAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.MY_TON_WALLET) {
-      return new MyTonWalletAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.TONKEEPER) {
-      return new TonkeeperAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.TELEGRAM_WALLET) {
-      return new TelegramWalletAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.CTRL) {
-      return new CtrlWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.SLUSH) {
-      return new SlushWalletAdapter(...defaultConstructorParameters);
-    }
-    if (walletName === WALLET_NAME.SUIET_WALLET) {
-      return new SuietWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.HOLD_STATION) {
-      return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
-    }
-
-    if (walletName === WALLET_NAME.BINANCE_WALLET) {
-      return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
-    }
-
-    if (walletName === WALLET_NAME.BACKPACK) {
-      return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
-    }
-
-    if (walletName === WALLET_NAME.LOBSTR) {
-      return new LobstrWalletAdapter(...defaultConstructorParameters, this.storeService);
-    }
-
-    if (walletName === WALLET_NAME.FREIGHTER) {
-      return new FreighterWalletAdapter(...defaultConstructorParameters);
-    }
-    if (walletName === WALLET_NAME.STELLAR_WALLET_CONNECT) {
-      return new StellarWalletConnectAdapter(...defaultConstructorParameters);
-    }
-
-    this.errorService.catch(new WalletNotInstalledError());
   }
 
   public async activate(provider: CommonWalletAdapter): Promise<void> {
@@ -340,29 +225,6 @@ export class WalletConnectorService {
       this.storeService.deleteItem('RUBIC_PROVIDERS');
     }
   }
-
-  // public getBlockchainsBasedOnWallet(): BlockchainName[] {
-  //   if (this.chainType === CHAIN_TYPE.EVM) {
-  //     return Object.values(EVM_BLOCKCHAIN_NAME);
-  //   }
-  //   if (this.chainType === CHAIN_TYPE.TRON) {
-  //     return [BLOCKCHAIN_NAME.TRON];
-  //   }
-  //   if (this.chainType === CHAIN_TYPE.SOLANA) {
-  //     return [BLOCKCHAIN_NAME.SOLANA];
-  //   }
-  //   if (this.chainType === CHAIN_TYPE.TON) {
-  //     return [BLOCKCHAIN_NAME.TON];
-  //   }
-  //   if (this.chainType === CHAIN_TYPE.BITCOIN) {
-  //     return [BLOCKCHAIN_NAME.BITCOIN];
-  //   }
-  //   if (this.chainType === CHAIN_TYPE.STELLAR) {
-  //     return [BLOCKCHAIN_NAME.STELLAR];
-  //   }
-
-  //   throw new Error('Blockchain is not supported');
-  // }
 
   /**
    * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
