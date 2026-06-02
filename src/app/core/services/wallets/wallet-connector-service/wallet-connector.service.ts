@@ -110,6 +110,10 @@ export class WalletConnectorService {
     return params.has('useSafe') ? params.get('useSafe') === 'true' : false;
   }
 
+  public isWeb3AuthWallet(): boolean {
+    return this.provider?.walletName === WALLET_NAME.WEB3AUTH;
+  }
+
   /**
    * Setups provider based on local storage.
    */

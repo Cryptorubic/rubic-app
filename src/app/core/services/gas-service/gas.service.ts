@@ -15,6 +15,7 @@ import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME, BlockchainName, Token } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
+import { Web3AuthWalletAdapter } from '@core/services/wallets/wallets-adapters/web3-auth-wallet-adapter';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -151,6 +152,26 @@ export class GasService {
         }
       };
     }
+
+    if (this.walletConnectorService.isWeb3AuthWallet()) {
+      const userOpGas = await (
+        this.walletConnectorService.provider as Web3AuthWalletAdapter
+      ).getUserOperationGasPrice();
+      if (userOpGas) {
+        return {
+          shouldCalculateGasPrice: true,
+          gasPriceOptions: userOpGas
+        };
+      }
+      return {
+        shouldCalculateGasPrice: false,
+        gasPriceOptions: {
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined
+        }
+      };
+    }
+
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     if (!shouldCalculateGasPrice) {
