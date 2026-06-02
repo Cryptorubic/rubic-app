@@ -73,7 +73,7 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
           this.wallet = await EthereumProvider.init({
             ...this.providerConfig
           });
-          this.initMobileSubscription(this.device === 'ios');
+          this.initMobileSubscription();
 
           const [address] = await this.wallet.enable();
           const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
@@ -139,57 +139,11 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
   /**
    * Subscribes to wallet connect deep link url and redirects after getting.
    */
-  private initMobileSubscription(isIos: boolean): void {
-    // @ts-ignore
+  private initMobileSubscription(): void {
+    //@ts-ignore
     this.wallet.on('display_uri', (uri: string) => {
       const encodedUri = encodeURIComponent(uri);
-
-      if (isIos) {
-        this.openOnIos(encodedUri);
-      } else {
-        this.openOnAndroid(encodedUri);
-      }
+      this.window.location.href = `metamask://wc?uri=${encodedUri}`;
     });
-  }
-
-  /**
-   * Android opens the app via an `intent://` URL. The OS handles the
-   * "app not installed" case natively through `browser_fallback_url`,
-   * so no timers or visibility tracking are needed.
-   */
-  private openOnAndroid(encodedUri: string): void {
-    const fallback = encodeURIComponent(this.metamaskLinks.playStore);
-    this.window.location.href =
-      `intent://wc?uri=${encodedUri}` +
-      `#Intent;scheme=metamask;package=${this.metamaskLinks.androidPackage};` +
-      `S.browser_fallback_url=${fallback};end`;
-  }
-
-  /**
-   * iOS has no native fallback for custom schemes, so we open the app and
-   * watch for the page going to the background. If it never does, the app
-   * isn't installed and we redirect to the App Store.
-   */
-  private openOnIos(encodedUri: string): void {
-    const { document } = this.window;
-    let wentToBackground = false;
-
-    const onHidden = (): void => {
-      wentToBackground = true;
-    };
-    document.addEventListener('visibilitychange', onHidden, { once: true });
-
-    const redirectToStore = setTimeout(() => {
-      const appOpened = wentToBackground || document.hidden;
-      if (!appOpened) {
-        this.window.location.href = this.metamaskLinks.appStore;
-      }
-    }, this.fallbackDelay);
-
-    document.addEventListener('visibilitychange', () => clearTimeout(redirectToStore), {
-      once: true
-    });
-
-    this.window.location.href = this.metamaskLinks.scheme(encodedUri);
   }
 }
