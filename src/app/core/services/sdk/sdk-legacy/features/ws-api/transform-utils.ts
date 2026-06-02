@@ -51,6 +51,10 @@ import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cr
 import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
 import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
 import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
+import {
+  BITCOIN_PK_REQUIRED_PROVIDERS,
+  BtcTradeTypeRequiringPK
+} from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/bitcoin-pk-required-providers';
 import { SuiApiCrossChainConstructor } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-constructor';
 import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-trade';
 
@@ -83,13 +87,13 @@ export class TransformUtils {
 
     let trade: CrossChainTrade | null = null;
 
-    const needProvidePubKey =
-      tradeType === CROSS_CHAIN_TRADE_TYPE.TELE_SWAP &&
-      tradeParams.from.blockchain === BLOCKCHAIN_NAME.BITCOIN;
-
     const isTransferTrade =
       transferTradeSupportedProviders.includes(tradeType as TransferTradeType) &&
       chainType !== CHAIN_TYPE.EVM;
+
+    const needProvidePubKey =
+      BITCOIN_PK_REQUIRED_PROVIDERS.includes(tradeType as BtcTradeTypeRequiringPK) &&
+      tradeParams.from.blockchain === BLOCKCHAIN_NAME.BITCOIN;
 
     if (isTransferTrade) {
       trade = new ApiCrossChainTransferTrade(tradeParams, sdkLegacyService, rubicApiService);

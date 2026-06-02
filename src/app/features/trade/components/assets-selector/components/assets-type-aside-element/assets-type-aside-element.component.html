@@ -17,7 +17,7 @@
       <span class="icon-label">{{ blockchainItem.label }}</span>
     </div>
 
-    <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
+    <ng-container *ngIf="!isMobile && !hidePromoBadges && getBlockchainTag(blockchainItem) as tag">
       <app-blockchains-promo-badge
         [tag]="tag"
         [blockchain]="blockchainItem.name"

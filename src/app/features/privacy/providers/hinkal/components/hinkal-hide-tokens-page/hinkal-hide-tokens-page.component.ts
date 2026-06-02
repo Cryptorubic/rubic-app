@@ -41,8 +41,7 @@ export class HinkalHideTokensPageComponent {
         ...HINKAL_DEFAULT_CREATION_CONFIG,
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
-          listType: chain,
-          platformLoading$: this.hinkalFacadeService.balanceLoading$
+          listType: chain
         }
       };
     })

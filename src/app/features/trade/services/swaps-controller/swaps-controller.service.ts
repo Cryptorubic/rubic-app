@@ -227,16 +227,24 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken?.blockchain === toToken?.blockchain) {
-            return this.onChainService.calculateTrades([
-              ...this.disabledTradesTypes.onChain,
-              ...onChainBlacklistProviders
-            ]);
-          }
-          return this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
+          const trades$ =
+            fromToken?.blockchain === toToken?.blockchain
+              ? this.onChainService.calculateTrades([
+                  ...this.disabledTradesTypes.onChain,
+                  ...onChainBlacklistProviders
+                ])
+              : this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
+
+          return from(trades$).pipe(
+            catchError(err => {
+              console.debug(err);
+              return of(null);
+            })
+          );
         }),
         catchError(err => {
           console.debug(err);
+          this.refreshService.setStopped();
           return of(null);
         })
       )
@@ -574,6 +582,7 @@ export class SwapsControllerService {
 
   public handleWs(): Subscription[] {
     this.socketSubs.forEach(sub => sub.unsubscribe());
+    this.socketSubs.length = 0;
 
     const sub1 = this.rubicApiService.handleWsExceptions().subscribe(needRecalculate => {
       if (needRecalculate) {

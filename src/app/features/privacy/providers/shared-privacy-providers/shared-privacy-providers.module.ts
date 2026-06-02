@@ -18,7 +18,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
@@ -71,6 +70,8 @@ import { PrivateQueryParamsService } from './services/query-params/private-query
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { MobileStubComponent } from './components/mobile-stub/mobile-stub.component';
 import { RouterModule } from '@angular/router';
+import { PrivateGasTokenService } from './services/gas-token-service/gas-token.service';
+import { PresetAmountListComponent } from './components/preset-amount-list/preset-amount-list.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { RouterModule } from '@angular/router';
     LoginWindowComponent,
     DepositStatusInfoComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PresetAmountListComponent
   ],
   imports: [
     CommonModule,
@@ -130,13 +132,13 @@ import { RouterModule } from '@angular/router';
     SwitchNetworkPageComponent,
     LoginWindowComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PrivateActionButtonComponent
   ],
   providers: [
     SwapsFormService,
     PreviewSwapService,
     SwapsStateService,
-    SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,
@@ -163,7 +165,8 @@ import { RouterModule } from '@angular/router';
     RevealWindowService,
     PrivateRefundWindowService,
     PrivateQueryParamsService,
-    PrivateStatisticsService
+    PrivateStatisticsService,
+    PrivateGasTokenService
   ]
 })
 export class SharedPrivacyProvidersModule {}

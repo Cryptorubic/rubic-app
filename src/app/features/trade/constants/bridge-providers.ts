@@ -251,6 +251,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Owlto'
   },
   //PPPPPPPPPPPPPPP
+  pact_swap: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}pactswap.svg`,
+    name: 'PactSwap'
+  },
   polygon: {
     averageTime: 5,
     color: '#5d25ba',
@@ -348,6 +354,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#999999',
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate V2'
+  },
+  stealthex: {
+    averageTime: 5,
+    color: '#yellow',
+    image: `${imageBasePath}stealthex.png`,
+    name: 'Stealthex'
   },
   symbiosis: {
     averageTime: 5,

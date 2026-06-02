@@ -2,4 +2,5 @@ import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/mo
 
 export interface WalletsModalOptions {
   providers?: WALLET_NAME[];
+  direction?: 'column' | 'row';
 }

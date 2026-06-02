@@ -10,7 +10,7 @@ import {
   Self
 } from '@angular/core';
 import { PrivateEvent } from '../../models/private-event';
-import { BehaviorSubject, combineLatestWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, filter, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -23,6 +23,7 @@ import { SwapAmount } from '../../models/swap-info';
 import { PrivateTransferFormConfig } from '../../models/swap-form-types';
 import { FormControl } from '@angular/forms';
 import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
+import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 
 @Component({
   selector: 'app-transfer-tokens-window',
@@ -46,6 +47,10 @@ export class TransferTokensWindowComponent implements OnInit {
 
   @Output() public formChanged = new EventEmitter<PrivateTransferInfo>();
 
+  @Input() private customHandleMaxButton = false;
+
+  @Output() public maxButtonClick = new EventEmitter<void>();
+
   public readonly transferAsset$ = this.privateTransferWindowService.transferAsset$;
 
   public readonly transferAmount$ = this.privateTransferWindowService.transferAmount$;
@@ -65,6 +70,22 @@ export class TransferTokensWindowComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+
+    this.privateTransferWindowService.transferAsset$
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .subscribe(token => {
+        this.receiverCtrl.clearAsyncValidators();
+        this.receiverCtrl.setAsyncValidators(
+          getCorrectAddressValidator(
+            {
+              fromAssetType: token.blockchain,
+              validatedChain: token.blockchain
+            },
+            { requiredReceiver: true }
+          )
+        );
+        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
   }
 
   private subscribeOnFormInputChanged(): void {
@@ -92,6 +113,11 @@ export class TransferTokensWindowComponent implements OnInit {
   }
 
   public handleMaxButton(): void {
+    if (this.customHandleMaxButton) {
+      this.maxButtonClick.emit();
+      return;
+    }
+
     const token = this.privateTransferWindowService.transferAsset;
     this.privateTransferWindowService.setTransferAmount({
       visibleValue: token.amount.toString(),

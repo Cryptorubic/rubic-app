@@ -43,27 +43,14 @@ export class ProxyFeeService {
   ): Promise<string> {
     try {
       const referrer = this.sessionStorage.getItem('referrer');
-      if (
-        fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
-        toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
-      ) {
-        if (referrer) {
-          const referralIntegrator = await this.getIntegratorByReferralName(referrer);
-
-          if (referralIntegrator) return referralIntegrator;
-        }
-        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
-      }
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
 
       if (isWrapUnwrap(fromToken, toToken)) {
         return percentAddress.zeroFee;
       }
 
-      const isBeraSwap =
-        (fromToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN ||
-          toToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN) &&
-        fromPriceAmount.isFinite();
+      if (fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA)
+        return this.getNonEvmIntegratorAddress(fromToken, toToken, referrer);
 
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referrer) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
@@ -89,8 +76,7 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
-        // BERA SWAP, REMOVE AFTER PROMO
-        if (isBeraSwap && percentAddress[feeValue] !== percentAddress.zeroFee) {
+        if (percentAddress[feeValue] !== percentAddress.zeroFee) {
           return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
         }
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
@@ -102,8 +88,7 @@ export class ProxyFeeService {
         throw new Error('Limit not found');
       }
 
-      // BERA SWAP, REMOVE AFTER PROMO
-      if (isBeraSwap && percentAddress[suitableLimit.type] !== percentAddress.zeroFee) {
+      if (percentAddress[suitableLimit.type] !== percentAddress.zeroFee) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
       }
 
@@ -218,6 +203,44 @@ export class ProxyFeeService {
       return null;
     } catch {
       return null;
+    }
+  }
+
+  private async getNonEvmIntegratorAddress(
+    fromToken: PriceToken,
+    toToken: PriceToken,
+    referrer: string | null
+  ): Promise<string> {
+    try {
+      if (referrer) {
+        const referralIntegrator = await this.getIntegratorByReferralName(referrer);
+
+        if (referralIntegrator) return referralIntegrator;
+      }
+
+      const fromType = this.getTokenType(fromToken);
+      if (!fromType) {
+        throw new Error('Failed to fetch token from backend');
+      }
+      const toType = this.getTokenType(toToken);
+      if (!toType) {
+        throw new Error('Failed to fetch token from backend');
+      }
+
+      const specificTokenType = `${fromType}_${toType}`;
+
+      const swapType =
+        fromToken.blockchain === toToken.blockchain
+          ? onChainTokenTypeMapping[specificTokenType as OnChainTokenTypes]
+          : crossChainTokenTypeMapping[specificTokenType as CrossChainTokenType];
+
+      const integratorAddress =
+        swapType === 'stableSwap' || swapType === 'nativeStableSwap'
+          ? percentAddress.zeroFee
+          : percentAddress.default;
+      return this.handlePromoIntegrator(fromToken, toToken, integratorAddress);
+    } catch {
+      return percentAddress.default;
     }
   }
 }

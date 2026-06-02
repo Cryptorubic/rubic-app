@@ -39,6 +39,12 @@ export class PrivacyMainPageService {
     return this.form.value as PrivacyFormValue;
   }
 
+  private readonly _prevFormValue$ = new BehaviorSubject<PrivacyFormValue | null>(null);
+
+  public get prevFormValue(): PrivacyFormValue | null {
+    return this._prevFormValue$.value;
+  }
+
   public readonly swapInfo$ = defer(() =>
     this.form.valueChanges.pipe(
       distinctUntilChanged(),
@@ -47,7 +53,7 @@ export class PrivacyMainPageService {
     )
   );
 
-  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.ON_CHAIN);
+  private readonly _selectedTab$ = new BehaviorSubject<PrivateModeTab>(PRIVATE_MODE_TAB.TRANSFER);
 
   public readonly selectedTab$ = this._selectedTab$.asObservable();
 
@@ -106,6 +112,7 @@ export class PrivacyMainPageService {
   }
 
   public patchFormValue(value: Partial<PrivacyFormValue>): void {
+    this._prevFormValue$.next(this.formValue);
     this.form.patchValue(value);
   }
 

@@ -100,7 +100,11 @@ export class ZamaTransferTokensPageComponent {
         this.receiverCtrl.value
       );
 
-      const preview$ = openPreview({ steps, dstTokenAmount: token.tokenAmount.toFixed() });
+      const preview$ = openPreview({
+        steps,
+        dstTokenAmount: token.tokenAmount.toFixed(),
+        swapType: 'transfer'
+      });
 
       await firstValueFrom(preview$);
     } finally {
