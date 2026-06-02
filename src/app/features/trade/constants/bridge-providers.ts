@@ -61,6 +61,18 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celer.svg`,
     name: 'cBridge'
   },
+  cctp_bridge_fast: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}cctp_bridge.svg`,
+    name: 'CCTP Bridge Fast'
+  },
+  cctp_bridge_standart: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}cctp_bridge.svg`,
+    name: 'CCTP Bridge Standart'
+  },
   celer_bridge: {
     averageTime: 5,
     color: '#008aff',
