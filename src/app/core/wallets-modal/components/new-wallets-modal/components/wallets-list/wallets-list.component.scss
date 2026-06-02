@@ -1,0 +1,7 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .wallets-list {
+    background-color: var(--tui-base-01);
+  }
+}

@@ -36,7 +36,7 @@ export class LoginButtonComponent {
       this.gtmService.fireClickOnConnectWalletButtonEvent(this.buttonHierarchy);
     }
     const wallets = this.filterWallets();
-    this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
+    this.modalService.openNewWalletModal(this.injector, { providers: wallets }).subscribe();
   }
 
   private filterWallets(): WALLET_NAME[] {

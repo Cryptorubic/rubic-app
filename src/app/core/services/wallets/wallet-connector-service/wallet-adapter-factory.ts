@@ -16,7 +16,7 @@ import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
 import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
 import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
-import { CtrlWalletAdapter } from '../wallets-adapters/evm/ctrl-wallet-adapter';
+import { CtrlWalletAdapter } from '../wallets-adapters/btc/ctrl-wallet-adapter';
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 import { HoldstationWalletAdapter } from '../wallets-adapters/evm/holdstation-wallet-adapter';

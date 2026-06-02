@@ -1,0 +1,32 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .wallets-modal {
+    width: 100%;
+    max-width: 521px;
+
+    &__rules {
+      display: flex;
+      gap: var(--tui-padding-m);
+      margin-bottom: var(--tui-padding-4xl);
+      margin-left: var(--tui-padding-l);
+
+      tui-checkbox {
+        margin-top: 3px;
+
+        ::ng-deep [tuiWrapper][data-appearance='outline']::after {
+          color: white;
+        }
+      }
+
+      .wallets-modal__link {
+        color: var(--tui-primary);
+      }
+    }
+
+    .main {
+      @include flex(row, normal, flex-start);
+      gap: 8px;
+    }
+  }
+}

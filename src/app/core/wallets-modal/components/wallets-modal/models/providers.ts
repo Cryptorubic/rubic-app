@@ -152,7 +152,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     img: 'assets/images/icons/wallets/metamask.svg',
     supportsDesktop: true,
     supportsMobile: true,
-    display: false,
+    display: true,
     disabled: false
   },
   {

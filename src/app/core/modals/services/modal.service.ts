@@ -56,6 +56,7 @@ import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/pri
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { NewWalletsModalComponent } from '@app/core/wallets-modal/components/new-wallets-modal/new-wallets-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -304,6 +305,20 @@ export class ModalService {
     this.setOpenedModalName('wallet');
     return this.showDialog<WalletsModalComponent, void>(
       WalletsModalComponent,
+      { title: 'Connect wallet', size: 'm', fitContent: true, data },
+      injector
+    );
+  }
+
+  // @TODO_530 rename to openWalletModal after old method removal
+  /**
+   * Show New Wallet Modal dialog.
+   * @param injector Injector
+   */
+  public openNewWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
+    this.setOpenedModalName('wallet');
+    return this.showDialog<NewWalletsModalComponent, void>(
+      NewWalletsModalComponent,
       { title: 'Connect wallet', size: 'm', fitContent: true, data },
       injector
     );

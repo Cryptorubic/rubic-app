@@ -71,7 +71,7 @@ export class UserProfileWalletsComponent {
   }
 
   public connectWallet(): void {
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService.openNewWalletModal(this.injector).subscribe();
   }
 
   public logoutWallet(walletName: WALLET_NAME): void {
