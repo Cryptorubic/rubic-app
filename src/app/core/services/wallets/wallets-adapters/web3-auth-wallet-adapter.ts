@@ -8,35 +8,33 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { BlockchainsInfo, ChainType, EvmBlockchainName } from '@cryptorubic/core';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { createWalletClient, custom } from 'viem';
-import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
-import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { loadWeb3AuthModalSdk, Web3AuthInstance } from './web3-auth-sdk.loader';
 
 const WEB3AUTH_CLIENT_ID =
   'BE7hyL9PhNUWg3RFioapzHPOOttJqSQErwTlgblC1GQ4EZcDRmKbqALCcpGpcvenD636ZJP8N-XGWbp_fV-1O8s';
 
-const WEB3AUTH_CHAINS = [
-  {
-    chainNamespace: 'eip155',
-    chainId: '0x1',
-    rpcTarget: rpcList[BLOCKCHAIN_NAME.ETHEREUM][0],
-    displayName: defaultBlockchainData[BLOCKCHAIN_NAME.ETHEREUM]?.name ?? 'Ethereum Mainnet',
-    blockExplorerUrl: 'https://etherscan.io',
-    ticker: 'ETH',
-    tickerName: 'Ethereum',
-    logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'
-  },
-  {
-    chainNamespace: 'solana',
-    chainId: '0x65',
-    rpcTarget: rpcList[BLOCKCHAIN_NAME.SOLANA][0],
-    displayName: 'Solana Mainnet',
-    blockExplorerUrl: 'https://explorer.solana.com',
-    ticker: 'SOL',
-    tickerName: 'Solana',
-    logo: 'https://cryptologos.cc/logos/solana-sol-logo.png'
-  }
-];
+// const WEB3AUTH_CHAINS = [
+//   {
+//     chainNamespace: 'eip155',
+//     chainId: '0x1',
+//     rpcTarget: rpcList[BLOCKCHAIN_NAME.ETHEREUM][0],
+//     displayName: defaultBlockchainData[BLOCKCHAIN_NAME.ETHEREUM]?.name ?? 'Ethereum Mainnet',
+//     blockExplorerUrl: 'https://etherscan.io',
+//     ticker: 'ETH',
+//     tickerName: 'Ethereum',
+//     logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'
+//   },
+//   {
+//     chainNamespace: 'solana',
+//     chainId: '0x65',
+//     rpcTarget: rpcList[BLOCKCHAIN_NAME.SOLANA][0],
+//     displayName: 'Solana Mainnet',
+//     blockExplorerUrl: 'https://explorer.solana.com',
+//     ticker: 'SOL',
+//     tickerName: 'Solana',
+//     logo: 'https://cryptologos.cc/logos/solana-sol-logo.png'
+//   }
+// ];
 
 export class Web3AuthWalletAdapter extends CommonWalletAdapter {
   private web3Auth: Web3AuthInstance | null = null;
@@ -62,9 +60,7 @@ export class Web3AuthWalletAdapter extends CommonWalletAdapter {
       const { Web3Auth, WEB3AUTH_NETWORK } = await loadWeb3AuthModalSdk();
       this.web3Auth = new Web3Auth({
         clientId: WEB3AUTH_CLIENT_ID,
-        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
-        defaultChainId: '0x1',
-        chains: [...WEB3AUTH_CHAINS]
+        web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET
       });
     }
     return this.web3Auth;
@@ -128,8 +124,8 @@ export class Web3AuthWalletAdapter extends CommonWalletAdapter {
       this.selectedAddress = address;
       this.selectedChain = chain;
 
-      this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
+      this.onAddressChanges$.next(this.selectedAddress);
     } catch (error) {
       this.deactivate();
       if (error instanceof SignRejectError) {

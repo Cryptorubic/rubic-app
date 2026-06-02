@@ -51,7 +51,7 @@ import {
   nativeTokensList
 } from '@cryptorubic/core';
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
-import { LazyWeb3AuthWalletAdapter } from '@core/services/wallets/wallets-adapters/lazy-web3-auth-wallet-adapter';
+import { Web3AuthWalletAdapter } from '@core/services/wallets/wallets-adapters/web3-auth-wallet-adapter';
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
@@ -138,7 +138,7 @@ export class WalletConnectorService {
     ] as const;
 
     if (walletName === WALLET_NAME.WEB3AUTH) {
-      return new LazyWeb3AuthWalletAdapter(...defaultConstructorParameters);
+      return new Web3AuthWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.METAMASK) {
@@ -308,10 +308,7 @@ export class WalletConnectorService {
     customRpcUrl?: string
   ): Promise<boolean> {
     if (this.provider.walletName === WALLET_NAME.WEB3AUTH) {
-      return (this.provider as LazyWeb3AuthWalletAdapter).switchChain(
-        evmBlockchainName,
-        customRpcUrl
-      );
+      return (this.provider as Web3AuthWalletAdapter).switchChain(evmBlockchainName, customRpcUrl);
     }
     if (!(this.provider instanceof EvmWalletAdapter)) {
       throw new RubicError("Can't switch chain in non evm wallet!");
