@@ -60,7 +60,7 @@
     "@coinbase/wallet-sdk": "^4.0.3",
     "@creit.tech/stellar-wallets-kit": "^1.9.5",
     "@cryptorubic/core": "1.5.0-alpha-mayan.0",
-    "@cryptorubic/web3": "1.5.0-alpha-mayan.0",
+    "@cryptorubic/web3": "0.0.37-alpha-1212.0",
     "@hakimio/ngx-google-analytics": "^15.0.0",
     "@hinkal/common": "0.2.27",
     "@ng-web-apis/common": "^3.0.1",

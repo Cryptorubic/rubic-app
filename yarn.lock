@@ -2464,10 +2464,10 @@
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.5.0-alpha-mayan.0":
-  version "1.5.0-alpha-mayan.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.5.0-alpha-mayan.0.tgz#44a569cfb74059aa09689d27b139aa5f6ae4fa5d"
-  integrity sha512-ZtMKQCxJSsrxpkY3FO/sDUYvBFmUHf+SoS2Q5XvmZhAsifxHu2umVCW37cKEuwne2TSGNa9cRQUqKv9etCcFnw==
+"@cryptorubic/web3@0.0.37-alpha-1212.0":
+  version "0.0.37-alpha-1212.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.0.37-alpha-1212.0.tgz#a3b38769296786e3ffa4e87f04e624a10e4d3b5c"
+  integrity sha512-IEeOL9FEe9CXPGSR2NF3MJWtHiJVqViElQmK8a5YkqN3c7osM2fw/MWr/eQLCLfYvsSRxRcdTO+c5xy8jvABzg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -17641,6 +17641,7 @@ libsodium-sumo@^0.8.0:
   integrity sha512-uMgnjphJ717jLN+jFG1HUgNrK/gOVVfaO1DGZ1Ig/fKLKLVhvaH/sM1I1v784JFvmkJDaczDpi7xSYC4Jvdo1Q==
 
 libsodium-wrappers-sumo@0.8.2, libsodium-wrappers@^0.8.2, "libsodium-wrappers@npm:libsodium-wrappers-sumo@0.8.2":
+  name libsodium-wrappers
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.8.2.tgz#3bc6ef80070d531622ccd41a317b61d32a78a7f2"
   integrity sha512-wd1xAY++Kr6VMikSaa4EPRAHJmFvNlGWiiwU3Jh3GR1zRYF3/I3vy/wYsr4k3LVsNzwb9sqfEQ4LdVQ6zEebyQ==
