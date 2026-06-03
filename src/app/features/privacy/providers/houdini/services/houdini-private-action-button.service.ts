@@ -30,7 +30,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
   protected connectWallet(): void {
     super.connectWallet();
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService.openNewWalletModal(this.injector).subscribe();
   }
 
   private async getSwapState(

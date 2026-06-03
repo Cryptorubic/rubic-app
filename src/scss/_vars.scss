@@ -15,7 +15,6 @@ $secondary-color: #271e34;
 $transparent-black: rgba(0, 0, 0, 0.1);
 $transparent-white: rgba(255, 255, 255, 0.1);
 
-
 // ***** vars *****
 :root {
   --app-background: #282935;
@@ -25,14 +24,13 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
   --io-background: #222331;
 
-
   --tui-primary: #00e28d;
   --tui-primary-hover: #02b774;
   --tui-primary-active: #02b774;
   --tui-primary-text: #14141d;
 
   --tui-secondary: #3b3d4f;
-  --tui-secondary-hover: #4c4e67;
+  --tui-secondary-hover: #2c2d3e;
   --tui-secondary-active: #4c4e67;
 
   --tui-elevation-01: var(--tui-secondary);

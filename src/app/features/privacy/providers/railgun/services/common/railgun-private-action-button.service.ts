@@ -108,7 +108,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
   protected connectWallet(): void {
     super.connectWallet();
     this.modalService
-      .openWalletModal(this.injector, {
+      .openNewWalletModal(this.injector, {
         providers: [WALLET_NAME.METAMASK, WALLET_NAME.WALLET_CONNECT]
       })
       .subscribe();

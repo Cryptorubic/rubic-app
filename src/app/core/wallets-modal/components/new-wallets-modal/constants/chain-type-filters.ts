@@ -1,5 +1,5 @@
 import { CHAIN_TYPE } from '@cryptorubic/core';
-import { WalletFilterConfig } from '../../../models/models';
+import { WalletFilterConfig } from '../models/models';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { WALLET_ADAPTER_STATIC_CONFIGS } from '@app/core/services/wallets/constants/wallet-adapter-static-config';
 import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';

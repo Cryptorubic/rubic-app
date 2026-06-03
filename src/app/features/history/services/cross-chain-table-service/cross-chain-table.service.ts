@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, combineLatestWith, Observable, timer } from 'rxjs';
+import { combineLatest, combineLatestWith, Observable, of, timer } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
 import { debounceTime, filter, map, share, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { tuiControlValue, tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
@@ -88,7 +88,11 @@ export class CrossChainTableService extends TableService<
     total: number;
   }> {
     // @TODO_530 load history for all connected wallets
-    const address = this.walletConnector.activeWallets[0].address;
+    const address = this.walletConnector.activeWallets[0]?.address;
+    if (!address) {
+      return of({ data: [], total: 0 });
+    }
+
     const filterField = Object.entries(txStatusMapping).find(
       ([, value]) => value.label === statusFilter
     )?.[0];

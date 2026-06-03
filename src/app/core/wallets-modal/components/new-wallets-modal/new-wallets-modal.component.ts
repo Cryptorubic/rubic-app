@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
-import { WalletProvider } from '../wallets-modal/models/types';
 import { WALLET_NAME } from '../wallets-modal/models/wallet-name';
-import { AsyncPipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
   firstValueFrom,
   from,
+  map,
   of,
   startWith,
   tap,
@@ -26,25 +24,28 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
 import { StoreService } from '@app/core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { PROVIDERS_LIST } from '../wallets-modal/models/providers';
 import { BROWSER } from '@app/shared/models/browser/browser';
-import { WALLETS_DEEP_LINK_MAPPING } from '../wallets-modal/constants/wallets-deep-link-mapping';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { WalletFilterConfig } from './models/models';
-import { CHAIN_TYPES_FILTERS } from './components/chain-types-list/constants/chain-type-filters';
+import { WalletConfigUI, WalletFilterConfig } from './models/models';
+import { CHAIN_TYPES_FILTERS } from './constants/chain-type-filters';
+import { WALLETS_LIST } from './constants/wallets';
+import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { AsyncPipe } from '@angular/common';
+import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 
 @Component({
   selector: 'app-new-wallets-modal',
   templateUrl: './new-wallets-modal.component.html',
   styleUrls: ['./new-wallets-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class NewWalletsModalComponent {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
 
-  private readonly allProviders: ReadonlyArray<WalletProvider>;
+  private readonly allWallets: ReadonlyArray<WalletConfigUI>;
 
-  private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public get isChromium(): boolean {
     if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
@@ -53,10 +54,10 @@ export class NewWalletsModalComponent {
     return !tuiIsFirefox(this.userAgent);
   }
 
-  public get providers(): ReadonlyArray<WalletProvider> {
+  public get providers(): ReadonlyArray<WalletConfigUI> {
     const isChromiumProviders = this.isChromium
-      ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
+      ? this.allWallets
+      : this.allWallets.filter(provider => provider.value !== WALLET_NAME.BITGET);
 
     return this.isMobile
       ? isChromiumProviders.filter(provider => provider.supportsMobile)
@@ -64,15 +65,8 @@ export class NewWalletsModalComponent {
   }
 
   public get isMobile(): boolean {
-    return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
+    return new AsyncPipe(this.cdr).transform(this.isMobile$);
   }
-
-  // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
-  public readonly coinbaseDeeplink = 'https://go.cb-w.com/cDgO1V5aDlb';
-
-  public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
-    return this.isMobile && provider === WALLET_NAME.COIN_BASE;
-  };
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
 
@@ -89,6 +83,20 @@ export class NewWalletsModalComponent {
 
   public readonly selectedFilter$ = this._selectedFilter$.asObservable();
 
+  public readonly visibleWallets$ = this.selectedFilter$.pipe(
+    map(selectedFilter => {
+      return this.providers
+        .filter(wallet => selectedFilter.filterFunc(wallet.value))
+        .sort((a, _) => {
+          const isActive = this.walletConnectorService.activeWallets.some(
+            activeWallet => activeWallet.walletName === a.value
+          );
+          return isActive ? -1 : 1;
+        });
+    }),
+    startWith([])
+  );
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
@@ -104,24 +112,27 @@ export class NewWalletsModalComponent {
     private readonly modalService: ModalService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.allProviders = context.data?.providers
-      ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
-      : PROVIDERS_LIST;
+    this.allWallets = context.data?.providers
+      ? WALLETS_LIST.filter(provider => context.data.providers.includes(provider.value))
+      : WALLETS_LIST;
   }
 
   ngOnInit() {
     this.rulesCheckbox.patchValue(this.getStorageValue());
 
-    if (!this.iframeService.isIframe) {
-      if (this.browserService.currentBrowser === BROWSER.METAMASK) {
-        this.connectProvider(WALLET_NAME.METAMASK);
-        return;
-      }
+    //@TODO_530 автоматически подключает кошелек ММ на мобиле, теперь это работает плохо,
+    // так как есть два отдельных Метамаска для Соланы и ЕВМ, нужно удалить этот код
 
-      if (this.browserService.currentBrowser === BROWSER.COINBASE) {
-        this.connectProvider(WALLET_NAME.COIN_BASE);
-      }
-    }
+    // if (!this.iframeService.isIframe) {
+    //   if (this.browserService.currentBrowser === BROWSER.METAMASK) {
+    //     this.connectWallet(WALLET_NAME.METAMASK);
+    //     return;
+    //   }
+
+    //   if (this.browserService.currentBrowser === BROWSER.COINBASE) {
+    //     this.connectWallet(WALLET_NAME.COIN_BASE);
+    //   }
+    // }
   }
 
   private getStorageValue(): boolean {
@@ -139,41 +150,33 @@ export class NewWalletsModalComponent {
     return false;
   }
 
-  public async connectProvider(providerName: WALLET_NAME): Promise<void> {
-    if (this.rulesCheckbox.value) {
-      let provider = providerName;
-      if (provider === WALLET_NAME.METAMASK) {
-        provider = await this.getMetamaskBasedOnNetwork();
-        if (!provider) {
-          return;
-        }
-      }
+  public async connectWallet(walletName: WALLET_NAME): Promise<void> {
+    if (!this.rulesCheckbox.value) return;
+    this.gtmService.fireClickOnWalletProviderEvent(walletName);
 
-      this.gtmService.fireClickOnWalletProviderEvent(provider);
-
-      if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-        const redirected = await this.deepLinkRedirectIfSupported(provider);
-        if (redirected) {
-          return;
-        }
-      }
-
-      this.headerStore.setWalletsLoadingStatus(true);
-
-      const connectionTime = 15_000;
-
-      await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider })).pipe(
-          timeout(connectionTime),
-          catchError(() => {
-            this.headerStore.setWalletsLoadingStatus(false);
-            return of(`Request timed out after: ${connectionTime}`);
-          })
-        )
-      );
-
-      this.close();
+    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+      const redirected = await this.deepLinkRedirectIfSupported(walletName);
+      if (redirected) return;
     }
+
+    this.headerStore.setWalletsLoadingStatus(true);
+    const connectionTime = 15_000;
+    await firstValueFrom(
+      from(this.authService.connectWallet({ walletName })).pipe(
+        timeout(connectionTime),
+        catchError(() => {
+          this.headerStore.setWalletsLoadingStatus(false);
+          return of(`Request timed out after: ${connectionTime}`);
+        })
+      )
+    );
+
+    this.close();
+  }
+
+  public logoutWallet(walletName: WALLET_NAME): void {
+    this.walletConnectorService.deactivate(walletName);
+    this.close();
   }
 
   public close(): void {

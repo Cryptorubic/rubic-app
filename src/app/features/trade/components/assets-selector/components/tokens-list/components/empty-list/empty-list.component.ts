@@ -40,6 +40,6 @@ export class EmptyListComponent {
   }
 
   public openAuthModal(): void {
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService.openNewWalletModal(this.injector).subscribe();
   }
 }

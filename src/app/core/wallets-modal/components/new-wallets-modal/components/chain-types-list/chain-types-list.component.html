@@ -15,7 +15,7 @@
 <ng-template #chainTypeItem let-chainTypeFilter="chainTypeFilter" let-selected="selected">
   <div
     class="chain-type__wrapper"
-    [class.chain-type__wrapper-active]="selected"
+    [attr.data-active]="selected ? 'true' : 'false'"
     (click)="selectFilter(chainTypeFilter)"
   >
     <div class="chain-type__item">

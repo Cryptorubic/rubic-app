@@ -7,7 +7,7 @@ export interface WalletFilterConfig {
    */
   filterFunc: WalletFilterFunc;
   /**
-   * returns a callback to show if any wallet with the same chain already connected
+   * returns a callback showing if any wallet with the same chain already connected
    */
   connectedFunc: AlreadyConnectedFunc;
   img: string;
@@ -16,3 +16,13 @@ export interface WalletFilterConfig {
 
 export type WalletFilterFunc = (walletName: WALLET_NAME) => boolean;
 export type AlreadyConnectedFunc = (activeWallets: CommonWalletAdapter[]) => boolean;
+
+export interface WalletConfigUI {
+  name: string;
+  value: WALLET_NAME;
+  img: string;
+  supportsDesktop: boolean;
+  supportsMobile: boolean;
+  display: boolean;
+  disabled: boolean;
+}
