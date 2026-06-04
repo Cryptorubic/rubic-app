@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
-import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -8,11 +7,12 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { HttpService } from '@app/core/services/http/http.service';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TransactionReceipt } from 'viem';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { ModalService } from '@app/core/modals/services/modal.service';
+import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class CommonTableService {
@@ -30,8 +30,9 @@ export class CommonTableService {
     private readonly translateService: TranslateService,
     private readonly sdkService: SdkService,
     private readonly http: HttpService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly rubicApiService: RubicApiService,
+    private readonly adaptersFactory: BlockchainAdapterFactoryService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService
   ) {}
 
@@ -39,48 +40,58 @@ export class CommonTableService {
     await this.modalService.openTrustlineModal(options);
   }
 
-  public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
-    // @TODO API
-    throw new Error('Not implemented');
-    // let tradeInProgressSubscription$: Subscription;
-    // let transactionReceipt: TransactionReceipt;
-    // const onTransactionHash = () => {
-    //   tradeInProgressSubscription$ = this.notificationsService.show(
-    //     this.translateService.instant('bridgePage.progressMessage'),
-    //     {
-    //       label: this.translateService.instant('notifications.tradeInProgress'),
-    //       status: TuiNotification.Info,
-    //       autoClose: false,
-    //       data: null,
-    //       icon: '',
-    //       defaultAutoCloseTime: 0
-    //     }
-    //   );
-    // };
-    //
-    // try {
-    //   transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
-    //     onConfirm: onTransactionHash
-    //   });
-    //
-    //   await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
-    //   tradeInProgressSubscription$.unsubscribe();
-    //   this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
-    //     label: this.translateService.instant('notifications.successfulTradeTitle'),
-    //     status: TuiNotification.Success,
-    //     autoClose: 15000,
-    //     data: null,
-    //     icon: '',
-    //     defaultAutoCloseTime: 0
-    //   });
-    // } catch (error) {
-    //   console.debug('[ArbitrumBridge] Transaction claim error: ', error);
-    //   this.errorService.catch(error);
-    // } finally {
-    //   tradeInProgressSubscription$?.unsubscribe();
-    // }
-    //
-    // return transactionReceipt;
+  public async claimArbitrumBridgeTokens(
+    srcTxHash: string,
+    fromBlockchain: BlockchainName
+  ): Promise<TransactionReceipt> {
+    let transactionReceipt: TransactionReceipt;
+    let tradeInProgressSubscription$: Subscription;
+
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          appearance: 'positive',
+          autoClose: 5_000,
+          data: null,
+          icon: ''
+        }
+      );
+    };
+
+    try {
+      const txData = await this.rubicApiService.claimOrRedeemCoins(
+        srcTxHash,
+        fromBlockchain as EvmBlockchainName
+      );
+
+      const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
+
+      transactionReceipt = await adapter.signer.trySendTransaction({
+        txOptions: {
+          ...txData,
+          onTransactionHash
+        }
+      });
+
+      await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
+
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        appearance: 'positive',
+        autoClose: 15000,
+        data: null,
+        icon: ''
+      });
+    } catch (error) {
+      console.debug('[ArbitrumBridge] Transaction revert error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
   }
 
   private async sendHashesOnClaimSuccess(
@@ -197,35 +208,5 @@ export class CommonTableService {
     // }
     //
     // return transactionReceipt;
-  }
-
-  public async redeemArbitrum(srcTxHash: string): Promise<EvmTransactionConfig> {
-    let evmConfig: EvmTransactionConfig;
-
-    this.notificationsService.show(this.translateService.instant('bridgePage.progressMessage'), {
-      label: this.translateService.instant('notifications.tradeInProgress'),
-      appearance: 'info',
-      autoClose: 15000,
-      data: null
-    });
-
-    try {
-      const resp = await this.rubicApiService.claimOrRedeemCoins(
-        srcTxHash,
-        this.walletConnectorService.network as EvmBlockchainName
-      );
-      evmConfig = resp.transaction as EvmTransactionConfig;
-      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
-        label: this.translateService.instant('notifications.successfulTradeTitle'),
-        appearance: 'success',
-        autoClose: 15000,
-        data: null
-      });
-    } catch (error) {
-      console.debug('[Cbridge] Transaction revert error: ', error);
-      this.errorService.catch(error);
-    }
-
-    return evmConfig;
   }
 }

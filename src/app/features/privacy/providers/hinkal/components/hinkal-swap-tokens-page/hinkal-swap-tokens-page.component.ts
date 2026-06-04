@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
@@ -26,6 +25,9 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalSwapTokensFacadeService } from '../../services/token-facades/hinkal-swap-tokens-facade.service';
+import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
+import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: false,
@@ -63,7 +65,9 @@ export class HinkalSwapTokensPageComponent implements OnInit {
     private readonly hinkalBalanceService: HinkalBalanceService,
     private readonly privateSwapWindowService: PrivateSwapWindowService,
     private readonly fromAssetsService: FromAssetsService,
-    private readonly toAssetsService: ToAssetsService
+    private readonly toAssetsService: ToAssetsService,
+    private readonly tokensFacadeService: TokensFacadeService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {}
 
   ngOnInit(): void {
@@ -98,6 +102,7 @@ export class HinkalSwapTokensPageComponent implements OnInit {
           this.privateSwapWindowService.patchSwapInfo({ fromAsset: null });
         }
       });
+
     this.subscribeOnPrivateBalanceChanges();
   }
 
@@ -109,6 +114,7 @@ export class HinkalSwapTokensPageComponent implements OnInit {
 
         if (swapInfo.fromAsset) {
           const balances = shieldedBalances[swapInfo.fromAsset.blockchain as EvmBlockchainName];
+
           const tokenBalance = balances?.find(balance =>
             compareAddresses(balance?.tokenAddress, swapInfo.fromAsset.address)
           );
@@ -133,27 +139,35 @@ export class HinkalSwapTokensPageComponent implements OnInit {
   public async handleSwap({
     swapInfo,
     loadingCallback,
-    openPreview$
+    openPreview
   }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
         weiAmount: Token.toWei(swapInfo.fromAmount.actualValue, swapInfo.fromAsset.decimals)
-      });
+      }) as TokenAmount<EvmBlockchainName>;
 
       const toToken = new TokenAmount({
         ...swapInfo.toAsset,
         weiAmount: Token.toWei(swapInfo.toAmount.actualValue, swapInfo.toAsset.decimals)
-      });
+      }) as TokenAmount<EvmBlockchainName>;
 
       const steps = this.hinkalFacadeService.prepareSwapSteps(
-        fromToken as TokenAmount<EvmBlockchainName>,
-        toToken as TokenAmount<EvmBlockchainName>
+        fromToken,
+        toToken,
+        () => this.gasTokenService.selectedGasToken
       );
 
-      const preview$ = openPreview$({
+      const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
+        fromToken,
+        HINKAL_PRIVATE_OPERATION.SWAP,
+        toToken
+      );
+
+      const preview$ = openPreview({
         steps,
-        warnings: HINKAL_WARNINGS
+        warnings: HINKAL_WARNINGS,
+        gasTokens
       });
 
       await firstValueFrom(preview$);

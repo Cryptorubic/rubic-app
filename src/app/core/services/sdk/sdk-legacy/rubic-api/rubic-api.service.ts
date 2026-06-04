@@ -448,9 +448,9 @@ export class RubicApiService {
   public claimOrRedeemCoins(
     srcTxHash: string,
     srcBlockchain: EvmBlockchainName
-  ): Promise<SwapResponseInterface<EvmTransactionConfig>> {
+  ): Promise<EvmTransactionConfig> {
     return firstValueFrom(
-      this.sdkLegacyService.httpClient.get<SwapResponseInterface<EvmTransactionConfig>>(
+      this.sdkLegacyService.httpClient.get<EvmTransactionConfig>(
         `${this.apiUrl}/api/utility/claim`,
         {
           params: { sourceTransactionHash: srcTxHash, fromBlockchain: srcBlockchain }

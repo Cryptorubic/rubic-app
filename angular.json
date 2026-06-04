@@ -72,6 +72,9 @@
               "includePaths": ["."]
             },
             "scripts": ["src/assets/analytics/live-chat.js"],
+            "define": {
+              "process": "globalThis.process"
+            },
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",

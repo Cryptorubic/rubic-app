@@ -2200,18 +2200,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.5.0.tgz#53d8e6d47b3105794bd7325a97c738a31390156d"
-  integrity sha512-UC9CadZ5rMXG2+1P3VVK/sgbcn/erm7qPhLPFRiAbFTQw3zRnuNwDh7Aw2KNtCG/HQAdvO8B5Yh9pllTqVDEzQ==
+"@cryptorubic/core@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.2.tgz#862abaed59bea10eac1a6da196c08822020ca360"
+  integrity sha512-B0tP7NTCa7sawWlhCaTNBzcD0ujTX1IlG8fD63aSmax/tbj15z/8BBJAnmC9nFRWNLxTygb3Uniie4RoaTO2eg==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.5.0.tgz#4eb4666686b10440bcba58b9feffff55436dbe80"
-  integrity sha512-blAbfYsP04hKwtYoWBAU3dWss5diuOKRRw8hYXSXlJY+sEMB0NPukSoUlNBsz9gjbemhIF2zetNA4YljF8tEZg==
+"@cryptorubic/web3@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.2.tgz#c76e22df6035aa0dae643409b5dddbb72ab47489"
+  integrity sha512-SFKZIBfpVHcn61JbNlRyOPe0FWCf/X3gK9LYG4iuG8gOQuaeRfWWKYMtaXmJs2C5Zc04JzRBJ+NCUeOlymFReg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -17917,14 +17917,8 @@ libsodium-sumo@^0.8.0:
   resolved "https://registry.yarnpkg.com/libsodium-sumo/-/libsodium-sumo-0.8.4.tgz#6d4687781fa0ad398af14a7df872d5c27cf8cd31"
   integrity sha512-TMtHShQfVVsaxDygyapvUC3o7YsPgXa/hRWeIgzyFz6w5k/1hirGptCxp1U7XwW3rCskaTTYKgV10v86UiGgNw==
 
-libsodium-wrappers-sumo@0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.8.2.tgz#3bc6ef80070d531622ccd41a317b61d32a78a7f2"
-  integrity sha512-wd1xAY++Kr6VMikSaa4EPRAHJmFvNlGWiiwU3Jh3GR1zRYF3/I3vy/wYsr4k3LVsNzwb9sqfEQ4LdVQ6zEebyQ==
-  dependencies:
-    libsodium-sumo "^0.8.0"
-
-libsodium-wrappers@^0.8.2, "libsodium-wrappers@npm:libsodium-wrappers-sumo@0.8.2":
+libsodium-wrappers-sumo@0.8.2, libsodium-wrappers@^0.8.2, "libsodium-wrappers@npm:libsodium-wrappers-sumo@0.8.2":
+  name libsodium-wrappers
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.8.2.tgz#3bc6ef80070d531622ccd41a317b61d32a78a7f2"
   integrity sha512-wd1xAY++Kr6VMikSaa4EPRAHJmFvNlGWiiwU3Jh3GR1zRYF3/I3vy/wYsr4k3LVsNzwb9sqfEQ4LdVQ6zEebyQ==
@@ -23158,7 +23152,7 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -25563,7 +25557,7 @@ workerpool@^6.5.1:
   resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.5.1.tgz#060f73b39d0caf97c6db64da004cd01b4c099544"
   integrity sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -25576,15 +25570,6 @@ wrap-ansi@^6.0.1, wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

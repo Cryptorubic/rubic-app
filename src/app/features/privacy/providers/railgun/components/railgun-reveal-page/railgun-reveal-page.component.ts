@@ -1,10 +1,9 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   Input,
-  DestroyRef,
   OnInit
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -14,17 +13,18 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
-import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: false,
@@ -59,8 +59,6 @@ export class RailgunRevealPageComponent implements OnInit {
 
   private readonly revealService = inject(RevealService);
 
-  private readonly notificationService = inject(NotificationsService);
-
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly toAssetsService = inject(ToAssetsService) as RailgunPrivateAssetsService;
@@ -69,44 +67,42 @@ export class RailgunRevealPageComponent implements OnInit {
 
   private readonly windowService = inject(RevealWindowService);
 
-  private readonly tokensBalanceService = inject(TokensBalanceService);
+  private readonly actionButtonService = inject(PrivateActionButtonService);
 
   ngOnInit() {
+    this.receiverCtrl.valueChanges
+      .pipe(
+        startWith(this.receiverCtrl.value),
+        tap(address => {
+          this.actionButtonService.setReceiverAddress(address);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
     this.railgunFacade.completedChains$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
   public async reveal(params: PrivateEvent): Promise<void> {
-    const { balanceToken, token, loadingCallback, openPreview$ } = params;
+    const { balanceToken, token, loadingCallback, openPreview } = params;
     try {
-      const preview$ = openPreview$({
+      const preview$ = openPreview({
         steps: [
           {
-            label: 'Unshield',
+            label: 'Private Transfer',
+            showLoaderOnAction: true,
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              this.notificationService.show('This may take a moment. Please keep Rubic App open', {
-                appearance: 'info',
-                autoClose: 10_000,
-                data: null
-              });
-              await this.revealService.unshield(
+              const txHash = await this.revealService.unshield(
                 token.address,
                 bigintAmount.toString(),
                 () => {},
-                token.blockchain as RailgunSupportedChain
-              );
-              this.notificationService.show(
-                'Tokens were successfully unshielded to public wallet',
-                {
-                  appearance: 'success',
-                  autoClose: 5_000,
-                  data: null
-                }
+                token.blockchain as RailgunSupportedChain,
+                this.receiverCtrl.value
               );
               this.privateStatisticsService.saveAction(
-                'UNSHIELD',
+                'TRANSFER',
                 'RAILGUN',
                 this.authService.userAddress,
                 token.address,
@@ -124,10 +120,12 @@ export class RailgunRevealPageComponent implements OnInit {
                   [token.blockchain as RailgunSupportedChain]
                 );
               }, 10_000);
+              return { txScannerUrl: getScannerUrl(token, txHash) };
             }
-          }
+          },
+          donePrivateStep()
         ],
-        swapType: 'unshield',
+        swapType: 'transfer',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),
         hideFeeInfo: true
       });

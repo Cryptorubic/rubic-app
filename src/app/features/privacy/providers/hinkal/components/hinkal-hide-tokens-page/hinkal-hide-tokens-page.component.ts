@@ -41,8 +41,7 @@ export class HinkalHideTokensPageComponent implements OnInit {
         ...HINKAL_DEFAULT_CREATION_CONFIG,
         assetsSelectorConfig: {
           ...HINKAL_DEFAULT_CREATION_CONFIG.assetsSelectorConfig,
-          listType: chain,
-          platformLoading$: this.hinkalFacadeService.balanceLoading$
+          listType: chain
         }
       };
     })
@@ -81,13 +80,13 @@ export class HinkalHideTokensPageComponent implements OnInit {
       });
   }
 
-  public async hide({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
       const steps = await this.hinkalFacadeService.prepareDepositSteps(
         token as TokenAmount<EvmBlockchainName>
       );
 
-      const preview$ = openPreview$({ steps });
+      const preview$ = openPreview({ steps });
       await firstValueFrom(preview$);
     } finally {
       loadingCallback();

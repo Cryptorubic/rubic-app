@@ -10,24 +10,24 @@ export const RAILGUN_PAGES: PageType<RailgunPageStatus>[] = [
     type: 'login',
     label: 'Login'
   },
-  {
-    type: 'wallet',
-    label: 'Wallet'
-  },
+  // {
+  //   type: 'wallet',
+  //   label: 'Wallet'
+  // },
   {
     type: 'hide',
-    label: 'Shield'
+    label: 'Shield Tokens'
   },
-  {
-    type: 'transfer',
-    label: 'Transfer'
-  },
+  // {
+  //   type: 'transfer',
+  //   label: 'Transfer'
+  // },
   // {
   //   type: 'swap',
   //   label: 'Swap'
   // },
   {
     type: 'reveal',
-    label: 'Unshield'
+    label: 'Private Transfer'
   }
 ];

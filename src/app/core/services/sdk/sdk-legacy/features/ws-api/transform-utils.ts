@@ -55,6 +55,8 @@ import {
   BITCOIN_PK_REQUIRED_PROVIDERS,
   BtcTradeTypeRequiringPK
 } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/bitcoin-pk-required-providers';
+import { SuiApiCrossChainConstructor } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-constructor';
+import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-trade';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -153,6 +155,12 @@ export class TransformUtils {
         sdkLegacyService,
         rubicApiService,
         trustlineTransitTokenAddress
+      );
+    } else if (chainType === CHAIN_TYPE.SUI) {
+      trade = new SuiApiCrossChainTrade(
+        tradeParams as SuiApiCrossChainConstructor,
+        sdkLegacyService,
+        rubicApiService
       );
     }
 

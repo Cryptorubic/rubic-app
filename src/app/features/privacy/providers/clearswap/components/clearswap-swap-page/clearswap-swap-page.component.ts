@@ -2,7 +2,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -22,6 +21,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   standalone: false,
@@ -32,9 +32,7 @@ import { compareTokens } from '@app/shared/utils/utils';
   providers: []
 })
 export class ClearswapSwapPageComponent implements OnInit {
-  public readonly receiverCtrl = new FormControl<string>('', {
-    asyncValidators: [isReceiverCorrect()]
-  });
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
@@ -69,7 +67,7 @@ export class ClearswapSwapPageComponent implements OnInit {
       .subscribe();
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
@@ -92,11 +90,12 @@ export class ClearswapSwapPageComponent implements OnInit {
         address: Web3Pure.getNativeTokenAddress(fromToken.blockchain),
         blockchain: fromToken.blockchain
       };
-      const preview$ = openPreview$({
+      const preview$ = openPreview({
         displayAmount: null,
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.clearswapSwapService
                 .transfer(
@@ -105,7 +104,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                   swapInfo.toAsset,
                   this.receiverCtrl.value
                 )
-                .then(async () => {
+                .then(async res => {
                   this.privateStatisticsService.saveAction(
                     'TRANSFER',
                     PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -144,6 +143,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                   ) {
                     this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                   }
+
+                  return res;
                 })
                 .catch(async err => {
                   if (!(err instanceof UserRejectError)) {
@@ -173,8 +174,11 @@ export class ClearswapSwapPageComponent implements OnInit {
                       }
                     });
                   }
+
+                  return {};
                 })
-          }
+          },
+          donePrivateStep()
         ]
       });
       await firstValueFrom(preview$);

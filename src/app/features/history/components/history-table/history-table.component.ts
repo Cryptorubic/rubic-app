@@ -59,6 +59,6 @@ export class HistoryTableComponent {
   }
 
   public connectWallet(): void {
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.modalService.openWalletModal(this.injector, { direction: 'column' }).subscribe();
   }
 }

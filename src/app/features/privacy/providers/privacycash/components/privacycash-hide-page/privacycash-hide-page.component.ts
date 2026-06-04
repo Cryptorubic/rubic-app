@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
@@ -7,7 +6,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
-import { firstValueFrom, startWith, tap } from 'rxjs';
+import { filter, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import BigNumber from 'bignumber.js';
 import {
@@ -20,6 +19,9 @@ import {
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { compareTokens } from '@app/shared/utils/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: false,
@@ -36,6 +38,8 @@ export class PrivacycashHidePageComponent implements OnInit {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
   private readonly privateActionButtonService = inject(PrivateActionButtonService);
+
+  private readonly hideTokensFacade = inject(PrivacycashPublicTokensFacadeService);
 
   private readonly tokenService = inject(TokenService);
 
@@ -64,9 +68,23 @@ export class PrivacycashHidePageComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
+
+    this.hideTokensFacade.tokens$
+      .pipe(
+        filter(() => !!this.hideWindowService.hideAsset?.address),
+        map(tokens => tokens.find(token => compareTokens(token, this.hideWindowService.hideAsset))),
+        filter(Boolean),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(token => {
+        this.hideWindowService.setHideAsset({
+          ...this.hideWindowService.hideAsset,
+          amount: token.amount
+        });
+      });
   }
 
-  public async hide({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
       const nativeToken = nativeTokensList.SOLANA;
       const nativeTokenPrice = await this.tokenService.getTokenPrice(nativeToken);
@@ -74,12 +92,15 @@ export class PrivacycashHidePageComponent implements OnInit {
         this.hideWindowService.hideAsset.amount,
         this.hideWindowService.hideAsset.decimals
       );
-      const preview$ = openPreview$({
+      const pcFeeUsd = nativeTokenPrice.multipliedBy(0.002).toFixed(2);
+      const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield',
+            label: 'Shield Tokens',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.shield(token)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {
@@ -89,6 +110,7 @@ export class PrivacycashHidePageComponent implements OnInit {
             }
           }
         },
+        displayAmount: `~ $${pcFeeUsd}`,
         dstTokenAmount: token.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

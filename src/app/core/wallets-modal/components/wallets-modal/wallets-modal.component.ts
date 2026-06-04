@@ -26,6 +26,7 @@ import { IframeService } from '@app/core/services/iframe-service/iframe.service'
 import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
+import { METAMASK_PROVIDERS } from './models/metamask-providers';
 
 @Component({
   standalone: false,
@@ -41,6 +42,10 @@ export class WalletsModalComponent implements OnInit {
   private readonly allProviders: ReadonlyArray<WalletProvider>;
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
+
+  private readonly showMetamaskModal: boolean;
+
+  private readonly supportedMetamaskProvider: WALLET_NAME;
 
   public get isChromium(): boolean {
     if (tuiIsEdge(this.userAgent)) {
@@ -78,6 +83,8 @@ export class WalletsModalComponent implements OnInit {
     tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
   );
 
+  public readonly modalDirection: 'column' | 'row';
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
@@ -95,6 +102,24 @@ export class WalletsModalComponent implements OnInit {
     this.allProviders = context.data?.providers
       ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
       : PROVIDERS_LIST;
+
+    const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>
+      this.allProviders.some(v => v.value === provider)
+    );
+
+    this.modalDirection = context.data?.direction || 'row';
+
+    if (metamaskProviders.length < 2) {
+      this.showMetamaskModal = false;
+      this.supportedMetamaskProvider = metamaskProviders[0];
+      this.allProviders = this.allProviders.map(provider =>
+        provider.value === this.supportedMetamaskProvider
+          ? { ...provider, display: true }
+          : provider
+      );
+    } else {
+      this.showMetamaskModal = true;
+    }
   }
 
   ngOnInit() {
@@ -171,6 +196,8 @@ export class WalletsModalComponent implements OnInit {
 
   public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
     try {
+      if (!this.showMetamaskModal) return this.supportedMetamaskProvider;
+
       return this.modalService.openMetamaskModal();
     } catch {
       return null;

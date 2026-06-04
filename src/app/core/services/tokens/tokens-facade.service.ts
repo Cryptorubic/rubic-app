@@ -143,9 +143,16 @@ export class TokensFacadeService {
     type: AssetListType,
     _query: string,
     direction: 'from' | 'to',
-    inputValue: SwapFormInput
+    inputValue: SwapFormInput,
+    fetchBalances: boolean = true
   ): Observable<AvailableTokenAmount[]> {
-    return this.tokensBuilderService.getTokensList(type, _query, direction, inputValue);
+    return this.tokensBuilderService.getTokensList(
+      type,
+      _query,
+      direction,
+      inputValue,
+      fetchBalances
+    );
   }
 
   public async updateTokenBalanceAfterCcrSwap(

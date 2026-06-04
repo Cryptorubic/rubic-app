@@ -98,7 +98,12 @@ export class CrossChainDesktopTableComponent {
       fromBlockchain === BLOCKCHAIN_NAME.ARBITRUM
     ) {
       const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-      if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+      if (isSwitched) {
+        await this.commonTableService.claimArbitrumBridgeTokens(
+          item.fromTx.hash,
+          item.fromBlockchain.name
+        );
+      }
     }
 
     if (

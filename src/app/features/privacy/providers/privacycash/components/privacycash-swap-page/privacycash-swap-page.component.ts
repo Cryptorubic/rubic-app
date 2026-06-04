@@ -9,7 +9,7 @@ import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceTokenAmount, Token } from '@cryptorubic/core';
+import { PriceToken, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom, startWith, tap } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
@@ -19,6 +19,7 @@ import { PrivacycashPrivateSwapTokensFacadeService } from '../../services/common
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   standalone: false,
@@ -97,7 +98,7 @@ export class PrivacycashSwapPageComponent implements OnInit {
       });
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
       const pcSupportedSrcToken = {
         ...swapInfo.fromAsset,
@@ -116,32 +117,34 @@ export class PrivacycashSwapPageComponent implements OnInit {
         toPrivacyCashTokenAddr(swapInfo.fromAsset.address),
         swapInfo.fromAmount.actualValue
       );
-      const srcTokenFeePercent = withdrawalFee.dividedBy(swapInfo.fromAmount.actualValue).dp(4);
+      const withdrawalFeeUsd = withdrawalFee.multipliedBy(swapInfo.fromAsset.price).toFixed(2);
 
-      const preview$ = openPreview$({
+      const preview$ = openPreview({
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.privacycashSwapService.swapPartialPrivateBalance(
                 pcSupportedSrcToken,
                 pcSupportedDstToken,
                 new BigNumber(srcAmountWei)
               )
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {
-            platformFee: {
-              percent: srcTokenFeePercent.toNumber(),
-              token: new PriceTokenAmount({
+            cryptoFee: {
+              amount: withdrawalFee,
+              token: new PriceToken({
                 ...swapInfo.fromAsset,
-                tokenAmount: swapInfo.fromAmount.actualValue,
                 price: new BigNumber(swapInfo.fromAsset.price)
               })
             }
           }
-        }
+        },
+        displayAmount: `~ $${withdrawalFeeUsd}`
       });
       await firstValueFrom(preview$);
     } finally {

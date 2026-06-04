@@ -1,8 +1,52 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
   <head>
+    <!-- Node.js process polyfill for @railgun-community packages -->
+    <script>
+      (function () {
+        if (typeof globalThis.process !== 'undefined') return;
+        var nextTick = typeof Promise !== 'undefined'
+          ? function (fn) { var args = Array.prototype.slice.call(arguments, 1); Promise.resolve().then(function () { fn.apply(null, args); }); }
+          : function (fn) { var args = Array.prototype.slice.call(arguments, 1); setTimeout(function () { fn.apply(null, args); }, 0); };
+        globalThis.process = {
+          env: { NODE_ENV: 'production', NODE_DEBUG: '' },
+          version: 'v18.0.0',
+          versions: { node: '18.0.0' },
+          platform: 'browser',
+          browser: true,
+          nextTick: nextTick,
+          noDeprecation: false,
+          throwDeprecation: false,
+          traceDeprecation: false,
+          pid: 1,
+          cwd: function () { return '/'; },
+          chdir: function () {},
+          exit: function () {},
+          on: function () { return globalThis.process; },
+          removeListener: function () { return globalThis.process; },
+          emit: function () { return false; },
+          hrtime: function (t) { var n = Date.now() * 1e6; return t ? [0, n - (t[0] * 1e9 + t[1])] : [0, n]; }
+        };
+      })();
+    </script>
+
     <!-- Turnstile widget -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+
+    <!-- Formo analytics-->
+    <script
+      src="https://unpkg.com/@formo/analytics@1.30.0/dist/index.umd.min.js"
+      defer
+      integrity="sha384-Qt6VrbI9bLkftV9p47vD4wYuQj91WOT6YWiBdwYo6n2j4OET2pGwYtsL5xuTHxwg"
+      crossorigin="anonymous"
+      onload="
+      window.formofy('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmlnaW4iOiJodHRwczovL2FwcC5ydWJpYy5leGNoYW5nZSIsInByb2plY3RfaWQiOiJjSlF3UmdjWGpydmREWmVZY0lySk4iLCJpYXQiOjE3NTY5MTMyNjd9.gvfjSLKgaVkPNCWtrRbWe4denTTM3YRqsKx_SqIVQKA', {
+        ready: function(formo) {
+        formo.identify();
+      }
+      })"
+    ></script>
+
     <!-- common site settings -->
     <meta charset="utf-8" />
     <meta

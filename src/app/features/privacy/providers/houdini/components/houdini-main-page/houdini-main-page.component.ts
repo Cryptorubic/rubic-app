@@ -44,6 +44,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   standalone: false,
@@ -114,7 +115,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     this.houdiniSwapService.subscriptions.forEach(s => s?.unsubscribe());
   }
 
-  public async swap({ swapInfo, loadingCallback, openPreview$ }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
       const fromToken = new TokenAmount({
         ...swapInfo.fromAsset,
@@ -144,12 +145,14 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
       }
 
       const currentTrade = this.houdiniSwapService.currentTrade;
-      const preview$ = openPreview$({
+      const preview$ = openPreview({
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () => this.houdiniSwapService.swap(fromToken, this.receiverCtrl.value)
-          }
+          },
+          donePrivateStep()
         ],
         hideFeeInfo: true,
         srcTokenAmount: fromToken.tokenAmount.toFixed(),

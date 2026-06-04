@@ -27,7 +27,7 @@ export class ZamaRevealFacadeService extends TokensFacadeService {
         const supportedTokensMapping = this.tokensService.supportedTokensMapping;
 
         return this.tokensBuilderService
-          .getTokensList(type, _query, direction, getEmptySwapFormInput())
+          .getTokensList(type, _query, direction, getEmptySwapFormInput(), false)
           .pipe(
             map(tokens => {
               const supportedTokens = tokens

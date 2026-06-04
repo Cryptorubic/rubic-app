@@ -14,10 +14,6 @@
     gap: 10px;
   }
 
-  tui-input {
-    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
-  }
-
   .clear-btn {
     position: absolute;
     top: 50%;
@@ -39,6 +35,26 @@
 
     &:hover {
       opacity: 0.6;
+    }
+  }
+}
+
+.input {
+  &_round {
+    &-top {
+      border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+    }
+
+    &-bottom {
+      border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+    }
+
+    &-all {
+      border-radius: var(--tui-radius-s);
+    }
+
+    &-none {
+      border-radius: 0;
     }
   }
 }

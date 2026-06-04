@@ -9,7 +9,7 @@ export interface RankedBlockchain {
 
 function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-    return 0.74;
+    return 0.76;
   }
   if (blockchain === BLOCKCHAIN_NAME.SUI) {
     return 0.7;
@@ -196,13 +196,8 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   {
     name: BLOCKCHAIN_NAME.ARBITRUM,
-    rank: 0.75,
+    rank: 0.76,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
-    name: BLOCKCHAIN_NAME.POLYGON,
-    rank: 0.75,
-    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -212,13 +207,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.TRON,
@@ -226,25 +215,24 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
   },
   {
+    name: BLOCKCHAIN_NAME.POLYGON,
+    rank: 0.74,
+    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
+  },
+  {
     name: BLOCKCHAIN_NAME.MONAD,
     rank: 0.73,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.MEGAETH,
     rank: 0.73,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.PLASMA,
     rank: 0.73,
-    tags: ['XPL', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['XPL', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.ZCASH,
@@ -254,7 +242,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.HYPER_EVM,
     rank: 0.73,
-    tags: ['HYPE', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['HYPE', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
@@ -275,13 +263,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SCROLL,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MORPH,
@@ -291,13 +273,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.SONEIUM,
@@ -312,13 +288,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   // {
   //   name: BLOCKCHAIN_NAME.SONIC,
@@ -338,13 +308,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BLAST,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MANTLE,

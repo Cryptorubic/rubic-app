@@ -21,6 +21,8 @@ import { PrivateActionButtonService } from '@features/privacy/providers/shared-p
 import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Component({
   standalone: false,
@@ -79,17 +81,18 @@ export class RailgunHideTokensPageComponent {
     token,
     balanceToken,
     loadingCallback,
-    openPreview$
+    openPreview
   }: PrivateEvent): Promise<void> {
     // const gasInfo: AppGasData = { amount, amountInUsd, symbol: token.symbol };
     try {
-      const preview$ = openPreview$({
+      const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield',
+            label: 'Shield Tokens',
+            showLoaderOnAction: true,
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              await this.hideService.shield(
+              const res = await this.hideService.shield(
                 this.railgunWalletAddress,
                 token.address,
                 bigintAmount,
@@ -114,8 +117,10 @@ export class RailgunHideTokensPageComponent {
                   data: null
                 }
               );
+              return { txScannerUrl: getScannerUrl(token, res.txHash) };
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'shield',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),

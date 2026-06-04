@@ -1,4 +1,8 @@
-import { TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/legacy';
+import {
+  TuiInputModule,
+  TuiInputPasswordModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RailgunFormComponent } from '@features/privacy/providers/railgun/components/railgun-form/railgun-form.component';
@@ -71,7 +75,8 @@ import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/se
     InlineSVGModule,
     ClipboardModule,
     ...TuiHint,
-    TuiLoader
+    TuiLoader,
+    TuiTextfieldControllerModule
   ],
   providers: [
     RailgunFacadeService,

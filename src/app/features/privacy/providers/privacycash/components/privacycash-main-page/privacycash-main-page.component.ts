@@ -1,4 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,6 +23,7 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { List } from 'immutable';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: false,
@@ -58,21 +58,16 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
         this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.PRIVACY_CASH)
       ),
       map(([signature, alreadyMadeShielding]) => {
-        if (isNil(signature) || !signature.length) {
-          return this.pages.filter(page => page.type !== 'login');
-        }
-        if (!alreadyMadeShielding) {
+        if (isNil(signature) || !signature.length || !alreadyMadeShielding) {
           return this.pages.filter(page => page.type !== 'hide');
         }
-        return this.pages.filter(page => page.type === 'login');
       })
     );
 
   public readonly privateBalanceLoading$ = this.privacycashTokensService.loading$;
 
   constructor(private readonly privatePageTypeService: PrivatePageTypeService) {
-    this.privatePageTypeService.activePage =
-      this.pages.find(page => page.type === 'login') || this.pages[0];
+    this.privatePageTypeService.activePage = this.pages[0];
   }
 
   ngOnDestroy(): void {

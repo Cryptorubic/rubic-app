@@ -4,10 +4,12 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { AssetListType } from '@app/features/trade/models/asset';
 import { SwapFormInput } from '@app/features/trade/models/swap-form-controls';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { EvmBlockchainName } from '@cryptorubic/core';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
+import { customTokenRegistry } from '@hinkal/common';
+import { HinkalUtils } from '../hinkal-sdk/utils/hinkal-utils';
 
 @Injectable()
 export class HinkalHideFacadeService extends TokensFacadeService {
@@ -18,7 +20,7 @@ export class HinkalHideFacadeService extends TokensFacadeService {
     _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput())
+      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
       .pipe(
         map((tokens: AvailableTokenAmount[]) => {
           return tokens
@@ -28,7 +30,12 @@ export class HinkalHideFacadeService extends TokensFacadeService {
             .filter(token =>
               PRIVATE_MODE_SUPPORTED_TOKENS[token.blockchain]?.includes(token.address)
             );
-        })
+        }),
+        tap(tokens =>
+          tokens.map(token =>
+            customTokenRegistry.addCustomToken(HinkalUtils.convertRubicTokenToHinkalToken(token))
+          )
+        )
       );
   }
 }

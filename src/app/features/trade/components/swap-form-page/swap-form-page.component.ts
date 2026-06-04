@@ -42,7 +42,10 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 export class SwapFormPageComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  public readonly fromAsset$ = this.swapFormService.fromToken$;
+  public readonly fromAsset$ = this.swapFormService.fromToken$.pipe(
+    combineLatestWith(this.authService.currentUser$),
+    map(([fromAsset]) => fromAsset)
+  );
 
   public readonly toAsset$ = this.swapFormService.toToken$;
 

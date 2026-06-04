@@ -117,7 +117,7 @@ export class HideTokensWindowComponent {
       token,
       balanceToken: hideAsset,
       loadingCallback: () => this._loading$.next(false),
-      openPreview$: this.createPreviewModal(hideAsset, hideAmount)
+      openPreview: this.createPreviewModal(hideAsset, hideAmount)
     });
   }
 

@@ -23,6 +23,8 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapDataElementConfig } from '@app/features/trade/components/swap-data-element/model';
+import { GasToken } from '@app/shared/models/tokens/gas-token';
+import { PrivateGasTokenService } from '../../services/gas-token-service/gas-token.service';
 
 @Component({
   standalone: false,
@@ -50,6 +52,8 @@ export class PrivatePreviewSwapComponent {
 
   public readonly gasInfo: AppGasData | null;
 
+  public readonly gasTokens: GasToken[];
+
   public readonly feeInfo: FeeInfo | null;
 
   public readonly displayAmount: string | undefined;
@@ -64,14 +68,20 @@ export class PrivatePreviewSwapComponent {
 
   private readonly swapOptions: PrivateSwapOptions;
 
+  private readonly _txScannerUrl$ = new BehaviorSubject<string | null>(null);
+
+  public readonly txScannerUrl$ = this._txScannerUrl$.asObservable();
+
   public get formLabel(): string {
     return SWAP_TYPE_LABEL[this.swapType];
   }
 
   public readonly swapDataCreationConfig: SwapDataElementConfig = {
     feeIcon: 'assets/images/icons/privacy-fee.svg',
-    withVerboseFeeHint: false,
-    zeroFeeText: 'Zero fee'
+    gasIcon: 'assets/images/icons/gas-private.svg',
+    withVerboseFeeHint: true,
+    zeroFeeText: 'Zero provider fee',
+    direction: 'vertical'
   };
 
   constructor(
@@ -79,7 +89,8 @@ export class PrivatePreviewSwapComponent {
     private readonly context: TuiDialogContext<void, PreviewPrivateSwapOptions>,
     private readonly headerStore: HeaderStore,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
@@ -104,6 +115,7 @@ export class PrivatePreviewSwapComponent {
     this.warnings = context.data.swapOptions.warnings;
     this.swapType = context.data.swapType;
     this.gasInfo = context.data.swapOptions.gasInfo || null;
+    this.gasTokens = context.data.swapOptions.gasTokens || [];
     this.feeInfo = context.data.swapOptions.feeInfo || null;
     this.displayAmount = context.data.swapOptions.displayAmount;
     this.hideFeeInfo = context.data.swapOptions.hideFeeInfo;
@@ -146,24 +158,25 @@ export class PrivatePreviewSwapComponent {
 
   private setLoadingState(): void {
     this._currentStep$.next({
-      label: 'Transaction in process',
-      action: async () => {},
-      disabled: true
+      label: 'Transaction in progress',
+      action: async () => ({}),
+      disabled: true,
+      showLoaderOnAction: false
     });
   }
 
   public async handleStep(step: PrivateStep): Promise<void> {
     try {
-      this.setLoadingState();
+      if (step.showLoaderOnAction) this.setLoadingState();
 
-      await step.action();
+      const res = await step.action(this.context);
+      if (res && res.txScannerUrl) {
+        this._txScannerUrl$.next(res.txScannerUrl);
+      }
 
       const [nextStep, ...steps] = this.steps;
 
-      if (!nextStep) {
-        this.context.completeWith();
-        return;
-      }
+      if (!nextStep) return;
 
       this._currentStep$.next(nextStep);
       this.steps = steps;
@@ -171,5 +184,9 @@ export class PrivatePreviewSwapComponent {
       this.errorService.catch(err);
       this.context.completeWith();
     }
+  }
+
+  public selectGasToken(token: GasToken): void {
+    this.gasTokenService.selectGasToken(token.address);
   }
 }

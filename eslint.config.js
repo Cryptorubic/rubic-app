@@ -149,7 +149,7 @@ module.exports = defineConfig([
             '^(canActivate|canActivateChild|canDeactivate|canLoad|intercept|resolve|validate)$': false
           },
 
-          parameters: true,
+          parameters: false,
           properties: true,
           strict: false,
 

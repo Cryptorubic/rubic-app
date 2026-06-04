@@ -39,7 +39,7 @@
 }
 
 .active-router-link {
-  ::ng-deep button[tuiWrapper] {
+  ::ng-deep button {
     color: black !important;
 
     background: var(--tui-background-accent-1) !important;

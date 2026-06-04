@@ -14,8 +14,16 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetamaskModalComponent {
+  /**
+   * wallets from this array won't be shown in modal
+   */
+  private readonly walletsToHide: WALLET_NAME[] = [];
+
   // Hardcoded only 2 blockchains
-  public readonly metamasks = PROVIDERS_LIST.filter(el => el.name === 'MetaMask').map(el => {
+  public readonly metamasks = PROVIDERS_LIST.filter(
+    el =>
+      el.name === 'MetaMask' && !this.walletsToHide.some(hiddenWallet => hiddenWallet === el.value)
+  ).map(el => {
     const chainType = el.value === WALLET_NAME.METAMASK ? CHAIN_TYPE.EVM : CHAIN_TYPE.SOLANA;
     const walletMapping: Record<
       typeof chainType,
@@ -33,8 +41,10 @@ export class MetamaskModalComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<WALLET_NAME, null>
-  ) {}
+    private readonly context: TuiDialogContext<WALLET_NAME, { walletsToHide: WALLET_NAME[] }>
+  ) {
+    this.walletsToHide = context.data.walletsToHide;
+  }
 
   public confirm(walletName: WALLET_NAME): void {
     this.context.completeWith(walletName);

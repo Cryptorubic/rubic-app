@@ -2,6 +2,7 @@
 
 .io-container {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--tui-padding-m);
   justify-content: center;
   padding: var(--tui-padding-l);
@@ -34,6 +35,10 @@
       border-radius: 0;
     }
   }
+}
+
+.io-bottom {
+  flex-basis: 100%;
 }
 
 .io-left,

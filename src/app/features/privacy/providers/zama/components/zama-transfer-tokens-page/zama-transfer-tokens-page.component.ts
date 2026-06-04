@@ -92,14 +92,18 @@ export class ZamaTransferTokensPageComponent implements OnInit {
       });
   }
 
-  public async transfer({ token, loadingCallback, openPreview$ }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
       const steps = await this.zamaFacadeService.prepareTransferSteps(
         token as TokenAmount<EvmBlockchainName>,
         this.receiverCtrl.value
       );
 
-      const preview$ = openPreview$({ steps, dstTokenAmount: token.tokenAmount.toFixed() });
+      const preview$ = openPreview({
+        steps,
+        dstTokenAmount: token.tokenAmount.toFixed(),
+        swapType: 'transfer'
+      });
 
       await firstValueFrom(preview$);
     } finally {

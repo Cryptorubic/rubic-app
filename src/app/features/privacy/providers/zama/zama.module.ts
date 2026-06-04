@@ -16,10 +16,12 @@ import { ZamaSwapService } from './services/zama-sdk/zama-swap.service';
 import { ZamaTokensService } from './services/zama-sdk/zama-tokens.service';
 import { ZamaSignatureService } from './services/zama-sdk/zama-signature.service';
 import { ZamaRevealFacadeService } from './services/zama-reveal-tokens-facade.service';
-import { TuiNotification, TuiLoader, TuiButton } from '@taiga-ui/core';
+import { TuiNotification, TuiLoader, TuiButton, TuiScrollbar } from '@taiga-ui/core';
 import { ZamaTransferTokensPageComponent } from './components/zama-transfer-tokens-page/zama-transfer-tokens-page.component';
 import { ZamaLoginPageComponent } from './components/zama-login-page/zama-login-page.component';
 import { ZamaActionButtonService } from './services/zama-action-button.service';
+import { ZamaPendingUnshieldListComponent } from './components/zama-pending-unshield-list/zama-pending-unshield-list.component';
+import { PendingUnshieldElementComponent } from './components/zama-pending-unshield-list/pending-unshield-element/pending-unshield-element.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { ZamaActionButtonService } from './services/zama-action-button.service';
     ZamaHideTokensPageComponent,
     ZamaRevealTokensPageComponent,
     ZamaTransferTokensPageComponent,
-    ZamaLoginPageComponent
+    ZamaLoginPageComponent,
+    ZamaPendingUnshieldListComponent,
+    PendingUnshieldElementComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +40,8 @@ import { ZamaActionButtonService } from './services/zama-action-button.service';
     SharedModule,
     TuiLoader,
     TuiButton,
-    TuiNotification
+    TuiNotification,
+    TuiScrollbar
   ],
   providers: [
     ZamaPrivateAssetsService,

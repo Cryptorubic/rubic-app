@@ -67,6 +67,6 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included wit
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 (window as RubicWindow).global = window;
 (window as RubicWindow).dataLayer = (window as any).dataLayer;
-(window as RubicWindow).process = (window as any).process || process;
+(window as RubicWindow).process = process;
 (window as RubicWindow).Buffer = (window as any).Buffer || Buffer;
 (window as RubicWindow).ga = (window as any)?.ga;

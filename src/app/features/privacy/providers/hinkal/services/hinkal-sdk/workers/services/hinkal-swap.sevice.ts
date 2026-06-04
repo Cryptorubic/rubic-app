@@ -1,5 +1,6 @@
 import {
   emporiumOp,
+  FeeStructure,
   generateFundAndApproveOps,
   Hinkal,
   networkRegistry,
@@ -10,7 +11,7 @@ import {
 import { PureTokenAmount } from '../models/worker-params';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import { HinkalUtils } from '../../utils/hinkal-utils';
-import { ContractTransaction, ethers, Wallet } from 'ethers';
+import { ContractTransaction, Wallet } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
 
@@ -40,8 +41,6 @@ export class HinkalWorkerSwapService {
         true
       )) as ContractTransaction;
 
-      console.log(resp);
-
       return {
         data: resp.data,
         to: resp.to,
@@ -53,8 +52,13 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
+    feeStructure: FeeStructure,
     receiver?: string
   ): Promise<string> {
     try {
@@ -65,19 +69,24 @@ export class HinkalWorkerSwapService {
         [withdrawToken],
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
-        false
-      )) as unknown as ethers.TransactionResponse;
+        false,
+        feeToken,
+        feeStructure
+      )) as string;
 
-      console.log(resp);
-      return resp.hash;
+      return resp;
     } catch (err) {
       console.log(err);
       throw err;
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     recipientStealthAddress: string
   ): Promise<string> {
     try {
@@ -87,7 +96,8 @@ export class HinkalWorkerSwapService {
       const hash = await hinkalInstance.transfer(
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
-        recipientStealthAddress
+        recipientStealthAddress,
+        feeToken
       );
 
       return hash;
@@ -97,9 +107,13 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
-    toToken: PureTokenAmount<EvmBlockchainName>
+    toToken: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string
   ): Promise<string> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
@@ -177,7 +191,8 @@ export class HinkalWorkerSwapService {
         [false, true],
         ops,
         [fromTokenChanges, toTokenChanges],
-        subAccount
+        subAccount,
+        feeToken
       );
 
       return hash;

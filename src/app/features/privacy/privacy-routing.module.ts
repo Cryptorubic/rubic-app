@@ -21,10 +21,10 @@ const routes: Routes = [
     path: PRIVATE_MODE_URLS.RAILGUN,
     loadChildren: () => import('./providers/railgun/railgun.module').then(m => m.RailgunModule)
   },
-  {
-    path: PRIVATE_MODE_URLS.ZAMA,
-    loadChildren: () => import('./providers/zama/zama.module').then(m => m.ZamaModule)
-  },
+  // {
+  //   path: PRIVATE_MODE_URLS.ZAMA,
+  //   loadChildren: () => import('./providers/zama/zama.module').then(m => m.ZamaModule)
+  // },
   {
     path: PRIVATE_MODE_URLS.CLEARSWAP,
     loadChildren: () =>

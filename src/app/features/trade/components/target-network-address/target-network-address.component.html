@@ -1,5 +1,11 @@
 <div class="network-container">
   <tui-input
+    [ngClass]="{
+    'input_round-top': round === 'top',
+    'input_round-bottom': round === 'bottom',
+    'input_round-all': round === 'all',
+    'input_round-none': round === 'none',
+  }"
     [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
     tuiTextfieldSize="l"
     [formControl]="addressCtrl"
