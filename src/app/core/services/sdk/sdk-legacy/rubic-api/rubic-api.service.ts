@@ -57,9 +57,9 @@ import {
   throttleTime
 } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
-import { WA_WINDOW, WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { WA_NAVIGATOR, WA_WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -464,7 +464,7 @@ export class RubicApiService {
    */
   private handleWsApiError(err: WsErrorResponseInterface): Observable<boolean> {
     const result = err.error;
-    switch (result.code) {
+    switch (result?.code) {
       case 6001:
       case 6002: {
         return from(this.refreshCloudflareToken(true)).pipe(map(res => res.success));
@@ -476,7 +476,7 @@ export class RubicApiService {
 
   private getApiError(err: SwapErrorResponseInterface): RubicSdkError {
     const result = err.error;
-    switch (result.code) {
+    switch (result?.code) {
       case 3003: {
         return new InsufficientFundsError((result.data as { tokenSymbol: string }).tokenSymbol);
       }
