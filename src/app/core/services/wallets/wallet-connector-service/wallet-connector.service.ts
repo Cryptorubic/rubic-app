@@ -9,7 +9,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { TUI_IS_IOS } from '@taiga-ui/cdk';
+import { TUI_IS_ANDROID, TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -54,6 +54,7 @@ import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
+import { DeviceType } from '../wallets-adapters/evm/common/models/device-type';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,7 @@ export class WalletConnectorService {
     private readonly httpService: HttpService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
+    @Inject(TUI_IS_ANDROID) private readonly isAndroid: boolean,
     private readonly zone: NgZone,
     private readonly modalsService: ModalService
   ) {}
@@ -137,7 +139,8 @@ export class WalletConnectorService {
     ] as const;
 
     if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
+      const device: DeviceType = this.isIos ? 'ios' : this.isAndroid ? 'android' : 'desktop';
+      return new MetamaskWalletAdapter(...defaultConstructorParameters, device, chainId);
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
