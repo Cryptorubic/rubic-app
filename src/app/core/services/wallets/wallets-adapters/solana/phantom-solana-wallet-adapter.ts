@@ -106,13 +106,22 @@ export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<Phanto
 
   private handleAccountChange(): void {
     this.wallet.on('accountChanged', (address: PublicKey) => {
-      if (!address) {
-        this.deactivate();
-      } else {
+      if (address) {
         this.selectedAddress = address.toBase58();
         this.zone.run(() => {
           this.onAddressChanges$.next(this.selectedAddress);
         });
+      } else {
+        // New account isn't yet connected to the dApp - reconnect to adopt it
+        this.wallet
+          .connect()
+          .then(() => {
+            this.selectedAddress = new PublicKey(this.wallet.publicKey.toBytes()).toBase58();
+            this.zone.run(() => {
+              this.onAddressChanges$.next(this.selectedAddress);
+            });
+          })
+          .catch(() => this.deactivate());
       }
     });
   }
