@@ -47,7 +47,12 @@
   },
   "private": true,
   "browser": {
-    "stream": "stream-browserify"
+    "stream": "stream-browserify",
+    "crypto": "crypto-browserify",
+    "zlib": "browserify-zlib",
+    "path": "path-browserify",
+    "http": "stream-http",
+    "https": "https-browserify"
   },
   "dependencies": {
     "@angular/animations": "20.3.21",
@@ -195,7 +200,6 @@
     "lodash": "^4.17.21",
     "ngx-unused-css": "^3.0.0",
     "os-browserify": "^0.3.0",
-    "patch-package": "^8.0.1",
     "path-browserify": "^1.0.1",
     "prettier": "^2.4.1",
     "protractor": "~7.0.0",
