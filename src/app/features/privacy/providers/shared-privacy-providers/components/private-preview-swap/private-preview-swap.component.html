@@ -1,10 +1,17 @@
-<app-window-container *ngLet="isMobile$ | async as isMobile">
+<app-window-container
+  *ngLet="{
+    isMobile: isMobile$ | async,
+    currentStep: currentStep$ | async,
+    txScannerUrl: txScannerUrl$ | async
+  } as state"
+>
   <ng-container header>
     <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
     <span class="back-button__text">
-      {{ formLabel }}
+      {{ state.currentStep.label === 'Done' ? 'Success ' + formLabel : formLabel }}
     </span>
   </ng-container>
+
   <ng-container>
     <div class="preview">
       <div
@@ -13,7 +20,7 @@
           'preview__data-container_with-line': true
         }"
       >
-        <ng-container *ngIf="!isMobile; else mobileInputTokenContainer">
+        <ng-container *ngIf="!state.isMobile; else mobileInputTokenContainer">
           <div class="preview__io-container">
             <div class="preview__token-container">
               <div
@@ -81,7 +88,7 @@
         </ng-template>
 
         <span
-          *ngIf="!isMobile"
+          *ngIf="!state.isMobile"
           inlineSVG="assets/images/icons/white-bottom-arrow.svg"
           class="preview__icon"
         >
@@ -106,7 +113,7 @@
           [state]="state.transaction.step"
         ></app-transaction-state> -->
 
-        <ng-container *ngIf="!isMobile; else mobileOutputTokenContainer">
+        <ng-container *ngIf="!state.isMobile; else mobileOutputTokenContainer">
           <div class="preview__io-container">
             <div class="preview__token-container">
               <div
@@ -170,10 +177,17 @@
           </div>
         </ng-template>
       </div>
-      <div *ngIf="!hideFeeInfo" class="preview__swap-info">
+
+      <div *ngIf="state.currentStep.label === 'Done'" class="preview__success-info">
+        <app-success-swap-info [title]="'Success'"></app-success-swap-info>
+      </div>
+
+      <div *ngIf="!hideFeeInfo && state.currentStep.label !== 'Done'" class="preview__swap-info">
         <app-swap-data-element
           [creationConfig]="swapDataCreationConfig"
           [gasInfo]="gasInfo"
+          [gasTokens]="gasTokens"
+          (onGasTokenSelect)="selectGasToken($event)"
           [feeInfoChange]="{
             fee: feeInfo,
             nativeToken: nativeToken$ | async,
@@ -183,7 +197,7 @@
       </div>
     </div>
 
-    <ng-container *ngIf="warnings?.length">
+    <ng-container *ngIf="state.currentStep.label !== 'Done' && warnings?.length">
       <tui-notification class="notification" status="warning" *ngFor="let warning of warnings">
         {{ warning.text }}
         <a *ngIf="warning.link" [href]="warning.link" target="_blank" class="notification__link"
@@ -192,29 +206,39 @@
       </tui-notification>
     </ng-container>
 
-    <ng-container *ngLet="currentStep$ | async as currentStep">
+    <ng-container>
       <div class="preview__action-container">
+        <a
+          *ngIf="state.currentStep.label === 'Done' && state.txScannerUrl"
+          class="preview__action-button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          [safetyLink]="state.txScannerUrl"
+        >
+          Explorer
+        </a>
+
         <button
           class="preview__action-button"
           tuiButton
           appearance="primary"
           type="button"
           size="m"
-          [disabled]="currentStep.disabled"
-          (click)="handleStep(currentStep)"
+          [disabled]="state.currentStep.disabled"
+          (click)="handleStep(state.currentStep)"
         >
-          <ng-container *ngIf="!currentStep.disabled; else loader">
-            {{ currentStep.label }}
+          <ng-container *ngIf="!state.currentStep.disabled; else loader">
+            {{ state.currentStep.label }}
           </ng-container>
         </button>
       </div>
 
       <ng-template #loader>
         <div class="loader">
-          <span>{{ currentStep.label }}</span>
-          <span class="loader__dot"></span>
-          <span class="loader__dot"></span>
-          <span class="loader__dot"></span>
+          <div class="loader__element"></div>
+          <span class="loader__text">{{ state.currentStep.label }}</span>
         </div>
       </ng-template>
     </ng-container>

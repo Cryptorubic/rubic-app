@@ -2,4 +2,6 @@
   (handleReveal)="reveal($event)"
   [receiverCtrl]="receiverCtrl"
   [creationConfig]="creationConfig$ | async"
+  [customHandleMaxButton]="true"
+  (maxButtonClick)="handleMaxButton()"
 ></app-reveal-window>

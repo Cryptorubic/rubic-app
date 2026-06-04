@@ -26,19 +26,23 @@ export class RevealService {
 
   private readonly gasService = inject(GasService);
 
+  /**
+   * @returns tx hash
+   */
   public async unshield(
     tokenAddress: string,
     tokenAmount: string,
     proofProgress: (progress: string) => void,
-    tokenBlockchain: RailgunSupportedChain
-  ): Promise<void> {
+    tokenBlockchain: RailgunSupportedChain,
+    receiverAddress: string
+  ): Promise<string> {
     try {
       if (this._inProgress$.value === true) {
         throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
       }
       this._inProgress$.next(true);
       const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
+        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiverAddress)
       ];
       const chain = fromRubicToPrivateChainMap[tokenBlockchain];
 
@@ -71,7 +75,8 @@ export class RevealService {
         overallBatchMinGasPrice
       );
 
-      await wallet.sendTransaction(transaction);
+      const res = await wallet.sendTransaction(transaction);
+      return res.hash;
     } catch (err) {
       throw err;
     } finally {

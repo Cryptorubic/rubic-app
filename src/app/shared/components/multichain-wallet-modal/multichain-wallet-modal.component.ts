@@ -12,7 +12,6 @@ import { MULTICHAIN_OPTIONS_MAPPING } from '@app/core/wallets-modal/components/w
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultichainWalletModalComponent {
-  // Hardcoded only 2 blockchains
   public readonly walletOptions: MultichainWalletOption[];
 
   public readonly walletName: string;
@@ -21,9 +20,15 @@ export class MultichainWalletModalComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<WALLET_NAME, { walletName: WALLET_NAME }>
+    private readonly context: TuiDialogContext<
+      WALLET_NAME,
+      { walletName: WALLET_NAME; walletsToHide: WALLET_NAME[] }
+    >
   ) {
-    this.walletOptions = MULTICHAIN_OPTIONS_MAPPING[context.data.walletName]!;
+    const walletsToHide = context.data.walletsToHide;
+    this.walletOptions = MULTICHAIN_OPTIONS_MAPPING[context.data.walletName]!.filter(
+      option => !walletsToHide.some(hiddenWallet => hiddenWallet === option.value)
+    );
 
     const walletName = context.data.walletName;
     this.walletName = walletName.charAt(0).toUpperCase() + walletName.slice(1);

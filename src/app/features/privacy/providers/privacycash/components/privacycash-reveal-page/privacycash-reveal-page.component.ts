@@ -6,18 +6,18 @@ import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
-import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
+import { PriceToken, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { PrivateShieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
-import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { PrivateUnshieldFormConfig } from '../../../shared-privacy-providers/models/swap-form-types';
 import { RevealWindowService } from '../../../shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { PrivacycashPrivateUnshieldTokensFacadeService } from '../../services/common/token-facades/privacycash-private-unshield-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { compareTokens } from '@app/shared/utils/utils';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-reveal-page',
@@ -45,13 +45,15 @@ export class PrivacycashRevealPageComponent {
 
   public readonly receiverCtrl = new FormControl<string>('');
 
-  public readonly revealFormCreationConfig: PrivateShieldFormConfig = {
+  public readonly revealFormCreationConfig: PrivateUnshieldFormConfig = {
     withActionButton: true,
     withReceiver: true,
     withSrcAmount: true,
     withMaxBtn: true,
     receiverPlaceholder: 'Enter SOLANA receiver address',
-    direction: 'from'
+    direction: 'from',
+    showPresets: true,
+    showWarnings: true
   };
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}
@@ -66,19 +68,6 @@ export class PrivacycashRevealPageComponent {
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    this.revealWindowService.revealAsset$
-      .pipe(filter(Boolean), takeUntil(this.destroy$))
-      .subscribe(token => {
-        this.receiverCtrl.clearAsyncValidators();
-        this.receiverCtrl.setAsyncValidators(
-          getCorrectAddressValidator({
-            fromAssetType: token.blockchain,
-            validatedChain: token.blockchain
-          })
-        );
-        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
-      });
 
     this.subscribeOnPrivateBalanceChanges();
   }
@@ -112,7 +101,7 @@ export class PrivacycashRevealPageComponent {
       ]);
 
       const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
-      const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
+      const pcFeeUsd = pcFeeNonWei.multipliedBy(tokenPrice).toFixed(2);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -120,19 +109,22 @@ export class PrivacycashRevealPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Reveal Tokens',
+            label: 'Private Transfer',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.unshield(token, receiverAddr)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {
-            platformFee: {
-              percent: pcFeePercent.toNumber(),
-              token: new PriceTokenAmount({ ...token.asStructWithAmount, price: tokenPrice })
+            cryptoFee: {
+              amount: pcFeeNonWei,
+              token: new PriceToken({ ...token.asStruct, price: tokenPrice })
             }
           }
         },
-        swapType: 'unshield',
+        displayAmount: `~ $${pcFeeUsd}`,
+        swapType: 'transfer',
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

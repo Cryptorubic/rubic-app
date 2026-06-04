@@ -20,6 +20,8 @@ export class AssetsTypeAsideElementComponent {
 
   @Input({ required: true }) type: 'from' | 'to';
 
+  @Input() hidePromoBadges = false;
+
   @Output() handleClick = new EventEmitter<BlockchainItem>();
 
   private get isAllChains(): boolean {

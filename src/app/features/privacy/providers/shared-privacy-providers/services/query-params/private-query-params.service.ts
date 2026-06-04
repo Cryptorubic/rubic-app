@@ -95,7 +95,11 @@ export class PrivateQueryParamsService {
 
           this.privateSwapWindowService.patchSwapInfo(swapInfo);
 
-          if (!swapInfo.fromAsset && !swapInfo.toAsset) {
+          if (
+            !swapInfo.fromAsset &&
+            !swapInfo.toAsset &&
+            !this.privacyMainPageService.showAllProviders
+          ) {
             fromAsset =
               supportedTokens.find(
                 token =>

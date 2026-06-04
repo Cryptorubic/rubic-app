@@ -9,6 +9,7 @@ export const HINKAL_DEFAULT_CREATION_CONFIG = {
     withChainsFilter: false,
     withTokensFilter: false,
     withFavoriteTokens: true,
-    showAllChains: false
+    showAllChains: false,
+    hidePromoBadges: true
   }
 };

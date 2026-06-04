@@ -5,7 +5,7 @@ import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service
 import { filter, firstValueFrom, map, startWith, takeUntil, tap } from 'rxjs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
-import { PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
+import { PriceToken, Token, TokenAmount } from '@cryptorubic/core';
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenService } from '@app/core/services/sdk/sdk-legacy/token-service/token.service';
@@ -18,6 +18,7 @@ import { PrivacycashPrivateTransferTokensFacadeService } from '../../services/co
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -117,7 +118,7 @@ export class PrivacycashTransferPageComponent implements OnInit {
       ]);
 
       const pcFeeNonWei = token.tokenAmount.minus(dstToken.tokenAmount);
-      const pcFeePercent = pcFeeNonWei.dividedBy(token.tokenAmount).dp(4);
+      const pcFeeUsd = pcFeeNonWei.multipliedBy(tokenPrice).toFixed(2);
       const receiverAddr = this.receiverCtrl.value
         ? this.receiverCtrl.value
         : this.walletConnectorService.address;
@@ -126,17 +127,20 @@ export class PrivacycashTransferPageComponent implements OnInit {
         steps: [
           {
             label: 'Transfer tokens',
+            showLoaderOnAction: true,
             action: () => this.privacycashSwapService.transfer(token, receiverAddr)
-          }
+          },
+          donePrivateStep()
         ],
         feeInfo: {
           provider: {
-            platformFee: {
-              percent: pcFeePercent.toNumber(),
-              token: new PriceTokenAmount({ ...token.asStructWithAmount, price: tokenPrice })
+            cryptoFee: {
+              amount: pcFeeNonWei,
+              token: new PriceToken({ ...token.asStruct, price: tokenPrice })
             }
           }
         },
+        displayAmount: `~ $${pcFeeUsd}`,
         dstTokenAmount: dstToken.tokenAmount.toFixed()
       });
       await firstValueFrom(preview$);

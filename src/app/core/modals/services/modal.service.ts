@@ -1,6 +1,15 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  defaultIfEmpty,
+  finalize,
+  first,
+  firstValueFrom,
+  Observable,
+  of
+} from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -526,13 +535,16 @@ export class ModalService {
     );
   }
 
-  public openMultichainWalletModal(walletName: WALLET_NAME): Promise<WALLET_NAME> {
+  public openMultichainWalletModal(
+    walletName: WALLET_NAME,
+    walletsToHide: WALLET_NAME[] = []
+  ): Promise<WALLET_NAME> {
     return firstValueFrom(
       this.showDialog(MultichainWalletModalComponent, {
         size: 'auto',
         closeable: true,
         fitContent: true,
-        data: { walletName }
+        data: { walletName, walletsToHide }
       })
     );
   }
@@ -551,7 +563,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(PrivacyDisclaimerModalComponent, {
         size: 's'
-      })
+      }).pipe(defaultIfEmpty(false)) as Observable<boolean>
     );
   }
 }

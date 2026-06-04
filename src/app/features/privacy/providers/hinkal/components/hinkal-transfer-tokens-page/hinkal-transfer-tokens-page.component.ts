@@ -16,6 +16,8 @@ import { HinkalBalanceService } from '../../services/hinkal-sdk/hinkal-balance.s
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import BigNumber from 'bignumber.js';
 import { HinkalRevealFacadeService } from '../../services/token-facades/hinkal-reveal-facade.service';
+import { PrivateGasTokenService } from '../../../shared-privacy-providers/services/gas-token-service/gas-token.service';
+import { HINKAL_PRIVATE_OPERATION } from '../../constants/hinkal-private-operations';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
@@ -51,7 +53,8 @@ export class HinkalTransferTokensPageComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly privateActionButtonService: PrivateActionButtonService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly transferWindowService: PrivateTransferWindowService
+    private readonly transferWindowService: PrivateTransferWindowService,
+    private readonly gasTokenService: PrivateGasTokenService
   ) {}
 
   ngOnInit(): void {
@@ -101,17 +104,67 @@ export class HinkalTransferTokensPageComponent {
       });
   }
 
+  public async handleMaxButton(): Promise<void> {
+    const token = this.transferWindowService.transferAsset;
+    const estimatedFees = this.hinkalFacadeService.getEstimatedFeesByChain(token.blockchain);
+
+    const privateBalances = await firstValueFrom(this.hinkalBalanceService.balances$);
+
+    const balances = privateBalances[token.blockchain as EvmBlockchainName];
+
+    const isTokenWithEnoughBalanceExist = balances.some(tokenBalance => {
+      const estimatedFee = estimatedFees
+        .filter(t => !compareAddresses(t.feeToken, token.address))
+        .find(({ feeToken }) => compareAddresses(feeToken, tokenBalance.tokenAddress));
+
+      if (!estimatedFee) return false;
+
+      return new BigNumber(tokenBalance.amount).minus(estimatedFee.flatFee.toString()).gte(0);
+    });
+
+    if (isTokenWithEnoughBalanceExist) {
+      this.transferWindowService.setTransferAmount({
+        visibleValue: token.amount.toFixed(),
+        actualValue: token.amount
+      });
+
+      return;
+    }
+
+    const tokenFee =
+      estimatedFees
+        .find(({ feeToken }) => compareAddresses(feeToken, token.address))
+        ?.flatFee?.toString() || new BigNumber(0);
+
+    const maxAmountWithoutFee = token.amount.minus(Token.fromWei(tokenFee, token.decimals));
+
+    const finalMaxAmount = maxAmountWithoutFee.lte(0) ? token.amount : maxAmountWithoutFee;
+
+    this.transferWindowService.setTransferAmount({
+      visibleValue: finalMaxAmount.toFixed(),
+      actualValue: finalMaxAmount
+    });
+  }
+
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
+      const fromToken = token as TokenAmount<EvmBlockchainName>;
+
+      const gasTokens = await this.hinkalFacadeService.prepareGasTokens(
+        fromToken,
+        HINKAL_PRIVATE_OPERATION.TRANSFER
+      );
+
       const steps = this.hinkalFacadeService.prepareTransferSteps(
-        token as TokenAmount<EvmBlockchainName>,
-        this.receiverCtrl.value
+        fromToken,
+        this.receiverCtrl.value,
+        () => this.gasTokenService.selectedGasToken
       );
       const preview$ = openPreview({
         steps,
         warnings: HINKAL_WARNINGS,
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0005).toFixed(),
-        hideFeeInfo: true
+        gasTokens
       });
 
       await firstValueFrom(preview$);

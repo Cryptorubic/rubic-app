@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
 export class RailgunPrivateActionButtonService extends PrivateActionButtonService {
@@ -61,7 +62,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.walletConnector.networkChange$,
             this.privateTransferWindowService.transferAsset$,
             this.privateTransferWindowService.transferAmount$,
-            this._receiverAddress$.asObservable(),
+            this._receiverAddress$,
             this.errorService.tradeError$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
@@ -90,6 +91,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
             this.revealWindowService.revealAmount$,
             this.railgunFacadeService.railgunAccount$,
             this.authService.currentUser$,
+            this._receiverAddress$,
             this.revealWindowService.revealAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
@@ -138,7 +140,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
         action: this.connectWallet.bind(this)
       };
     }
-    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+    if (user && !compareAddresses(railgunWallet?.evmWalletAddress, user.address)) {
       return {
         type: 'error',
         text: 'Switch to your seed phrase wallet'
@@ -165,7 +167,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     }
     return {
       type: 'parent',
-      text: 'Shield'
+      text: 'Shield Tokens'
     };
   }
 
@@ -178,6 +180,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
     } | null,
     railgunWallet: { evmWalletAddress: string },
     user: UserInterface,
+    receiver: string,
     totalBalanceToken: BalanceToken
   ): Promise<PrivateActionButtonState> {
     if (!network) {
@@ -187,7 +190,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
         action: this.connectWallet.bind(this)
       };
     }
-    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+    if (user && !compareAddresses(railgunWallet?.evmWalletAddress, user.address)) {
       return {
         type: 'error',
         text: 'Switch to your seed phrase wallet'
@@ -211,9 +214,35 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Insufficient balance'
       };
     }
+
+    if (receiver) {
+      const isAddressCorrect = await Web3Pure.getInstance(
+        unshieldAsset.blockchain
+      ).isAddressCorrect(receiver);
+
+      if (!isAddressCorrect) {
+        return {
+          type: 'error',
+          text: 'Enter correct receiver address'
+        };
+      }
+
+      if (compareAddresses(user.address, receiver)) {
+        return {
+          type: 'error',
+          text: 'Recipient address must be different'
+        };
+      }
+    } else {
+      return {
+        type: 'error',
+        text: 'Enter receiver address'
+      };
+    }
+
     return {
       type: 'parent',
-      text: 'Unshield'
+      text: 'Private Transfer'
     };
   }
 
@@ -224,7 +253,7 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
       visibleValue: string;
       actualValue: BigNumber;
     } | null,
-    receiver: string,
+    _receiver: string,
     tradeError: ErrorInterface,
     railgunWallet: { evmWalletAddress: string },
     user: UserInterface,
@@ -254,12 +283,6 @@ export class RailgunPrivateActionButtonService extends PrivateActionButtonServic
       return {
         type: 'error',
         text: 'Enter amount'
-      };
-    }
-    if (!receiver) {
-      return {
-        type: 'error',
-        text: 'Enter receiver address'
       };
     }
     // const isAddressCorrect = await Web3Pure.getInstance(network).isAddressCorrect(receiver);
