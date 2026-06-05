@@ -32,6 +32,7 @@ import {
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { withRetryWhile } from '@app/features/trade/utils/with-retry';
+import { needResetPrevApprove } from '@app/features/trade/utils/need-reset-prev-approve';
 
 export abstract class EvmOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: EvmTransactionConfig | null = null;
@@ -165,11 +166,14 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
+    const resetPrevApprove = needResetPrevApprove(fromTokenAddress, this.from.blockchain);
+
     return this.chainAdapter.approveTokens(
       fromTokenAddress,
       this.spenderAddress,
       approveAmount,
-      options
+      options,
+      resetPrevApprove
     );
   }
 

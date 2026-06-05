@@ -25,6 +25,7 @@ import { GasService } from '@app/core/services/gas-service/gas.service';
 import { PendingUnshieldToken } from './models/pending-unshield-token';
 import { PrivateActionRes } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { needResetPrevApprove } from '@app/features/trade/utils/need-reset-prev-approve';
 
 @Injectable()
 export class ZamaSwapService {
@@ -138,6 +139,11 @@ export class ZamaSwapService {
 
       const gasPriceOptions = await this.getGasPriceOptions(pureTokenAmount.blockchain);
 
+      const resetPrevApprove = needResetPrevApprove(
+        pureTokenAmount.address,
+        pureTokenAmount.blockchain
+      );
+
       await adapter.approveTokens(
         pureTokenAmount.address,
         shieldedTokenAddress,
@@ -145,7 +151,8 @@ export class ZamaSwapService {
         {
           gasPriceOptions,
           gasLimitRatio: 1.3
-        }
+        },
+        resetPrevApprove
       );
     } catch (err) {
       throw err;
