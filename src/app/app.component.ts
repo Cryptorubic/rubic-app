@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, delay, filter, first, map, startWith } from 'rxjs/operators';
+import { catchError, delay, first, map, startWith } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -24,7 +24,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
-import { AddressChangedMsg } from './core/services/wallets/models/events';
+import { LastEventInWalletsManager } from './core/services/wallets/models/wallets-manager-types';
 
 @Component({
   selector: 'app-root',
@@ -69,14 +69,17 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$
+    this.walletConnectorService.walletsManager.lastEvent$
       .pipe(
-        filter(msg => Boolean(msg)),
         switchIif(
-          (msg: AddressChangedMsg) =>
-            msg.chainType === CHAIN_TYPE.SOLANA && msg.walletName === WALLET_NAME.BACKPACK,
-          (msg: AddressChangedMsg) => of(msg.address).pipe(delay(1_000)),
-          (msg: AddressChangedMsg) => of(msg.address)
+          (event: LastEventInWalletsManager) => {
+            return (
+              event.affectedChainType === CHAIN_TYPE.SOLANA &&
+              event.affectedWalletName === WALLET_NAME.BACKPACK
+            );
+          },
+          (event: LastEventInWalletsManager) => of(event.affectedWalletAddress).pipe(delay(1_000)),
+          (event: LastEventInWalletsManager) => of(event.affectedWalletAddress)
         ),
         startWith('')
       )

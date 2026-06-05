@@ -41,7 +41,7 @@ export class WalletConnectorService {
   // private readonly addressChangeSubject$: BehaviorSubject<AddressChangedMsg | null> =
   //   new BehaviorSubject<AddressChangedMsg | null>(null);
 
-  private readonly walletsManager: WalletsManager;
+  public readonly walletsManager: WalletsManager;
 
   // private readonly walletAdapterFactory: WalletAdapterFactory = null;
   private readonly walletAdapterFactory: WalletAdapterFactory;
@@ -51,10 +51,12 @@ export class WalletConnectorService {
    */
   // private privateProvider: CommonWalletAdapter;
 
+  // @TODO_530 remove, use walletsManager.activeWallets instead
   public get activeWallets(): CommonWalletAdapter[] {
     return this.walletsManager.activeWallets;
   }
 
+  // @TODO_530 remove, use walletsManager.activeWallets$ instead
   public readonly activeWallets$: Observable<CommonWalletAdapter[]>;
 
   // public get address(): string {
@@ -171,13 +173,11 @@ export class WalletConnectorService {
     }
 
     if (isSafeEnv) {
-      this.connectProvider(WALLET_NAME.SAFE);
-      const walletAdapter = this.getActiveProvider({ walletName: WALLET_NAME.SAFE });
+      const walletAdapter = this.connectProvider(WALLET_NAME.SAFE);
       this.activate(walletAdapter);
     } else {
       providers.forEach(provider => {
-        this.connectProvider(provider);
-        const walletAdapter = this.getActiveProvider({ walletName: provider });
+        const walletAdapter = this.connectProvider(provider);
         this.activate(walletAdapter);
       });
     }
@@ -185,7 +185,7 @@ export class WalletConnectorService {
     return true;
   }
 
-  public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
+  public connectProvider(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
     const walletAdapter = this.walletAdapterFactory.createWalletAdapter(
       walletName,
       this.isIos,
@@ -197,11 +197,13 @@ export class WalletConnectorService {
     if (sameChainWallet) {
       this.deactivate(sameChainWallet.walletName);
     }
-    this.walletsManager.addWallet(walletAdapter);
+
+    return walletAdapter;
   }
 
   public async activate(provider: CommonWalletAdapter): Promise<void> {
     await provider.activate();
+    this.walletsManager.addWallet(provider);
     if (
       provider.walletName !== WALLET_NAME.SAFE &&
       provider.walletName !== WALLET_NAME.TON_CONNECT

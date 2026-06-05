@@ -21,7 +21,9 @@ export class EphemeralWalletTokensFacadeService extends TokensFacadeService {
   ): Observable<AvailableTokenAmount[]> {
     return forkJoin([
       this.tokensBuilderService
-        .getTokensList(type, _query, direction, getEmptySwapFormInput(), false)
+        .getTokensList(type, _query, direction, getEmptySwapFormInput(), {
+          walletAddressesToFetch: []
+        })
         .pipe(first()),
       this.ephemeralWalletTokensService.tokens$.pipe(first())
     ]).pipe(

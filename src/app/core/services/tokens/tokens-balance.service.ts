@@ -14,26 +14,19 @@ import { AbstractAdapter, waitFor, Web3Pure } from '@cryptorubic/web3';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import {
   catchError,
+  combineLatestWith,
   debounceTime,
   distinctUntilChanged,
   first,
   retry,
   switchMap
 } from 'rxjs/operators';
-import {
-  combineLatestWith,
-  defer,
-  firstValueFrom,
-  lastValueFrom,
-  of,
-  throwError,
-  timer
-} from 'rxjs';
+import { defer, firstValueFrom, lastValueFrom, of, throwError, timer } from 'rxjs';
 import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { sorterByTokenRank } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
-import { compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
@@ -44,6 +37,7 @@ import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-col
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { getChainTypeSafe } from './utils/get-chain-type-safe';
 import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
+import { BalanceFetchingConfig } from './models/tokens-balance-service-types';
 
 @Injectable({
   providedIn: 'root'
@@ -310,6 +304,7 @@ export class TokensBalanceService {
 
   public async fetchDifferentChainsBalances(
     tokens: Token[],
+    balanceFetchingConfig: BalanceFetchingConfig,
     setBalanceLoading = true
   ): Promise<BalanceToken[]> {
     const chainTypes = this.walletConnectorService.chainTypes;
@@ -341,8 +336,14 @@ export class TokensBalanceService {
           const tokensAddresses = chainTokens.map(token => token.address);
           const chainType = BlockchainsInfo.getChainType(adapter.blockchain);
           const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+          const shouldFetchBalancesForWallet = balanceFetchingConfig.walletAddressesToFetch.some(
+            walletAddrToFetch => compareAddresses(walletAddrToFetch, walletAdapter?.address)
+          );
 
-          if (!walletAdapter) {
+          if (!walletAdapter || !shouldFetchBalancesForWallet) {
+            if (setBalanceLoading) {
+              this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+            }
             return Promise.resolve(
               tokens.map(token => ({ ...token, favorite: false, amount: new BigNumber(NaN) }))
             );
@@ -359,12 +360,10 @@ export class TokensBalanceService {
                   : new BigNumber(NaN)
               })) as BalanceToken[];
               const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
-
               this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
               if (setBalanceLoading) {
                 this.tokensStore.tokens[chain]._balanceLoading$.next(false);
               }
-
               return tokensWithBalances;
             });
         });
@@ -474,44 +473,92 @@ export class TokensBalanceService {
     ]);
   }
 
+  //  public subscribeOnWallet(): void {
+  //    this.walletConnectorService.activeWallets$
+  //      .pipe(
+  //        combineLatestWith(
+  //          this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
+  //        )
+  //      )
+  //      .subscribe(([activeWallets, balanceNetworks]) => {
+  //        if (activeWallets.length) {
+  //          const latestConnectedWallet = activeWallets[activeWallets.length - 1];
+  //          this.collectionsFacade.allTokens.setBalanceLoading(true);
+  //          this.tokensStore.clearAllBalances();
+
+  //          Promise.all([
+  //            this.fetchT1Balances(
+  //              latestConnectedWallet.address,
+  //              latestConnectedWallet.chainType,
+  //              balanceNetworks
+  //            ),
+  //            this.fetchT2Balances(
+  //              latestConnectedWallet.address,
+  //              latestConnectedWallet.chainType,
+  //              balanceNetworks
+  //            )
+  //          ]).then(([successT1request]) => {
+  //            if (!successT1request) {
+  //              this.fetchListBalances(
+  //                latestConnectedWallet.address,
+  //                latestConnectedWallet.chainType,
+  //                balanceNetworks
+  //              ).then(() => {
+  //                this.collectionsFacade.allTokens.setBalanceLoading(false);
+  //              });
+  //            }
+  //            this.collectionsFacade.allTokens.setBalanceLoading(false);
+  //          });
+  //        } else {
+  //          this.tokensStore.clearAllBalances();
+  //        }
+  //      });
+  // }
+
+  // @TODO_530 проверить почему при старте аппа с подключенным евм кошельком - не эмитится ласт ивент
+  // и почему не очищаются балансы с октрытым селектором при отключении ЕВМ кошелька?
+  // при отключении соланы все работает правильно
   public subscribeOnWallet(): void {
-    this.walletConnectorService.activeWallets$
+    this.walletConnectorService.walletsManager.lastEvent$
       .pipe(
-        distinctUntilChanged((prev, curr) => prev.length === curr.length),
-        combineLatestWith(
-          this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
-        )
+        // combineLatestWith(
+        //   this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
+        // )
+        combineLatestWith(of([]))
       )
-      .subscribe(([activeWallets, balanceNetworks]) => {
-        if (activeWallets.length) {
-          const latestConnectedWallet = activeWallets[activeWallets.length - 1];
-          this.collectionsFacade.allTokens.setBalanceLoading(true);
-          this.tokensStore.clearAllBalances();
-          Promise.all([
-            this.fetchT1Balances(
-              latestConnectedWallet.address,
-              latestConnectedWallet.chainType,
-              balanceNetworks
-            ),
-            this.fetchT2Balances(
-              latestConnectedWallet.address,
-              latestConnectedWallet.chainType,
-              balanceNetworks
-            )
-          ]).then(([successT1request]) => {
-            if (!successT1request) {
-              this.fetchListBalances(
-                latestConnectedWallet.address,
-                latestConnectedWallet.chainType,
-                balanceNetworks
-              ).then(() => {
+      .subscribe(([lastEvent, balanceNetworks]) => {
+        console.log('%cLAST_EVENT_CALLED =>', 'color: orange; font-size: 20px;', lastEvent);
+        switch (lastEvent.type) {
+          case 'connected':
+            this.collectionsFacade.allTokens.setBalanceLoading(true);
+            const walletAddr = lastEvent.affectedWalletAddress;
+            const chainType = lastEvent.affectedChainType;
+
+            if (chainType === CHAIN_TYPE.EVM) {
+              Promise.all([
+                this.fetchT1Balances(walletAddr, chainType, balanceNetworks),
+                this.fetchT2Balances(walletAddr, chainType, balanceNetworks)
+              ])
+                .then(([successT1request]) => {
+                  if (!successT1request) {
+                    return this.fetchListBalances(walletAddr, chainType, balanceNetworks);
+                  }
+                })
+                .finally(() => this.collectionsFacade.allTokens.setBalanceLoading(false));
+            } else {
+              this.fetchT2Balances(walletAddr, chainType, balanceNetworks).finally(() => {
                 this.collectionsFacade.allTokens.setBalanceLoading(false);
               });
             }
-            this.collectionsFacade.allTokens.setBalanceLoading(false);
-          });
-        } else {
-          this.tokensStore.clearAllBalances();
+
+            break;
+          case 'disconnected':
+            if (this.walletConnectorService.activeWallets.length > 0) {
+              this.tokensStore.clearBalancesByChainType(lastEvent.affectedChainType);
+            } else {
+              this.tokensStore.clearAllBalances();
+            }
+            break;
         }
       });
   }

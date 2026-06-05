@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { USER_WALLETS_CHAIN_TYPES } from './constants/wallets-chain-types';
 import { BlockchainName, ChainType } from '@cryptorubic/core';
-import { BehaviorSubject, Observable, combineLatestWith, map, startWith, tap, timer } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatestWith, map, startWith, timer } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -52,7 +52,6 @@ export class UserProfileWalletsComponent {
   public readonly selectedWallet$ = this.selectedChainType$.pipe(
     combineLatestWith(this.walletConnectorService.activeWallets$),
     map(([chainType]) => this.walletConnectorService.getActiveProvider({ chainType })),
-    tap(wallet => console.log('SELECTED_WALLET:', wallet)),
     startWith(null)
   );
 

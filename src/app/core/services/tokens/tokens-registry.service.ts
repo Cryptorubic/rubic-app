@@ -132,7 +132,14 @@ export class TokensRegistryService {
                 ('symbol' in params && params.symbol.toLowerCase().includes('eth')))
             )
         );
-        return this.balanceService.fetchDifferentChainsBalances(tokensWithoutBalance);
+        const activeWallets = this.walletConnectorService.walletsManager.activeWallets;
+        const walletAddressesToFetch = activeWallets.map(wallet => wallet.address);
+
+        return this.balanceService.fetchDifferentChainsBalances(
+          tokensWithoutBalance,
+          { walletAddressesToFetch },
+          true
+        );
       })
     );
   }

@@ -29,6 +29,8 @@ import { TokensQueryService } from '@core/services/tokens/tokens-query.service';
 import { TokensBuilderService } from '@core/services/tokens/tokens-builder.service';
 import { TokensPaginationService } from '@core/services/tokens/tokens-pagination.service';
 import { QueryTokenParams } from './new-tokens-api.service';
+import { BalanceFetchingConfig } from './models/tokens-balance-service-types';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +49,8 @@ export class TokensFacadeService {
   protected readonly tokensBuilderService = inject(TokensBuilderService);
 
   private readonly tokensPaginationService = inject(TokensPaginationService);
+
+  protected readonly walletConnectorService = inject(WalletConnectorService);
 
   public get nativeToken$(): Observable<BalanceToken | null> {
     return this.tokensRegistryService.nativeToken$;
@@ -144,14 +148,14 @@ export class TokensFacadeService {
     _query: string,
     direction: 'from' | 'to',
     inputValue: SwapFormInput,
-    fetchBalances: boolean = true
+    balanceFetchingConfig: BalanceFetchingConfig = { walletAddressesToFetch: [] }
   ): Observable<AvailableTokenAmount[]> {
     return this.tokensBuilderService.getTokensList(
       type,
       _query,
       direction,
       inputValue,
-      fetchBalances
+      balanceFetchingConfig
     );
   }
 

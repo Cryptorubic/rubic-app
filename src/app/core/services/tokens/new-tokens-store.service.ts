@@ -5,7 +5,7 @@ import {
   TokenRef,
   TokensState
 } from '@core/services/tokens/models/new-token-types';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import { BehaviorSubject, combineLatest, combineLatestWith, firstValueFrom, of } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
@@ -190,6 +190,21 @@ export class NewTokensStoreService {
       });
       chainStore._tokensObject$.next(tokens);
     });
+  }
+
+  public clearBalancesByChainType(chainTypeToClear: ChainType): void {
+    for (const chainName in this.tokens) {
+      const currChainType = BlockchainsInfo.getChainType(chainName as BlockchainName);
+      if (currChainType === chainTypeToClear) {
+        const chainStore = this.tokens[chainName as BlockchainName];
+        const tokens = chainStore._tokensObject$.getValue();
+        Object.keys(tokens).forEach(address => {
+          tokens[address].amount = new BigNumber(NaN);
+        });
+        chainStore._tokensObject$.next(tokens);
+        break;
+      }
+    }
   }
 
   public setQueryAndFetch(blockchain: BlockchainName, query: string): void {

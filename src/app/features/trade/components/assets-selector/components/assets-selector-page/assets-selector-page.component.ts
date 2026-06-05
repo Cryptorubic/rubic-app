@@ -149,17 +149,13 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       combineLatestWith(
         this.tokensSearchQuery$.pipe(distinctUntilChanged()),
         this.balanceLoading$.pipe(filter(loading => !loading)),
-        this.walletConnectorService.activeWallets$
+        this.walletConnectorService.walletsManager.activeWallets$
       ),
       debounceTime(50), // skip many repeated updates at the same time
       switchMap(([type, query, _, __]) =>
-        this.tokensFacade.getTokensList(
-          type,
-          query,
-          this.type,
-          this.formService.inputValue,
-          this.isFirstRendering // load balances once when selector just opened
-        )
+        this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue, {
+          walletAddressesToFetch: []
+        })
       ),
       tap(() => (this.isFirstRendering = false))
     );

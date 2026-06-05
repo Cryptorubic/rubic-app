@@ -33,21 +33,17 @@ export class AuthService {
   }
 
   public async connectWallet(options: {
-    walletName?: WALLET_NAME;
+    walletName: WALLET_NAME;
     chainId?: number;
     hideError?: boolean;
   }): Promise<void> {
     try {
       const { walletName } = options;
-      const alreadyConnected = this.walletConnectorService.activeWallets.some(
-        wallet => wallet.walletName === walletName
+      const walletAdapter = this.walletConnectorService.connectProvider(
+        walletName,
+        options.chainId
       );
-      if (walletName && !alreadyConnected) {
-        await this.walletConnectorService.connectProvider(walletName, options.chainId);
-      }
-
-      const provider = this.walletConnectorService.getActiveProvider({ walletName });
-      await this.walletConnectorService.activate(provider);
+      await this.walletConnectorService.activate(walletAdapter);
 
       if (walletName) {
         this.gtmService.fireConnectWalletEvent(walletName);

@@ -31,13 +31,9 @@ export class RailgunTokensFacadeService extends TokensFacadeService {
 
           if (direction === 'to') {
             return this.tokensBuilderService
-              .getTokensList(
-                isBlockchain ? type : blockchainName,
-                _query,
-                direction,
-                inputValue,
-                false
-              )
+              .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue, {
+                walletAddressesToFetch: []
+              })
               .pipe(
                 map(tokens => {
                   return tokens
@@ -61,13 +57,9 @@ export class RailgunTokensFacadeService extends TokensFacadeService {
           }
 
           return this.tokensBuilderService
-            .getTokensList(
-              isBlockchain ? type : blockchainName,
-              _query,
-              direction,
-              inputValue,
-              false
-            )
+            .getTokensList(isBlockchain ? type : blockchainName, _query, direction, inputValue, {
+              walletAddressesToFetch: []
+            })
             .pipe(
               map(tokens => {
                 return tokens

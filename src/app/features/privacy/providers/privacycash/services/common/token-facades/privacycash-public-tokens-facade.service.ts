@@ -7,6 +7,8 @@ import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { getMinimalTokensByChain, getTokenKey } from './utils/get-minimal-tokens-by-chain';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { BlockchainsInfo } from '@cryptorubic/core';
+import { BalanceFetchingConfig } from '@app/core/services/tokens/models/tokens-balance-service-types';
 
 @Injectable()
 export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
@@ -23,11 +25,27 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
     );
 
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
+      .getTokensList(
+        type,
+        _query,
+        direction,
+        getEmptySwapFormInput(),
+        this.defineBalanceFetchingConfig(type)
+      )
       .pipe(
         map(tokens => {
           return tokens.filter(token => !!addrToTokenMap[getTokenKey(token)]);
         })
       );
+  }
+
+  private defineBalanceFetchingConfig(assetType: AssetListType): BalanceFetchingConfig {
+    if (BlockchainsInfo.isBlockchainName(assetType)) {
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: assetType
+      });
+      return { walletAddressesToFetch: walletAddr ? [walletAddr] : [] };
+    }
+    return { walletAddressesToFetch: [] };
   }
 }
