@@ -176,10 +176,14 @@ export class WalletConnectorService {
       const walletAdapter = this.connectProvider(WALLET_NAME.SAFE);
       this.activate(walletAdapter);
     } else {
-      providers.forEach(provider => {
+      for (const provider of providers) {
         const walletAdapter = this.connectProvider(provider);
         this.activate(walletAdapter);
-      });
+      }
+      // providers.forEach(async provider => {
+      //   const walletAdapter = this.connectProvider(provider);
+      //   await this.activate(walletAdapter);
+      // });
     }
 
     return true;

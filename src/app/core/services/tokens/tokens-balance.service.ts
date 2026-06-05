@@ -14,14 +14,14 @@ import { AbstractAdapter, waitFor, Web3Pure } from '@cryptorubic/web3';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import {
   catchError,
-  combineLatestWith,
   debounceTime,
   distinctUntilChanged,
   first,
+  mergeMap,
   retry,
   switchMap
 } from 'rxjs/operators';
-import { defer, firstValueFrom, lastValueFrom, of, throwError, timer } from 'rxjs';
+import { defer, firstValueFrom, forkJoin, lastValueFrom, of, throwError, timer } from 'rxjs';
 import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -473,61 +473,19 @@ export class TokensBalanceService {
     ]);
   }
 
-  //  public subscribeOnWallet(): void {
-  //    this.walletConnectorService.activeWallets$
-  //      .pipe(
-  //        combineLatestWith(
-  //          this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
-  //        )
-  //      )
-  //      .subscribe(([activeWallets, balanceNetworks]) => {
-  //        if (activeWallets.length) {
-  //          const latestConnectedWallet = activeWallets[activeWallets.length - 1];
-  //          this.collectionsFacade.allTokens.setBalanceLoading(true);
-  //          this.tokensStore.clearAllBalances();
-
-  //          Promise.all([
-  //            this.fetchT1Balances(
-  //              latestConnectedWallet.address,
-  //              latestConnectedWallet.chainType,
-  //              balanceNetworks
-  //            ),
-  //            this.fetchT2Balances(
-  //              latestConnectedWallet.address,
-  //              latestConnectedWallet.chainType,
-  //              balanceNetworks
-  //            )
-  //          ]).then(([successT1request]) => {
-  //            if (!successT1request) {
-  //              this.fetchListBalances(
-  //                latestConnectedWallet.address,
-  //                latestConnectedWallet.chainType,
-  //                balanceNetworks
-  //              ).then(() => {
-  //                this.collectionsFacade.allTokens.setBalanceLoading(false);
-  //              });
-  //            }
-  //            this.collectionsFacade.allTokens.setBalanceLoading(false);
-  //          });
-  //        } else {
-  //          this.tokensStore.clearAllBalances();
-  //        }
-  //      });
-  // }
-
-  // @TODO_530 проверить почему при старте аппа с подключенным евм кошельком - не эмитится ласт ивент
-  // и почему не очищаются балансы с октрытым селектором при отключении ЕВМ кошелька?
-  // при отключении соланы все работает правильно
+  // @TODO_530 проверить почему не очищаются балансы с октрытым селектором при отключении ЕВМ кошелька?
+  // при отключении соланы и трона все работает правильно
   public subscribeOnWallet(): void {
     this.walletConnectorService.walletsManager.lastEvent$
       .pipe(
-        // combineLatestWith(
-        //   this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
-        // )
-        combineLatestWith(of([]))
+        mergeMap(lastEvent =>
+          forkJoin([
+            of(lastEvent),
+            this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
+          ])
+        )
       )
       .subscribe(([lastEvent, balanceNetworks]) => {
-        console.log('%cLAST_EVENT_CALLED =>', 'color: orange; font-size: 20px;', lastEvent);
         switch (lastEvent.type) {
           case 'connected':
             this.collectionsFacade.allTokens.setBalanceLoading(true);

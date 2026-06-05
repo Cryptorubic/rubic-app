@@ -1,4 +1,4 @@
-import { BehaviorSubject, filter, tap } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, filter } from 'rxjs';
 import { CommonWalletAdapter } from '../wallets-adapters/common-wallet-adapter';
 import { LastEventInWalletsManager } from '../models/wallets-manager-types';
 
@@ -7,12 +7,10 @@ export class WalletsManager {
 
   public readonly activeWallets$ = this._activeWallets$.asObservable();
 
-  private readonly _lastEvent$ = new BehaviorSubject<LastEventInWalletsManager>(null);
+  private readonly _lastEvent$ = new ReplaySubject<LastEventInWalletsManager>(Infinity);
+  // private readonly _lastEvent$ = new BehaviorSubject<LastEventInWalletsManager>(null);
 
-  public readonly lastEvent$ = this._lastEvent$.pipe(
-    filter(Boolean),
-    tap(lastEVTN => console.log('%cLAST_EVENT', 'color: aqua; font-size: 20px;', lastEVTN))
-  );
+  public readonly lastEvent$ = this._lastEvent$.pipe(filter(Boolean));
 
   public get activeWallets(): CommonWalletAdapter[] {
     return this._activeWallets$.value;

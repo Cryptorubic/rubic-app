@@ -104,7 +104,6 @@ export class PlatformConfigurationService {
 
   private setBalanceNetworks(balanceNetworks: BlockchainName[]): void {
     this._balanceNetworks$.next(balanceNetworks);
-    this._balanceNetworks$.complete();
   }
 
   private setCloudflareProtection(useCloudflare: boolean): void {
