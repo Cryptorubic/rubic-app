@@ -1,0 +1,11 @@
+import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
+
+export const HOUDINI_SUPPORTED_WALLETS = [
+  WALLET_NAME.METAMASK,
+  WALLET_NAME.METAMASK_SOLANA,
+  WALLET_NAME.WALLET_CONNECT,
+  WALLET_NAME.PHANTOM,
+  WALLET_NAME.TRON_LINK,
+  WALLET_NAME.BACKPACK,
+  WALLET_NAME.SOLFLARE
+];

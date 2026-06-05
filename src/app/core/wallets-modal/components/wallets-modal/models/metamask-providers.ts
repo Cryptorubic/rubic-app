@@ -1,0 +1,6 @@
+import { WALLET_NAME } from './wallet-name';
+
+export const METAMASK_PROVIDERS: WALLET_NAME[] = [
+  WALLET_NAME.METAMASK,
+  WALLET_NAME.METAMASK_SOLANA
+];

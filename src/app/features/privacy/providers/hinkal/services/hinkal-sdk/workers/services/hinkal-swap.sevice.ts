@@ -1,19 +1,17 @@
 import {
   emporiumOp,
-  generateFundApproveAndTransactOps,
-  getNecessaryAssetsForFunding,
+  FeeStructure,
+  generateFundAndApproveOps,
   Hinkal,
   networkRegistry,
-  RelayerTransaction,
   SubAccount,
   TokenChanges,
-  UserKeys,
   WRAPPER_TOKEN_EXCHANGE_ADDRESSES
 } from '@hinkal/common';
 import { PureTokenAmount } from '../models/worker-params';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import { HinkalUtils } from '../../utils/hinkal-utils';
-import { ContractTransaction } from 'ethers';
+import { ContractTransaction, Wallet } from 'ethers';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { HinkalWorkerQuoteService } from './hinkal-quote.service';
 
@@ -43,8 +41,6 @@ export class HinkalWorkerSwapService {
         true
       )) as ContractTransaction;
 
-      console.log(resp);
-
       return {
         data: resp.data,
         to: resp.to,
@@ -56,62 +52,68 @@ export class HinkalWorkerSwapService {
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async withdraw(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
+    feeStructure: FeeStructure,
     receiver?: string
   ): Promise<string> {
     try {
       const hinkalInstance = this.hinkal;
       const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
-
       const resp = (await hinkalInstance.withdraw(
         [withdrawToken],
         [-BigInt(token.stringWeiAmount)],
         receiverAddress,
         false,
-        undefined,
-        undefined,
-        undefined,
-        false
-      )) as RelayerTransaction;
+        feeToken,
+        feeStructure
+      )) as string;
 
-      console.log(resp);
-      return resp.transactionHash;
+      return resp;
     } catch (err) {
       console.log(err);
       throw err;
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateTransfer(
     token: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string,
     recipientStealthAddress: string
   ): Promise<string> {
     try {
       const hinkalInstance = this.hinkal;
       const transferToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
 
-      const resp = (await hinkalInstance.transfer(
+      const hash = await hinkalInstance.transfer(
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
         recipientStealthAddress,
-        undefined,
-        undefined,
-        undefined,
-        false
-      )) as RelayerTransaction;
+        feeToken
+      );
 
-      return resp.transactionHash;
+      return hash;
     } catch (err) {
       console.log(err);
       throw err;
     }
   }
 
+  /**
+   * @returns tx hash
+   */
   public async privateSwap(
     fromToken: PureTokenAmount<EvmBlockchainName>,
-    toToken: PureTokenAmount<EvmBlockchainName>
+    toToken: PureTokenAmount<EvmBlockchainName>,
+    feeToken: string
   ): Promise<string> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
@@ -140,54 +142,60 @@ export class HinkalWorkerSwapService {
 
       const rubicSwapData = await this.quoteService.fetchSwapData(fromAddress, receiver);
 
-      const ethAddress = await hinkalInstance.getEthereumAddress();
-      const subAccount: SubAccount = {
-        index: 0,
-        ethAddress: ethAddress,
-        privateKey: keys.getShieldedPrivateKey(),
-        name: 'user',
-        createdAt: new Date().toISOString(),
-        isHidden: false,
-        isImported: false
-      };
+      const hinkalShieldedSignerAddress = new Wallet(keys.getShieldedPrivateKey()).address;
 
-      const necessaryAssets = await getNecessaryAssetsForFunding(hinkalInstance, subAccount, [
-        fromTokenChanges,
-        toTokenChanges
-      ]);
-
-      const ops = generateFundApproveAndTransactOps(
+      const ops = generateFundAndApproveOps(
         hinkalInstance,
-        necessaryAssets.tokensToFund.map(token => token.erc20TokenAddress),
-        necessaryAssets.fundAmounts,
-        necessaryAssets.approveTokenAddresses,
-        necessaryAssets.approvedTokenAmounts,
-        UserKeys.getSignerAddressFromPrivateKey(fromChainId, keys.getShieldedPrivateKey()),
-        rubicSwapData.to,
-        rubicSwapData.to,
-        rubicSwapData.data,
-        BigInt(rubicSwapData.value)
+        fromChainId,
+        [fromToken.address],
+        [BigInt(fromToken.stringWeiAmount)],
+        fromToken.isNative ? [] : [fromToken.address],
+        [BigInt(fromToken.stringWeiAmount)],
+        hinkalShieldedSignerAddress,
+        rubicSwapData.to
       );
+
+      const registry = WRAPPER_TOKEN_EXCHANGE_ADDRESSES as Record<number, string>;
 
       ops.push(
         emporiumOp({
-          contract: WRAPPER_TOKEN_EXCHANGE_ADDRESSES[fromChainId],
+          contract: rubicSwapData.to,
+          callDataString: rubicSwapData.data,
+          value: BigInt(rubicSwapData.value),
+          invokeWallet: true
+        }),
+        emporiumOp({
+          contract: registry[fromChainId],
           func: 'withdrawBalanceDifference',
           args: [0n],
           invokeWallet: true
         })
       );
 
-      const res = (await hinkalInstance.actionPrivateWallet(
-        [fromHinkalToken.erc20TokenAddress, toHinkalToken.erc20TokenAddress],
+      const subAccount: SubAccount = {
+        index: 0,
+        ethAddress: hinkalShieldedSignerAddress,
+        privateKey: keys.getShieldedPrivateKey(),
+        name: 'user',
+        createdAt: new Date().toISOString(),
+        isHidden: false,
+        isImported: false,
+        iconIndex: 0,
+        isFavorite: false
+      };
+
+      const hash = await hinkalInstance.actionPrivateWallet(
+        fromChainId,
+        [fromHinkalToken, toHinkalToken],
         [fromTokenChanges.amount, toTokenChanges.amount],
         [false, true],
         ops,
         [fromTokenChanges, toTokenChanges],
-        subAccount
-      )) as RelayerTransaction;
+        subAccount,
+        feeToken
+      );
 
-      return res.transactionHash;
+      return hash;
     } catch (err) {
       console.log('FAILED TO SWAP', err);
       throw err;

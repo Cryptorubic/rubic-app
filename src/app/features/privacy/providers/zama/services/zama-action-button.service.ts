@@ -1,16 +1,24 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonService } from '../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { PrivateActionButtonState } from '../../shared-privacy-providers/models/private-action-button-state';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, compareAddresses } from '@cryptorubic/core';
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PageType } from '../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { Web3Pure } from '@cryptorubic/web3';
+import { ZAMA_SUPPORTED_WALLETS } from '../constants/zama-supported-wallets';
+import { ZamaSignatureService } from './zama-sdk/zama-signature.service';
+import { SignatureInfo } from './zama-sdk/models/signature-info';
+import { ZamaFacadeService } from './zama-sdk/zama-facade.service';
 
 @Injectable()
 export class ZamaActionButtonService extends PrivateActionButtonService {
+  private readonly signatureService = inject(ZamaSignatureService);
+
+  private readonly zamaFacade = inject(ZamaFacadeService);
+
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
       filter(Boolean),
@@ -35,23 +43,58 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
 
         return combineLatest([
           this.walletConnector.networkChange$,
+          this.walletConnector.addressChange$,
           asset$,
           assetAmount$,
-          this._receiverAddress$
+          this._receiverAddress$,
+          this.signatureService.signatureInfo$
         ]).pipe(switchMap(params => this.getButtonState(...params, page)));
       })
     );
 
+  protected connectWallet(): void {
+    super.connectWallet();
+    this.modalService
+      .openWalletModal(this.injector, { providers: ZAMA_SUPPORTED_WALLETS })
+      .subscribe();
+  }
+
   private async getButtonState(
-    _network: BlockchainName | null,
+    network: BlockchainName | null,
+    userAddr: string,
     asset: BalanceToken | null,
     assetAmount: {
       visibleValue: string;
       actualValue: BigNumber;
     } | null,
     receiver: string,
+    signatureInfo: SignatureInfo | null,
     currPage: PageType
   ): Promise<PrivateActionButtonState> {
+    if (!network) {
+      return {
+        type: 'action',
+        text: 'Connect Wallet',
+        action: () => this.connectWallet()
+      };
+    }
+
+    if (BlockchainsInfo.getChainType(network) !== CHAIN_TYPE.EVM) {
+      return {
+        type: 'action',
+        text: 'Switch Wallet',
+        action: () => this.connectWallet()
+      };
+    }
+
+    if (!signatureInfo) {
+      return {
+        type: 'action',
+        text: 'Sign to enable Private Mode',
+        action: () => this.zamaFacade.updateSignature()
+      };
+    }
+
     if (!asset) {
       return {
         type: 'error',
@@ -68,18 +111,6 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
         text: 'Enter amount'
       };
     }
-
-    // if (asset.decimals > 6) {
-    //   const stringAmount = assetAmount.actualValue.toFixed();
-    //   const decimalsLength = stringAmount.split('.')[1]?.length ?? 0;
-
-    //   if (decimalsLength > 6) {
-    //     return {
-    //       type: 'error',
-    //       text: 'Max 6 decimals allowed'
-    //     };
-    //   }
-    // }
 
     if (asset.amount.lt(assetAmount.visibleValue)) {
       return {
@@ -111,6 +142,13 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
         return {
           type: 'error',
           text: 'Enter correct receiver address'
+        };
+      }
+
+      if (compareAddresses(userAddr, receiver) && currPage.type === 'transfer') {
+        return {
+          type: 'error',
+          text: 'Recipient address must be different'
         };
       }
     }

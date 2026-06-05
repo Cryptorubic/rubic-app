@@ -3,16 +3,20 @@
   <head>
     <!-- Turnstile widget -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHYCGJXV8G"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
+
+    <!-- Formo analytics-->
+    <script
+      src="https://unpkg.com/@formo/analytics@1.30.0/dist/index.umd.min.js"
+      defer
+      integrity="sha384-Qt6VrbI9bLkftV9p47vD4wYuQj91WOT6YWiBdwYo6n2j4OET2pGwYtsL5xuTHxwg"
+      crossorigin="anonymous"
+      onload="
+      window.formofy('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmlnaW4iOiJodHRwczovL2FwcC5ydWJpYy5leGNoYW5nZSIsInByb2plY3RfaWQiOiJjSlF3UmdjWGpydmREWmVZY0lySk4iLCJpYXQiOjE3NTY5MTMyNjd9.gvfjSLKgaVkPNCWtrRbWe4denTTM3YRqsKx_SqIVQKA', {
+        ready: function(formo) {
+        formo.identify();
       }
-      gtag('js', new Date());
-      gtag('config', 'G-QHYCGJXV8G');
-    </script>
+      })"
+    ></script>
 
     <!-- common site settings -->
     <meta charset="utf-8" />

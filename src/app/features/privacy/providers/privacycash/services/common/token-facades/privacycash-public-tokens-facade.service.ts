@@ -23,7 +23,7 @@ export class PrivacycashPublicTokensFacadeService extends TokensFacadeService {
     );
 
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput())
+      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
       .pipe(
         map(tokens => {
           return tokens.filter(token => !!addrToTokenMap[getTokenKey(token)]);

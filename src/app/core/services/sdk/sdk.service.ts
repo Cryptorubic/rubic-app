@@ -46,7 +46,9 @@ export class SdkService {
       httpClient: new SdkHttpClient(this.angularHttpClient),
       tonParams: {
         tonApiConfig: {
-          tonApiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+          tonApiHeaders: {
+            apiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+          },
           tonApiUrl: `https://x-api.rubic.exchange/tonapi`
         },
         tonClientConfig: {
@@ -57,7 +59,10 @@ export class SdkService {
       clientParams: {
         envType: ENVIRONMENT.environmentName,
         lazyLoadWeb3: true,
-        viemConfig: rubicSdkDefaultConfig.viemConfig
+        viemConfig: rubicSdkDefaultConfig.viemConfig,
+        tronwebHeaders: {
+          apikey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+        }
       }
     });
 

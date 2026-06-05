@@ -4,7 +4,7 @@ import { PrivateActionButtonService } from '@app/features/privacy/providers/shar
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { BlockchainName } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { combineLatest, combineLatestWith, filter, Observable, switchMap } from 'rxjs';
+import { combineLatest, combineLatestWith, EMPTY, filter, Observable, switchMap } from 'rxjs';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -62,10 +62,13 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
             )
           ]).pipe(switchMap(params => this.getShieldingState(...params)));
         }
+
+        return EMPTY;
       })
     );
 
-  private connectWallet(): void {
+  protected connectWallet(): void {
+    super.connectWallet();
     const walletsMap = this.headerStore.isMobile
       ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
       : PRIVATE_PROVIDERS_WALLETS_MAP;
@@ -94,7 +97,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
         action: this.connectWallet.bind(this)
       };
     }
-    if (user && !compareAddresses(railgunWallet.evmWalletAddress, user.address)) {
+    if (user && !compareAddresses(railgunWallet?.evmWalletAddress, user.address)) {
       return {
         type: 'error',
         text: 'Switch to your seed phrase wallet'
@@ -121,7 +124,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
     }
     return {
       type: 'parent',
-      text: 'Shield'
+      text: 'Shield Tokens'
     };
   }
 }

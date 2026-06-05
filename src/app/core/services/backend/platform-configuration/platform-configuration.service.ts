@@ -18,6 +18,10 @@ import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/plat
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
+  private readonly _useCloudflareProtection$ = new BehaviorSubject<boolean>(false);
+
+  public readonly useCloudflareProtection$ = this._useCloudflareProtection$.asObservable();
+
   private readonly _balanceNetworks$ = new BehaviorSubject<BlockchainName[]>([]);
 
   public readonly balanceNetworks$ = this._balanceNetworks$.asObservable();
@@ -54,6 +58,7 @@ export class PlatformConfigurationService {
             this.setBlockchainsInfo(infoV3Response.networks);
             this.setBalanceNetworks(infoV3Response.balanceNetworks);
             this.setCcrProvidersInfo(infoV3Response.crosschainProviders);
+            this.setCloudflareProtection(infoV3Response.useCloudflareProtection);
           }
         }),
         map(infoV3Response => infoV3Response.appIsActive)
@@ -99,5 +104,9 @@ export class PlatformConfigurationService {
 
   private setBalanceNetworks(balanceNetworks: BlockchainName[]): void {
     this._balanceNetworks$.next(balanceNetworks);
+  }
+
+  private setCloudflareProtection(useCloudflare: boolean): void {
+    this._useCloudflareProtection$.next(useCloudflare);
   }
 }

@@ -153,7 +153,6 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private logoutAndChangeWallet(): void {
     this.authService.disconnectWallet();
-    this.gtmService.fireClickOnConnectWalletButtonEvent();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 
@@ -174,7 +173,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private connectWallet(): void {
     this.modalService
-      .openWalletModal(this.injector)
+      .openWalletModal(this.injector, { direction: 'column' })
       .pipe(
         switchMap(() =>
           forkJoin([this.walletConnector.addressChange$, this.swapsStateService.notEnoughBalance$])

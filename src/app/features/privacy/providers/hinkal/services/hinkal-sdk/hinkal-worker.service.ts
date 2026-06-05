@@ -16,8 +16,9 @@ export class HinkalWorkerService {
       const handler = (event: MessageEvent<WorkerResponse<T>>) => {
         if (event.data.type === params.type) {
           if (!event.data.success && event.data.error) {
-            reject(event.data.error);
+            reject(new Error(event.data.error));
           }
+
           this.worker.removeEventListener('message', handler);
           resolve(event.data.result);
         }

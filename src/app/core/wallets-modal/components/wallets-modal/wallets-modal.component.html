@@ -15,7 +15,10 @@
       </a></span
     >
   </form>
-  <main class="modal__body" *ngLet="enableWallets$ | async as enableWallets">
+  <main
+    [className]="modalDirection === 'column' ? 'modal__body-column' : 'modal__body-row'"
+    *ngLet="enableWallets$ | async as enableWallets"
+  >
     <ng-container *ngFor="let provider of providers">
       <ng-container *ngIf="provider.display">
         <div class="modal__provider" [ngClass]="{ disabled: !enableWallets }">

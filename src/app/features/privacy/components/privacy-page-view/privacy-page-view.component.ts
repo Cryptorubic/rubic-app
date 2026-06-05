@@ -22,6 +22,11 @@ import { PRIVATE_MODE_SUPPORTED_CHAINS } from '../../constants/private-mode-supp
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '../../constants/private-mode-supported-tokens';
 import { StoreService } from '@core/services/store/store.service';
 import { ModalService } from '@core/modals/services/modal.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import {
+  PRIVATE_TAB_TO_FLOW_TYPE_EVENT,
+  PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT
+} from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -89,11 +94,15 @@ export class PrivacyPageViewComponent implements OnInit {
 
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
-  public readonly tabs = Object.values(PRIVATE_MODE_TAB);
+  public readonly tabs = Object.values(PRIVATE_MODE_TAB).filter(
+    tab => tab !== PRIVATE_MODE_TAB.ON_CHAIN
+  );
 
   private readonly store = inject(StoreService);
 
   private readonly modalService = inject(ModalService);
+
+  private readonly gtmService = inject(GoogleTagManagerService);
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -103,6 +112,7 @@ export class PrivacyPageViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.gtmService.fireViewPrivateModePageEvent();
     this.parseQueryParams();
   }
 
@@ -202,6 +212,12 @@ export class PrivacyPageViewComponent implements OnInit {
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {
+    this.gtmService.fireSelectPrivateProviderEvent(
+      PRIVATE_TAB_TO_FLOW_TYPE_EVENT[this.privacyMainPageService.selectedTab],
+      PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT[tradeType],
+      this.privacyMainPageService.showAllProviders
+    );
+
     const url = PRIVATE_MODE_URLS[tradeType];
     await this.router.navigate([url], {
       relativeTo: this.activatedRoute,

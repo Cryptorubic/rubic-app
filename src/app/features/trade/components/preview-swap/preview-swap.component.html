@@ -241,6 +241,18 @@
       </div>
     </div>
 
+    <ng-container *ngIf="state.tradeState.trade.warnings.length">
+      <ng-container *ngFor="let warning of state.tradeState.trade.warnings">
+        <tui-notification
+          *ngIf="warning.code.toString().startsWith('70')"
+          class="notification"
+          status="warning"
+        >
+          {{ warning.reason }}
+        </tui-notification>
+      </ng-container>
+    </ng-container>
+
     <app-mev-bot
       *ngIf="state.transaction.step !== 'success' && isMevBotProtectedChains$ | async"
       [trade]="state.tradeState?.trade"

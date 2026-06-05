@@ -10,9 +10,10 @@ import { isNil } from '@app/shared/utils/utils';
 import { getAddress } from 'ethers';
 import { ZamaInstanceService } from './zama-instance.service';
 import { ZAMA_SUPPORTED_CHAINS } from '../../constants/chains';
-import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
+import { ClearValueType, FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
 import { ZamaTokensService } from './zama-tokens.service';
 import { ZamaSignatureService } from './zama-signature.service';
+import { ZamaSupportedToken } from './models/zama-supported-tokens';
 
 const ZERO_ENCRYPTED_BALANCE = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
@@ -39,6 +40,17 @@ export class ZamaBalanceService {
 
   public readonly balances$ = this._balances$.asObservable();
 
+  private readonly _pendingUnshieldBalances$ = new BehaviorSubject<
+    Partial<
+      Record<
+        EvmBlockchainName,
+        { tokenAddress: string; encryptedAmount: string; decryptedWeiAmount: BigNumber }[]
+      >
+    >
+  >({});
+
+  public readonly pendingUnshieldBalances$ = this._pendingUnshieldBalances$.asObservable();
+
   public clearBalances(): void {
     this._balances$.next({});
   }
@@ -54,7 +66,6 @@ export class ZamaBalanceService {
 
       const balances = await Promise.all(promises);
 
-      console.log(balances);
       this._balances$.next(
         Object.fromEntries(
           ZAMA_SUPPORTED_CHAINS.map((chain, i) => {
@@ -67,7 +78,7 @@ export class ZamaBalanceService {
     }
   }
 
-  public async fetchPrivateBalances(
+  private async fetchPrivateBalances(
     tokens: string[],
     blockchain: EvmBlockchainName
   ): Promise<{ tokenAddress: string; amount: BigNumber }[]> {
@@ -105,21 +116,9 @@ export class ZamaBalanceService {
         })
         .filter(v => !isNil(v));
 
-      const signatureInfo = this.zamaSignatureService.signatureInfo;
+      if (!handlePairs.length) return [];
 
-      const checksumAddress = getAddress(userAddress);
-      const zamaInstance = this.getZamaInstance(blockchain);
-
-      const decryptedBalances = await zamaInstance.userDecrypt(
-        handlePairs,
-        signatureInfo.privateKey,
-        signatureInfo.publicKey,
-        signatureInfo.signature.replace('0x', ''),
-        erc7984Addresses,
-        checksumAddress,
-        signatureInfo.startTimeStamp,
-        signatureInfo.durationDays
-      );
+      const decryptedBalances = await this.decryptBalances(handlePairs, userAddress, blockchain);
 
       return tokens.map(tokenAddress => {
         const erc7984Address = tokenMapping.find(token =>
@@ -140,8 +139,154 @@ export class ZamaBalanceService {
 
         return { tokenAddress, amount: decryptedBalance };
       });
-    } catch (err) {
-      console.error('FAILED TO FETCH TOKEN BALANCES', err);
+    } catch {
+      return [];
+    }
+  }
+
+  private async decryptBalances(
+    handlePairs: {
+      handle: string;
+      contractAddress: string;
+    }[],
+    userAddress: string,
+    blockchain: EvmBlockchainName
+  ): Promise<Readonly<Record<`0x${string}`, ClearValueType>>> {
+    try {
+      const zamaInstance = this.zamaInstanceService.getInstance(blockchain);
+      const signatureInfo = this.zamaSignatureService.signatureInfo;
+
+      const erc7984Addresses = this.zamaTokensService.supportedTokensMapping[blockchain].map(
+        token => token.shieldedTokenAddress
+      );
+      const checksumAddress = getAddress(userAddress);
+
+      const decryptedBalances = await zamaInstance.userDecrypt(
+        handlePairs,
+        signatureInfo.privateKey,
+        signatureInfo.publicKey,
+        signatureInfo.signature.replace('0x', ''),
+        erc7984Addresses,
+        checksumAddress,
+        signatureInfo.startTimeStamp,
+        signatureInfo.durationDays
+      );
+
+      return decryptedBalances;
+    } catch {
+      return {};
+    }
+  }
+
+  public async refreshPendingUnshieldBalances(): Promise<void> {
+    try {
+      const promises = ZAMA_SUPPORTED_CHAINS.map(async chain => {
+        const adapter = this.getAdapter(chain);
+        const shieldTokens = this.zamaTokensService.supportedTokensMapping[chain];
+        const walletAddress = adapter.signer.walletAddress;
+        const pendingBalances = (
+          await Promise.all(
+            shieldTokens.map(token =>
+              this.fetchPendingUnshieldBalance(token, walletAddress, adapter)
+            )
+          )
+        ).flat();
+
+        const handlePairs = pendingBalances
+          .filter(Boolean)
+          .map((t, i) => {
+            const shieldToken = shieldTokens.find(token =>
+              compareAddresses(token.tokenAddress, t.tokenAddress)
+            );
+            if (!pendingBalances[i]) return null;
+            return {
+              handle: pendingBalances[i].encryptedAmount,
+              contractAddress: shieldToken.shieldedTokenAddress
+            };
+          })
+          .filter(v => !isNil(v));
+
+        const decryptedBalances = await this.decryptBalances(handlePairs, walletAddress, chain);
+
+        return pendingBalances.map(pendingBalance => {
+          return {
+            tokenAddress: pendingBalance.tokenAddress,
+            encryptedAmount: pendingBalance.encryptedAmount,
+            decryptedWeiAmount: new BigNumber(
+              decryptedBalances[pendingBalance?.encryptedAmount as `0x${string}`]?.toString() || '0'
+            )
+          };
+        });
+      });
+
+      const balances = await Promise.all(promises);
+
+      this._pendingUnshieldBalances$.next(
+        Object.fromEntries(
+          ZAMA_SUPPORTED_CHAINS.map((chain, i) => {
+            return [chain, balances[i]];
+          })
+        )
+      );
+    } catch {}
+  }
+
+  private async fetchPendingUnshieldBalance(
+    token: ZamaSupportedToken,
+    walletAddress: string,
+    adapter: EvmAdapter
+  ): Promise<{ tokenAddress: string; encryptedAmount: string }[]> {
+    try {
+      const requestLogs = await adapter.public.getLogs({
+        fromBlock: token.shieldedTokenDeployBlock,
+        address: token.shieldedTokenAddress as `0x${string}`,
+        event: {
+          type: 'event',
+          name: 'UnwrapRequested',
+          inputs: [
+            { indexed: true, internalType: 'address', name: 'receiver', type: 'address' },
+            { indexed: true, internalType: 'bytes32', name: 'unwrapRequestId', type: 'bytes32' },
+            { indexed: false, internalType: 'euint64', name: 'amount', type: 'bytes32' }
+          ]
+        },
+        args: {
+          receiver: walletAddress as `0x${string}`
+        }
+      });
+
+      const finalizedLogs = await adapter.public.getLogs({
+        fromBlock: token.shieldedTokenDeployBlock,
+        address: token.shieldedTokenAddress as `0x${string}`,
+        event: {
+          type: 'event',
+          name: 'UnwrapFinalized',
+          inputs: [
+            { indexed: true, internalType: 'address', name: 'receiver', type: 'address' },
+            { indexed: true, internalType: 'bytes32', name: 'unwrapRequestId', type: 'bytes32' },
+            { indexed: false, internalType: 'euint64', name: 'encryptedAmount', type: 'bytes32' },
+            { indexed: false, internalType: 'uint64', name: 'cleartextAmount', type: 'uint64' }
+          ]
+        },
+        args: {
+          receiver: walletAddress as `0x${string}`,
+          unwrapRequestId: requestLogs.map(log => log.data)
+        }
+      });
+
+      const pendingLogs = requestLogs.filter(
+        requestLog =>
+          !finalizedLogs
+            .map(finalizeLog => finalizeLog.args.unwrapRequestId?.toLowerCase())
+            .includes(requestLog.data.toLowerCase())
+      );
+
+      if (!pendingLogs.length) return [];
+
+      return pendingLogs.map(log => ({
+        tokenAddress: token.tokenAddress,
+        encryptedAmount: log.args.amount
+      }));
+    } catch {
       return [];
     }
   }

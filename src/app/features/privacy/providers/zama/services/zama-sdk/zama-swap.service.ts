@@ -17,11 +17,14 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERC7984_TOKEN_ABI, MULTICALL_ABI } from './abis/erc7984-token-abi';
 import { getAddress } from 'ethers';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
-import { decodeEventLog, erc20Abi, TransactionReceipt } from 'viem';
+import { decodeEventLog, erc20Abi } from 'viem';
 import { ZamaTokensService } from './zama-tokens.service';
 import { wrapAbi } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/wrap-abi';
 import BigNumber from 'bignumber.js';
 import { GasService } from '@app/core/services/gas-service/gas.service';
+import { PendingUnshieldToken } from './models/pending-unshield-token';
+import { PrivateActionRes } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class ZamaSwapService {
@@ -133,17 +136,23 @@ export class ZamaSwapService {
 
       if (!needApprove) return;
 
+      const gasPriceOptions = await this.getGasPriceOptions(pureTokenAmount.blockchain);
+
       await adapter.approveTokens(
         pureTokenAmount.address,
         shieldedTokenAddress,
-        pureTokenAmount.weiAmount
+        pureTokenAmount.weiAmount,
+        {
+          gasPriceOptions,
+          gasLimitRatio: 1.3
+        }
       );
     } catch (err) {
       throw err;
     }
   }
 
-  public async wrap(pureTokenAmount: TokenAmount<EvmBlockchainName>): Promise<boolean> {
+  public async wrap(pureTokenAmount: TokenAmount<EvmBlockchainName>): Promise<PrivateActionRes> {
     try {
       const adapter = this.getEvmAdapter(pureTokenAmount.blockchain);
 
@@ -216,23 +225,23 @@ export class ZamaSwapService {
 
       const gasPriceOptions = await this.getGasPriceOptions(pureTokenAmount.blockchain);
 
-      await adapter.signer.trySendTransaction({
+      const res = await adapter.signer.trySendTransaction({
         txOptions: {
           ...callData,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
-      return true;
+      return { txScannerUrl: getScannerUrl(pureTokenAmount, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return false;
+      throw err;
     }
   }
 
   public async confidentialTransfer(
     transferToken: TokenAmount<EvmBlockchainName>,
     receiver: string
-  ): Promise<boolean> {
+  ): Promise<PrivateActionRes> {
     try {
       const adapter = this.getEvmAdapter(transferToken.blockchain);
       const shieldedTokenAddress = this.getErc7984Token(
@@ -261,23 +270,23 @@ export class ZamaSwapService {
 
       const gasPriceOptions = await this.getGasPriceOptions(transferToken.blockchain);
 
-      await adapter.signer.trySendTransaction({
+      const res = await adapter.signer.trySendTransaction({
         txOptions: {
           ...callData,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
-      return true;
+      return { txScannerUrl: getScannerUrl(transferToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return false;
+      throw err;
     }
   }
 
   public async unwrap(
     unwrapToken: TokenAmount<EvmBlockchainName>,
     receiver?: string,
-    onTransactionSuccess?: (receipt: TransactionReceipt) => void
+    onTransactionSuccess?: (burntAmount: string) => void
   ): Promise<void> {
     try {
       const adapter = this.getEvmAdapter(unwrapToken.blockchain);
@@ -312,27 +321,10 @@ export class ZamaSwapService {
       const receipt = await adapter.signer.trySendTransaction({
         txOptions: {
           ...unshieldTx,
-          gasPriceOptions
+          gasPriceOptions,
+          gasLimitRatio: 1.3
         }
       });
-
-      onTransactionSuccess?.(receipt);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  public async finalizeUnwrap(
-    unwrapToken: TokenAmount<EvmBlockchainName>,
-    receipt: TransactionReceipt
-  ): Promise<boolean> {
-    try {
-      const zamaInstance = this.getZamaInstance(unwrapToken.blockchain);
-      const shieldedTokenAddress = this.getErc7984Token(
-        unwrapToken.blockchain,
-        unwrapToken.address
-      );
-      const adapter = this.getEvmAdapter(unwrapToken.blockchain);
 
       const log = receipt.logs.find(l => {
         try {
@@ -356,24 +348,49 @@ export class ZamaSwapService {
         topics: log.topics
       }).args as unknown as { amount: `0x${string}` };
 
-      const decryptedBurnAmount = await zamaInstance.publicDecrypt([burntAmount.amount]);
+      onTransactionSuccess?.(burntAmount.amount);
+    } catch (err) {
+      throw err;
+    }
+  }
 
-      const finilizeWrapTx = EvmAdapter.encodeMethodCall(
+  public async finalizeUnwrap(
+    unwrapToken: TokenAmount<EvmBlockchainName> | PendingUnshieldToken,
+    burntAmount: string
+  ): Promise<PrivateActionRes> {
+    try {
+      const blockchain = unwrapToken.blockchain as EvmBlockchainName;
+      const zamaInstance = this.getZamaInstance(blockchain);
+      const shieldedTokenAddress = this.getErc7984Token(blockchain, unwrapToken.address);
+      const adapter = this.getEvmAdapter(blockchain);
+
+      const decryptedBurnAmount = await zamaInstance.publicDecrypt([burntAmount]);
+
+      const finilizeUnwrapTx = EvmAdapter.encodeMethodCall(
         shieldedTokenAddress,
         ERC7984_TOKEN_ABI,
         'finalizeUnwrap',
         [
-          burntAmount.amount,
-          decryptedBurnAmount.clearValues[burntAmount.amount],
+          burntAmount,
+          decryptedBurnAmount.clearValues[burntAmount as `0x${string}`],
           decryptedBurnAmount.decryptionProof
         ]
       );
 
-      await adapter.signer.trySendTransaction({ txOptions: finilizeWrapTx });
-      return true;
+      const gasPriceOptions = await this.getGasPriceOptions(
+        unwrapToken.blockchain as EvmBlockchainName
+      );
+
+      const res = await adapter.signer.trySendTransaction({
+        txOptions: {
+          ...finilizeUnwrapTx,
+          gasPriceOptions,
+          gasLimitRatio: 1.3
+        }
+      });
+      return { txScannerUrl: getScannerUrl(unwrapToken, res.transactionHash) };
     } catch (err) {
-      this.errorService.catch(err);
-      return false;
+      throw err;
     }
   }
 }

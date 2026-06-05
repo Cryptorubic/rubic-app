@@ -39,13 +39,9 @@ export class ZamaViewComponent {
       this.privateLocalStorageService.alreadyMadeShielding$(PRIVATE_TRADE_TYPE.ZAMA)
     ),
     map(([signature, alreadyMadeShielding]) => {
-      if (!signature) {
-        return this.pages.filter(page => page.type !== 'login');
-      }
-      if (!alreadyMadeShielding) {
+      if (!signature || !alreadyMadeShielding) {
         return this.pages.filter(page => page.type !== 'hide');
       }
-      return this.pages.filter(page => page.type === 'login');
     })
   );
 
@@ -59,7 +55,7 @@ export class ZamaViewComponent {
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly privateLocalStorageService: PrivateLocalStorageService
   ) {
-    this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
+    this.privatePageTypeService.activePage = this.pages[0];
     this.initZama();
   }
 
@@ -70,14 +66,10 @@ export class ZamaViewComponent {
       .subscribe(user => {
         if (user?.address) {
           const isUpdated = this.zamaSignatureService.updateSignatureFromStore(user?.address);
-          if (isUpdated) {
-            this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
-            return;
-          }
+          if (isUpdated) return;
         }
 
         this.zamaSignatureService.resetSignature();
-        this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'login');
       });
   }
 

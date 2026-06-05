@@ -1,6 +1,15 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  defaultIfEmpty,
+  finalize,
+  first,
+  firstValueFrom,
+  Observable,
+  of
+} from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -45,7 +54,7 @@ import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { AssetListType } from '@features/trade/models/asset';
+import { Asset, AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
@@ -99,9 +108,9 @@ export class ModalService {
   /**
    * Show tokens dialog.
    */
-  public openAssetsSelector(formType: FormType, injector: Injector): Observable<void> {
+  public openAssetsSelector(formType: FormType, injector: Injector): Observable<Asset> {
     this.setOpenedModalName('token-selector');
-    return this.showDialog<TokenSelectorPageComponent, void>(
+    return this.showDialog<TokenSelectorPageComponent, Asset>(
       TokenSelectorPageComponent,
       {
         title: '',
@@ -526,12 +535,13 @@ export class ModalService {
     );
   }
 
-  public openMetamaskModal(): Promise<WALLET_NAME> {
+  public openMetamaskModal(walletsToHide: WALLET_NAME[] = []): Promise<WALLET_NAME> {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
         closeable: true,
-        fitContent: true
+        fitContent: true,
+        data: { walletsToHide }
       })
     );
   }
@@ -550,7 +560,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(PrivacyDisclaimerModalComponent, {
         size: 's'
-      })
+      }).pipe(defaultIfEmpty(false)) as Observable<boolean>
     );
   }
 }
