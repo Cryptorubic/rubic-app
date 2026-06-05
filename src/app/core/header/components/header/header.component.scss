@@ -39,11 +39,9 @@
 }
 
 .active-router-link {
-  ::ng-deep button {
-    color: black !important;
+  color: black !important;
 
-    background: var(--tui-background-accent-1) !important;
-  }
+  background: var(--tui-background-accent-1);
 
   .icon {
     ::ng-deep svg path {

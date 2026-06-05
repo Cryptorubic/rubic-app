@@ -25,9 +25,11 @@
           "options": {
             "aot": true,
             "webWorkerTsConfig": "tsconfig.worker.json",
-            "outputPath": "dist/rubic",
+            "outputPath": {
+              "base": "dist/rubic",
+              "browser": ""
+            },
             "index": "src/index.html",
-            "browser": "src/main.ts",
             "polyfills": ["src/polyfills.ts"],
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
