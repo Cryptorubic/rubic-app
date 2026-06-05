@@ -24,6 +24,7 @@ import {
   UserRejectError
 } from '@cryptorubic/web3';
 import { withRetryWhile } from '@app/features/trade/utils/with-retry';
+import { needResetPrevApprove } from '@app/features/trade/utils/need-reset-prev-approve';
 
 export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<EvmBlockchainName>;
@@ -128,11 +129,14 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
+    const resetPrevApprove = needResetPrevApprove(fromTokenAddress, this.from.blockchain);
+
     return this.chainAdapter.approveTokens(
       fromTokenAddress,
       this.contractSpender,
       approveAmount,
-      options
+      options,
+      resetPrevApprove
     );
   }
 

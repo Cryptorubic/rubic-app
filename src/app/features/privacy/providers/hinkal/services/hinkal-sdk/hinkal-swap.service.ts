@@ -21,6 +21,7 @@ import { getScannerUrl } from '../../../privacycash/services/common/token-facade
 type TxHash = string;
 import { GasService } from '@app/core/services/gas-service/gas.service';
 import { InsufficientShieldedFundsError } from '@app/core/errors/models/common/insufficient-shielded-funds.error';
+import { needResetPrevApprove } from '@app/features/trade/utils/need-reset-prev-approve';
 
 @Injectable()
 export class HinkalSwapService {
@@ -66,10 +67,18 @@ export class HinkalSwapService {
 
       const gasPriceOptions = await this.getGasPriceOptions(token.blockchain);
 
-      await adapter.approveTokens(token.address, HINKAL_CONTRACT_ADDRESS, token.weiAmount, {
-        gasPriceOptions,
-        gasLimitRatio: 1.3
-      });
+      const resetPrevApprove = needResetPrevApprove(token.address, token.blockchain);
+
+      await adapter.approveTokens(
+        token.address,
+        HINKAL_CONTRACT_ADDRESS,
+        token.weiAmount,
+        {
+          gasPriceOptions,
+          gasLimitRatio: 1.3
+        },
+        resetPrevApprove
+      );
 
       return {};
     } catch (err) {
