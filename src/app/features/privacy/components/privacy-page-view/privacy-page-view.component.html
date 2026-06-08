@@ -14,10 +14,11 @@
       [selectedTab]="state.selectedTab"
       (tabClicked)="handleTabSelected($event)"
     ></app-tab-bar>
-
     <app-private-main-page-swap
       [creationConfig]="
-        state.selectedTab === 'Transfer' ? transferWindowCreationConfig : swapWindowCreationConfig
+        state.selectedTab === 'Private Transfer'
+          ? transferWindowCreationConfig
+          : swapWindowCreationConfig
       "
       (formChanged)="handleSwapWindowChanged($event)"
     ></app-private-main-page-swap>

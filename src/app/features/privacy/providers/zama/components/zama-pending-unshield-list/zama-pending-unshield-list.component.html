@@ -1,0 +1,13 @@
+<app-window-container class="wrapper">
+  <ng-container header>Pending Unshield</ng-container>
+  <div class="wrapper__container">
+    <tui-scrollbar>
+      <ul class="wrapper__container-list">
+        <app-pending-unshield-element
+          *ngFor="let token of tokens"
+          [token]="token"
+        ></app-pending-unshield-element>
+      </ul>
+    </tui-scrollbar>
+  </div>
+</app-window-container>

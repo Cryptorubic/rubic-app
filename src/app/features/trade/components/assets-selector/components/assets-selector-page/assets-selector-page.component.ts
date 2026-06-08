@@ -57,7 +57,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     withChainsFilter: true,
     withTokensFilter: true,
     withFavoriteTokens: true,
-    showAllChains: true
+    showAllChains: true,
+    hidePromoBadges: false
   };
 
   @Input() customHeaderText: string | null = null;

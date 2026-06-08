@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import {
   PrivateSwapInfo,
@@ -6,15 +6,18 @@ import {
 } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BlockchainName, CHAIN_TYPE, nativeTokensList } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, nativeTokensList } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { Observable, combineLatest, filter, switchMap } from 'rxjs';
 import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../../constants/wallets';
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
 import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
+import { PrivacycashSignatureService } from '../../privacy-cash-signature.service';
 
 @Injectable()
 export class PrivacycashActionButtonService extends PrivateActionButtonService {
+  private readonly signatureService = inject(PrivacycashSignatureService);
+
   public override readonly buttonState$: Observable<PrivateActionButtonState> =
     this.privatePageTypeService.activePage$.pipe(
       filter(page => !!page),
@@ -39,11 +42,15 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
             return combineLatest([
               this.walletConnector.networkChange$,
               this.hideWindowService.hideAsset$,
-              this.hideWindowService.hideAmount$
+              this.hideWindowService.hideAmount$,
+              this.signatureService.signature$
             ]).pipe(switchMap(params => this.getHideState(...params)));
           case 'reveal':
             return combineLatest([
               this.walletConnector.networkChange$,
+              this.walletConnector.addressChange$.pipe(
+                filter(msg => msg.chainType === CHAIN_TYPE.SOLANA)
+              ),
               this.revealWindowService.revealAsset$,
               this.revealWindowService.revealAmount$,
               this._receiverAddress$
@@ -176,7 +183,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
       return {
         type: 'error',
-        text: 'Please enter a different wallet as the receiver.'
+        text: 'Recipient address must be different'
       };
     }
     const isAddressCorrect = await Web3Pure.getInstance(transferAsset.blockchain).isAddressCorrect(
@@ -196,6 +203,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
 
   private async getRevealState(
     network: BlockchainName | null,
+    addrChangedMsg: AddressChangedMsg,
     revealAsset: BalanceToken | null,
     revealAmount: SwapAmount | null,
     receiver: string
@@ -223,7 +231,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     if (srcUsdAmount.lt(2)) {
       return {
         type: 'error',
-        text: 'Minimum unshield is $2.'
+        text: 'Minimum transfer is $2.'
       };
     }
     if (revealAsset.amount.lt(revealAmount.actualValue)) {
@@ -232,6 +240,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
         text: 'Insufficient balance'
       };
     }
+
     if (receiver) {
       const isAddressCorrect = await Web3Pure.getInstance(revealAsset.blockchain).isAddressCorrect(
         receiver
@@ -242,30 +251,60 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
           text: 'Incorrect receiver address'
         };
       }
+
+      if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
+        return {
+          type: 'error',
+          text: 'Recipient address must be different'
+        };
+      }
+    } else {
+      return {
+        type: 'error',
+        text: 'Enter receiver address'
+      };
     }
 
     return {
       type: 'parent',
-      text: 'Unshield token'
+      text: 'Private Transfer'
     };
   }
 
   private async getHideState(
     network: BlockchainName | null,
     hideAsset: BalanceToken | null,
-    hideAmount: SwapAmount | null
+    hideAmount: SwapAmount | null,
+    signature: Uint8Array | null
   ): Promise<PrivateActionButtonState> {
-    if (!hideAsset) {
-      return {
-        type: 'error',
-        text: 'Select token'
-      };
-    }
-    if (!network || network !== hideAsset.blockchain) {
+    if (!network || (hideAsset?.blockchain && network !== hideAsset.blockchain)) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
+      };
+    }
+
+    if (BlockchainsInfo.getChainType(network) !== CHAIN_TYPE.SOLANA) {
+      return {
+        type: 'action',
+        text: 'Switch Wallet',
+        action: () => this.connectWallet()
+      };
+    }
+
+    if (!signature) {
+      return {
+        type: 'action',
+        text: 'Sign to enable Private Mode',
+        action: () => this.signatureService.makeSignature()
+      };
+    }
+
+    if (!hideAsset) {
+      return {
+        type: 'error',
+        text: 'Select token'
       };
     }
     if (isNaN(hideAmount?.actualValue.toNumber()) || hideAmount?.actualValue.isZero()) {
@@ -282,7 +321,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
     }
     return {
       type: 'parent',
-      text: 'Shield token'
+      text: 'Shield tokens'
     };
   }
 

@@ -3,7 +3,7 @@ import { PrivateActionButtonState } from '@app/features/privacy/providers/shared
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
-import { combineLatest, combineLatestWith, filter, Observable, switchMap } from 'rxjs';
+import { combineLatest, combineLatestWith, EMPTY, filter, Observable, switchMap } from 'rxjs';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
@@ -57,6 +57,8 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
             )
           ]).pipe(switchMap(params => this.getShieldingState(...params)));
         }
+
+        return EMPTY;
       })
     );
 
@@ -119,7 +121,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
     }
     return {
       type: 'parent',
-      text: 'Shield'
+      text: 'Shield Tokens'
     };
   }
 }

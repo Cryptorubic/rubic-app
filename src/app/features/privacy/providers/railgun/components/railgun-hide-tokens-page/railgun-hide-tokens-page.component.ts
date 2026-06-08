@@ -21,6 +21,8 @@ import { RailgunPublicActionButtonService } from '@features/privacy/providers/ra
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
+import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Component({
   selector: 'app-railgun-hide-tokens-page',
@@ -90,7 +92,8 @@ export class RailgunHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Shield',
+            label: 'Shield Tokens',
+            showLoaderOnAction: true,
             action: async () => {
               const walletAddr = this.walletConnectorService.getActiveWalletAddress({
                 blockchain: token.blockchain
@@ -98,7 +101,7 @@ export class RailgunHideTokensPageComponent {
               if (!walletAddr) return;
 
               const bigintAmount = BigInt(token.stringWeiAmount);
-              await this.hideService.shield(
+              const res = await this.hideService.shield(
                 this.railgunWalletAddress,
                 token.address,
                 bigintAmount,
@@ -125,8 +128,10 @@ export class RailgunHideTokensPageComponent {
                   defaultAutoCloseTime: 0
                 }
               );
+              return { txScannerUrl: getScannerUrl(token, res.txHash) };
             }
-          }
+          },
+          donePrivateStep()
         ],
         swapType: 'shield',
         dstTokenAmount: token.tokenAmount.multipliedBy(1 - 0.0025).toFixed(),

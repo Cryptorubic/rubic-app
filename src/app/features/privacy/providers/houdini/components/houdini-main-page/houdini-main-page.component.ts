@@ -38,6 +38,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-houdini-main-page',
@@ -147,8 +148,10 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () => this.houdiniSwapService.swap(fromToken, this.receiverCtrl.value)
-          }
+          },
+          donePrivateStep()
         ],
         hideFeeInfo: true,
         srcTokenAmount: fromToken.tokenAmount.toFixed(),

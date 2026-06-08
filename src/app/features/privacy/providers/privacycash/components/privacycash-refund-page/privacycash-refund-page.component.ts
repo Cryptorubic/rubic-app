@@ -69,7 +69,11 @@ export class PrivacycashRefundPageComponent {
         steps: [
           {
             label: 'Refund tokens',
-            action: () => this.privacycashRefundService.refundTokens(token.address, receiverAddr)
+            showLoaderOnAction: true,
+            action: () =>
+              this.privacycashRefundService
+                .refundTokens(token.address, receiverAddr)
+                .then(() => ({}))
           }
         ],
         swapType: 'refund',

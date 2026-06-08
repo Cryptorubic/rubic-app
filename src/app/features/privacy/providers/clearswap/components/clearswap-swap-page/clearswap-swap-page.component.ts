@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { isReceiverCorrect } from '@app/features/privacy/providers/clearswap/constants/receiver-validator';
 import { clearswapFormConfig } from '@app/features/privacy/providers/clearswap/constants/clearswap-form-config';
 import { ClearswapErrorService } from '@app/features/privacy/providers/clearswap/services/clearswap-error.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
@@ -22,6 +21,7 @@ import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.s
 import { PrivateSwapWindowService } from '../../../shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
   selector: 'app-clearswap-swap-page',
@@ -31,9 +31,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
   providers: [TuiDestroyService]
 })
 export class ClearswapSwapPageComponent implements OnInit {
-  public readonly receiverCtrl = new FormControl<string>('', {
-    asyncValidators: [isReceiverCorrect()]
-  });
+  public readonly receiverCtrl = new FormControl<string>('');
 
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
@@ -101,6 +99,7 @@ export class ClearswapSwapPageComponent implements OnInit {
         steps: [
           {
             label: 'Swap',
+            showLoaderOnAction: true,
             action: () =>
               this.clearswapSwapService
                 .transfer(
@@ -109,7 +108,7 @@ export class ClearswapSwapPageComponent implements OnInit {
                   swapInfo.toAsset,
                   this.receiverCtrl.value
                 )
-                .then(async () => {
+                .then(async res => {
                   this.privateStatisticsService.saveAction(
                     'TRANSFER',
                     PRIVATE_TRADE_TYPE.CLEARSWAP,
@@ -148,6 +147,8 @@ export class ClearswapSwapPageComponent implements OnInit {
                   ) {
                     this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                   }
+
+                  return res;
                 })
                 .catch(async err => {
                   if (!(err instanceof UserRejectError)) {
@@ -177,8 +178,11 @@ export class ClearswapSwapPageComponent implements OnInit {
                       }
                     });
                   }
+
+                  return {};
                 })
-          }
+          },
+          donePrivateStep()
         ]
       });
       await firstValueFrom(preview$);

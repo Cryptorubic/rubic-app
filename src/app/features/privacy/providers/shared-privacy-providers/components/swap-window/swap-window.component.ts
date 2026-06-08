@@ -16,6 +16,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   EMPTY,
+  filter,
   finalize,
   from,
   map,
@@ -43,6 +44,7 @@ import BigNumber from 'bignumber.js';
 import { CrossChainDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
+import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
 
 @Component({
   selector: 'app-swap-window',
@@ -157,6 +159,22 @@ export class SwapWindowComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
     this.subscribeForCalculation();
+
+    this.privateSwapWindowService.swapInfo$
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .subscribe(({ fromAsset, toAsset }) => {
+        this.receiverCtrl.clearAsyncValidators();
+        this.receiverCtrl.setAsyncValidators(
+          getCorrectAddressValidator(
+            {
+              fromAssetType: fromAsset?.blockchain,
+              validatedChain: toAsset?.blockchain
+            },
+            { requiredReceiver: true }
+          )
+        );
+        this.receiverCtrl.updateValueAndValidity({ emitEvent: false });
+      });
   }
 
   private subscribeForCalculation(): void {

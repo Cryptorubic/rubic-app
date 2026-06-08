@@ -32,6 +32,7 @@ import { WALLETS_LIST } from './constants/wallets';
 import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { AsyncPipe } from '@angular/common';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
+import { METAMASK_PROVIDERS } from '../wallets-modal/models/metamask-providers';
 
 @Component({
   selector: 'app-new-wallets-modal',
@@ -46,6 +47,10 @@ export class NewWalletsModalComponent {
   private readonly allWallets: ReadonlyArray<WalletConfigUI>;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  private readonly showMetamaskModal: boolean;
+
+  private readonly supportedMetamaskProvider: WALLET_NAME;
 
   public get isChromium(): boolean {
     if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
@@ -115,6 +120,22 @@ export class NewWalletsModalComponent {
     this.allWallets = context.data?.providers
       ? WALLETS_LIST.filter(provider => context.data.providers.includes(provider.value))
       : WALLETS_LIST;
+
+    const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>
+      this.allWallets.some(v => v.value === provider)
+    );
+
+    if (metamaskProviders.length < 2) {
+      this.showMetamaskModal = false;
+      this.supportedMetamaskProvider = metamaskProviders[0];
+      this.allWallets = this.allWallets.map(provider =>
+        provider.value === this.supportedMetamaskProvider
+          ? { ...provider, display: true }
+          : provider
+      );
+    } else {
+      this.showMetamaskModal = true;
+    }
   }
 
   ngOnInit() {
@@ -184,8 +205,10 @@ export class NewWalletsModalComponent {
     this.context.completeWith();
   }
 
+  // @TODO_530 remove if not needed
   public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
     try {
+      if (!this.showMetamaskModal) return this.supportedMetamaskProvider;
       return this.modalService.openMetamaskModal();
     } catch {
       return null;

@@ -37,7 +37,6 @@ export class TotalBalancesStoreService {
    */
 
   public calculateAllTotalBalances(): void {
-    const start = Date.now();
     const balances = {
       BITCOIN: new BigNumber(0),
       EVM: new BigNumber(0),
@@ -67,7 +66,7 @@ export class TotalBalancesStoreService {
         });
       }
     }
-    console.log('Date.now() end', Date.now() - start);
+
     this._totalBalancesUsd$.next(balances);
   }
 

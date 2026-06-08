@@ -172,7 +172,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private connectWallet(): void {
     this.modalService
-      .openNewWalletModal(this.injector)
+      .openNewWalletModal(this.injector, { direction: 'column' })
       .pipe(
         switchMap(() =>
           forkJoin([this.walletConnector.activeWallets$, this.swapsStateService.notEnoughBalance$])

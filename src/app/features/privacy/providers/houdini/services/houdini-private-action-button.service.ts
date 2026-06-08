@@ -2,11 +2,19 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, ErrorInterface } from '@cryptorubic/core';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  compareAddresses,
+  ErrorInterface
+} from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
 import { HoudiniSwapService } from './houdini-swap.service';
+import { HOUDINI_SUPPORTED_WALLETS } from '../constants/wallets';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class HoudiniPrivateActionButtonService extends PrivateActionButtonService {
@@ -20,6 +28,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       switchMap(_ =>
         combineLatest([
           this.walletConnector.networkChange$,
+          this.walletConnector.addressChange$,
           this.privateSwapWindowService.swapInfo$,
           this._receiverAddress$,
           this.houdiniErrorService.tradeError$,
@@ -30,15 +39,18 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
   protected connectWallet(): void {
     super.connectWallet();
-    this.modalService.openNewWalletModal(this.injector).subscribe();
+    this.modalService
+      .openNewWalletModal(this.injector, { providers: HOUDINI_SUPPORTED_WALLETS })
+      .subscribe();
   }
 
   private async getSwapState(
     network: BlockchainName | null,
+    addrChangedMsg: AddressChangedMsg | null,
     swapInfo: PrivateSwapInfo,
     receiver: string,
     tradeError: Partial<ErrorInterface>,
-    requireReceiverAddress: boolean
+    _requireReceiverAddress: boolean
   ): Promise<PrivateActionButtonState> {
     const chainType = swapInfo.fromAsset
       ? BlockchainsInfo.getChainType(swapInfo.fromAsset.blockchain)
@@ -78,7 +90,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
         text: 'Enter amount'
       };
     }
-    if (!receiver && requireReceiverAddress) {
+    if (!receiver) {
       return {
         type: 'error',
         text: 'Enter receiver address'
@@ -87,12 +99,20 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
     const isAddressCorrect = await Web3Pure.getInstance(
       swapInfo.toAsset.blockchain
     ).isAddressCorrect(receiver);
-    if (!isAddressCorrect && requireReceiverAddress) {
+    if (!isAddressCorrect) {
       return {
         type: 'error',
         text: 'Incorrect receiver address'
       };
     }
+
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
+      return {
+        type: 'error',
+        text: 'Recipient address must be different'
+      };
+    }
+
     if (tradeError) {
       return {
         type: 'error',
@@ -111,7 +131,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
     return {
       type: 'parent',
-      text: 'Preview swap'
+      text: 'Swap Privately'
     };
   }
 }

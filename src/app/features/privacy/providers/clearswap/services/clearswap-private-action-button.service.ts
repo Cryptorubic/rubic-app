@@ -4,11 +4,17 @@ import { PrivateActionButtonState } from '@app/features/privacy/providers/shared
 import { PrivateSwapInfo } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-info';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  compareAddresses,
+  ErrorInterface
+} from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { CLEARSWAP_SUPPORTED_WALLETS } from '../constants/clearswap-supported-wallerts';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class ClearswapPrivateActionButtonService extends PrivateActionButtonService {
@@ -21,6 +27,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
         page.type === 'transfer'
           ? combineLatest([
               this.walletConnector.networkChange$,
+              this.walletConnector.addressChange$,
               this.privateTransferWindowService.transferAsset$,
               this.privateTransferWindowService.transferAmount$,
               this._receiverAddress$,
@@ -109,6 +116,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
 
   private async getTransferState(
     network: BlockchainName | null,
+    addrChangedMsg: AddressChangedMsg,
     transferAsset: BalanceToken | null,
     transferAmount: {
       visibleValue: string;
@@ -151,6 +159,13 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
         text: 'Incorrect receiver address'
       };
     }
+
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
+      return {
+        type: 'error',
+        text: 'Recipient address must be different'
+      };
+    }
     if (tradeError) {
       return {
         type: 'error',
@@ -159,7 +174,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
     }
     return {
       type: 'parent',
-      text: 'Transfer token'
+      text: 'Private Transfer'
     };
   }
 }
