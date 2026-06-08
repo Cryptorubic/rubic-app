@@ -18,7 +18,6 @@ export const MULTICHAIN_OPTIONS_MAPPING: Partial<Record<WALLET_NAME, MultichainW
   ],
   [WALLET_NAME.PHANTOM]: [
     { ...availableMultichainOptions[CHAIN_TYPE.EVM]!, value: WALLET_NAME.PHANTOM },
-    { ...availableMultichainOptions[CHAIN_TYPE.SOLANA]!, value: WALLET_NAME.PHANTOM_SOLANA },
-    { ...availableMultichainOptions[CHAIN_TYPE.BITCOIN]!, value: WALLET_NAME.PHANTOM_BITCOIN }
+    { ...availableMultichainOptions[CHAIN_TYPE.SOLANA]!, value: WALLET_NAME.PHANTOM_SOLANA }
   ]
 };

@@ -54,7 +54,6 @@ import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
-import { PhantomBitcoinWalletAdapter } from '../wallets-adapters/bitcoin/phantom-bitcoin-wallet-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 
 @Injectable({
@@ -176,14 +175,6 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.PHANTOM_SOLANA) {
       return new PhantomSolanaWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.PHANTOM_BITCOIN) {
-      return new PhantomBitcoinWalletAdapter(
-        ...defaultConstructorParameters,
-        this.storeService,
-        this.httpService
-      );
     }
 
     if (walletName === WALLET_NAME.SOLFLARE) {

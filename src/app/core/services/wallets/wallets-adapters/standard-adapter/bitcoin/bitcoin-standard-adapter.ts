@@ -48,7 +48,7 @@ export class BitcoinStandardAdapter
   }
 
   protected override async useDisconnectFeature(): Promise<void> {
-    await this.wallet.features['bitcoin:disconnect']?.disconnect?.();
+    // await this.wallet.features['bitcoin:disconnect']?.disconnect?.();
   }
 
   private async signTransaction(psbtBase64: string, signingIndexes: number[]): Promise<string> {
