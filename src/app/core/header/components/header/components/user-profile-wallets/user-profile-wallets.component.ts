@@ -5,9 +5,17 @@ import {
   Inject,
   Injector
 } from '@angular/core';
-import { USER_WALLETS_CHAIN_TYPES } from './constants/wallets-chain-types';
+import { USER_WALLETS_CHAIN_TYPES, WalletChainType } from './constants/wallets-chain-types';
 import { BlockchainName, ChainType } from '@cryptorubic/core';
-import { BehaviorSubject, Observable, combineLatestWith, map, startWith, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatestWith,
+  filter,
+  map,
+  startWith,
+  timer
+} from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -15,6 +23,8 @@ import { PROVIDERS_LIST } from '@app/core/wallets-modal/components/wallets-modal
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { TotalBalancesStoreService } from '@app/core/services/tokens/total-balances-store.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-user-profile-wallets',
@@ -55,12 +65,20 @@ export class UserProfileWalletsComponent {
     startWith(null)
   );
 
+  public readonly totalBalanceUsd$ = this.selectedWallet$.pipe(
+    filter(Boolean),
+    combineLatestWith(this.totalBalancesStoreService.totalBalancesUsd$),
+    map(([wallet, totalBalancesUsd]) => totalBalancesUsd[wallet.chainType as WalletChainType]),
+    startWith(new BigNumber(0))
+  );
+
   public addressCopied: boolean = false;
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
     private readonly modalService: ModalService,
+    private readonly totalBalancesStoreService: TotalBalancesStoreService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {}

@@ -152,9 +152,9 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
         this.walletConnectorService.walletsManager.activeWallets$
       ),
       debounceTime(50), // skip many repeated updates at the same time
-      switchMap(([type, query, _, __]) =>
+      switchMap(([type, query, _, activeWallets]) =>
         this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue, {
-          walletAddressesToFetch: []
+          walletAddressesToFetch: this.isFirstRendering ? activeWallets.map(w => w.address) : []
         })
       ),
       tap(() => (this.isFirstRendering = false))

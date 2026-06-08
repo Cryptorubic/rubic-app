@@ -1,6 +1,6 @@
 import { CHAIN_TYPE, ChainType } from '@cryptorubic/core';
 
-export const USER_WALLETS_CHAIN_TYPES: Array<{ img: string; label: string; value: ChainType }> = [
+export const USER_WALLETS_CHAIN_TYPES = [
   { img: 'assets/images/wallets/chain-types/evm.png', label: 'Bitcoin', value: CHAIN_TYPE.BITCOIN },
   { img: 'assets/images/wallets/chain-types/evm.png', label: 'EVM', value: CHAIN_TYPE.EVM },
   {
@@ -16,4 +16,6 @@ export const USER_WALLETS_CHAIN_TYPES: Array<{ img: string; label: string; value
     label: 'Stellar',
     value: CHAIN_TYPE.STELLAR
   }
-];
+] as const satisfies ReadonlyArray<{ img: string; label: string; value: ChainType }>;
+
+export type WalletChainType = (typeof USER_WALLETS_CHAIN_TYPES)[number]['value'];

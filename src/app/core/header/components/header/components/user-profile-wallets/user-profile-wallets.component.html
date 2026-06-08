@@ -1,7 +1,8 @@
 <div
   *ngLet="{
     selectedChainType: selectedChainType$ | async,
-    selectedWallet: selectedWallet$ | async
+    selectedWallet: selectedWallet$ | async,
+    totalBalanceUsd: totalBalanceUsd$ | async
   } as state"
   class="user-profile-wallets"
 >
@@ -56,8 +57,9 @@
                 height="25"
                 [src]="getBlockchainIcon(state.selectedWallet.network)"
               />
-              <!-- @TODO_530 add real balance -->
-              <span class="balance">{{ ' ' }}$0</span>
+              <span class="balance"
+                >{{ ' ' }}${{ state.totalBalanceUsd | bigNumberFormat : 4 }}
+              </span>
             </div>
 
             <div *ngIf="(balanceLoading$ | async) === true" class="central-part__right">

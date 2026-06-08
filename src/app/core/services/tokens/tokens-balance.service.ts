@@ -38,6 +38,8 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { getChainTypeSafe } from './utils/get-chain-type-safe';
 import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 import { BalanceFetchingConfig } from './models/tokens-balance-service-types';
+import { TotalBalancesStoreService } from './total-balances-store.service';
+import { WalletChainType } from '@app/core/header/components/header/components/user-profile-wallets/constants/wallets-chain-types';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +60,8 @@ export class TokensBalanceService {
   private readonly collectionsFacade = inject(TokensCollectionsFacadeService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
+
+  private readonly totalBalancesStoreService = inject(TotalBalancesStoreService);
 
   public initSubscribes(): void {
     this.subscribeOnWallet();
@@ -131,8 +135,21 @@ export class TokensBalanceService {
       chainType = BlockchainsInfo.getChainType(token.blockchain);
     } catch {}
     if (!chainType) return new BigNumber(NaN);
+
+    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
+    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
+
     const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
-    if (!walletAdapter) return new BigNumber(NaN);
+    if (!walletAdapter) {
+      const storedToken = this.findTokenSync(token);
+      if (storedToken) {
+        _tokensObject$.next({
+          ..._tokensObject$.getValue(),
+          [token.address]: { ...storedToken, amount: new BigNumber(NaN) }
+        });
+      }
+      return new BigNumber(NaN);
+    }
 
     const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
       token.blockchain,
@@ -146,9 +163,6 @@ export class TokensBalanceService {
     ) {
       return new BigNumber(NaN);
     }
-
-    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
-    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
 
     try {
       _balanceLoading$.next(true);
@@ -502,20 +516,31 @@ export class TokensBalanceService {
                     return this.fetchListBalances(walletAddr, chainType, balanceNetworks);
                   }
                 })
+                .then(() =>
+                  this.totalBalancesStoreService.calculateTotalBalanceByChain(CHAIN_TYPE.EVM)
+                )
                 .finally(() => this.collectionsFacade.allTokens.setBalanceLoading(false));
             } else {
-              this.fetchT2Balances(walletAddr, chainType, balanceNetworks).finally(() => {
-                this.collectionsFacade.allTokens.setBalanceLoading(false);
-              });
+              this.fetchT2Balances(walletAddr, chainType, balanceNetworks)
+                .then(() =>
+                  this.totalBalancesStoreService.calculateTotalBalanceByChain(
+                    chainType as WalletChainType
+                  )
+                )
+                .finally(() => {
+                  this.collectionsFacade.allTokens.setBalanceLoading(false);
+                });
             }
 
             break;
           case 'disconnected':
+            const walletChainType = lastEvent.affectedChainType as WalletChainType;
             if (this.walletConnectorService.activeWallets.length > 0) {
-              this.tokensStore.clearBalancesByChainType(lastEvent.affectedChainType);
+              this.tokensStore.clearBalancesByChainType(walletChainType);
             } else {
               this.tokensStore.clearAllBalances();
             }
+            this.totalBalancesStoreService.clearTotalBalanceByChain(walletChainType);
             break;
         }
       });

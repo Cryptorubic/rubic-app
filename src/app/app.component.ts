@@ -25,6 +25,7 @@ import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-
 
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
 import { LastEventInWalletsManager } from './core/services/wallets/models/wallets-manager-types';
+import { TotalBalancesStoreService } from './core/services/tokens/total-balances-store.service';
 
 @Component({
   selector: 'app-root',
@@ -54,7 +55,8 @@ export class AppComponent implements AfterViewInit {
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService,
     private readonly rubicApiService: RubicApiService,
-    private readonly turnstileService: TurnstileService
+    private readonly turnstileService: TurnstileService,
+    private readonly totalBalancesStoreService: TotalBalancesStoreService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -149,6 +151,7 @@ export class AppComponent implements AfterViewInit {
    */
   private initApp(): void {
     this.tokensFacadeService.init();
+    this.totalBalancesStoreService.runUpdateBalancesInterval();
     this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),
