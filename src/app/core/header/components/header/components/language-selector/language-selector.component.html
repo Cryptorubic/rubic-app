@@ -1,12 +1,9 @@
 <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="isOpened">
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
-      <img
-        class="active-lang"
-        *ngLet="activeLanguage$ | async as activeLang"
-        [src]="activeLang.imgSrc"
-        [alt]="activeLang.title"
-      />
+      @if (activeLanguage$ | async; as activeLang) {
+        <img class="active-lang" [src]="activeLang.imgSrc" [alt]="activeLang.title" />
+      }
     </button>
   </div>
 </div>

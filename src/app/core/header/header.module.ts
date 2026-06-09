@@ -50,7 +50,6 @@ import { BannersService } from './services/banners.service';
     MobileUserProfileComponent,
     MobileNavigationMenuComponent,
     LogoComponent,
-    LanguageSelectorComponent,
     SettingsComponent,
     ProfileMenuTogglerComponent,
     HistoryButtonComponent,
@@ -58,6 +57,7 @@ import { BannersService } from './services/banners.service';
   ],
   imports: [
     CommonModule,
+    LanguageSelectorComponent,
     SharedModule,
     TranslateModule,
     RouterModule,
