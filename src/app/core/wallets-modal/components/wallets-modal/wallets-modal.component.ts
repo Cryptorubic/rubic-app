@@ -27,6 +27,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 import { METAMASK_PROVIDERS } from './models/metamask-providers';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
@@ -97,7 +98,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly router: Router
   ) {
     this.allProviders = context.data?.providers
       ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
@@ -107,7 +109,8 @@ export class WalletsModalComponent implements OnInit {
       this.allProviders.some(v => v.value === provider)
     );
 
-    this.modalDirection = context.data?.direction || 'row';
+    this.modalDirection =
+      context.data?.direction || (this.router.url.includes('privacy') ? 'row' : 'column');
 
     if (metamaskProviders.length < 2) {
       this.showMetamaskModal = false;
