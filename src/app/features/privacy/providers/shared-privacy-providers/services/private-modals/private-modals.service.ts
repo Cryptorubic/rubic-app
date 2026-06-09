@@ -36,7 +36,8 @@ export class PrivateModalsService {
           formType: direction,
           assetsSelectorConfig
         },
-        fitContent: true
+        fitContent: true,
+        closeable: false
       },
       injector
     );
@@ -57,7 +58,8 @@ export class PrivateModalsService {
           formType: direction,
           assetsSelectorConfig
         },
-        fitContent: true
+        fitContent: true,
+        closeable: false
       },
       injector
     );

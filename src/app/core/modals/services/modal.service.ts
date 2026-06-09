@@ -464,7 +464,7 @@ export class ModalService {
    */
   public openArbitrumWarningModal(): Observable<void> {
     this.setOpenedModalName('arbitrum-warning');
-    return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
+    return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's', closeable: false });
   }
 
   public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
@@ -484,7 +484,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(TrustlineModalComponent, {
         size: 's',
-        closeable: true,
+        closeable: false,
         dismissible: false,
         fitContent: true,
         data: options
@@ -505,7 +505,8 @@ export class ModalService {
     this.setOpenedModalName('mev-bot');
     return this.showDialog(MevBotModalComponent, {
       size: 's',
-      scrollableContent: true
+      scrollableContent: true,
+      closeable: false
     });
   }
 
@@ -538,7 +539,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
-        closeable: true,
+        closeable: false,
         fitContent: true,
         data: { walletsToHide }
       })
