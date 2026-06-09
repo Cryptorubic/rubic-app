@@ -1,5 +1,14 @@
 @use 'src/scss/core' as *;
 
+:host.tui-skeleton::after {
+  background-color: transparent !important;
+  background-image: url('/assets/images/icons/amount-loader.svg');
+  background-repeat: no-repeat;
+  background-position-x: right;
+
+  animation: none;
+}
+
 .amount-transput {
   width: 100%;
   height: 35px;
