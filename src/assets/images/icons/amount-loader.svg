@@ -1,25 +1,26 @@
 <svg width="100" height="20" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="100" height="20" rx="4" fill="#2C2D3E"/>
-<g filter="url(#filter0_f_6511_1334)">
+<g filter="url(#filter0_f_6511_2191)">
 
 <animateTransform
   attributeName="transform"
   type="translate"
   values="
-    -60 -10;
-    100 -10
+    10 -10;
+    120 -10;
+    10 -10;
   "
-  keyTimes="0; 1"
-  dur="1.5s"
+  keyTimes="0; 0.5; 1"
+  dur="2s"
   repeatCount="indefinite"
 />
-<rect width="17" height="40" transform="matrix(0.765672 0.643232 0.643232 -0.765672 10 27.3)" fill="#222331"/>
+<rect width="45" height="67" transform="matrix(1 0 0 -1 -39 40.9998)" fill="#222331"/>
 </g>
 <defs>
-<filter id="filter0_f_6511_1334" x="0" y="-34" width="76.1133" height="82.2349" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_f_6511_2191" x="-59" y="-46.0002" width="85" height="107" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="5" result="effect1_foregroundBlur_6511_1334"/>
+<feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_6511_2191"/>
 </filter>
 </defs>
 </svg>
