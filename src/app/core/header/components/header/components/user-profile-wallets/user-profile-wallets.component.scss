@@ -209,3 +209,15 @@
     }
   }
 }
+
+.user-profile-wallets__mobile {
+  padding: 0;
+
+  .body {
+    .chain-types {
+      tui-carousel {
+        margin-left: 14px;
+      }
+    }
+  }
+}

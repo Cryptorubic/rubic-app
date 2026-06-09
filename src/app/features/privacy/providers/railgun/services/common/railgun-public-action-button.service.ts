@@ -68,7 +68,7 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
       ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
       : PRIVATE_PROVIDERS_WALLETS_MAP;
     this.modalService
-      .openNewWalletModal(this.injector, {
+      .openWalletModal(this.injector, {
         providers: walletsMap['railgun']
       })
       .subscribe();

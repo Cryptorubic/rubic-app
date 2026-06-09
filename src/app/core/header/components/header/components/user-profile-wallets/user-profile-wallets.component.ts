@@ -3,7 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Injector
+  Injector,
+  Input
 } from '@angular/core';
 import { USER_WALLETS_CHAIN_TYPES, WalletChainType } from './constants/wallets-chain-types';
 import { BlockchainName, ChainType } from '@cryptorubic/core';
@@ -33,6 +34,8 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileWalletsComponent {
+  @Input() inMobileMenu: boolean = false;
+
   public currentIdx: number = 0;
 
   public readonly ITEMS_PER_SLIDE = 5;
@@ -88,7 +91,7 @@ export class UserProfileWalletsComponent {
   }
 
   public connectWallet(): void {
-    this.modalService.openNewWalletModal(this.injector).subscribe();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 
   public logoutWallet(walletName: WALLET_NAME): void {

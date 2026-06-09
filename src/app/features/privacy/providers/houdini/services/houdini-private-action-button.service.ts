@@ -40,7 +40,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
   protected connectWallet(): void {
     super.connectWallet();
     this.modalService
-      .openNewWalletModal(this.injector, { providers: HOUDINI_SUPPORTED_WALLETS })
+      .openWalletModal(this.injector, { providers: HOUDINI_SUPPORTED_WALLETS })
       .subscribe();
   }
 

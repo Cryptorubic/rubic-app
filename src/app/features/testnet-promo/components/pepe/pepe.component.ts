@@ -19,7 +19,7 @@ export class PepeComponent {
   ) {}
 
   public connectWallet(): void {
-    this.modalService.openNewWalletModal(this.injector).subscribe();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 
   public onVerifyLinkClick(): void {

@@ -487,8 +487,6 @@ export class TokensBalanceService {
     ]);
   }
 
-  // @TODO_530 проверить почему не очищаются балансы с октрытым селектором при отключении ЕВМ кошелька?
-  // при отключении соланы и трона все работает правильно
   public subscribeOnWallet(): void {
     this.walletConnectorService.walletsManager.lastEvent$
       .pipe(

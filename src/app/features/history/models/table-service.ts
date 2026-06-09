@@ -30,9 +30,13 @@ export abstract class TableService<Sorter, Response, Data> {
 
   public readonly data$: Observable<Data[]>;
 
-  private readonly commonTableService: CommonTableService = inject(CommonTableService);
+  protected readonly commonTableService: CommonTableService = inject(CommonTableService);
 
   public readonly activeItemIndex$ = this.commonTableService.activeItemIndex$;
+
+  // private readonly _selectedWalletAddress$ = new BehaviorSubject<string>('');
+
+  // public readonly selectedWalletAddress$ = this._selectedWalletAddress$.asObservable();
 
   protected constructor(private readonly initialSorterValue: Sorter) {}
 
@@ -56,6 +60,10 @@ export abstract class TableService<Sorter, Response, Data> {
   public onSorting(page: Sorter): void {
     this._sorter$.next(page);
   }
+
+  // public onWalletAddressSelection(walletAddress: string): void {
+  //   this._selectedWalletAddress$.next(walletAddress);
+  // }
 
   protected abstract transformResponse(response: Response): {
     data: Data[];

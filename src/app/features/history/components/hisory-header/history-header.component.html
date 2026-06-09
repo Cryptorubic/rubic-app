@@ -13,18 +13,58 @@
       Deposits
     </button>
   </tui-tabs>
-  <div class="filter">
-    <form class="b-form">
+  <div *ngLet="availableWalletAddresses$ | async as availableWalletAddresses" class="filter">
+    <!--<form class="b-form">
+      <tui-select
+        *ngIf="availableWalletAddresses.length > 0"
+        class="filter__select"
+        tuiTextfieldSize="m"
+        [formControl]="walletAddressCtrl"
+      >
+        Wallet
+        <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="availableWalletAddresses"
+        ></tui-data-list-wrapper>
+      </tui-select>
+
       <tui-select
         *ngIf="isCrossChain$ | async"
         class="filter__select"
         tuiTextfieldSize="m"
-        [formControl]="statusFilter"
+        [formControl]="statusFilterCtrl"
       >
         Status
         <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
         <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
       </tui-select>
-    </form>
+    </form>-->
+
+    <tui-select
+      *ngIf="isCrossChain$ | async"
+      class="filter__select"
+      tuiTextfieldSize="m"
+      [formControl]="statusFilterCtrl"
+    >
+      Status
+      <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
+      <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
+    </tui-select>
+
+    <tui-select
+      *ngIf="availableWalletAddresses.length > 0"
+      class="filter__select"
+      tuiTextfieldSize="m"
+      [formControl]="walletAddressCtrl"
+      [tuiDropdownLimitWidth]="'auto'"
+    >
+      Wallet
+      <input [tuiTextfieldLabelOutside]="true" placeholder="Choose your hero" tuiTextfield />
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="availableWalletAddresses"
+      ></tui-data-list-wrapper>
+    </tui-select>
   </div>
 </div>

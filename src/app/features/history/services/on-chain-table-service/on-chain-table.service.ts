@@ -5,7 +5,12 @@ import { debounceTime, filter, map, share, startWith, switchMap, takeUntil } fro
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Token } from '@cryptorubic/core';
+import {
+  BackendBlockchain,
+  compareAddresses,
+  FROM_BACKEND_BLOCKCHAINS,
+  Token
+} from '@cryptorubic/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -24,23 +29,38 @@ export class OnChainTableService extends TableService<
   OnChainTableResponse,
   OnChainTableData
 > {
-  public readonly addressChange$ = this.walletConnector.addressChange$;
-
   public readonly request$ = combineLatest([
-    this.addressChange$,
+    this.walletConnector.walletsManager.lastEvent$.pipe(
+      filter(lastEvent =>
+        compareAddresses(
+          lastEvent.affectedWalletAddress,
+          this.commonTableService.walletAddressCtrl.value
+        )
+      )
+    ),
     this.sorter$,
     this.direction$,
     this.page$,
-    this.size$
+    this.size$,
+    this.commonTableService.walletAddressChanges$.pipe(
+      startWith(
+        this.walletConnector.activeWallets.length
+          ? this.walletConnector.activeWallets[0].address
+          : ''
+      )
+    )
   ]).pipe(
     // zero time debounce for a case when both key and direction change
     debounceTime(50),
-    switchMap(([_, ...query]) =>
-      timer(0, 30_000).pipe(
+    switchMap(([_, ...query]) => {
+      if (!this.walletConnector.activeWallets.length) {
+        return of({ data: [], total: 0 });
+      }
+      return timer(0, 30_000).pipe(
         switchMap(() => this.getData(...query).pipe(startWith(null))),
         takeUntil(this.activeItemIndex$.pipe(filter(activeItem => activeItem !== 1)))
-      )
-    ),
+      );
+    }),
     share()
   );
 
@@ -74,19 +94,14 @@ export class OnChainTableService extends TableService<
     key: TableKey,
     direction: -1 | 1,
     page: number,
-    pageSze: number
+    pageSze: number,
+    walletAddress: string
   ): Observable<{
     data: OnChainTableData[];
     total: number;
   }> {
-    // @TODO_530 load history for all connected wallets
-    const address = this.walletConnector.activeWallets[0]?.address;
-    if (!address) {
-      return of({ data: [], total: 0 });
-    }
-
     const params: OnChainTableRequest = {
-      address,
+      address: walletAddress,
       page: page + 1,
       pageSize: pageSze,
       ordering: direction === -1 ? `-${key}` : key,

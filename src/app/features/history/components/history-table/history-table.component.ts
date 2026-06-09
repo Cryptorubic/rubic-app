@@ -16,7 +16,9 @@ import { ModalService } from '@core/modals/services/modal.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryTableComponent {
-  public readonly isUserActive$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));
+  public readonly isUserActive$ = this.walletConnectorService.activeWallets$.pipe(
+    map(activeWallets => !!activeWallets.length)
+  );
 
   public readonly loading$ = this.crossChainTableService.loading$.pipe(
     combineLatestWith(this.onChainTableService.loading$),
@@ -58,6 +60,6 @@ export class HistoryTableComponent {
   }
 
   public connectWallet(): void {
-    this.modalService.openNewWalletModal(this.injector, { direction: 'column' }).subscribe();
+    this.modalService.openWalletModal(this.injector, { direction: 'column' }).subscribe();
   }
 }

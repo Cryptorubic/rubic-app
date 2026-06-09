@@ -19,3 +19,7 @@ export const USER_WALLETS_CHAIN_TYPES = [
 ] as const satisfies ReadonlyArray<{ img: string; label: string; value: ChainType }>;
 
 export type WalletChainType = (typeof USER_WALLETS_CHAIN_TYPES)[number]['value'];
+
+export function isWalletChainType(chainType: ChainType): chainType is WalletChainType {
+  return USER_WALLETS_CHAIN_TYPES.some(w => w.value === chainType);
+}

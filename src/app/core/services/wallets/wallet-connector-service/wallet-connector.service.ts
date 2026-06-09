@@ -36,20 +36,9 @@ import { AddressChangedMsg } from '../models/events';
   providedIn: 'root'
 })
 export class WalletConnectorService {
-  // private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
-
-  // private readonly addressChangeSubject$: BehaviorSubject<AddressChangedMsg | null> =
-  //   new BehaviorSubject<AddressChangedMsg | null>(null);
-
   public readonly walletsManager: WalletsManager;
 
-  // private readonly walletAdapterFactory: WalletAdapterFactory = null;
   private readonly walletAdapterFactory: WalletAdapterFactory;
-
-  /**
-   * @TODO_530 вместо privateProvider будут walletsManager.activeWallets
-   */
-  // private privateProvider: CommonWalletAdapter;
 
   // @TODO_530 remove, use walletsManager.activeWallets instead
   public get activeWallets(): CommonWalletAdapter[] {
@@ -58,10 +47,6 @@ export class WalletConnectorService {
 
   // @TODO_530 remove, use walletsManager.activeWallets$ instead
   public readonly activeWallets$: Observable<CommonWalletAdapter[]>;
-
-  // public get address(): string {
-  //   return this.provider?.address;
-  // }
 
   private _selectedChainId = 1;
 
@@ -72,10 +57,6 @@ export class WalletConnectorService {
     }
   }
 
-  // public get chainType(): ChainType {
-  //   return this.provider?.chainType;
-  // }
-
   /**
    * supported chain types by activated wallets
    */
@@ -83,17 +64,9 @@ export class WalletConnectorService {
     return this.activeWallets.map(wallet => wallet.chainType);
   }
 
-  // public get network(): BlockchainName | null {
-  //   return this.provider?.network;
-  // }
-
   public get networks(): BlockchainName[] {
     return this.activeWallets.map(wallet => wallet.network);
   }
-
-  // public get provider(): CommonWalletAdapter {
-  //   return this.privateProvider;
-  // }
 
   public getActiveProvider(
     options: { chainType?: ChainType; walletName?: WALLET_NAME; blockchain?: BlockchainName } = {}
@@ -124,11 +97,6 @@ export class WalletConnectorService {
     return walletAdapter?.address ?? null;
   }
 
-  // public readonly networkChange$ = this.networkChangeSubject$.asObservable();
-
-  // public readonly addressChange$: Observable<AddressChangedMsg | null> =
-  //   this.addressChangeSubject$.asObservable();
-
   public readonly networkChange$: Observable<BlockchainName>;
 
   public readonly addressChange$: Observable<AddressChangedMsg>;
@@ -136,7 +104,7 @@ export class WalletConnectorService {
   constructor(
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly httpService: HttpService,
+    httpService: HttpService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone,
@@ -176,14 +144,10 @@ export class WalletConnectorService {
       const walletAdapter = this.connectProvider(WALLET_NAME.SAFE);
       this.activate(walletAdapter);
     } else {
-      for (const provider of providers) {
+      providers.forEach(provider => {
         const walletAdapter = this.connectProvider(provider);
         this.activate(walletAdapter);
-      }
-      // providers.forEach(async provider => {
-      //   const walletAdapter = this.connectProvider(provider);
-      //   await this.activate(walletAdapter);
-      // });
+      });
     }
 
     return true;

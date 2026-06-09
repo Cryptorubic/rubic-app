@@ -16,7 +16,8 @@ import {
   TuiLoaderModule,
   TuiSvgModule,
   TuiTextfieldControllerModule,
-  TuiHintModule
+  TuiHintModule,
+  TuiDropdownModule
 } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
@@ -54,6 +55,7 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     TuiBadgeModule,
     TuiPaginationModule,
     TuiSelectModule,
+    TuiDropdownModule,
     TuiTextfieldControllerModule,
     TuiDataListWrapperModule,
     ReactiveFormsModule,

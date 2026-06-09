@@ -1,9 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { WalletChainType } from '@app/core/header/components/header/components/user-profile-wallets/constants/wallets-chain-types';
+import {
+  WalletChainType,
+  isWalletChainType
+} from '@app/core/header/components/header/components/user-profile-wallets/constants/wallets-chain-types';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, interval } from 'rxjs';
 import { NewTokensStoreService } from './new-tokens-store.service';
-import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo, ChainType } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +73,9 @@ export class TotalBalancesStoreService {
     this._totalBalancesUsd$.next(balances);
   }
 
-  public calculateTotalBalanceByChain(chainTypeToUpdate: WalletChainType): void {
+  public calculateTotalBalanceByChain(chainTypeToUpdate: ChainType): void {
+    if (!isWalletChainType(chainTypeToUpdate)) return;
+
     const balances = this.totalBalancesUsd;
     balances[chainTypeToUpdate] = new BigNumber(0);
 
@@ -82,9 +87,9 @@ export class TotalBalancesStoreService {
         const chainTokensArray = Object.values(chainTokensMap);
         chainTokensArray.forEach(token => {
           if (token.price && token.price > 0 && token.amount && token.amount.isPositive()) {
-            const storedUsdAmount = balances[chainType as WalletChainType];
+            const storedUsdAmount = balances[chainType];
             const usdAmount = token.amount.multipliedBy(token.price);
-            balances[chainType as WalletChainType] = storedUsdAmount.plus(usdAmount);
+            balances[chainType] = storedUsdAmount.plus(usdAmount);
           }
         });
       }
@@ -93,7 +98,8 @@ export class TotalBalancesStoreService {
     this._totalBalancesUsd$.next(balances);
   }
 
-  public clearTotalBalanceByChain(chainType: WalletChainType): void {
+  public clearTotalBalanceByChain(chainType: ChainType): void {
+    if (!isWalletChainType(chainType)) return;
     this._totalBalancesUsd$.next({ ...this.totalBalancesUsd, [chainType]: new BigNumber(0) });
   }
 }

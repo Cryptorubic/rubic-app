@@ -67,7 +67,7 @@ export class PrivacycashActionButtonService extends PrivateActionButtonService {
   protected connectWallet(): void {
     super.connectWallet();
     this.modalService
-      .openNewWalletModal(this.injector, { providers: PRIVACYCASH_SUPPORTED_WALLETS })
+      .openWalletModal(this.injector, { providers: PRIVACYCASH_SUPPORTED_WALLETS })
       .subscribe();
   }
 

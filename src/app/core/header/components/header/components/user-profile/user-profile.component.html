@@ -3,10 +3,6 @@
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
         <ng-container *ngLet="{ text: profileText$ | async } as profile">
-          <!--<div class="user-profile__avatar">
-            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
-          </div>-->
-
           <div class="user-profile__text">
             {{ profile.text }}
           </div>
@@ -18,7 +14,7 @@
   </tui-hosted-dropdown>
 
   <ng-template #dropdown let-activeZone>
-    <app-user-profile-wallets></app-user-profile-wallets>
+    <app-user-profile-wallets [inMobileMenu]="false"></app-user-profile-wallets>
     <!--<tui-data-list class="data-list" size="m" role="menu">
       <tui-opt-group>
         <button

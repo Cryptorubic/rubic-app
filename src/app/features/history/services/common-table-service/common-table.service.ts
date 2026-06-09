@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom, tap } from 'rxjs';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { FormControl } from '@angular/forms';
 
 @Injectable()
 export class CommonTableService {
@@ -23,6 +24,15 @@ export class CommonTableService {
   public set activeItemIndex(value: 0 | 1 | 2) {
     this._activeItemIndex$.next(value);
   }
+
+  public readonly walletAddressCtrl = new FormControl<string>('');
+
+  public readonly walletAddressChanges$ = this.walletAddressCtrl.valueChanges.pipe(
+    tap(v => console.log('walletAddressChanges$_tap ==>', v))
+    // distinctUntilChanged(),
+    // startWith(''),
+    // filter(Boolean)
+  );
 
   constructor(
     private readonly errorService: ErrorsService,

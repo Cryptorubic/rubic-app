@@ -65,7 +65,7 @@ export class ActionButtonService {
   }
 
   private connectWallet(): void {
-    this.modalService.openNewWalletModal(this.injector).subscribe();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 
   private getState(

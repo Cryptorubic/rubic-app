@@ -46,7 +46,7 @@ export class MobileMenuComponent {
         this.modalService.openSettings(this.injector).subscribe();
         break;
       case 'wallet':
-        this.modalService.openNewWalletModal(this.injector).subscribe();
+        this.modalService.openWalletModal(this.injector).subscribe();
         break;
     }
   }

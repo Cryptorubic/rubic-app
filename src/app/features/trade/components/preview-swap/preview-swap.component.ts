@@ -152,7 +152,7 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   private changeWallet(): void {
-    this.modalService.openNewWalletModal(this.injector).subscribe();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 
   private async switchChain(): Promise<void> {
@@ -172,7 +172,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private connectWallet(): void {
     this.modalService
-      .openNewWalletModal(this.injector, { direction: 'column' })
+      .openWalletModal(this.injector, { direction: 'column' })
       .pipe(
         switchMap(() =>
           forkJoin([this.walletConnector.activeWallets$, this.swapsStateService.notEnoughBalance$])

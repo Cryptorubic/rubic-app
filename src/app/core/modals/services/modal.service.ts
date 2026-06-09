@@ -15,7 +15,6 @@ import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { MobileNativeModalService } from './mobile-native-modal.service';
-import { WalletsModalComponent } from '@app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import {
   IMobileNativeOptions,
   INextModal,
@@ -307,24 +306,10 @@ export class ModalService {
   }
 
   /**
-   * Show Wallet Modal dialog.
-   * @param injector Injector
-   */
-  public openWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
-    this.setOpenedModalName('wallet');
-    return this.showDialog<WalletsModalComponent, void>(
-      WalletsModalComponent,
-      { title: 'Connect wallet', size: 'm', fitContent: true, data },
-      injector
-    );
-  }
-
-  // @TODO_530 rename to openWalletModal after old method removal
-  /**
    * Show New Wallet Modal dialog.
    * @param injector Injector
    */
-  public openNewWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
+  public openWalletModal(injector: Injector, data?: WalletsModalOptions): Observable<void> {
     this.setOpenedModalName('wallet');
     return this.showDialog<NewWalletsModalComponent, void>(
       NewWalletsModalComponent,

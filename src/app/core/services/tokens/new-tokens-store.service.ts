@@ -202,7 +202,6 @@ export class NewTokensStoreService {
           tokens[address].amount = new BigNumber(NaN);
         });
         chainStore._tokensObject$.next(tokens);
-        break;
       }
     }
   }

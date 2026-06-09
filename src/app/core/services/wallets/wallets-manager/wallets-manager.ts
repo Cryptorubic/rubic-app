@@ -16,6 +16,9 @@ export class WalletsManager {
     return this._activeWallets$.value;
   }
 
+  /**
+   * @description add wallet after activation, otherwise wallet.address will be null
+   */
   public addWallet(walletAdapter: CommonWalletAdapter): void {
     this._activeWallets$.next([...this.activeWallets, walletAdapter]);
     this._lastEvent$.next({

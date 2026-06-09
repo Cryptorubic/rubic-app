@@ -38,7 +38,7 @@ export class LoginButtonComponent {
     const wallets = this.filterWallets();
     const modalDirection = this.router.url.includes('privacy') ? 'row' : 'column';
     this.modalService
-      .openNewWalletModal(this.injector, { providers: wallets, direction: modalDirection })
+      .openWalletModal(this.injector, { providers: wallets, direction: modalDirection })
       .subscribe();
   }
 

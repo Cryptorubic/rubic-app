@@ -5,6 +5,7 @@
     totalBalanceUsd: totalBalanceUsd$ | async
   } as state"
   class="user-profile-wallets"
+  [class.user-profile-wallets__mobile]="inMobileMenu"
 >
   <div class="title">My Wallets</div>
 
@@ -21,7 +22,7 @@
         [style.--tui-carousel-padding]="'0'"
       >
         <ng-container *ngFor="let chainType of USER_WALLETS_CHAIN_TYPES">
-          <div *tuiItem [draggable]="true" (click)="selectChainType(chainType.value)">
+          <div *tuiItem [draggable]="false" (click)="selectChainType(chainType.value)">
             <div
               class="chain-type"
               [class.chain-type__active]="state.selectedChainType === chainType.value"
