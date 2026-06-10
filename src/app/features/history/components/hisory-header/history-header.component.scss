@@ -21,6 +21,8 @@
     margin: 0 !important;
     padding: 0 var(--tui-padding-l);
 
+    font: var(--tui-font-text-m);
+
     @include b($mobile-sm-middle) {
       padding: 0 var(--tui-padding-s);
     }

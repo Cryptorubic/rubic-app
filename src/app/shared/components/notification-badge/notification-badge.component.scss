@@ -3,6 +3,10 @@
 tui-badge {
   @include font(10px, 16px, 500, #fff, 0.03em);
 
+  --tui-height-xs: 1.2rem;
+  
+  padding: 0;
+
   &[data-tui-host-status='default'] {
     width: 14px;
     height: 14px;
