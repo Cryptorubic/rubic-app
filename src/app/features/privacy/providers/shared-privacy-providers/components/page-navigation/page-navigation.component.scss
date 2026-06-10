@@ -14,27 +14,24 @@
 
     &__item {
       font-size: var(--tui-font-text-s);
+      
     }
   }
 
   &__item {
-    ::ng-deep button[tuiWrapper] {
-      background: var(--tui-background-neutral-1-pressed) !important;
+    background: var(--tui-background-neutral-1-pressed) !important;
 
-      &:hover {
-        background: var(--app-background) !important;
-      }
+    &:hover {
+      background: var(--tui-background-neutral-1-pressed) !important;
     }
 
     &-active {
-      ::ng-deep button[tuiWrapper] {
-        color: var(--tui-text-primary-on-accent-1) !important;
+      color: var(--tui-text-primary-on-accent-1) !important;
 
+      background: var(--tui-background-accent-1) !important;
+
+      &:hover {
         background: var(--tui-background-accent-1) !important;
-
-        &:hover {
-          background: var(--tui-background-accent-1) !important;
-        }
       }
     }
   }
