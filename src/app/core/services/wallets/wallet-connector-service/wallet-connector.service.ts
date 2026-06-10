@@ -55,6 +55,7 @@ import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-a
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
+import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
 
 @Injectable({
   providedIn: 'root'
@@ -347,6 +348,11 @@ export class WalletConnectorService {
             this.errorService.catch(err);
           }
         }
+      } else if (
+        switchError.message.includes('The Provider is not connected to the requested chain') &&
+        this.provider instanceof PhantomWalletAdapter
+      ) {
+        this.errorService.catch(new PhantomWalletUnsupportedChainError(evmBlockchainName));
       } else {
         this.errorService.catch(switchError);
       }
