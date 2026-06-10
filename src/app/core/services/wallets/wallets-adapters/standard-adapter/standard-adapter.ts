@@ -1,6 +1,7 @@
 import { FeaturesWallet } from '@core/services/wallets/wallets-adapters/standard-adapter/models/features-wallet';
 import { StandardFeatures } from '@core/services/wallets/wallets-adapters/standard-adapter/models/standard-features';
 import { Wallet } from '@wallet-standard/base';
+import { StandardConnectOutput } from '@wallet-standard/features';
 
 export abstract class StandardAdapter<SpecificFeatures extends Wallet['features']> {
   protected wallet: FeaturesWallet<SpecificFeatures>;
@@ -25,7 +26,7 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
 
   public async connect(): Promise<boolean> {
     try {
-      const { accounts } = await this.wallet.features['standard:connect']?.connect();
+      const { accounts } = await this.useConnectFeature();
       this._isConnected = true;
       this.listeners['connect']?.forEach(cb => cb());
       const firstAccount = accounts[0];
@@ -40,7 +41,7 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
 
   public async disconnect(): Promise<boolean> {
     try {
-      await this.wallet.features['standard:disconnect']?.disconnect?.();
+      await this.useDisconnectFeature();
       this._isConnected = false;
       this.listeners['disconnect']?.forEach(cb => cb());
       this._accounts = [];
@@ -56,5 +57,13 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
 
   public off(event: string, callback: () => void): void {
     this.listeners[event] = this.listeners[event]?.filter(cb => cb !== callback) || [];
+  }
+
+  protected async useConnectFeature(): Promise<StandardConnectOutput> {
+    return this.wallet.features['standard:connect']?.connect();
+  }
+
+  protected async useDisconnectFeature(): Promise<void> {
+    await this.wallet.features['standard:disconnect']?.disconnect?.();
   }
 }

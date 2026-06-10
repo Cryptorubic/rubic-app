@@ -99,6 +99,7 @@
     "@walletconnect/modal": "^2.5.9",
     "@zama-fhe/relayer-sdk": "0.4.1",
     "bignumber.js": "9.1.2",
+    "bitcoinjs-lib": "^7.0.1",
     "browserify-zlib": "^0.2.0",
     "bs58": "^6.0.0",
     "date-and-time": "^0.14.2",
