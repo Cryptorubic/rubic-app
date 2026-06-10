@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 .filter-list-element {
-  gap: 8px;
+  gap: 14px;
   width: 90px;
   padding: 0 !important;
 
@@ -10,6 +10,8 @@
   background-color: var(--tui-background-base) !important;
 
   &__icon {
+    padding-right: 6px;
+
     filter: invert(0);
 
     transition: filter var(--tui-duration, 300ms) ease-in-out;
