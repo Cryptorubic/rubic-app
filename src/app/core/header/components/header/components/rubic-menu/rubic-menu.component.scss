@@ -34,6 +34,10 @@
           }
         }
       }
+
+      tui-icon {
+        border: none;
+      }
     }
   }
 }
@@ -52,6 +56,18 @@
 .data-list {
   --tui-data-list-padding: 5px;
   --tui-data-list-margin: 0px;
+
+  &__option-container {
+    a {
+      border-radius: 0;
+    }
+
+    &:not(:last-child) {
+      a {
+        border-bottom: 1px solid var(--tui-border-normal);
+      }
+    }
+  }
 
   &__element {
     text-decoration: none;
