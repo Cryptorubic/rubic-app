@@ -93,13 +93,12 @@ tui-loader {
         border-radius: 0;
         border-top-left-radius: var(--tui-radius-m);
       }
-    }
+    } */
 
-    ::ng-deep button[tuiWrapper] {
-      background-color: var(--io-background) !important;
+    ::ng-deep button[tuiIcons] {
       border-radius: 0;
       border-top-right-radius: var(--tui-radius-m);
-    } */
+    }
   }
 
   &__hide-favorites {

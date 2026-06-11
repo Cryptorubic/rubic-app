@@ -7,7 +7,7 @@ import {
   withXsrfConfiguration
 } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TuiRoot, TuiAlert, TuiDialog } from '@taiga-ui/core';
+import { TuiRoot, TuiAlert, TuiDialog, tuiHintOptionsProvider } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavigationEnd, Router, Scroll } from '@angular/router';
 import { DOCUMENT, ViewportScroller } from '@angular/common';
@@ -61,7 +61,8 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
         cookieName: 'csrftoken',
         headerName: 'X-CSRFToken'
       })
-    )
+    ),
+    tuiHintOptionsProvider({ appearance: 'dark' })
   ]
 })
 export class AppModule {
