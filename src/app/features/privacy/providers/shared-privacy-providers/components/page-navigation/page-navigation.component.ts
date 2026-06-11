@@ -8,7 +8,6 @@ import {
   inject
 } from '@angular/core';
 import { PageType } from './models/page-type';
-import { HeaderStore } from '@core/header/services/header.store';
 import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
 
 @Component({
@@ -28,8 +27,6 @@ export class PageNavigationComponent {
   @Input({ required: true }) public readonly activePage: PageType;
 
   @Output() onSelect = new EventEmitter<PageType>();
-
-  private readonly headerStore = inject(HeaderStore);
 
   private readonly window = inject(WA_WINDOW);
 
