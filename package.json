@@ -70,7 +70,7 @@
     "@cryptorubic/core": "1.6.3",
     "@cryptorubic/web3": "1.6.3",
     "@hakimio/ngx-google-analytics": "^15.0.0",
-    "@hinkal/common": "0.2.31",
+    "@hinkal/common": "0.2.33",
     "@maskito/angular": "^3.11.1",
     "@maskito/core": "^3.11.1",
     "@maskito/kit": "^3.11.1",

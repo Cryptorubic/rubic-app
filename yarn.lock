@@ -3557,19 +3557,22 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hinkal/common@0.2.31":
-  version "0.2.31"
-  resolved "https://registry.yarnpkg.com/@hinkal/common/-/common-0.2.31.tgz#3faebee4435850af7df307c66ae8371d9b0ceff0"
-  integrity sha512-ExESKc7BTn8PnAV0fw+3W+PiR+sAfoEWGXNlJKg935KUcUV3Xmi0MrNNyrRYLoTexP3b0zJmrYFkllpoUF1gWg==
+"@hinkal/common@0.2.33":
+  version "0.2.33"
+  resolved "https://registry.yarnpkg.com/@hinkal/common/-/common-0.2.33.tgz#402f02620b988df3659d0085a6830fa846a6b206"
+  integrity sha512-vbvMo4w26Se0LJqWGS9FJtUDrI9m8KvB/Z0QVNngm35NLCfEP9EbA5iQoUZKV4/i9wdtV/5iWRUvH6Mln5wRcg==
   dependencies:
     "@coral-xyz/anchor" "^0.31.0"
+    "@noble/curves" "^1.9.7"
+    "@noble/hashes" "^1.8.0"
     "@solana/spl-token" "^0.4.14"
     "@solana/web3.js" "^1.98.4"
     async-mutex "^0.4.0"
     axios "^1.15.0"
+    bip39 "^3.1.0"
     bs58 "^6.0.0"
     buffer "6.0.3"
-    circomlibjs-hinkal-fork "^0.0.3"
+    circomlibjs-hinkal-fork "^0.0.9"
     dotenv "^16.4.5"
     ethers "^6.15.0"
     idb-keyval "6.2.1"
@@ -5272,7 +5275,7 @@
   dependencies:
     "@noble/hashes" "1.8.0"
 
-"@noble/curves@1.9.7", "@noble/curves@^1.0.0", "@noble/curves@^1.1.0", "@noble/curves@^1.2.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.8.1", "@noble/curves@^1.9.1", "@noble/curves@^1.9.6", "@noble/curves@~1.9.0":
+"@noble/curves@1.9.7", "@noble/curves@^1.0.0", "@noble/curves@^1.1.0", "@noble/curves@^1.2.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.8.1", "@noble/curves@^1.9.1", "@noble/curves@^1.9.6", "@noble/curves@^1.9.7", "@noble/curves@~1.9.0":
   version "1.9.7"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.7.tgz#79d04b4758a43e4bca2cbdc62e7771352fa6b951"
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
@@ -11178,6 +11181,13 @@ bip39@3.0.2:
     pbkdf2 "^3.0.9"
     randombytes "^2.0.1"
 
+bip39@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/bip39/-/bip39-3.1.0.tgz#c55a418deaf48826a6ceb34ac55b3ee1577e18a3"
+  integrity sha512-c9kiwdk45Do5GL0vJMe7tS95VjCii65mYAH7DfWl3uW8AVzXKQVUm64i3hzVybBDMp9r7j9iNxR85+ul8MdN/A==
+  dependencies:
+    "@noble/hashes" "^1.2.0"
+
 bip66@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/bip66/-/bip66-2.0.0.tgz#96b5cca18ad10a009f7c8ea4eb24079e37ec9c79"
@@ -12081,11 +12091,12 @@ circom_runtime@0.1.28:
   dependencies:
     ffjavascript "0.3.1"
 
-circomlibjs-hinkal-fork@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/circomlibjs-hinkal-fork/-/circomlibjs-hinkal-fork-0.0.3.tgz#4315276dbcd79b8d720093a72a4028cbcc509077"
-  integrity sha512-yj8eVrWpbmAQLD+MLwHZ+rhLoSgGT5vhnV3j0Ih7+uclCp3kouXKj1H+/PwbWnIC/ykhTy53dLi0QoChsACXtA==
+circomlibjs-hinkal-fork@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/circomlibjs-hinkal-fork/-/circomlibjs-hinkal-fork-0.0.9.tgz#742ec052e2fbcae78e8cfd4628d85e40557647ce"
+  integrity sha512-kheuu1JMzz/NVHLZ7afcu+qW1wW7QF12aJj9p7aGU3AhFP7dYbj1FMvJrFmTEyWaC3+BvcPMI04GLOyUUv3oQw==
   dependencies:
+    blake-hash "^2.0.0"
     ffjavascript "^0.3.0"
 
 class-is@^1.1.0:
