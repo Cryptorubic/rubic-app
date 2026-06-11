@@ -26,7 +26,7 @@
             tuiButton
             appearance="secondary"
             type="button"
-            size="xl"
+            size="l"
             *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
             [disabled]="(walletsLoading$ | async) || provider.disabled || !enableWallets"
             (click)="connectProvider(provider.value)"

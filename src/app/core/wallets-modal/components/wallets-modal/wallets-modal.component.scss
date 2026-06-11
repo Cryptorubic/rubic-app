@@ -63,7 +63,7 @@
       }
     
       &::-webkit-scrollbar-track {
-        background-color: var(--tui-base-01);
+        background-color: var(--io-background);
         border-radius: 4px;
       }
     }
@@ -74,6 +74,8 @@
     flex-direction: column;
     gap: var(--tui-padding-xs);
     align-items: center;
+    width: 135px;
+    
 
     text-align: center;
 
@@ -90,8 +92,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
 
     img {
       width: 28px;
@@ -99,12 +99,22 @@
   }
 
   &__button {
-    width: 44px;
-    height: 44px;
+      
+
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-s);
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+
+    white-space: nowrap;
 
     text-decoration: none;
 
     background-color: var(--primary-background);
+    border-radius: var(--tui-radius-s);
 
     transition: 0.2s ease-in-out;
 
@@ -112,25 +122,7 @@
       background-color: var(--tui-background-neutral-1);
       scale: 1.05;
     }
-
-    ::ng-deep {
-      button[tuiWrapper] {
-        background: none !important;
-
-        &:hover {
-          background: none !important;
-        }
-      }
-
-      .t-content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--tui-padding-s);
-        justify-content: center;
-
-        white-space: nowrap;
-      }
-    }
+      
   }
 
   &__link {
@@ -147,6 +139,10 @@
     &__body {
       grid-template-rows: auto;
       grid-template-columns: repeat(2, 50%);
+    }
+
+    &__provider {
+      width: 130px;
     }
 
     &__provider-icon {
