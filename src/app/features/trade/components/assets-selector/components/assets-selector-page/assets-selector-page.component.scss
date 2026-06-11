@@ -64,6 +64,8 @@ app-search-blockchains-bar {
           app-search-blockchains-bar {
             [tuiWrapper][data-appearance='textfield'] {
               height: 51px;
+
+              background-color: var(--tui-background-base);
             }
           }
         }
