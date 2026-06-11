@@ -62,4 +62,10 @@
   &__select {
     width: 120px;
   }
+
+  &::ng-deep {
+    tui-icon {
+      border: none;
+    }
+  }
 }
