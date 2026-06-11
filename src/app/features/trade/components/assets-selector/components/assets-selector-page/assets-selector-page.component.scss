@@ -71,13 +71,9 @@ app-search-blockchains-bar {
         ::ng-deep app-switch-list-type-button {
           height: 51px;
 
-          button[tuiButton] {
+          button {
             width: 51px;
             height: 51px;
-          }
-
-          button {
-            width: auto;
           }
         }
       }

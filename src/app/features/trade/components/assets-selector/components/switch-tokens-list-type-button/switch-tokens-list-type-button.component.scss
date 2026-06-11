@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   --tui-background-neutral-1: var(--tui-background-base);
 
@@ -5,6 +7,10 @@
     color: var(--tui-text-primary);
 
     background: none;
+
+    @include b($mobile-md) {
+      background: var(--tui-background-base) !important;
+    }
   }
 }
 
