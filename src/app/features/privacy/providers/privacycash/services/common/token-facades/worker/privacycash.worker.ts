@@ -1,3 +1,4 @@
+import '@angular/compiler';
 import './worker-polyfills';
 import { PrivacycashInWorkerMsg, PrivacycashOutWorkerMsg } from './models/worker-models';
 import { PrivacycashWorkerManager } from './worker-manager';

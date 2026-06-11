@@ -23,7 +23,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { filter, switchMap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { AnimationBuilder } from '@angular/animations';
+// import { AnimationBuilder } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
@@ -106,7 +106,7 @@ export class TokensListComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly builder: AnimationBuilder,
+    // private readonly builder: AnimationBuilder,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.subscribeOnScroll();
