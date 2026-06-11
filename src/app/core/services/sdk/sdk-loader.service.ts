@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
+import { WalletProviderCore } from '@cryptorubic/web3';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { createWalletClient, custom } from 'viem';
