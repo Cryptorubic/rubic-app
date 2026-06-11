@@ -19,7 +19,6 @@
 .user-profile {
   &__avatar {
     width: 24px;
-    margin-right: 10px;
 
     img {
       display: block;
@@ -27,14 +26,6 @@
 
       border-radius: 50%;
     }
-  }
-
-  &__text {
-    margin-right: 10px;
-  }
-
-  &__logout {
-    color: var(--tui-negative);
   }
 }
 
@@ -54,7 +45,7 @@
 
 .arrow {
   ::ng-deep svg path {
-    fill: var(--tui-text-01);
+    fill: var(--tui-text-primary);
   }
 }
 
@@ -93,9 +84,9 @@
 
   ::ng-deep {
     tui-hosted-dropdown {
-      .tui-group .t-wrapper {
+      .tui-group button[tuiWrapper] {
         padding: 0 var(--tui-padding-l) !important;
       }
-    } 
+    }
   }
 }

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-chart-toggler',
   templateUrl: './chart-toggler.component.html',
   styleUrls: ['./chart-toggler.component.scss'],

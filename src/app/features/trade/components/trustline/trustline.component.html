@@ -4,7 +4,7 @@
     buttonState: buttonState$ | async
   } as state"
 >
-  <tui-notification status="warning">{{ trustlineText }}</tui-notification>
+  <tui-notification size="m" appearance="warning">{{ trustlineText }}</tui-notification>
 
   <div class="trustline-container__actions" *ngIf="state.buttonState">
     <button

@@ -11,7 +11,7 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TradeInfoManager {
   constructor(
     private readonly platformConfigurationService: PlatformConfigurationService,

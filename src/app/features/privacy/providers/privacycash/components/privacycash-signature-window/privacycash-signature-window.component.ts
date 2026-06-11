@@ -5,6 +5,7 @@ import { PRIVACYCASH_SUPPORTED_WALLETS } from '../../constants/wallets';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Component({
+  standalone: false,
   selector: 'app-privacycash-signature-window',
   templateUrl: './privacycash-signature-window.component.html',
   styleUrls: ['./privacycash-signature-window.component.scss'],

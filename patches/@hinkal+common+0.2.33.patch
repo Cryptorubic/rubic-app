@@ -1,0 +1,154 @@
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
+index e4c90b3..35212fd 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.mjs
+@@ -1,5 +1,7 @@
+ import { AbstractCommitmentsSnapshotService as e } from "../../event-service/evm/AbstractCommitmentsSnapshotService.mjs";
+ import "../../event-service/index.mjs";
++import { get, set } from "idb-keyval";
++
+ //#region libs/shared/common/src/data-structures/snapshot/evm-snapshots/ClientCommitmentsSnapshotService.ts
+ var t = class extends e {
+ 	snapshotsService;
+@@ -7,16 +9,25 @@ var t = class extends e {
+ 		super(e), this.snapshotsService = t;
+ 	}
+ 	async fetchSnapshot() {
+-		let e = await this.snapshotsService.getCommitments();
+-		return {
+-			latestBlockNumber: e.latestBlockNumber,
+-			merkleTree: e.merkleTree,
+-			encryptedOutputs: e.encryptedOutputs,
+-			encryptedOutputsByCommitment: e.encryptedOutputsByCommitment
+-		};
++		const storedSnapshot = await get(`commitments_${this.snapshotsService.chainId}`);
++		
++		    if(storedSnapshot) return storedSnapshot;
++
++			let e = await this.snapshotsService.getCommitments();
++		
++		    try{
++		      await set(`commitments_${this.snapshotsService.chainId}`,{
++		        latestBlockNumber: e.latestBlockNumber,
++		        merkleTree: e.merkleTree,
++		        encryptedOutputs: e.encryptedOutputs,
++				encryptedOutputsByCommitment: e.encryptedOutputsByCommitment
++		      });
++		    }catch{}
+ 	}
+-	persistSnapshot(e) {
+-		return Promise.resolve();
++	async persistSnapshot(e) {
++		try{
++			await set(`commitments_${this.snapshotsService.chainId}`,e)
++		}catch{}
+ 	}
+ };
+ //#endregion
+diff --git a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
+index 71cf5e2..d810f89 100644
+--- a/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
++++ b/node_modules/@hinkal/common/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.mjs
+@@ -1,5 +1,7 @@
+ import { AbstractNullifierSnapshotService as e } from "../../event-service/evm/AbstractNullifierSnapshotService.mjs";
+ import "../../event-service/index.mjs";
++import { get, set } from "idb-keyval";
++
+ //#region libs/shared/common/src/data-structures/snapshot/evm-snapshots/ClientNullifierSnapshotService.ts
+ var t = class extends e {
+ 	snapshotsService;
+@@ -7,14 +9,33 @@ var t = class extends e {
+ 		super(e), this.snapshotsService = t;
+ 	}
+ 	async fetchSnapshot() {
++		const storedSnapshot = await get(`nullifiers_${this.snapshotsService.chainId}`);
++		
++		    if(storedSnapshot){
++		      return {
++		        latestBlockNumber: storedSnapshot.latestBlockNumber,
++		        nullifiers: storedSnapshot.nullifiers
++		      }
++		    }
++
+ 		let e = await this.snapshotsService.getNullifiers();
++
++		try{
++			await set(`nullifiers_${this.snapshotsService.chainId}`,{
++			latestBlockNumber: e.latestBlockNumber,
++			nullifiers: e.nullifiers
++			})
++			}catch{}
++
+ 		return {
+ 			latestBlockNumber: e.latestBlockNumber,
+ 			nullifiers: e.nullifiers
+ 		};
+ 	}
+-	persistSnapshot(e) {
+-		return Promise.resolve();
++	async persistSnapshot(e) {
++		try{
++			await set(`nullifiers_${this.snapshotsService.chainId}`,e)
++			}catch{}
+ 	}
+ };
+ //#endregion
+diff --git a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
+index fbbb922..d7be300 100644
+--- a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
++++ b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
+@@ -1,21 +1,8 @@
+-
+-  const domain = 'https://wallet-prodv12.hinkal.io/workers';
+-
+-  // Returns a blob:// URL which points
+-  // to a javascript file which will call
+-  // importScripts with the given URL
+-  async function getWorkerURL(url) {
+-    const contentRes = await fetch(url);
+-    const content = await contentRes.text()
+-
+-    return URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
+-  }
+-
+-  var e = /* @__PURE__ */ ((r) => (r.ZKProof = "ZKProof", r.SnarkJS = "SnarkJS", r.UTXO = "UTXO", r))(e || {});
++var e = /* @__PURE__ */ ((r) => (r.ZKProof = "ZKProof", r.SnarkJS = "SnarkJS", r.UTXO = "UTXO", r))(e || {});
+ 
+   const n = async () => ({
+-    [e.ZKProof]: await getWorkerURL(domain + '/0.2.33/' + 'zkProofWorkerLauncher.js'),
+-    [e.SnarkJS]: await getWorkerURL(domain + '/0.2.33/' + 'snarkjsWorkerLauncher.js'),
+-    [e.UTXO]: await getWorkerURL(domain + '/0.2.33/' + 'utxoWorkerLauncher.js'),
++    [e.ZKProof]: '/assets/hinkal/zkProofWorkerLauncher.js',
++    [e.SnarkJS]: '/assets/hinkal/snarkjsWorkerLauncher.js',
++    [e.UTXO]: '/assets/hinkal/utxoWorkerLauncher.js'
+   });
+   export { n as getWorkerViteURL };
+diff --git a/node_modules/@hinkal/common/webworker/workerFactory.mjs b/node_modules/@hinkal/common/webworker/workerFactory.mjs
+index 0fa4bde..fe6de99 100644
+--- a/node_modules/@hinkal/common/webworker/workerFactory.mjs
++++ b/node_modules/@hinkal/common/webworker/workerFactory.mjs
+@@ -13,23 +13,7 @@ var r = class r {
+ 		return new Worker(t, { type: "module" });
+ 	}
+ 	static async createNodeWorker(e) {
+-		let { Worker: n } = await import("worker_threads"), r = await import("path"), { existsSync: i } = await import("fs"), a = t[e].replace(".js", ".cjs"), o, s = r.join(__dirname, a), c = s.replace(".cjs", ".js"), l = null;
+-		if (i(s) ? l = s : i(c) && (l = c), l) o = l;
+-		else {
+-			let e = __dirname;
+-			for (let t = 0; t < 12; t += 1) {
+-				let t = r.join(e, "dist", "libs", "shared", "common", "webworker", a);
+-				if (i(t)) {
+-					o = t;
+-					break;
+-				}
+-				let n = r.dirname(e);
+-				if (n === e) break;
+-				e = n;
+-			}
+-		}
+-		if (!o) throw Error(`Worker bundle not found (${a}). Run "nx run shared-common:postbuild:node-workers".`);
+-		return new n(o);
++		throw new Error("createNodeWorker is not supported in browser environment.");
+ 	}
+ 	static async createWorker(t) {
+ 		return e ? r.createNodeWorker(t) : r.createBrowserWorker(t);

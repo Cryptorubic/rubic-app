@@ -1,7 +1,7 @@
 :host {
-  --tui-secondary: var(--tui-base-01);
-  --tui-secondary-hover: var(--tui-secondary);
-  --tui-secondary-active: #2c2d36;
+  --tui-background-neutral-1: var(--tui-background-base);
+  --tui-background-neutral-1-hover: var(--tui-background-neutral-1);
+  --tui-background-neutral-1-pressed: #2c2d36;
 }
 
 :host ::ng-deep .image {

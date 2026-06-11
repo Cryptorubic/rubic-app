@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
+  standalone: false,
   name: 'shortenText'
 })
 export class ShortenTextPipe implements PipeTransform {

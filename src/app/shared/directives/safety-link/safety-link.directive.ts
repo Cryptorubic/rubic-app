@@ -2,6 +2,7 @@ import { Directive, HostBinding, HostListener, Inject, Input, PLATFORM_ID } from
 import { Router } from '@angular/router';
 
 @Directive({
+  standalone: false,
   selector: '[safetyLink]'
 })
 export class SafetyLinkDirective {

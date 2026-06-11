@@ -1,6 +1,6 @@
+import { WA_LOCAL_STORAGE } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { LOCAL_STORAGE } from '@ng-web-apis/common';
 import { Store, storeRecord } from 'src/app/core/services/store/models/store';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Store, storeRecord } from 'src/app/core/services/store/models/store';
 export class StoreService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    @Inject(LOCAL_STORAGE) private localStorage: Storage
+    @Inject(WA_LOCAL_STORAGE) private localStorage: Storage
   ) {}
 
   /**

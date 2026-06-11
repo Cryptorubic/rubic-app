@@ -3,6 +3,7 @@ import { TransactionStep, transactionStep } from '@features/trade/models/transac
 import { StepsType } from './models/types';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-state',
   templateUrl: './transaction-state.component.html',
   styleUrls: ['./transaction-state.component.scss'],

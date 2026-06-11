@@ -4,6 +4,7 @@ import { FOOTER_LINKS } from '@core/rubic-footer/models/footer-links';
 import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-footer',
   templateUrl: './rubic-footer.component.html',
   styleUrls: ['./rubic-footer.component.scss'],

@@ -1,4 +1,21 @@
 @use 'src/scss/core' as *;
+
+:host {
+  tui-input::ng-deep {
+    [tuiWrapper][data-appearance='textfield'] {
+      background: none;
+    }
+  }
+}
+
+tui-input {
+  ::ng-deep {
+    tui-icon {
+      font-size: 1rem !important;
+    }
+  }
+}
+
 //
 //:host {
 //  --tui-font-text-s: normal 16px/20px var(--tui-font-text);

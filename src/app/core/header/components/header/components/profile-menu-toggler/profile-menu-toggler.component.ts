@@ -4,6 +4,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
+  standalone: false,
   selector: 'app-profile-menu-toggler',
   templateUrl: './profile-menu-toggler.component.html',
   styleUrls: ['./profile-menu-toggler.component.scss']
