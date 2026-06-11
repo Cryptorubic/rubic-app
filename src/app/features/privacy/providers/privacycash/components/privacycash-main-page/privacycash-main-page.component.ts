@@ -17,6 +17,7 @@ import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-fo
 import { List } from 'immutable';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -78,7 +79,10 @@ export class PrivacycashMainPageComponent implements OnInit, OnDestroy {
     this.privacycashTokensService.workerOutMsg$(this.destroy$).subscribe();
 
     this.walletConnectorService.addressChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(msg => msg?.chainType === CHAIN_TYPE.SOLANA),
+        takeUntil(this.destroy$)
+      )
       .subscribe(userAddr => {
         if (!userAddr) {
           this.privacycashSignatureService.removeSignature();

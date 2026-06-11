@@ -6,9 +6,12 @@ import { NgZone } from '@angular/core';
 import { BlockchainName } from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
+import { AddressChangedMsg } from '../../models/events';
 
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.WALLET_CONNECT;
+
+  public readonly walletNameUI: string = 'WalletConnect';
 
   /**
    * Gets detailed provider name with peer meta information.
@@ -18,7 +21,7 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
   }
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

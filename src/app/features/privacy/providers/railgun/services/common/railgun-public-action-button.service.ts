@@ -2,13 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonState } from '@app/features/privacy/providers/shared-privacy-providers/models/private-action-button-state';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { BlockchainName } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { combineLatest, combineLatestWith, EMPTY, filter, Observable, switchMap } from 'rxjs';
 import { RailgunErrorService } from '@features/privacy/providers/railgun/services/common/railgun-error.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
-import { UserInterface } from '@core/services/auth/models/user.interface';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { map } from 'rxjs/operators';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -18,14 +15,13 @@ import {
   PRIVATE_PROVIDERS_WALLETS_MAP
 } from '@features/privacy/constants/private-providers-wallets-map';
 import { HeaderStore } from '@core/header/services/header.store';
+import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
 @Injectable()
 export class RailgunPublicActionButtonService extends PrivateActionButtonService {
   private readonly errorService = inject(RailgunErrorService);
 
   private readonly railgunFacadeService = inject(RailgunFacadeService);
-
-  private readonly authService = inject(AuthService);
 
   private readonly tokensFacade = inject(TokensFacadeService);
 
@@ -39,11 +35,10 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
       switchMap(page => {
         if (page.type === 'hide') {
           return combineLatest([
-            this.walletConnector.networkChange$,
             this.hideWindowService.hideAsset$,
             this.hideWindowService.hideAmount$,
             this.railgunFacadeService.railgunAccount$,
-            this.authService.currentUser$,
+            this.walletConnector.activeWallets$,
             this.hideWindowService.hideAsset$.pipe(
               combineLatestWith(
                 this.tokensFacade.tokens$,
@@ -80,24 +75,26 @@ export class RailgunPublicActionButtonService extends PrivateActionButtonService
   }
 
   private async getShieldingState(
-    network: BlockchainName | null,
     shieldAsset: BalanceToken | null,
     shieldAmount: {
       visibleValue: string;
       actualValue: BigNumber;
     } | null,
     railgunWallet: { evmWalletAddress: string },
-    user: UserInterface,
+    _activeWallets: CommonWalletAdapter[],
     totalBalanceToken: BalanceToken
   ): Promise<PrivateActionButtonState> {
-    if (!network) {
+    const walletAddr = this.walletConnector.getActiveWalletAddress({
+      blockchain: shieldAsset.blockchain
+    });
+    if (!walletAddr) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
       };
     }
-    if (user && !compareAddresses(railgunWallet?.evmWalletAddress, user.address)) {
+    if (!compareAddresses(railgunWallet.evmWalletAddress, walletAddr)) {
       return {
         type: 'error',
         text: 'Switch to your seed phrase wallet'

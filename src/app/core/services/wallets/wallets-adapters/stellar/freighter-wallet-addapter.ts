@@ -7,8 +7,11 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { WatchWalletChanges } from '@stellar/freighter-api';
+import { AddressChangedMsg } from '../../models/events';
 export class FreighterWalletAdapter extends CommonStellarWalletAdapter {
   protected readonly walletId = FREIGHTER_ID;
+
+  public readonly walletNameUI: string = 'Freighter';
 
   protected readonly walletModule = new FreighterModule();
 
@@ -17,7 +20,7 @@ export class FreighterWalletAdapter extends CommonStellarWalletAdapter {
   private readonly eventWatcher: WatchWalletChanges;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -32,7 +35,12 @@ export class FreighterWalletAdapter extends CommonStellarWalletAdapter {
       if (!params.address) {
         this.deactivate();
       } else {
-        this.onAddressChanges$.next(params.address);
+        const addressChangedMsg: AddressChangedMsg = {
+          address: this.selectedAddress,
+          chainType: this.chainType,
+          walletName: this.walletName
+        };
+        this.onAddressChanges$.next(addressChangedMsg);
       }
     });
   }

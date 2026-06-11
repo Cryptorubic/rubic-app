@@ -14,16 +14,19 @@ import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { StoreService } from '@app/core/services/store/store.service';
 import { SignRejectError } from '@app/core/errors/models/provider/sign-reject-error';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class LobstrWalletAdapter extends CommonStellarWalletAdapter {
   protected readonly walletId = LOBSTR_ID;
+
+  public readonly walletNameUI: string = 'Lobstr';
 
   protected readonly walletModule = new LobstrModule();
 
   public walletName = WALLET_NAME.LOBSTR;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -55,8 +58,13 @@ export class LobstrWalletAdapter extends CommonStellarWalletAdapter {
       this.isEnabled = true;
       this.wallet = wallet;
 
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
       this.onNetworkChanges$.next(this.selectedChain);
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next(addressChangedMsg);
     } catch (err) {
       if (err.message?.toLowerCase()?.includes('user declined access')) {
         throw new SignRejectError();

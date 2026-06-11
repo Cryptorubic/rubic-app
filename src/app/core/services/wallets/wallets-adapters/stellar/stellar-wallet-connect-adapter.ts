@@ -9,6 +9,8 @@ import { WALLET_CONNECT_CONFIG } from '@app/features/trade/services/trustline-se
 export class StellarWalletConnectAdapter extends CommonStellarWalletAdapter {
   protected readonly walletId = WALLET_CONNECT_ID;
 
+  public readonly walletNameUI: string = 'Stellar';
+
   protected readonly walletModule = new WalletConnectModule(WALLET_CONNECT_CONFIG);
 
   public walletName = WALLET_NAME.STELLAR_WALLET_CONNECT;

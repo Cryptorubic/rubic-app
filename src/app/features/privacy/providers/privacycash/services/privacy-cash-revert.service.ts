@@ -47,7 +47,10 @@ export class PrivacycashRefundService {
    */
   public async quoteRefundableAmount(tokenAddr: string): Promise<BigNumber> {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.SOLANA);
-    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({ chainType: 'SOLANA' });
+    if (!walletAddr) return new BigNumber(0);
+
+    const senderPK = new PublicKey(walletAddr);
     const ephemeralKeypair =
       await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
         this.privacycashSignatureService.signature,
@@ -66,11 +69,14 @@ export class PrivacycashRefundService {
     const failedSteps: string[] = [];
     let weiAmount = new BigNumber(0);
 
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({ chainType: 'SOLANA' });
+    if (!walletAddr) return;
+
     try {
       const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         BLOCKCHAIN_NAME.SOLANA
       );
-      const senderPK = new PublicKey(this.walletConnectorService.address);
+      const senderPK = new PublicKey(walletAddr);
       const receiverPK = new PublicKey(receiverAddr);
 
       const ephemeralKeypair =
@@ -118,7 +124,7 @@ export class PrivacycashRefundService {
       this.privateStatisticsService.saveAction(
         'REFUND',
         PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
+        walletAddr,
         nativeTokensList.SOLANA.address,
         weiAmount.toFixed(),
         nativeTokensList.SOLANA.blockchain,
@@ -133,11 +139,14 @@ export class PrivacycashRefundService {
     const failedSteps: string[] = [];
     let weiAmount = new BigNumber(0);
 
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({ chainType: 'SOLANA' });
+    if (!walletAddr) return;
+
     try {
       const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         BLOCKCHAIN_NAME.SOLANA
       );
-      const userPK = new PublicKey(this.walletConnectorService.address);
+      const userPK = new PublicKey(walletAddr);
       const receiverPK = new PublicKey(receiverAddr);
       const mintPK = new PublicKey(tokenAddr);
 
@@ -197,7 +206,7 @@ export class PrivacycashRefundService {
       this.privateStatisticsService.saveAction(
         'REFUND',
         PRIVATE_TRADE_TYPE.PRIVACY_CASH,
-        this.walletConnectorService.address,
+        walletAddr,
         tokenAddr,
         weiAmount.toFixed(),
         BLOCKCHAIN_NAME.SOLANA,

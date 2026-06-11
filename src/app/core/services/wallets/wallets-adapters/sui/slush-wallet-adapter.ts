@@ -4,5 +4,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 export class SlushWalletAdapter extends AbstractSuiWalletAdapter {
   public readonly walletName = WALLET_NAME.SLUSH;
 
+  public readonly walletNameUI: string = 'Slush';
+
   public readonly extensionName = 'Slush';
 }

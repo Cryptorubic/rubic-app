@@ -1,0 +1,30 @@
+<div class="wallets-list">
+  <ng-container *ngFor="let walletConfig of wallets">
+    <div
+      *ngLet="walletConfig.value | functionCall : isWalletActive : this as walletActive"
+      class="wallet-item"
+      [attr.data-active]="walletActive ? 'true' : 'false'"
+      [attr.data-disabled]="disabled ? 'true' : 'false'"
+      (click)="selectWallet(walletConfig.value)"
+    >
+      <div class="wallet-item__left">
+        <img width="28" height="28" [src]="walletConfig.img" />
+        <b>{{ walletConfig.name }}</b>
+      </div>
+
+      <div class="wallet-item__right">
+        <button
+          *ngIf="walletActive"
+          class="logout-btn"
+          tuiIconButton
+          appearance="secondary"
+          type="button"
+          size="s"
+          (click)="logoutWallet(walletConfig.value, $event)"
+        >
+          <img width="10" height="10" src="assets/images/wallets/icons/logout.png" />
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>

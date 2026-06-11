@@ -29,7 +29,7 @@ export class HinkalSwapTokensFacadeService extends TokensFacadeService {
     return this.balanceService.balances$.pipe(
       switchMap(shieldedBalances => {
         return this.tokensBuilderService
-          .getTokensList(type, _query, direction, inputValue, false)
+          .getTokensList(type, _query, direction, inputValue, { walletAddressesToFetch: [] })
           .pipe(
             map((tokens: BalanceToken[]) => {
               return tokens.filter(token =>

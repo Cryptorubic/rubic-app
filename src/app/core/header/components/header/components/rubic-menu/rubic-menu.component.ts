@@ -12,7 +12,6 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WINDOW } from '@ng-web-apis/common';
@@ -57,14 +56,11 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST;
 
-  public readonly currentUser$ = this.authService.currentUser$;
-
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
-    private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
@@ -89,10 +85,6 @@ export class RubicMenuComponent implements AfterViewInit {
     this.handleButtonClick();
     this.onClose.emit();
     this.swapClick.emit();
-  }
-
-  public logout(): void {
-    this.authService.disconnectWallet();
   }
 
   public handleButtonClick(item?: NavigationItem): void {

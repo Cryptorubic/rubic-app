@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PrivateActionButtonService } from '../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { PrivateActionButtonState } from '../../shared-privacy-providers/models/private-action-button-state';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, compareAddresses } from '@cryptorubic/core';
+import { compareAddresses } from '@cryptorubic/core';
 import { SwapAmount } from '../../shared-privacy-providers/models/swap-info';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
@@ -12,6 +12,7 @@ import { ZAMA_SUPPORTED_WALLETS } from '../constants/zama-supported-wallets';
 import { ZamaSignatureService } from './zama-sdk/zama-signature.service';
 import { SignatureInfo } from './zama-sdk/models/signature-info';
 import { ZamaFacadeService } from './zama-sdk/zama-facade.service';
+import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
 @Injectable()
 export class ZamaActionButtonService extends PrivateActionButtonService {
@@ -42,8 +43,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
         }
 
         return combineLatest([
-          this.walletConnector.networkChange$,
-          this.walletConnector.addressChange$,
+          this.walletConnector.activeWallets$,
           asset$,
           assetAmount$,
           this._receiverAddress$,
@@ -60,8 +60,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
   }
 
   private async getButtonState(
-    network: BlockchainName | null,
-    userAddr: string,
+    activeWallets: CommonWalletAdapter[],
     asset: BalanceToken | null,
     assetAmount: {
       visibleValue: string;
@@ -71,15 +70,16 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
     signatureInfo: SignatureInfo | null,
     currPage: PageType
   ): Promise<PrivateActionButtonState> {
-    if (!network) {
+    if (!activeWallets.length) {
       return {
         type: 'action',
         text: 'Connect Wallet',
         action: () => this.connectWallet()
       };
     }
+    const evmWalletAdapter = this.walletConnector.getActiveProvider({ chainType: 'EVM' });
 
-    if (BlockchainsInfo.getChainType(network) !== CHAIN_TYPE.EVM) {
+    if (!evmWalletAdapter) {
       return {
         type: 'action',
         text: 'Switch Wallet',
@@ -145,7 +145,7 @@ export class ZamaActionButtonService extends PrivateActionButtonService {
         };
       }
 
-      if (compareAddresses(userAddr, receiver) && currPage.type === 'transfer') {
+      if (compareAddresses(evmWalletAdapter.address, receiver) && currPage.type === 'transfer') {
         return {
           type: 'error',
           text: 'Recipient address must be different'

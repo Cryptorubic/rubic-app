@@ -7,6 +7,7 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { SolanaStandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/solana-standard-adapter';
 import { StoreService } from '@app/core/services/store/store.service';
+import { AddressChangedMsg } from '../../models/events';
 
 export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<SolanaFeatures> {
   public readonly chainType = CHAIN_TYPE.SOLANA;
@@ -16,7 +17,7 @@ export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<
   protected readonly chainName = 'solana:mainnet';
 
   public constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

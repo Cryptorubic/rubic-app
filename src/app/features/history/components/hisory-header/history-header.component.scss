@@ -55,6 +55,8 @@
 }
 
 .filter {
+  @include flex(row, center, normal);
+  gap: 4px;
   margin-bottom: var(--tui-padding-s);
 
   &__select {

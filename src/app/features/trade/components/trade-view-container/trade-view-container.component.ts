@@ -16,13 +16,13 @@ import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { Asset } from '../../models/asset';
 import { FormType } from '../../models/form-type';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { DOCUMENT } from '@angular/common';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -66,10 +66,10 @@ export class TradeViewContainerComponent {
     this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
   public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
-    combineLatestWith(this.authService.currentUser$, this.spindlService.hasNoContent$),
+    combineLatestWith(this.walletConnectorService.activeWallets$, this.spindlService.hasNoContent$),
     map(
-      ([showSpindl, currUser, hasNoContent]) =>
-        showSpindl && !hasNoContent && Boolean(currUser?.address)
+      ([showSpindl, activeWallets, hasNoContent]) =>
+        showSpindl && !hasNoContent && activeWallets.length > 0
     ),
     map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
   );
@@ -87,7 +87,7 @@ export class TradeViewContainerComponent {
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly spindlService: SpindlService,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly chartService: ChartService,
     private readonly solanaGaslessService: SolanaGaslessService,
     renderer2: Renderer2,

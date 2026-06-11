@@ -12,6 +12,7 @@ export class BrowserService {
 
   public get currentBrowser(): BROWSER {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(this.window.navigator.userAgent);
+    console.log('this.window.navigator.userAgent ==>', this.window.navigator.userAgent);
     const isMetaMask = getWallets()
       .get()
       .find(wallet => wallet.name?.toLowerCase() === 'metamask');

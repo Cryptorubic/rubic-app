@@ -3,7 +3,6 @@ import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
@@ -15,6 +14,7 @@ import { List } from 'immutable';
 import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-zama-view',
@@ -48,12 +48,12 @@ export class ZamaViewComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly privatePageTypeService: PrivatePageTypeService,
-    private readonly authService: AuthService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaSignatureService: ZamaSignatureService,
     private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
-    private readonly privateLocalStorageService: PrivateLocalStorageService
+    private readonly privateLocalStorageService: PrivateLocalStorageService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.privatePageTypeService.activePage = this.pages[0];
     this.initZama();
@@ -61,12 +61,21 @@ export class ZamaViewComponent {
 
   ngOnInit(): void {
     this.parseQueryParams();
-    this.authService.currentUser$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(user => {
-        if (user?.address) {
-          const isUpdated = this.zamaSignatureService.updateSignatureFromStore(user?.address);
-          if (isUpdated) return;
+    this.walletConnectorService.activeWallets$
+      .pipe(
+        distinctUntilChanged(),
+        map(() => this.walletConnectorService.getActiveProvider({ chainType: 'EVM' })),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(evmWalletAdapter => {
+        if (evmWalletAdapter) {
+          const isUpdated = this.zamaSignatureService.updateSignatureFromStore(
+            evmWalletAdapter.address
+          );
+          if (isUpdated) {
+            this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
+            return;
+          }
         }
 
         this.zamaSignatureService.resetSignature();

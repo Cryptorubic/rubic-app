@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { IsActiveMatchOptions, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
@@ -23,6 +22,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/google-tag-manager';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-header',
@@ -50,7 +50,9 @@ export class HeaderComponent {
 
   public readonly isMobileMenuOpened$: Observable<boolean>;
 
-  public readonly currentUser$ = this.authService.currentUser$;
+  public readonly hasActiveWallet$ = this.walletConnectorService.activeWallets$.pipe(
+    map(activeWallets => !!activeWallets.length)
+  );
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
@@ -100,7 +102,7 @@ export class HeaderComponent {
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
     private readonly queryParamsService: QueryParamsService,

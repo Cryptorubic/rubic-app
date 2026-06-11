@@ -195,6 +195,9 @@ export class OnChainService {
       },
       ...(gasLimitRatio && { gasLimitRatio })
     };
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: fromBlockchain
+    });
 
     try {
       const [fromToken, toToken] = await Promise.all([
@@ -208,8 +211,8 @@ export class OnChainService {
         fromToken.blockchain as RubicAny
       );
       const [fromTokenPrevBalanceWei, toTokenPrevBalanceWei] = await Promise.all([
-        fromChainAdapter.getBalance(this.walletConnectorService.address, fromToken.address),
-        toChainAdapter.getBalance(this.walletConnectorService.address, toToken.address)
+        fromChainAdapter.getBalance(walletAddr, fromToken.address),
+        toChainAdapter.getBalance(walletAddr, toToken.address)
       ]);
 
       await trade.swap(options);
@@ -257,14 +260,14 @@ export class OnChainService {
       }
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+        this.solanaGaslessService.updateGaslessTxCount24Hrs(walletAddr);
       }
 
       return transactionHash;
     } catch (err) {
       const parsedError = RubicSdkErrorParser.parseError(err);
       if (!(err instanceof UserRejectError)) {
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+        this.gtmService.fireSwapError(trade, walletAddr, parsedError);
       }
       throw parsedError;
     }
@@ -385,7 +388,7 @@ export class OnChainService {
   ): void {
     this.onChainApiService
       .saveProvidersStatistics({
-        user: this.walletConnectorService.address,
+        user: this.walletConnectorService.getActiveWalletAddress({ blockchain: trade.blockchain }),
         from_token: trade.fromAddress,
         network: TO_BACKEND_BLOCKCHAINS?.[trade.blockchain],
         from_amount: trade.fromAmount,

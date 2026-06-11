@@ -14,7 +14,8 @@ export class LoginGuard {
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const redirectPath = route.data.path as string;
-    if (this.walletConnectorService.address) {
+    const hasConnectedWallet = this.walletConnectorService.activeWallets.length > 0;
+    if (hasConnectedWallet) {
       return of(true);
     } else {
       this.router.navigateByUrl(redirectPath);

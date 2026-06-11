@@ -6,7 +6,6 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
 import {
   NewTokensApiService,
@@ -16,6 +15,7 @@ import { Token } from '@shared/models/tokens/token';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class TokensRegistryService {
 
   private readonly sdkLegacyService = inject(SdkLegacyService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly apiService = inject(NewTokensApiService);
 
@@ -76,10 +76,10 @@ export class TokensRegistryService {
       blockchain as EvmBlockchainName
     );
     const chainType = BlockchainsInfo.getChainType(blockchain);
-    const balance$ =
-      this.authService.userAddress && this.authService.userChainType === chainType
-        ? from(blockchainAdapter.getBalance(this.authService.userAddress, address))
-        : of(null);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+    const balance$ = walletAdapter
+      ? from(blockchainAdapter.getBalance(walletAdapter.address, address))
+      : of(null);
     const token$ = this.sdkLegacyService.tokenService.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
@@ -132,7 +132,14 @@ export class TokensRegistryService {
                 ('symbol' in params && params.symbol.toLowerCase().includes('eth')))
             )
         );
-        return this.balanceService.fetchDifferentChainsBalances(tokensWithoutBalance);
+        const activeWallets = this.walletConnectorService.walletsManager.activeWallets;
+        const walletAddressesToFetch = activeWallets.map(wallet => wallet.address);
+
+        return this.balanceService.fetchDifferentChainsBalances(
+          tokensWithoutBalance,
+          { walletAddressesToFetch },
+          true
+        );
       })
     );
   }

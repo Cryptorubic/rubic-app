@@ -10,6 +10,8 @@ import {
   RAILGUN_SUPPORTED_CHAINS,
   RailgunSupportedChain
 } from '@features/privacy/providers/railgun/constants/network-map';
+import { BalanceFetchingConfig } from '@app/core/services/tokens/models/tokens-balance-service-types';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Injectable()
 export class RailgunHideFacadeService extends TokensFacadeService {
@@ -20,7 +22,13 @@ export class RailgunHideFacadeService extends TokensFacadeService {
     _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
+      .getTokensList(
+        type,
+        _query,
+        direction,
+        getEmptySwapFormInput(),
+        this.defineBalanceFetchingConfig(type)
+      )
       .pipe(
         map((tokens: AvailableTokenAmount[]) => {
           return tokens
@@ -32,5 +40,15 @@ export class RailgunHideFacadeService extends TokensFacadeService {
             );
         })
       );
+  }
+
+  private defineBalanceFetchingConfig(assetType: AssetListType): BalanceFetchingConfig {
+    if (BlockchainsInfo.isBlockchainName(assetType)) {
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: assetType
+      });
+      return { walletAddressesToFetch: walletAddr ? [walletAddr] : [] };
+    }
+    return { walletAddressesToFetch: [] };
   }
 }

@@ -15,12 +15,12 @@ import { HideWindowService } from '@features/privacy/providers/shared-privacy-pr
 import { Web3Pure } from '@cryptorubic/web3';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter } from 'rxjs/operators';
-import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunPublicActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-public-action-button.service';
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
@@ -56,7 +56,7 @@ export class RailgunHideTokensPageComponent {
 
   private readonly destroy$ = inject(TuiDestroyService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
@@ -95,6 +95,11 @@ export class RailgunHideTokensPageComponent {
             label: 'Shield Tokens',
             showLoaderOnAction: true,
             action: async () => {
+              const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+                blockchain: token.blockchain
+              });
+              if (!walletAddr) return;
+
               const bigintAmount = BigInt(token.stringWeiAmount);
               const res = await this.hideService.shield(
                 this.railgunWalletAddress,
@@ -108,7 +113,7 @@ export class RailgunHideTokensPageComponent {
               this.privateStatisticsService.saveAction(
                 'SHIELD',
                 'RAILGUN',
-                this.authService.userAddress,
+                walletAddr,
                 token.address,
                 token.weiAmount.toFixed(),
                 token.blockchain
@@ -139,14 +144,19 @@ export class RailgunHideTokensPageComponent {
   }
 
   private setShieldedToken(token: BalanceToken): void {
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: token.blockchain
+    });
+    if (!walletAddr) return;
+
     const shieldToken: ShieldedBalanceToken = {
       ...token,
       shieldingCompleteAtMs: Date.now() + 3600000
     };
     const storeInfo = this.storeService.getItem('RAILGUN_SHIELDED_TOKENS');
-    const userInfo = storeInfo?.[this.authService.userAddress];
+    const userInfo = storeInfo?.[walletAddr];
     const newShielded = [shieldToken, ...(userInfo || [])];
-    const newInfo = { ...(storeInfo || {}), [this.authService.userAddress]: newShielded };
+    const newInfo = { ...(storeInfo || {}), [walletAddr]: newShielded };
 
     this.storeService.setItem('RAILGUN_SHIELDED_TOKENS', newInfo);
     this.railgunFacadeService.setShieldedTokens(newShielded);

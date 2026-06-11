@@ -17,18 +17,11 @@ import {
   debounceTime,
   distinctUntilChanged,
   first,
+  mergeMap,
   retry,
   switchMap
 } from 'rxjs/operators';
-import {
-  combineLatestWith,
-  defer,
-  firstValueFrom,
-  lastValueFrom,
-  of,
-  throwError,
-  timer
-} from 'rxjs';
+import { defer, firstValueFrom, forkJoin, lastValueFrom, of, throwError, timer } from 'rxjs';
 import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -36,7 +29,6 @@ import { sorterByTokenRank } from '@features/trade/components/assets-selector/se
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
@@ -44,6 +36,10 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { getChainTypeSafe } from './utils/get-chain-type-safe';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
+import { BalanceFetchingConfig } from './models/tokens-balance-service-types';
+import { TotalBalancesStoreService } from './total-balances-store.service';
+import { WalletChainType } from '@app/core/header/components/header/components/user-profile-wallets/constants/wallets-chain-types';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +47,7 @@ import { getChainTypeSafe } from './utils/get-chain-type-safe';
 export class TokensBalanceService {
   private readonly formService = inject(SwapsFormService);
 
-  private readonly authService = inject(AuthService);
+  // private readonly authService = inject(AuthService);
 
   private readonly tokensStore = inject(NewTokensStoreService);
 
@@ -62,6 +58,10 @@ export class TokensBalanceService {
   private readonly configService = inject(PlatformConfigurationService);
 
   private readonly collectionsFacade = inject(TokensCollectionsFacadeService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
+  private readonly totalBalancesStoreService = inject(TotalBalancesStoreService);
 
   public initSubscribes(): void {
     this.subscribeOnWallet();
@@ -79,9 +79,9 @@ export class TokensBalanceService {
     return null;
   }
 
-  private get userAddress(): string | undefined {
-    return this.authService.userAddress;
-  }
+  // private get userAddress(): string | undefined {
+  //   return this.authService.userAddress;
+  // }
 
   public async waitForBalanceChangeAndCall<T>(
     token: {
@@ -94,10 +94,14 @@ export class TokensBalanceService {
     maxRetries: number = 5
   ): Promise<T> {
     try {
+      const chainType = BlockchainsInfo.getChainType(token.blockchain);
+      const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+      if (!walletAdapter) return;
+
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
-      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
+      const balanceInWei = await blockchainAdapter.getBalance(walletAdapter.address, token.address);
 
       if (balanceInWei.eq(prevBalanceWei)) {
         if (retryCount <= maxRetries) {
@@ -126,12 +130,30 @@ export class TokensBalanceService {
     },
     maxRetries: number = 0
   ): Promise<BigNumber> {
-    if (!this.userAddress) return new BigNumber(NaN);
+    let chainType = null;
+    try {
+      chainType = BlockchainsInfo.getChainType(token.blockchain);
+    } catch {}
+    if (!chainType) return new BigNumber(NaN);
 
-    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
+    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
+
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+    if (!walletAdapter) {
+      const storedToken = this.findTokenSync(token);
+      if (storedToken) {
+        _tokensObject$.next({
+          ..._tokensObject$.getValue(),
+          [token.address]: { ...storedToken, amount: new BigNumber(NaN) }
+        });
+      }
+      return new BigNumber(NaN);
+    }
+
     const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
       token.blockchain,
-      this.userAddress
+      walletAdapter.address
     );
 
     if (
@@ -142,9 +164,6 @@ export class TokensBalanceService {
       return new BigNumber(NaN);
     }
 
-    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
-    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
-
     try {
       _balanceLoading$.next(true);
 
@@ -152,7 +171,7 @@ export class TokensBalanceService {
         token.blockchain as RubicAny
       );
       const balanceInWei = await lastValueFrom(
-        defer(() => blockchainAdapter.getBalance(this.userAddress, token.address)).pipe(
+        defer(() => blockchainAdapter.getBalance(walletAdapter.address, token.address)).pipe(
           retry({
             count: maxRetries,
             delay: (error, retryCount) => {
@@ -202,6 +221,8 @@ export class TokensBalanceService {
     }
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+    if (!walletAdapter) return;
 
     if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
@@ -230,6 +251,10 @@ export class TokensBalanceService {
     fromTokenPrevBalanceWei: BigNumber,
     toTokenPrevBalanceWei: BigNumber
   ): Promise<void> {
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+    if (!walletAdapter) return;
+
     const balancePromises = [
       this.waitForBalanceChangeAndCall(fromToken, fromTokenPrevBalanceWei, () =>
         this.getAndUpdateTokenBalance(fromToken)
@@ -293,11 +318,13 @@ export class TokensBalanceService {
 
   public async fetchDifferentChainsBalances(
     tokens: Token[],
+    balanceFetchingConfig: BalanceFetchingConfig,
     setBalanceLoading = true
   ): Promise<BalanceToken[]> {
+    const chainTypes = this.walletConnectorService.chainTypes;
     const chainTokensMap: Partial<Record<BlockchainName, Token[]>> = {};
     tokens.forEach(token => {
-      if (this.authService.userChainType === getChainTypeSafe(token.blockchain)) {
+      if (chainTypes.includes(getChainTypeSafe(token.blockchain))) {
         if (!chainTokensMap[token.blockchain]) {
           chainTokensMap[token.blockchain] = [];
         }
@@ -321,8 +348,23 @@ export class TokensBalanceService {
             this.tokensStore.tokens[chain]._balanceLoading$.next(true);
           }
           const tokensAddresses = chainTokens.map(token => token.address);
+          const chainType = BlockchainsInfo.getChainType(adapter.blockchain);
+          const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+          const shouldFetchBalancesForWallet = balanceFetchingConfig.walletAddressesToFetch.some(
+            walletAddrToFetch => compareAddresses(walletAddrToFetch, walletAdapter?.address)
+          );
+
+          if (!walletAdapter || !shouldFetchBalancesForWallet) {
+            if (setBalanceLoading) {
+              this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+            }
+            return Promise.resolve(
+              tokens.map(token => ({ ...token, favorite: false, amount: new BigNumber(NaN) }))
+            );
+          }
+
           return adapter
-            .getTokensBalances(this.authService.userAddress, tokensAddresses)
+            .getTokensBalances(walletAdapter.address, tokensAddresses)
             .catch(() => tokensAddresses.map(() => new BigNumber(NaN)))
             .then(balances => {
               const tokensWithBalances = chainTokens.map((token, idx) => ({
@@ -332,12 +374,10 @@ export class TokensBalanceService {
                   : new BigNumber(NaN)
               })) as BalanceToken[];
               const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
-
               this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
               if (setBalanceLoading) {
                 this.tokensStore.tokens[chain]._balanceLoading$.next(false);
               }
-
               return tokensWithBalances;
             });
         });
@@ -415,9 +455,13 @@ export class TokensBalanceService {
     const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.ARBITRUM
     );
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+
+    if (!walletAdapter) return foundToken;
 
     const chainBalancesPromise = blockchainAdapter
-      .getBalance(this.authService.userAddress, tokenAddress)
+      .getBalance(walletAdapter.address, tokenAddress)
       .catch(() => new BigNumber(NaN));
     //
     return chainBalancesPromise.then(balance => {
@@ -430,6 +474,10 @@ export class TokensBalanceService {
     const toToken = this.formService.inputValue?.toToken;
     const nativeToken = nativeTokensList?.[fromToken?.blockchain];
 
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({ chainType });
+    if (!walletAdapter) return;
+
     await Promise.all([
       ...(fromToken ? [this.getAndUpdateTokenBalance(fromToken)] : []),
       ...(toToken ? [this.getAndUpdateTokenBalance(toToken)] : []),
@@ -440,32 +488,58 @@ export class TokensBalanceService {
   }
 
   public subscribeOnWallet(): void {
-    this.authService.currentUser$
+    this.walletConnectorService.walletsManager.lastEvent$
       .pipe(
-        distinctUntilChanged((oldValue, newValue) =>
-          compareAddresses(oldValue?.address, newValue?.address)
-        ),
-        combineLatestWith(
-          this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
+        mergeMap(lastEvent =>
+          forkJoin([
+            of(lastEvent),
+            this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
+          ])
         )
       )
-      .subscribe(([user, balanceNetworks]) => {
-        if (user?.address) {
-          this.collectionsFacade.allTokens.setBalanceLoading(true);
-          this.tokensStore.clearAllBalances();
-          Promise.all([
-            this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
-            this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
-          ]).then(([successT1request]) => {
-            if (!successT1request) {
-              this.fetchListBalances(user.address, user.chainType, balanceNetworks).then(() => {
-                this.collectionsFacade.allTokens.setBalanceLoading(false);
-              });
+      .subscribe(([lastEvent, balanceNetworks]) => {
+        switch (lastEvent.type) {
+          case 'connected':
+            this.collectionsFacade.allTokens.setBalanceLoading(true);
+            const walletAddr = lastEvent.affectedWalletAddress;
+            const chainType = lastEvent.affectedChainType;
+
+            if (chainType === CHAIN_TYPE.EVM) {
+              Promise.all([
+                this.fetchT1Balances(walletAddr, chainType, balanceNetworks),
+                this.fetchT2Balances(walletAddr, chainType, balanceNetworks)
+              ])
+                .then(([successT1request]) => {
+                  if (!successT1request) {
+                    return this.fetchListBalances(walletAddr, chainType, balanceNetworks);
+                  }
+                })
+                .then(() =>
+                  this.totalBalancesStoreService.calculateTotalBalanceByChain(CHAIN_TYPE.EVM)
+                )
+                .finally(() => this.collectionsFacade.allTokens.setBalanceLoading(false));
+            } else {
+              this.fetchT2Balances(walletAddr, chainType, balanceNetworks)
+                .then(() =>
+                  this.totalBalancesStoreService.calculateTotalBalanceByChain(
+                    chainType as WalletChainType
+                  )
+                )
+                .finally(() => {
+                  this.collectionsFacade.allTokens.setBalanceLoading(false);
+                });
             }
-            this.collectionsFacade.allTokens.setBalanceLoading(false);
-          });
-        } else {
-          this.tokensStore.clearAllBalances();
+
+            break;
+          case 'disconnected':
+            const walletChainType = lastEvent.affectedChainType as WalletChainType;
+            if (this.walletConnectorService.activeWallets.length > 0) {
+              this.tokensStore.clearBalancesByChainType(walletChainType);
+            } else {
+              this.tokensStore.clearAllBalances();
+            }
+            this.totalBalancesStoreService.clearTotalBalanceByChain(walletChainType);
+            break;
         }
       });
   }

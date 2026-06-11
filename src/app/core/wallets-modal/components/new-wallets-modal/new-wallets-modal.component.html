@@ -1,0 +1,52 @@
+<app-window-container
+  *ngLet="{
+    activeWallets: activeWallets$ | async,
+    selectedFilter: selectedFilter$ | async,
+    visibleWallets: visibleWallets$ | async,
+    enableWallets: enableWallets$ | async,
+    isMobile: isMobile$ | async
+  } as state"
+  class="wallets-modal"
+>
+  <ng-container header *ngIf="!state.isMobile">
+    {{ 'modals.walletsModal.title' | translate }}
+  </ng-container>
+
+  <form class="wallets-modal__rules">
+    <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
+    <span>
+      I read and accept
+      <a
+        class="wallets-modal__link"
+        href="https://rubic.exchange/pdf/terms-of-use.pdf"
+        target="_blank"
+      >
+        Terms of Use
+      </a>
+      and
+      <a
+        class="wallets-modal__link"
+        href="https://rubic.exchange/pdf/privacy-policy.pdf"
+        target="_blank"
+      >
+        Privacy Policy.
+      </a>
+    </span>
+  </form>
+
+  <div class="main">
+    <app-chain-types-list
+      [selectedFilter]="state.selectedFilter"
+      [activeWallets]="state.activeWallets"
+      (chainTypeChanged)="selectFilter($event)"
+    ></app-chain-types-list>
+
+    <app-wallets-list
+      [wallets]="state.visibleWallets"
+      [activeWallets]="state.activeWallets"
+      [disabled]="!state.enableWallets"
+      (walletSelected)="connectWallet($event)"
+      (walletLoggedOut)="logoutWallet($event)"
+    ></app-wallets-list>
+  </div>
+</app-window-container>

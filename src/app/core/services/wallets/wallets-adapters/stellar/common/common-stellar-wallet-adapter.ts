@@ -9,6 +9,7 @@ import { StellarWallet } from '../models/stellar-wallet';
 import { SignRejectError } from '@app/core/errors/models/provider/sign-reject-error';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { waitFor } from '@cryptorubic/web3';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<StellarWallet> {
   public chainType = CHAIN_TYPE.STELLAR;
@@ -20,7 +21,7 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
   protected needDelayAfterModuleInit: boolean = false;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -49,8 +50,13 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
 
       this.handleEvents();
 
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
       this.onNetworkChanges$.next(this.selectedChain);
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next(addressChangedMsg);
     } catch (err) {
       if (err.message?.toLowerCase()?.includes('user declined access')) {
         throw new SignRejectError();

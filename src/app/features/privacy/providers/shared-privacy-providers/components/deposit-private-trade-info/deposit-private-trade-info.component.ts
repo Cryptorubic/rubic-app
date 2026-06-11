@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { of } from 'rxjs';
+import { map, of } from 'rxjs';
 import { switchIif } from '@shared/utils/utils';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { depositInfoText } from './constants/cn-info-text';
@@ -30,7 +30,7 @@ export class DepositPrivateTradeInfoComponent implements OnChanges {
     switchIif(
       Boolean,
       address => of(address),
-      () => this.walletConnector.addressChange$
+      () => this.walletConnector.addressChange$.pipe(map(msg => msg.address))
     )
   );
 

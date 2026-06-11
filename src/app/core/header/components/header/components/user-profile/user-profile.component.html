@@ -2,13 +2,9 @@
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
-        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
-          <div class="user-profile__avatar">
-            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
-          </div>
-
+        <ng-container *ngLet="{ text: profileText$ | async } as profile">
           <div class="user-profile__text">
-            {{ profile.text?.length > 20 ? (profile.text | shortAddress : 5 : 3) : profile.text }}
+            {{ profile.text }}
           </div>
         </ng-container>
 
@@ -18,7 +14,8 @@
   </tui-hosted-dropdown>
 
   <ng-template #dropdown let-activeZone>
-    <tui-data-list class="data-list" size="m" role="menu">
+    <app-user-profile-wallets [inMobileMenu]="false"></app-user-profile-wallets>
+    <!--<tui-data-list class="data-list" size="m" role="menu">
       <tui-opt-group>
         <button
           tuiButton
@@ -33,6 +30,6 @@
           </div>
         </button>
       </tui-opt-group>
-    </tui-data-list>
+    </tui-data-list>-->
   </ng-template>
 </ng-container>

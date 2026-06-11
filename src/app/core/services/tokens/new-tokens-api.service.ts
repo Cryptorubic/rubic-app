@@ -25,9 +25,9 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpService } from '@core/services/http/http.service';
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 export type QueryTokenParams =
   | {
@@ -62,7 +62,7 @@ export class NewTokensApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly authService: AuthService
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public fetchQueryTokens(params: QueryTokenParams): Observable<Token[]> {
@@ -221,7 +221,8 @@ export class NewTokensApiService {
     return this.httpService
       .get<BackendToken[]>(
         ENDPOINTS.FAVORITE_TOKENS,
-        { user: this.authService.userAddress },
+        // @TODO_530 получать от Стаса фаворит токены для всех активных кошельков
+        { user: this.walletConnectorService.activeWallets[0].address },
         this.tokensApiUrl
       )
       .pipe(
@@ -234,7 +235,8 @@ export class NewTokensApiService {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
-      user: this.authService.userAddress
+      // @TODO_530 добавить фаворит токены для всех активных кошельков
+      user: this.walletConnectorService.activeWallets[0].address
     };
     return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body, this.tokensApiUrl);
   }
@@ -243,7 +245,8 @@ export class NewTokensApiService {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
-      user: this.authService.userAddress
+      // @TODO_530 удалить фаворит токены для всех активных кошельков
+      user: this.walletConnectorService.activeWallets[0].address
     };
     return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body }, this.tokensApiUrl);
   }

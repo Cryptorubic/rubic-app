@@ -251,20 +251,23 @@ export class CrossChainService {
         tradeId: trade.rubicId
       }
     };
+    const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+      blockchain: trade.from.blockchain
+    });
 
     try {
       await trade.swap(swapOptions);
       setTimeout(() => this.updateBalancesAfterSwap(fromToken, toToken), 5_000);
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+        this.solanaGaslessService.updateGaslessTxCount24Hrs(walletAddr);
       }
 
       return transactionHash;
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
       if (!(error instanceof UserRejectError)) {
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+        this.gtmService.fireSwapError(trade, walletAddr, parsedError);
       }
 
       throw parsedError;
@@ -312,7 +315,9 @@ export class CrossChainService {
   ): void {
     this.crossChainApiService
       .saveProvidersStatistics({
-        user: this.walletConnectorService.address,
+        user: this.walletConnectorService.getActiveWalletAddress({
+          blockchain: trade.fromBlockchain
+        }),
         from_token: trade.fromAddress,
         from_network: TO_BACKEND_BLOCKCHAINS?.[trade.fromBlockchain],
         from_amount: trade.fromAmount,

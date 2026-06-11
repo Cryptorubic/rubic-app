@@ -16,12 +16,12 @@ import { RailgunSupportedChain } from '@features/privacy/providers/railgun/const
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { RailgunPrivateActionButtonService } from '@features/privacy/providers/railgun/services/common/railgun-private-action-button.service';
 import { PrivateTransferWindowService } from '@features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-railgun-transfer-page',
@@ -87,7 +87,7 @@ export class RailgunTransferPageComponent implements OnInit {
 
   public railgunFacade = inject(RailgunFacadeService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly privateStatisticsService = inject(PrivateStatisticsService);
 
@@ -127,6 +127,11 @@ export class RailgunTransferPageComponent implements OnInit {
     openPreview
   }: PrivateEvent): Promise<void> {
     try {
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: token.blockchain
+      });
+      if (!walletAddr) return;
+
       const preview$ = openPreview({
         steps: [
           {
@@ -143,7 +148,7 @@ export class RailgunTransferPageComponent implements OnInit {
               this.privateStatisticsService.saveAction(
                 'TRANSFER',
                 'RAILGUN',
-                this.authService.userAddress,
+                walletAddr,
                 token.address,
                 token.weiAmount.toFixed(),
                 token.blockchain

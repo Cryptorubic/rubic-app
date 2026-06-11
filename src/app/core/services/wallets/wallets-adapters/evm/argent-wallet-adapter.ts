@@ -8,12 +8,15 @@ import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 import { EthereumProvider, EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
+import { AddressChangedMsg } from '../../models/events';
 
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;
 
+  public readonly walletNameUI: string = 'Argent';
+
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -77,7 +80,13 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
         this.selectedAddress = address;
         this.selectedChain =
           (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
-        this.onAddressChanges$.next(address);
+
+        const addressChangedMsg: AddressChangedMsg = {
+          address: this.selectedAddress,
+          chainType: this.chainType,
+          walletName: this.walletName
+        };
+        this.onAddressChanges$.next(addressChangedMsg);
         this.onNetworkChanges$.next(this.selectedChain);
 
         this.initSubscriptionsOnChanges();

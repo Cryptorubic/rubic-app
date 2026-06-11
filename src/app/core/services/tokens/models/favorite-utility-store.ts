@@ -3,7 +3,6 @@ import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.servic
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { combineLatestWith, Observable, of } from 'rxjs';
 import { Token } from '@shared/models/tokens/token';
-import { AuthService } from '@core/services/auth/auth.service';
 import {
   catchError,
   debounceTime,
@@ -16,6 +15,7 @@ import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses } from '@cryptorubic/core';
 import { compareTokens } from '@shared/utils/utils';
+import { WalletConnectorService } from '../../wallets/wallet-connector-service/wallet-connector.service';
 
 export class FavoriteUtilityStore extends BasicUtilityStore {
   public override readonly tokens$ = this.refs$.pipe(
@@ -49,7 +49,7 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
   constructor(
     tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
-    private readonly authService: AuthService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     super(tokensStore);
     this.handleAddressSubscribe();
@@ -62,15 +62,17 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
   }
 
   private handleAddressSubscribe(): void {
-    this.authService.currentUser$
+    this.walletConnectorService.activeWallets$
       .pipe(
-        distinctUntilChanged((a, b) => a?.address === b?.address),
-        tap(user => {
-          if (user?.address) {
+        distinctUntilChanged((a, b) => a.length === b.length),
+        tap(activeWallets => {
+          if (activeWallets.length) {
             this._pageLoading$.next(true);
           }
         }),
-        switchMap(user => (user?.address ? this.apiService.fetchFavoriteTokens() : of([]))),
+        switchMap(activeWallets =>
+          activeWallets.length ? this.apiService.fetchFavoriteTokens() : of([])
+        ),
         tap(tokens => {
           this.addMissedUtilityTokens(tokens);
           const favoriteTokens: TokenRef[] = tokens.map(token => ({

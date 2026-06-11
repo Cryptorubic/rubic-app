@@ -15,6 +15,7 @@ import {
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { TonConnectInstance } from '../utils/ton-connect-instance';
 import { RetroBridgeApiService } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/retro-bridge/services/retro-bridge-api-service';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonConnectUI> {
   public readonly chainType = CHAIN_TYPE.TON;
@@ -24,7 +25,7 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
   private unsubEventListener: () => void;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -61,7 +62,12 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
 
       if (this.tonConnect.account) {
         this.selectedAddress = await this.fetchFriendlyAddress(this.tonConnect.account?.address);
-        this.onAddressChanges$.next(this.selectedAddress);
+        const addressChangedMsg: AddressChangedMsg = {
+          address: this.selectedAddress,
+          chainType: this.chainType,
+          walletName: this.walletName
+        };
+        this.onAddressChanges$.next(addressChangedMsg);
         this.handleRetroBridgeSignature();
       }
       this.onNetworkChanges$.next(this.selectedChain);
@@ -86,20 +92,24 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
         this.fetchFriendlyAddress(rawAddress)
           .then(friendlyAddress => {
             this.selectedAddress = friendlyAddress;
-            this.onAddressChanges$.next(this.selectedAddress);
+            const addressChangedMsg: AddressChangedMsg = {
+              address: this.selectedAddress,
+              chainType: this.chainType,
+              walletName: this.walletName
+            };
+            this.onAddressChanges$.next(addressChangedMsg);
           })
           .catch(err => console.log('fetchFriendlyAddress_CATCH ==> ', err));
 
         this.handleRetroBridgeSignature();
 
+        const providers = this.storeService.getItem('RUBIC_PROVIDERS');
         if (walletAndWalletInfo.appName in TON_CONNECT_WALLETS_MAP) {
-          this.storeService.setItem(
-            'RUBIC_PROVIDER',
-            TON_CONNECT_WALLETS_MAP[tonConnectWalletName as PopularTonConnectWallets]
-          );
+          providers.push(TON_CONNECT_WALLETS_MAP[tonConnectWalletName as PopularTonConnectWallets]);
         } else {
-          this.storeService.setItem('RUBIC_PROVIDER', WALLET_NAME.TON_CONNECT);
+          providers.push(WALLET_NAME.TON_CONNECT);
         }
+        this.storeService.setItem('RUBIC_PROVIDERS', providers);
       }
     });
   }

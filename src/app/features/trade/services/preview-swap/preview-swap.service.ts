@@ -79,6 +79,7 @@ import {
   TransferTradeType
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
+import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
 @Injectable()
 export class PreviewSwapService {
@@ -425,15 +426,15 @@ export class PreviewSwapService {
   }
 
   private subscribeOnNetworkChange(): void {
-    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(
-      network => this.checkNetwork(network)
+    const networkChangeSubscription$ = this.walletConnectorService.activeWallets$.subscribe(
+      activeWallets => this.checkNetwork(activeWallets)
     );
     this.subscriptions$.push(networkChangeSubscription$);
   }
 
   private subscribeOnAddressChange(): void {
-    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(
-      address => this.checkAddress(address)
+    const addressChangeSubscription$ = this.walletConnectorService.activeWallets$.subscribe(
+      activeWallets => this.checkAddress(activeWallets)
     );
     this.subscriptions$.push(addressChangeSubscription$);
   }
@@ -468,17 +469,21 @@ export class PreviewSwapService {
     return provider.name || 'unknown';
   }
 
-  private checkAddress(address: string = this.walletConnectorService.address): void {
+  private checkAddress(activeWallets: CommonWalletAdapter[]): void {
     const state = this._transactionState$.getValue();
-    state.data.activeWallet = Boolean(address);
+    const hasConnectedWallet = activeWallets.length > 0;
+    state.data.activeWallet = hasConnectedWallet;
     this.setNextTxState(state);
   }
 
-  private checkNetwork(network: BlockchainName = this.walletConnectorService.network): void {
+  private checkNetwork(activeWallets: CommonWalletAdapter[]): void {
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
-    state.data.wrongNetwork = Boolean(tokenBlockchain) && network !== tokenBlockchain;
+    const dontHaveNecessaryNetwork = !activeWallets.some(
+      wallet => wallet.network === tokenBlockchain
+    );
+    state.data.wrongNetwork = Boolean(tokenBlockchain) && dontHaveNecessaryNetwork;
     this.setNextTxState(state);
   }
 
@@ -646,8 +651,14 @@ export class PreviewSwapService {
                   }
                 }
 
-                this.spindlService.sendSwapEvent(txHash);
-                this.recentTradesStoreService.updateUnreadTrades();
+                const srcChainType = BlockchainsInfo.getChainType(tradeState.trade.from.blockchain);
+                const walletAdapter = this.walletConnectorService.getActiveProvider({
+                  chainType: srcChainType
+                });
+                if (!walletAdapter) return;
+
+                this.spindlService.sendSwapEvent(txHash, walletAdapter.address);
+                this.recentTradesStoreService.updateUnreadTrades(walletAdapter.address);
               },
               onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
@@ -738,8 +749,8 @@ export class PreviewSwapService {
 
   private subscribeOnValidation(): void {
     const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
-      this.checkAddress();
-      this.checkNetwork();
+      this.checkAddress(this.walletConnectorService.activeWallets);
+      this.checkNetwork(this.walletConnectorService.activeWallets);
       this.checkTrustline();
     });
     this.subscriptions$.push(validationSubscription$);

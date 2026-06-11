@@ -6,6 +6,7 @@ import { SupportsManyChains } from '../../../models/abstract-interfaces';
 import { EIP6963AnnounceProviderEvent } from './models/eip-6963-provider-event';
 import { EvmWalletProviderStore } from './evm-wallet-provider-store';
 import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from '@cryptorubic/core';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class EvmWalletAdapter<T = RubicAny>
   extends CommonWalletAdapter<T>
@@ -23,7 +24,12 @@ export abstract class EvmWalletAdapter<T = RubicAny>
       (accounts: string[]) => {
         this.selectedAddress = accounts[0] || null;
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       }
     );

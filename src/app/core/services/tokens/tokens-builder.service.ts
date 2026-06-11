@@ -17,6 +17,7 @@ import {
 } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
+import { BalanceFetchingConfig } from './models/tokens-balance-service-types';
 
 @Injectable({
   providedIn: 'root'
@@ -56,13 +57,13 @@ export class TokensBuilderService {
     _query: string,
     direction: 'from' | 'to',
     inputValue: Partial<SwapFormInput>,
-    fetchBalances: boolean
+    balanceFetchingConfig: BalanceFetchingConfig = { walletAddressesToFetch: [] }
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
-        if (fetchBalances) {
-          this.balanceService.fetchDifferentChainsBalances(tokens, false);
+        if (balanceFetchingConfig.walletAddressesToFetch.length) {
+          this.balanceService.fetchDifferentChainsBalances(tokens, balanceFetchingConfig, false);
         }
       }),
       map((tokens: BalanceToken[]) => {

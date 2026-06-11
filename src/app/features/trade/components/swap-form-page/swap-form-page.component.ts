@@ -17,8 +17,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
-import { AuthService } from '@core/services/auth/auth.service';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
@@ -26,6 +25,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -50,7 +50,7 @@ export class SwapFormPageComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly fromAsset$ = this.swapFormService.fromToken$.pipe(
-    combineLatestWith(this.authService.currentUser$),
+    combineLatestWith(this.walletConnectorService.activeWallets$),
     map(([fromAsset]) => fromAsset)
   );
 
@@ -63,8 +63,6 @@ export class SwapFormPageComponent {
   public readonly toAmount$ = this.swapFormService.toAmount$.pipe(
     map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null))
   );
-
-  public readonly currentUser$ = this.authService.currentUser$;
 
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
@@ -97,7 +95,7 @@ export class SwapFormPageComponent {
     private readonly settingsService: SettingsService,
     private readonly headerStore: HeaderStore,
     private readonly modalService: ModalService,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly swapsStateService: SwapsStateService,
     private readonly refundService: RefundService,
@@ -113,9 +111,8 @@ export class SwapFormPageComponent {
         this.solanaGaslessService.onSwapFormInputChanged(inputValue);
       });
 
-    this.authService.currentUser$
+    this.walletConnectorService.activeWallets$
       .pipe(
-        distinctUntilChanged((prev, curr) => compareAddresses(prev?.address, curr?.address)),
         switchMap(() => {
           const srcToken = this.swapFormService.inputValue.fromToken;
           const dstToken = this.swapFormService.inputValue.toToken;

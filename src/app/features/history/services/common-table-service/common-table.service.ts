@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom, tap } from 'rxjs';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,9 +11,9 @@ import { TransactionReceipt } from 'viem';
 import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { FormControl } from '@angular/forms';
 
 @Injectable()
 export class CommonTableService {
@@ -25,6 +25,15 @@ export class CommonTableService {
     this._activeItemIndex$.next(value);
   }
 
+  public readonly walletAddressCtrl = new FormControl<string>('');
+
+  public readonly walletAddressChanges$ = this.walletAddressCtrl.valueChanges.pipe(
+    tap(v => console.log('walletAddressChanges$_tap ==>', v))
+    // distinctUntilChanged(),
+    // startWith(''),
+    // filter(Boolean)
+  );
+
   constructor(
     private readonly errorService: ErrorsService,
     private readonly notificationsService: NotificationsService,
@@ -33,7 +42,6 @@ export class CommonTableService {
     private readonly http: HttpService,
     private readonly rubicApiService: RubicApiService,
     private readonly adaptersFactory: BlockchainAdapterFactoryService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService
   ) {}
 
@@ -118,7 +126,7 @@ export class CommonTableService {
     );
   }
 
-  public async revertSymbiosis(srcTxHash: string): Promise<TransactionReceipt> {
+  public async revertSymbiosis(walletAddr: string, srcTxHash: string): Promise<TransactionReceipt> {
     let tradeInProgressSubscription$: Subscription;
     let transactionReceipt: TransactionReceipt;
     const onTransactionHash = () => {
@@ -136,13 +144,9 @@ export class CommonTableService {
     };
 
     try {
-      transactionReceipt = await this.sdkService.symbiosis.revertTrade(
-        srcTxHash,
-        this.walletConnectorService.address,
-        {
-          onConfirm: onTransactionHash
-        }
-      );
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, walletAddr, {
+        onConfirm: onTransactionHash
+      });
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
