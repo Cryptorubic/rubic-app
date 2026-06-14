@@ -57,6 +57,7 @@
     "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del Binance bridge de un máximo de 3 operaciones en 30 minutos.\nPor favor, espere e inténtelo nuevamente más tarde, si aún tiene problemas, comuníquese con nosotros",
     "userReject": "Rechazaste la ejecución de la transacción. Por favor, confírme primero para completar el intercambio.",
     "rubicError": "Por favor, inténtelo nuevamente más tarde o intente usar otro dispositivo. Si aún tiene problemas, comuníquese con nosotros",
+    "genericInsufficientGasFundsError": "Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.",
     "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}.",
     "insufficientFunds1inch": "No tiene suficiente cantidad de {{ nativeToken }} para la transferencia y la tarifa de comisión. Para la transacción, ingrese una cantidad menor o recargue su saldo {{ nativeToken }}.",
     "noQrCode": "Por favor, asegúrese de haber escaneado el código QR.",
