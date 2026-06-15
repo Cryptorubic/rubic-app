@@ -7,18 +7,20 @@ import { NgZone } from '@angular/core';
 import {
   BlockchainName,
   BlockchainsInfo,
+  EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName,
   blockchainId
 } from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { WalletConnectAbstractAdapter } from './common/wallet-connect-abstract';
 import { DeviceType } from './common/models/device-type';
-import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-error';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { createEVMClient, EIP1193Provider } from '@metamask/connect-evm';
+import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
+import { EvmWalletAdapter } from './common/evm-wallet-adapter';
+import { isNil } from '@app/shared/utils/utils';
 
-export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
+export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
   private readonly device: DeviceType;
@@ -38,22 +40,9 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow,
-    device: DeviceType,
-    chainId?: number
+    device: DeviceType
   ) {
-    super(
-      {
-        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        showQrModal: false,
-        chains: [chainId || 1],
-        optionalChains: Object.values(blockchainId)
-      },
-      onAddressChanges$,
-      onNetworkChanges$,
-      errorsService,
-      zone,
-      window
-    );
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
     this.device = device;
   }
 
@@ -68,35 +57,33 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
 
   public async activate(): Promise<void> {
     try {
+      let provider: EIP1193Provider;
+
       if (this.device !== 'desktop') {
-        try {
-          this.wallet = await EthereumProvider.init({
-            ...this.providerConfig
-          });
-          this.initMobileSubscription();
+        const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
+          .map(chain => {
+            const rpc = rpcList[chain][0];
+            return rpc ? [`0x${blockchainId[chain]}`, rpcList[chain][0]] : null;
+          })
+          .filter(v => !isNil(v));
 
-          const [address] = await this.wallet.enable();
-          const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
+        const client = await createEVMClient({
+          dapp: {
+            name: 'Rubic Exchange'
+          },
+          api: {
+            supportedNetworks: Object.fromEntries(supportedNetworks)
+          },
+          mobile: {}
+        });
 
-          this.isEnabled = true;
-
-          this.selectedAddress = address;
-          this.selectedChain =
-            (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
-          this.onAddressChanges$.next(address);
-          this.onNetworkChanges$.next(this.selectedChain);
-
-          this.initSubscriptionsOnChanges();
-          return;
-        } catch (error) {
-          throw new WalletlinkError();
-        }
+        provider = client.getProvider();
+      } else {
+        provider = await this.getProvider({
+          provider: 'metamask',
+          reserveProvider: 'rabby wallet'
+        });
       }
-
-      const provider = await this.getProvider({
-        provider: 'metamask',
-        reserveProvider: 'rabby wallet'
-      });
 
       if (!provider) {
         throw new MetamaskError();
@@ -134,6 +121,16 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
 
       throw new MetamaskError();
     }
+  }
+
+  public override deactivate(): void {
+    this.wallet
+      .request({
+        method: 'wallet_revokePermissions',
+        params: [{ eth_accounts: {} }]
+      })
+      .catch(() => {});
+    super.deactivate();
   }
 
   /**

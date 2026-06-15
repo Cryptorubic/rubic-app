@@ -140,7 +140,7 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK) {
       const device: DeviceType = this.isIos ? 'ios' : this.isAndroid ? 'android' : 'desktop';
-      return new MetamaskWalletAdapter(...defaultConstructorParameters, device, chainId);
+      return new MetamaskWalletAdapter(...defaultConstructorParameters, device);
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
