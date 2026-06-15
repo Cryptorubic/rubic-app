@@ -26,7 +26,9 @@ import {
 } from 'rxjs';
 import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
-import { SdkService } from '@app/core/services/sdk/sdk.service';
+import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
+import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateAction } from '@app/features/privacy/services/models/private-statistics-types';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -39,7 +41,7 @@ export class ClearswapSwapService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly sdkService: SdkService
+    private readonly privateStatisticsService: PrivateStatisticsService
   ) {}
 
   public async quote(
@@ -84,7 +86,9 @@ export class ClearswapSwapService {
     id: string,
     fromToken: TokenAmount<BlockchainName>,
     toToken: Token,
-    receiver: string
+    receiver: string,
+    userAddress: string,
+    privateAction: PrivateAction
   ): Promise<PrivateActionRes> {
     try {
       const swapResponse = await lastValueFrom(
@@ -140,6 +144,15 @@ export class ClearswapSwapService {
             }
           })
         )
+      );
+
+      this.privateStatisticsService.saveAction(
+        privateAction,
+        PRIVATE_TRADE_TYPE.CLEARSWAP,
+        userAddress,
+        fromToken.address,
+        fromToken.stringWeiAmount,
+        fromToken.blockchain
       );
 
       const [apiResponse, txStatus] = await lastValueFrom(

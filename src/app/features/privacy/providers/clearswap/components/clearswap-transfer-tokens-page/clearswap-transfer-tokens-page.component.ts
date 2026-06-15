@@ -29,10 +29,9 @@ import { PrivateTransferFormConfig } from '../../../shared-privacy-providers/mod
 import { AuthService } from '@app/core/services/auth/auth.service';
 import InsufficientFundsError from '@app/core/errors/models/instant-trade/insufficient-funds-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { RubicSdkError, UserRejectError, Web3Pure } from '@cryptorubic/web3';
+import { RubicSdkError, Web3Pure } from '@cryptorubic/web3';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
-import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { PrivateTransferWindowService } from '../../../shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
 import { compareTokens } from '@app/shared/utils/utils';
@@ -165,18 +164,11 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                       tradeId,
                       token as TokenAmount<BlockchainName>,
                       { ...token } as Token,
-                      this.receiverCtrl.value
+                      this.receiverCtrl.value,
+                      userAddress,
+                      'TRANSFER'
                     )
                     .then(async res => {
-                      this.privateStatisticsService.saveAction(
-                        'TRANSFER',
-                        PRIVATE_TRADE_TYPE.CLEARSWAP,
-                        userAddress,
-                        token.address,
-                        token.stringWeiAmount,
-                        token.blockchain
-                      );
-
                       const newBalance = await this.tokensBalanceService.getAndUpdateTokenBalance(
                         token,
                         5
@@ -191,19 +183,6 @@ export class ClearswapTransferTokensPageComponent implements OnInit {
                       return res;
                     })
                     .catch(async err => {
-                      if (!(err instanceof UserRejectError)) {
-                        this.privateStatisticsService.saveAction(
-                          'TRANSFER',
-                          PRIVATE_TRADE_TYPE.CLEARSWAP,
-                          userAddress,
-                          token.address,
-                          token.stringWeiAmount,
-                          token.blockchain,
-                          [],
-                          [JSON.stringify(err)]
-                        );
-                      }
-
                       const nativeBalance =
                         await this.tokensBalanceService.getAndUpdateTokenBalance(nativeToken, 5);
                       if (
