@@ -15,11 +15,9 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { DeviceType } from './common/models/device-type';
-import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-error';
-import { createEVMClient } from '@metamask/connect-evm';
+import { createEVMClient, EIP1193Provider } from '@metamask/connect-evm';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 import { EvmWalletAdapter } from './common/evm-wallet-adapter';
-import { toHex } from 'viem';
 import { isNil } from '@app/shared/utils/utils';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
@@ -59,54 +57,33 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
+      let provider: EIP1193Provider;
+
       if (this.device !== 'desktop') {
-        try {
-          const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
-            .map(chain => {
-              const rpc = rpcList[chain][0];
-              return rpc ? [toHex(blockchainId[chain]), rpcList[chain][0]] : null;
-            })
-            .filter(v => !isNil(v));
+        const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
+          .map(chain => {
+            const rpc = rpcList[chain][0];
+            return rpc ? [`0x${blockchainId[chain]}`, rpcList[chain][0]] : null;
+          })
+          .filter(v => !isNil(v));
 
-          const client = await createEVMClient({
-            dapp: {
-              name: 'Rubic Exchange'
-            },
-            api: {
-              supportedNetworks: Object.fromEntries(supportedNetworks)
-            },
-            mobile: {}
-          });
+        const client = await createEVMClient({
+          dapp: {
+            name: 'Rubic Exchange'
+          },
+          api: {
+            supportedNetworks: Object.fromEntries(supportedNetworks)
+          },
+          mobile: {}
+        });
 
-          this.wallet = client.getProvider();
-
-          const accounts = (await this.wallet.request({
-            method: 'eth_requestAccounts'
-          })) as string[];
-          const address = accounts[0];
-
-          const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
-
-          this.isEnabled = true;
-          this.selectedAddress = address;
-          this.selectedChain =
-            (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
-
-          this.onAddressChanges$.next(address);
-          this.onNetworkChanges$.next(this.selectedChain);
-
-          this.initSubscriptionsOnChanges();
-
-          return;
-        } catch (error) {
-          throw new WalletlinkError();
-        }
+        provider = client.getProvider();
+      } else {
+        provider = await this.getProvider({
+          provider: 'metamask',
+          reserveProvider: 'rabby wallet'
+        });
       }
-
-      const provider = await this.getProvider({
-        provider: 'metamask',
-        reserveProvider: 'rabby wallet'
-      });
 
       if (!provider) {
         throw new MetamaskError();
