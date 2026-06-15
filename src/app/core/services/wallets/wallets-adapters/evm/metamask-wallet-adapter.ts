@@ -64,7 +64,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
           const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
             .map(chain => {
               const rpc = rpcList[chain][0];
-              return rpc ? [toHex(blockchainId[chain].toString()), rpcList[chain][0]] : null;
+              return rpc ? [toHex(blockchainId[chain]), rpcList[chain][0]] : null;
             })
             .filter(v => !isNil(v));
 
@@ -74,7 +74,8 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
             },
             api: {
               supportedNetworks: Object.fromEntries(supportedNetworks)
-            }
+            },
+            mobile: {}
           });
 
           this.wallet = client.getProvider();
@@ -143,6 +144,16 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
       throw new MetamaskError();
     }
+  }
+
+  public override deactivate(): void {
+    this.wallet
+      .request({
+        method: 'wallet_revokePermissions',
+        params: [{ eth_accounts: {} }]
+      })
+      .catch(() => {});
+    super.deactivate();
   }
 
   /**
