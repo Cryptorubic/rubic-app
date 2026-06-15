@@ -154,7 +154,7 @@
               />
             </div>
             <div class="asset__asset-type">
-              &lt;!&ndash;                {{ item.toBlockchain.label }}&ndash;&gt;
+              {{ item.toBlockchain.label }}
               {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
               {{ item.toToken.symbol }}
             </div>
