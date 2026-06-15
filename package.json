@@ -63,6 +63,7 @@
     "@cryptorubic/web3": "1.6.0",
     "@hakimio/ngx-google-analytics": "^15.0.0",
     "@hinkal/common": "0.2.31",
+    "@metamask/connect-evm": "^2.1.0",
     "@ng-web-apis/common": "^3.0.1",
     "@ng-web-apis/mutation-observer": "^3.0.1",
     "@ng-web-apis/resize-observer": "^3.0.1",

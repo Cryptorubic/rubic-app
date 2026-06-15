@@ -7,18 +7,20 @@ import { NgZone } from '@angular/core';
 import {
   BlockchainName,
   BlockchainsInfo,
+  EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName,
   blockchainId
 } from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { WalletConnectAbstractAdapter } from './common/wallet-connect-abstract';
 import { DeviceType } from './common/models/device-type';
 import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-error';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { createEVMClient } from '@metamask/connect-evm';
+import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
+import { EvmWalletAdapter } from './common/evm-wallet-adapter';
 
-export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
+export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
   private readonly device: DeviceType;
@@ -38,22 +40,9 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow,
-    device: DeviceType,
-    chainId?: number
+    device: DeviceType
   ) {
-    super(
-      {
-        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        showQrModal: false,
-        chains: [chainId || 1],
-        optionalChains: Object.values(blockchainId)
-      },
-      onAddressChanges$,
-      onNetworkChanges$,
-      errorsService,
-      zone,
-      window
-    );
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
     this.device = device;
   }
 
@@ -70,23 +59,38 @@ export class MetamaskWalletAdapter extends WalletConnectAbstractAdapter {
     try {
       if (this.device !== 'desktop') {
         try {
-          this.wallet = await EthereumProvider.init({
-            ...this.providerConfig
+          const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME).map(chain => {
+            return [blockchainId[chain].toString(), rpcList[chain][0]];
           });
-          this.initMobileSubscription();
 
-          const [address] = await this.wallet.enable();
+          const client = await createEVMClient({
+            dapp: {
+              name: 'Rubic Exchange'
+            },
+            api: {
+              supportedNetworks: Object.fromEntries(supportedNetworks)
+            }
+          });
+
+          this.wallet = client.getProvider();
+
+          const accounts = (await this.wallet.request({
+            method: 'eth_requestAccounts'
+          })) as string[];
+          const address = accounts[0];
+
           const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
 
           this.isEnabled = true;
-
           this.selectedAddress = address;
           this.selectedChain =
             (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
+
           this.onAddressChanges$.next(address);
           this.onNetworkChanges$.next(this.selectedChain);
 
           this.initSubscriptionsOnChanges();
+
           return;
         } catch (error) {
           throw new WalletlinkError();
