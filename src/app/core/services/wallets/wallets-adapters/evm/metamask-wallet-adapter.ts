@@ -19,6 +19,8 @@ import { WalletlinkError } from '@app/core/errors/models/provider/walletlink-err
 import { createEVMClient } from '@metamask/connect-evm';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 import { EvmWalletAdapter } from './common/evm-wallet-adapter';
+import { toHex } from 'viem';
+import { isNil } from '@app/shared/utils/utils';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -59,9 +61,12 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     try {
       if (this.device !== 'desktop') {
         try {
-          const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME).map(chain => {
-            return [blockchainId[chain].toString(), rpcList[chain][0]];
-          });
+          const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
+            .map(chain => {
+              const rpc = rpcList[chain][0];
+              return rpc ? [toHex(blockchainId[chain].toString()), rpcList[chain][0]] : null;
+            })
+            .filter(v => !isNil(v));
 
           const client = await createEVMClient({
             dapp: {
