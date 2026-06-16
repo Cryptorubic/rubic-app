@@ -52,6 +52,10 @@
 @include b($mobile-sm-middle) {
   .profile-button {
     height: 40px;
+
+    &[tuiButtonV] {
+      gap: 0;
+    }
   }
 
   .user-profile {
