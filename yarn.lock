@@ -2456,18 +2456,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.2.tgz#862abaed59bea10eac1a6da196c08822020ca360"
-  integrity sha512-B0tP7NTCa7sawWlhCaTNBzcD0ujTX1IlG8fD63aSmax/tbj15z/8BBJAnmC9nFRWNLxTygb3Uniie4RoaTO2eg==
+"@cryptorubic/core@1.6.4-alpha-rub-2694.0":
+  version "1.6.4-alpha-rub-2694.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.4-alpha-rub-2694.0.tgz#d203bff0356193fc48fabe30c563427b076ca28f"
+  integrity sha512-njvwmNjtnfcjpye2au7IA93RgiWRj4E66QwGCZL52YAUS8rY2NPHs/q7SzsM+/Wu54ccAenlcn4FpGidVHnGyw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.2.tgz#c76e22df6035aa0dae643409b5dddbb72ab47489"
-  integrity sha512-SFKZIBfpVHcn61JbNlRyOPe0FWCf/X3gK9LYG4iuG8gOQuaeRfWWKYMtaXmJs2C5Zc04JzRBJ+NCUeOlymFReg==
+"@cryptorubic/web3@1.6.4-alpha-rub-2694.0":
+  version "1.6.4-alpha-rub-2694.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.4-alpha-rub-2694.0.tgz#7f631d29e10ed90d23e6ba2631312e0d1e2e9d6a"
+  integrity sha512-UL1iS++9OuXlnRHia/SIVLHCX8ncIBoggzl6DkKYCFuLVcmXb+DgoT42QW/tmqnL4blfIzlVzSB/H0WaDh/iiQ==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
