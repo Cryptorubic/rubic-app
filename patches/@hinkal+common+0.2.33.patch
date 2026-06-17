@@ -93,36 +93,6 @@ index 71cf5e2..d810f89 100644
  	}
  };
  //#endregion
-diff --git a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
-index fbbb922..d7be300 100644
---- a/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
-+++ b/node_modules/@hinkal/common/webworker/viteWorkerURL.constant.mjs
-@@ -1,21 +1,8 @@
--
--  const domain = 'https://wallet-prodv12.hinkal.io/workers';
--
--  // Returns a blob:// URL which points
--  // to a javascript file which will call
--  // importScripts with the given URL
--  async function getWorkerURL(url) {
--    const contentRes = await fetch(url);
--    const content = await contentRes.text()
--
--    return URL.createObjectURL(new Blob([content], { type: "application/javascript" }));
--  }
--
--  var e = /* @__PURE__ */ ((r) => (r.ZKProof = "ZKProof", r.SnarkJS = "SnarkJS", r.UTXO = "UTXO", r))(e || {});
-+var e = /* @__PURE__ */ ((r) => (r.ZKProof = "ZKProof", r.SnarkJS = "SnarkJS", r.UTXO = "UTXO", r))(e || {});
- 
-   const n = async () => ({
--    [e.ZKProof]: await getWorkerURL(domain + '/0.2.33/' + 'zkProofWorkerLauncher.js'),
--    [e.SnarkJS]: await getWorkerURL(domain + '/0.2.33/' + 'snarkjsWorkerLauncher.js'),
--    [e.UTXO]: await getWorkerURL(domain + '/0.2.33/' + 'utxoWorkerLauncher.js'),
-+    [e.ZKProof]: '/assets/hinkal/zkProofWorkerLauncher.js',
-+    [e.SnarkJS]: '/assets/hinkal/snarkjsWorkerLauncher.js',
-+    [e.UTXO]: '/assets/hinkal/utxoWorkerLauncher.js'
-   });
-   export { n as getWorkerViteURL };
 diff --git a/node_modules/@hinkal/common/webworker/workerFactory.mjs b/node_modules/@hinkal/common/webworker/workerFactory.mjs
 index 0fa4bde..fe6de99 100644
 --- a/node_modules/@hinkal/common/webworker/workerFactory.mjs
