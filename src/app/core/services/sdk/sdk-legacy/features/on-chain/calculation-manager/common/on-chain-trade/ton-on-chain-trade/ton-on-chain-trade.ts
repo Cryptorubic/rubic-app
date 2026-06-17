@@ -48,7 +48,7 @@ export abstract class TonOnChainTrade extends OnChainTrade {
   private readonly apiResponse: QuoteResponseInterface | null = null;
 
   protected get spenderAddress(): string {
-    throw new RubicSdkError('No spender address!');
+    return '';
   }
 
   protected override get chainAdapter(): TonAdapter {

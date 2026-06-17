@@ -121,6 +121,8 @@ export abstract class OnChainTrade<T = unknown> {
 
   public readonly warnings: ErrorInterface[];
 
+  public readonly useProxy: boolean;
+
   protected constructor(
     apiResponse: QuoteResponseInterface,
     protected readonly sdkLegacyService: SdkLegacyService,
@@ -128,6 +130,7 @@ export abstract class OnChainTrade<T = unknown> {
   ) {
     this.rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
+    this.useProxy = apiResponse.useRubicContract;
   }
 
   /**
@@ -138,9 +141,8 @@ export abstract class OnChainTrade<T = unknown> {
       this.checkWalletConnected();
     }
 
-    if (!isApprovableAdapter(this.chainAdapter)) {
-      return false;
-    }
+    if (!isApprovableAdapter(this.chainAdapter)) return false;
+    if (!this.spenderAddress) return false;
 
     // Native coin in METIS can be Token required approve
     if (this.from.isNative && this.from.blockchain !== BLOCKCHAIN_NAME.METIS) {
