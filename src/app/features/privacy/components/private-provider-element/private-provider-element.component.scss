@@ -125,30 +125,37 @@
       }
     }
   }
-}
 
-@include b($laptop) {
-  .provider-element {
-    .top,
-    .bottom {
-      background: var(--tui-background-neutral-1) !important;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .bottom {
-    .execution-time {
-      ::ng-deep svg path {
-        stroke: var(--tui-background-base-alt);
+  @include b($laptop) {
+    .provider-element {
+      .top,
+      .bottom {
+        background: var(--tui-background-neutral-1);
       }
     }
+  }
 
-    .stars,
-    .fee-size {
-      @include b($mobile-md) {
-        ::ng-deep svg path {
-          fill: var(--tui-background-base-alt);
+  @include b($mobile-md) {
+    .provider-element {
+      .top,
+      .bottom {
+        background-color: var(--io-background);
+      }
+
+      .bottom {
+        .execution-time {
+          ::ng-deep svg path {
+            stroke: var(--tui-background-base-alt);
+          }
+        }
+
+        .stars,
+        .fee-size {
+          @include b($mobile-md) {
+            ::ng-deep svg path {
+              fill: var(--tui-background-base-alt);
+            }
+          }
         }
       }
     }
