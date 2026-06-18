@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -9,13 +10,13 @@ import {
   Inject,
   OnChanges
 } from '@angular/core';
-import { WINDOW } from '@ng-web-apis/common';
 import { NgChanges } from '@shared/models/utility-types/ng-changes';
 
 /**
  * Rotating icon with smooth rotation completion.
  */
 @Component({
+  standalone: false,
   selector: 'app-rotating-icon',
   templateUrl: './rotating-icon.component.html',
   styleUrls: ['./rotating-icon.component.scss'],
@@ -46,7 +47,7 @@ export class RotatingIconComponent implements OnChanges {
 
   public stopAnimation: 'rotating' | 'graduallyStop' | 'stopped' = 'stopped';
 
-  constructor(@Inject(WINDOW) private window: Window) {}
+  constructor(@Inject(WA_WINDOW) private window: Window) {}
 
   ngOnChanges(changes: NgChanges<RotatingIconComponent>) {
     if (changes.rotating?.currentValue && !changes.rotating?.previousValue) {

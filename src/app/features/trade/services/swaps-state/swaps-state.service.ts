@@ -466,11 +466,11 @@ export class SwapsStateService {
 
   private initCalculationStatus(): Observable<CalculationStatus> {
     return this.swapsFormService.fromToken$.pipe(
-      distinctUntilChanged(this.shouldEmitToken),
+      distinctUntilChanged(this.shouldEmitToken.bind(this)),
       combineLatestWith(
-        this.swapsFormService.toToken$.pipe(distinctUntilChanged(this.shouldEmitToken))
+        this.swapsFormService.toToken$.pipe(distinctUntilChanged(this.shouldEmitToken.bind(this)))
       ),
-      switchMap(this.getTimerObservable),
+      switchMap(this.getTimerObservable.bind(this)),
       combineLatestWith(
         this.swapsFormService.isFilled$.pipe(distinctUntilChanged()),
         this.tradesStore$,

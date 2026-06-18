@@ -3,6 +3,7 @@ import { AlternativeRoute } from '../../services/alternative-route-api-service/m
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 
 @Component({
+  standalone: false,
   selector: 'app-alternative-routes-list',
   templateUrl: './alternative-routes-list.component.html',
   styleUrls: ['./alternative-routes-list.component.scss'],

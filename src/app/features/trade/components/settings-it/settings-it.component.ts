@@ -5,6 +5,7 @@ import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
+  standalone: false,
   selector: 'app-settings-it',
   templateUrl: './settings-it.component.html',
   styleUrls: ['./settings-it.component.scss'],

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-mobile-menu-toggler',
   templateUrl: './mobile-menu-toggler.component.html',
   styleUrls: ['./mobile-menu-toggler.component.scss'],

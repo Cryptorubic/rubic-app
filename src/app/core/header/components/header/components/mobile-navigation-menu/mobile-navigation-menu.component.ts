@@ -6,6 +6,7 @@ import { NavigationItem } from '../rubic-menu/models/navigation-item';
 import { ROUTE_PATH } from '@app/shared/constants/common/links';
 
 @Component({
+  standalone: false,
   selector: 'app-mobile-navigation-menu',
   templateUrl: './mobile-navigation-menu.component.html',
   styleUrls: ['./mobile-navigation-menu.component.scss']

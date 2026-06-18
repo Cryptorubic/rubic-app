@@ -4,6 +4,7 @@ import { CustomTokenService } from '@features/trade/components/assets-selector/c
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-custom-token',
   templateUrl: './custom-token.component.html',
   styleUrls: ['./custom-token.component.scss'],

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PrivateGasTokenService {
   private readonly DEFAULT_FEE_TOKEN = '0x0000000000000000000000000000000000000000';
 

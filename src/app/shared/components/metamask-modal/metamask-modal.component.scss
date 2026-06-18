@@ -1,7 +1,7 @@
 @use '../../../../scss/core' as *;
 
 .modals {
-  --tui-secondary: var(--tui-secondary-hover);
+  --tui-background-neutral-1: var(--tui-background-neutral-1-hover);
   position: relative;
 
   @include b(650) {
@@ -72,12 +72,13 @@
     }
 
     &:hover {
-      background-color: var(--tui-secondary);
+      background-color: var(--tui-background-neutral-1);
     }
   }
 
   &__button {
     flex: 1;
+    height: 100%;
 
     text-decoration: none;
 
@@ -87,15 +88,9 @@
       scale: 1.05;
     }
 
-
     ::ng-deep {
-      .t-wrapper {
-        background: none;
-
-        &:hover {
-          background: none;
-        }
-      }
+      background: none !important;
+      background: none !important;
 
       .t-content {
         display: flex;
@@ -106,10 +101,15 @@
         white-space: nowrap;
       }
     }
+
+    &-content {
+      @include flex(column, center, center);
+      gap: 3px;
+    }
   }
 
   &__link {
-    color: var(--tui-primary);
+    color: var(--tui-background-accent-1);
   }
 
   &__text {

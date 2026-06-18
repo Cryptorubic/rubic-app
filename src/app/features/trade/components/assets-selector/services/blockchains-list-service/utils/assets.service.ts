@@ -270,8 +270,7 @@ export abstract class AssetsService {
   public setFilterQuery(
     value: BlockchainFilters,
     totalBlockchains: number,
-    // eslint-disable-next-line rxjs/finnish
-    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    blockchainsToShow$: Observable<AvailableBlockchain[]>,
     handleSearchQuery?: (query: string) => void,
     handleSelection?: (selection: AssetListType) => void
   ): void {
@@ -286,7 +285,7 @@ export abstract class AssetsService {
         false,
         'Select blockchain',
         totalBlockchains,
-        blockchainsToShow,
+        blockchainsToShow$,
         handleSearchQuery,
         handleSelection
       );

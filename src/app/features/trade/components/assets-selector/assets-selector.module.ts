@@ -1,22 +1,22 @@
+import { TuiTextfieldControllerModule, TuiInputModule } from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDropdownModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiScrollbarModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiDataList,
+  TuiLoader,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiIcon,
+  TuiButton,
+  TuiHint
 } from '@taiga-ui/core';
-import { TuiCarouselModule, TuiDataListDropdownManagerModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiCarousel, TuiDataListDropdownManager } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { SharedModule } from '@shared/shared.module';
-import { TuiActiveZoneModule, TuiAutoFocusModule } from '@taiga-ui/cdk';
+import { TuiActiveZone, TuiAutoFocus } from '@taiga-ui/cdk';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { AssetTypesAsideComponent } from '@features/trade/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
 import { SearchBarTokensComponent } from '@features/trade/components/assets-selector/components/search-bar/search-bar-tokens.component';
@@ -27,7 +27,6 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
@@ -57,26 +56,25 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
   imports: [
     CommonModule,
     SharedModule,
-    TuiScrollbarModule,
+    TuiScrollbar,
+    TuiScrollable,
     TuiInputModule,
     FormsModule,
     TuiTextfieldControllerModule,
-    TuiSvgModule,
-    TuiButtonModule,
+    TuiIcon,
+    TuiButton,
     ScrollingModule,
-    TuiHintModule,
-    TuiHintModule,
-    TuiLoaderModule,
+    ...TuiHint,
+    TuiLoader,
     InlineSVGModule,
-    TuiAutoFocusModule,
-    TuiHostedDropdownModule,
-    TuiDataListDropdownManagerModule,
-    TuiActiveZoneModule,
-    TuiDropdownModule,
-    TuiDataListModule,
-    TuiCarouselModule
+    TuiAutoFocus,
+    ...TuiDropdown,
+    TuiDataListDropdownManager,
+    TuiActiveZone,
+    ...TuiDataList,
+    ...TuiCarousel
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [FormsTogglerService]
+  providers: []
 })
 export class AssetsSelectorModule {}

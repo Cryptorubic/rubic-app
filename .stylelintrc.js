@@ -3,10 +3,13 @@ module.exports = {
   extends: ['stylelint-config-sass-guidelines', 'stylelint-config-rational-order'],
   rules: {
     /* Ordering */
-    'plugin/rational-order': [true, {
-      'border-in-box-model': false,
-      'empty-line-between-groups': true,
-    }],
+    'plugin/rational-order': [
+      true,
+      {
+        'border-in-box-model': false,
+        'empty-line-between-groups': true
+      }
+    ],
     /* css rules */
     'selector-type-no-unknown': null,
     'at-rule-no-unknown': null,
@@ -21,7 +24,7 @@ module.exports = {
     'selector-max-compound-selectors': null,
     'selector-class-pattern': null,
     'selector-pseudo-element-no-unknown': null,
-    'selector-max-id': [1, { 'severity': 'warning' }],
+    'selector-max-id': [1, { severity: 'warning' }],
     'color-named': null,
     'property-disallowed-list': [],
     'property-no-vendor-prefix': null,
@@ -32,6 +35,7 @@ module.exports = {
     'scss/at-function-pattern': null,
     'scss/at-mixin-pattern': null,
     'scss/at-extend-no-missing-placeholder': null,
-    'order/order': null
+    'order/order': null,
+    'function-parentheses-space-inside': null
   }
-}
+};

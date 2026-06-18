@@ -11,10 +11,11 @@ import {
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ShortenAmountPipe } from '@app/shared/pipes/shorten-amount.pipe';
-import { TuiInputNumberComponent } from '@taiga-ui/kit';
+import { TuiInputNumberComponent } from '@taiga-ui/legacy';
 import BigNumber from 'bignumber.js';
 
 @Component({
+  standalone: false,
   selector: 'app-input-number',
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],

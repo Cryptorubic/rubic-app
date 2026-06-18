@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { PrivateActivityItem } from '../../models/activity-item';
 
 @Component({
+  standalone: false,
   selector: 'app-last-private-activity',
   templateUrl: './last-private-activity.component.html',
   styleUrls: ['./last-private-activity.component.scss'],

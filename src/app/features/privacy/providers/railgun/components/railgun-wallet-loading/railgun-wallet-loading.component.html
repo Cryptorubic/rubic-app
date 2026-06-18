@@ -10,7 +10,7 @@
           <span class="progress__percent">{{ value.progress }}%</span>
 
           <tui-progress-circle
-            size="l"
+            size="m"
             [max]="100"
             [value]="value.progress"
             [style.color]="value.color"
@@ -23,7 +23,7 @@
         <span>POI</span>
         <span class="progress__percent">Scan</span>
 
-        <tui-progress-circle size="l" [max]="10" [value]="data.poiProgress"></tui-progress-circle>
+        <tui-progress-circle size="m" [max]="10" [value]="data.poiProgress"></tui-progress-circle>
       </label>
     </ng-container>
   </div>

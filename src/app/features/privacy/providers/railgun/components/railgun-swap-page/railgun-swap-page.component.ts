@@ -17,6 +17,7 @@ import { RailgunTokensFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-swap-page',
   templateUrl: './railgun-swap-page.component.html',
   styleUrls: ['./railgun-swap-page.component.scss'],

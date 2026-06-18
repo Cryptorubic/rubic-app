@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-over-query-limit-error',
   templateUrl: './over-query-limit-error.component.html',
   styleUrls: ['./over-query-limit-error.component.scss'],

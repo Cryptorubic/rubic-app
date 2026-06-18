@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-theme-switcher',
   templateUrl: './theme-switcher.component.html',
   styleUrls: ['./theme-switcher.component.scss'],

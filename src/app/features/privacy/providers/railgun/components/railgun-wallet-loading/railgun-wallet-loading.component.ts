@@ -21,6 +21,7 @@ interface UtxoChain {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-wallet-loading',
   templateUrl: './railgun-wallet-loading.component.html',
   styleUrls: ['./railgun-wallet-loading.component.scss'],

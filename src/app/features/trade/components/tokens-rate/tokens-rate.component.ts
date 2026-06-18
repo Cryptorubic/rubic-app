@@ -15,6 +15,7 @@ interface TokensRate {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-tokens-rate',
   templateUrl: './tokens-rate.component.html',
   styleUrls: ['./tokens-rate.component.scss'],
