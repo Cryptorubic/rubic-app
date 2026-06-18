@@ -4,6 +4,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
+  standalone: false,
   selector: 'app-tab-bar',
   templateUrl: './tab-bar.component.html',
   styleUrls: ['./tab-bar.component.scss'],

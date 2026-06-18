@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
 
 @Component({
+  standalone: false,
   selector: 'app-total-rbc',
   templateUrl: './total-rbc.component.html',
   styleUrls: ['./total-rbc.component.scss'],

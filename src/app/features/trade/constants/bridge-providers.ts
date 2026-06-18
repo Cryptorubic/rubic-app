@@ -182,6 +182,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}wormhole.svg`,
     name: `Maker's wormhole`
   },
+  mayan: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}mayan.svg`,
+    name: 'Mayan'
+  },
   mayaprotocol: {
     averageTime: 5,
     color: 'white',
@@ -354,6 +360,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#999999',
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate V2'
+  },
+  stealthex: {
+    averageTime: 5,
+    color: '#yellow',
+    image: `${imageBasePath}stealthex.png`,
+    name: 'Stealthex'
   },
   symbiosis: {
     averageTime: 5,

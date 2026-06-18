@@ -1,0 +1,11 @@
+<div class="preset-container">
+  <button
+    tuiButton
+    appearance="secondary"
+    *ngFor="let amount of presets"
+    (click)="onPresetSelect.emit(amount)"
+    [class.active]="selectedAmount === amount"
+  >
+    {{ amount }} {{ tokenSymbol }}
+  </button>
+</div>

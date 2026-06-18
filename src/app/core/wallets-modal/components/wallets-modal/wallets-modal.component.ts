@@ -5,10 +5,9 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
-import { AsyncPipe } from '@angular/common';
+import { WA_WINDOW, WA_USER_AGENT } from '@ng-web-apis/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
@@ -19,7 +18,7 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
-import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { tuiIsEdge, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
@@ -27,13 +26,16 @@ import { IframeService } from '@app/core/services/iframe-service/iframe.service'
 import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
+import { METAMASK_PROVIDERS } from './models/metamask-providers';
+import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -42,8 +44,12 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
+  private readonly showMetamaskModal: boolean;
+
+  private readonly supportedMetamaskProvider: WALLET_NAME;
+
   public get isChromium(): boolean {
-    if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
+    if (tuiIsEdge(this.userAgent)) {
       return false;
     }
 
@@ -61,7 +67,7 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public get isMobile(): boolean {
-    return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
+    return this.headerStore.isMobile;
   }
 
   // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
@@ -78,11 +84,13 @@ export class WalletsModalComponent implements OnInit {
     tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
   );
 
+  public readonly modalDirection: 'column' | 'row';
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
-    @Inject(WINDOW) private readonly window: RubicWindow,
-    @Inject(USER_AGENT) private readonly userAgent: string,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_USER_AGENT) private readonly userAgent: string,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
@@ -90,11 +98,31 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly router: Router
   ) {
     this.allProviders = context.data?.providers
       ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
       : PROVIDERS_LIST;
+
+    const metamaskProviders = METAMASK_PROVIDERS.filter(provider =>
+      this.allProviders.some(v => v.value === provider)
+    );
+
+    this.modalDirection =
+      context.data?.direction || (this.router.url.includes('privacy') ? 'row' : 'column');
+
+    if (metamaskProviders.length < 2) {
+      this.showMetamaskModal = false;
+      this.supportedMetamaskProvider = metamaskProviders[0];
+      this.allProviders = this.allProviders.map(provider =>
+        provider.value === this.supportedMetamaskProvider
+          ? { ...provider, display: true }
+          : provider
+      );
+    } else {
+      this.showMetamaskModal = true;
+    }
   }
 
   ngOnInit() {
@@ -171,6 +199,8 @@ export class WalletsModalComponent implements OnInit {
 
   public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
     try {
+      if (!this.showMetamaskModal) return this.supportedMetamaskProvider;
+
       return this.modalService.openMetamaskModal();
     } catch {
       return null;

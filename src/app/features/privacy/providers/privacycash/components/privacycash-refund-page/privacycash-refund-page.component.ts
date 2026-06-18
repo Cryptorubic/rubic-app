@@ -16,6 +16,7 @@ import { EPHEMERAL_WALLET_GAS_AMOUNT } from '../../constants/privacycash-consts'
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 
 @Component({
+  standalone: false,
   selector: 'app-privacycash-refund-page',
   templateUrl: './privacycash-refund-page.component.html',
   styleUrls: ['./privacycash-refund-page.component.scss'],
@@ -68,7 +69,11 @@ export class PrivacycashRefundPageComponent {
         steps: [
           {
             label: 'Refund tokens',
-            action: () => this.privacycashRefundService.refundTokens(token.address, receiverAddr)
+            showLoaderOnAction: true,
+            action: () =>
+              this.privacycashRefundService
+                .refundTokens(token.address, receiverAddr)
+                .then(() => ({}))
           }
         ],
         swapType: 'refund',

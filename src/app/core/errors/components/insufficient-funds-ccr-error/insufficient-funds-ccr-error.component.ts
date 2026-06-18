@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-insufficient-funds-ccr-error',
   templateUrl: './insufficient-funds-ccr-error.component.html',
   styleUrls: ['./insufficient-funds-ccr-error.component.scss'],

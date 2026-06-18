@@ -4,6 +4,7 @@ import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilt
 import { blockchainsPromoLinks } from './constants/blockchains-promo-links';
 
 @Component({
+  standalone: false,
   selector: 'app-blockchains-promo-badge',
   templateUrl: './blockchains-promo-badge.component.html',
   styleUrls: ['./blockchains-promo-badge.component.scss'],

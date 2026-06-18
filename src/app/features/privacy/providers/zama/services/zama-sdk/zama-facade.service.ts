@@ -12,7 +12,6 @@ import { waitFor } from '@cryptorubic/web3';
 import { ZAMA_SUPPORTED_CHAINS, ZamaSupportedChain } from '../../constants/chains';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { PrivateStep } from '../../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
-import { TransactionReceipt } from 'viem';
 import { PrivatePageTypeService } from '../../../shared-privacy-providers/services/private-page-type/private-page-type.service';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PrivateLocalStorageService } from '@app/features/privacy/services/privacy-local-storage.service';
@@ -20,6 +19,7 @@ import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trad
 import { PrivateStatisticsService } from '../../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HideWindowService } from '../../../shared-privacy-providers/services/hide-window-service/hide-window.service';
+import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Injectable()
 export class ZamaFacadeService {
@@ -72,21 +72,12 @@ export class ZamaFacadeService {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
-  private showSuccessNotification(message: string): void {
-    this.notificationService.show(message, {
-      status: 'info',
-      autoClose: 15_000,
-      data: null,
-      icon: '',
-      defaultAutoCloseTime: 0
-    });
-  }
-
   private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
     if (fromBlockchain !== this.walletConnectorService.network) {
       steps.push({
         label: 'Switch network',
-        action: () => this.walletConnectorService.switchChain(fromBlockchain)
+        showLoaderOnAction: false,
+        action: () => this.walletConnectorService.switchChain(fromBlockchain).then(() => ({}))
       });
     }
   }
@@ -100,25 +91,26 @@ export class ZamaFacadeService {
     this.addSwitchNetworkStep(token.blockchain, steps);
 
     steps.push({
-      label: 'Transfer',
-      action: () =>
-        this.zamaSwapService.confidentialTransfer(token, receiver).then(isSuccess => {
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'TRANSFER',
-              'ZAMA',
-              this.walletConnectorService.address,
-              token.address,
-              token.weiAmount.toFixed(),
-              token.blockchain
-            );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
-            this.refreshBalancesAfterAction();
-          }
-        })
+      label: 'Private Transfer',
+      showLoaderOnAction: true,
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
+          this.privateStatisticsService.saveAction(
+            'TRANSFER',
+            'ZAMA',
+            this.walletConnectorService.address,
+            token.address,
+            token.weiAmount.toFixed(),
+            token.blockchain
+          );
+          this.refreshBalancesAfterAction();
+          return res;
+        });
+      }
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 
@@ -130,38 +122,36 @@ export class ZamaFacadeService {
     const pureTokenAmount = await this.zamaSwapService.getPureTokenAmount(wrapToken);
     const needApprove = await this.zamaSwapService.needApprove(pureTokenAmount);
 
-    if (needApprove) {
-      steps.push({
-        label: 'Approve',
-        action: () => this.zamaSwapService.approve(pureTokenAmount)
-      });
-    }
-
     steps.push({
-      label: 'Shield',
-      action: () =>
-        this.zamaSwapService.wrap(wrapToken).then(isSuccess => {
-          if (isSuccess) {
-            this.privateStatisticsService.saveAction(
-              'SHIELD',
-              'ZAMA',
-              this.walletConnectorService.address,
-              wrapToken.address,
-              wrapToken.weiAmount.toFixed(),
-              wrapToken.blockchain
-            );
-            this.showSuccessNotification('Transaction sent. 5-10 seconds on update balance');
-            this.refreshBalancesAfterAction();
-            this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
-            this.tokensFacade.getAndUpdateTokenBalance(wrapToken).then(balance => {
-              this.hideWindowService.setHideAsset({
-                ...this.hideWindowService.hideAsset,
-                amount: balance
-              });
+      label: 'Shield Tokens',
+      showLoaderOnAction: true,
+      action: async () => {
+        if (needApprove) {
+          await this.zamaSwapService.approve(pureTokenAmount);
+        }
+
+        return this.zamaSwapService.wrap(wrapToken).then(res => {
+          this.privateStatisticsService.saveAction(
+            'SHIELD',
+            'ZAMA',
+            this.walletConnectorService.address,
+            wrapToken.address,
+            wrapToken.weiAmount.toFixed(),
+            wrapToken.blockchain
+          );
+          this.refreshBalancesAfterAction();
+          this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.ZAMA);
+          this.tokensFacade.getAndUpdateTokenBalance(wrapToken).then(balance => {
+            this.hideWindowService.setHideAsset({
+              ...this.hideWindowService.hideAsset,
+              amount: balance
             });
-          }
-        })
+          });
+          return res;
+        });
+      }
     });
+    steps.push(donePrivateStep());
 
     return steps;
   }
@@ -174,22 +164,28 @@ export class ZamaFacadeService {
 
     this.addSwitchNetworkStep(unwrapToken.blockchain, steps);
 
-    let unwrapReceipt: TransactionReceipt;
+    let burntAmount = '';
 
-    const onUnwrapSuccess = (receipt: TransactionReceipt) => {
-      unwrapReceipt = receipt;
+    const onUnwrapSuccess = (amount: string) => {
+      burntAmount = amount;
     };
 
     steps.push({
-      label: 'Unshield',
-      action: () => this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess)
+      label: 'Unshield Tokens',
+      showLoaderOnAction: true,
+      action: async () => {
+        await waitFor(0); // Delay to allow UI to rerender
+        return this.zamaSwapService.unwrap(unwrapToken, receiver, onUnwrapSuccess).then(() => ({}));
+      }
     });
 
     steps.push({
-      label: 'Finalize unshield',
+      label: 'Complete Unshielding',
+      showLoaderOnAction: true,
       action: () =>
-        this.zamaSwapService.finalizeUnwrap(unwrapToken, unwrapReceipt).then(isSuccess => {
-          if (isSuccess) {
+        this.zamaSwapService
+          .finalizeUnwrap(unwrapToken, burntAmount)
+          .then(res => {
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
               'ZAMA',
@@ -198,13 +194,16 @@ export class ZamaFacadeService {
               unwrapToken.weiAmount.toFixed(),
               unwrapToken.blockchain
             );
-            this.showSuccessNotification(
-              'Transaction sent. This may take a moment. Please keep Rubic App open'
-            );
             this.refreshBalancesAfterAction();
-          }
-        })
+            return res;
+          })
+          .catch(err => {
+            this.zamaBalanceService.refreshPendingUnshieldBalances();
+            throw err;
+          })
     });
+    steps.push(donePrivateStep());
+
     return steps;
   }
 
@@ -246,6 +245,7 @@ export class ZamaFacadeService {
 
         if (signature) {
           this.zamaBalanceService.refreshBalances();
+          this.zamaBalanceService.refreshPendingUnshieldBalances();
         }
       });
   }

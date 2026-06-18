@@ -9,7 +9,7 @@
           <div class="tui-form__row" *ngIf="!hasAccount">
             <tui-input-password formControlName="phrase" tuiHintContent="A tooltip">
               Secret phrase
-              <input placeholder="My seed phrase is definitely not this" tuiTextfield />
+              <input placeholder="My seed phrase is definitely not this" tuiTextfieldLegacy />
               <span class="tui-required"></span>
             </tui-input-password>
           </div>
@@ -21,7 +21,7 @@
             <tui-error formControlName="password" [error]="[] | tuiFieldError | async"></tui-error>
           </div>
           <div class="tui-form__buttons">
-            <button size="l" tuiButton type="submit" class="tui-form__button">Submit</button>
+            <button size="m" tuiButton type="submit" class="tui-form__button">Submit</button>
           </div>
         </div>
       </div>

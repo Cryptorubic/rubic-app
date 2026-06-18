@@ -1,4 +1,4 @@
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs';
 import { compareObjects } from '@shared/utils/utils';
 
 export function distinctObjectUntilChanged<T extends object>() {

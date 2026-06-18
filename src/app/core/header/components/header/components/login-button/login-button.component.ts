@@ -13,6 +13,7 @@ import {
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-login-button',
   templateUrl: './login-button.component.html',
   styleUrls: ['./login-button.component.scss'],
@@ -40,7 +41,10 @@ export class LoginButtonComponent {
       this.gtmService.fireClickOnConnectWalletButtonEvent(this.buttonHierarchy);
     }
     const wallets = this.filterWallets();
-    this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
+    const modalDirection = this.router.url.includes('privacy') ? 'row' : 'column';
+    this.modalService
+      .openWalletModal(this.injector, { providers: wallets, direction: modalDirection })
+      .subscribe();
   }
 
   private filterWallets(): WALLET_NAME[] {

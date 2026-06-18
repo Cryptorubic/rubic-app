@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -6,7 +7,6 @@ import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/e
 import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
 import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/coin-base-wallet-adapter';
 import { StoreService } from '@core/services/store/store.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
@@ -98,7 +98,7 @@ export class WalletConnectorService {
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone,
     private readonly modalsService: ModalService

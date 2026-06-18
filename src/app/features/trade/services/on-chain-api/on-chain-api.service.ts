@@ -59,7 +59,7 @@ export class OnChainApiService {
       provider: type
     };
 
-    return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
+    return firstValueFrom(this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req));
   }
 
   /**
@@ -151,9 +151,9 @@ export class OnChainApiService {
     );
   }
 
-  public getClearswapStatus(id: string): Promise<{ status: CLEARSWAP_STATUS }> {
+  public getClearswapStatus(id: string): Promise<{ status: CLEARSWAP_STATUS; destTxHash: string }> {
     return firstValueFrom(
-      this.httpService.get<{ status: CLEARSWAP_STATUS }>(
+      this.httpService.get<{ status: CLEARSWAP_STATUS; destTxHash: string }>(
         `v3/tmp/statuses/clearswap/status?rubic_id=${id}`
       )
     );

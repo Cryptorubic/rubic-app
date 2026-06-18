@@ -19,3 +19,7 @@ export type PrivateTransferFormConfig = Omit<
 > & { withMaxBtn: boolean; direction?: 'from' | 'to' };
 
 export type PrivateShieldFormConfig = PrivateTransferFormConfig;
+export type PrivateUnshieldFormConfig = PrivateTransferFormConfig & {
+  showPresets: boolean;
+  showWarnings: boolean;
+};

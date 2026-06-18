@@ -1,16 +1,9 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -24,15 +17,15 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-form-page',
   templateUrl: './swap-form-page.component.html',
   styleUrls: ['./swap-form-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
+  providers: [],
   animations: [
     trigger('receiverAnimation', [
       transition(':enter', [
@@ -49,7 +42,10 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 export class SwapFormPageComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  public readonly fromAsset$ = this.swapFormService.fromToken$;
+  public readonly fromAsset$ = this.swapFormService.fromToken$.pipe(
+    combineLatestWith(this.authService.currentUser$),
+    map(([fromAsset]) => fromAsset)
+  );
 
   public readonly toAsset$ = this.swapFormService.toToken$;
 
@@ -66,10 +62,10 @@ export class SwapFormPageComponent {
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
       this.toAsset$,
-      this.settingsService.crossChainRoutingValueChanges.pipe(
+      this.settingsService.crossChainRoutingValueChanges$.pipe(
         startWith(this.settingsService.crossChainRoutingValue)
       ),
-      this.settingsService.instantTradeValueChanges.pipe(
+      this.settingsService.instantTradeValueChanges$.pipe(
         startWith(this.settingsService.instantTradeValue)
       )
     ),
@@ -100,15 +96,12 @@ export class SwapFormPageComponent {
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
-    this.swapFormService.inputValueDistinct$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(inputValue => {
-        this.refundService.onSwapFormInputChanged(inputValue);
-        this.solanaGaslessService.onSwapFormInputChanged(inputValue);
-      });
+    this.swapFormService.inputValueDistinct$.pipe(takeUntilDestroyed()).subscribe(inputValue => {
+      this.refundService.onSwapFormInputChanged(inputValue);
+      this.solanaGaslessService.onSwapFormInputChanged(inputValue);
+    });
 
     this.authService.currentUser$
       .pipe(
@@ -124,7 +117,7 @@ export class SwapFormPageComponent {
             : of(new BigNumber(NaN));
           return forkJoin([srcBalance$, dstBalance$]);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe(([srcBalance, dstBalance]) => {
         const srcToken = this.swapFormService.inputValue.fromToken;

@@ -15,7 +15,7 @@
   &__provider-container {
     padding: var(--tui-padding-l);
 
-    border-bottom: 1px solid var(--tui-secondary);
+    border-bottom: 1px solid var(--tui-background-neutral-1);
 
     &_selected {
       background: var(--io-background);
@@ -65,7 +65,7 @@
   }
 
   &__token-provider {
-    @include font(18px, 18px, 500, var(--tui-text-03), 0.54px);
+    @include font(18px, 18px, 500, var(--tui-text-tertiary), 0.54px);
     display: none;
   }
 
@@ -88,7 +88,7 @@
   }
 
   &__amount-price {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-weight: 400;
     font-size: 14px;
   }
@@ -113,7 +113,7 @@
   }
 
   &__provider-label {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   &__best-badge {
@@ -153,12 +153,12 @@
       }
 
       svg path {
-        fill: var(--tui-text-03);
+        fill: var(--tui-text-tertiary);
       }
     }
 
     svg path {
-      fill: var(--tui-text-03);
+      fill: var(--tui-text-tertiary);
     }
   }
 
@@ -180,7 +180,7 @@
       gap: 7px;
 
       &-text {
-        color: var(--tui-text-03);
+        color: var(--tui-text-tertiary);
         line-height: 10px;
       }
     }
@@ -219,7 +219,7 @@ app-route-element {
       }
 
       .element__token-symbol {
-        @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+        @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
       }
 
       .element__token-amount {

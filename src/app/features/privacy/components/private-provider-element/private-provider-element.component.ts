@@ -10,6 +10,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 
 @Component({
+  standalone: false,
   selector: 'app-private-provider-element',
   templateUrl: './private-provider-element.component.html',
   styleUrls: ['./private-provider-element.component.scss'],

@@ -11,7 +11,7 @@
       "os": ["node_modules/os-browserify"],
       "http": ["node_modules/stream-http"],
       "crypto": ["node_modules/crypto-browserify"],
-      "querystring": ["./node_modules/querystring-es3"],
+      "querystring": ["node_modules/querystring-es3"],
       "fs": ["node_modules/browserify-fs"],
       "path": ["node_modules/path-browserify"],
       "@app/*": ["src/app/*"],
@@ -21,13 +21,8 @@
       "zlib": ["node_modules/browserify-zlib"]
     }
   },
-  "files": [
-    "main.ts",
-    "polyfills.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ],
+  "files": ["main.ts", "polyfills.ts", "custom-types.d.ts"],
+  "include": ["src/**/*.d.ts"],
   "angularCompilerOptions": {
     "strictTemplates": true
   }

@@ -13,6 +13,7 @@ export const houdiniFormConfig: PrivateSwapFormConfig = {
     withChainsFilter: false,
     withTokensFilter: false,
     withFavoriteTokens: false,
-    showAllChains: false
+    showAllChains: false,
+    hidePromoBadges: true
   }
 };

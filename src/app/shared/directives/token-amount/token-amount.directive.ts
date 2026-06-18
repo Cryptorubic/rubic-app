@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 @Directive({
+  standalone: false,
   selector: '[appTokenAmount]'
 })
 export class TokenAmountDirective {
