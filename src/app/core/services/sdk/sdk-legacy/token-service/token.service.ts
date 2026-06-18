@@ -16,7 +16,8 @@ import {
   TokenBaseStruct,
   TonBlockchainName,
   TronBlockchainName,
-  StellarBlockchainName
+  StellarBlockchainName,
+  RippleBlockchainName
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { BlockchainAdapterFactoryService } from '../blockchain-adapter-factory/blockchain-adapter-factory.service';
@@ -85,6 +86,12 @@ export class TokenService {
     }
     if (chainType === CHAIN_TYPE.STELLAR) {
       const blockchain = tokenBaseStruct.blockchain as StellarBlockchainName;
+      const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      const tokensInfo = await adapter.callForTokenInfo(tokenBaseStruct.address);
+      return tokensInfo;
+    }
+    if (chainType === CHAIN_TYPE.RIPPLE) {
+      const blockchain = tokenBaseStruct.blockchain as RippleBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
       const tokensInfo = await adapter.callForTokenInfo(tokenBaseStruct.address);
       return tokensInfo;

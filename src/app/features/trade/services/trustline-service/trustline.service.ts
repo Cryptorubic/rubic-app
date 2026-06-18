@@ -17,13 +17,18 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 import { WALLET_CONNECT_CONFIG } from './constants/wallet-connect-config';
 import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
+import { RippleAdapter } from '@cryptorubic/web3';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrustlineService {
-  private readonly adapter: StellarAdapter = this.adapterFactory.getAdapter(
+  private readonly stellarAdapter: StellarAdapter = this.adapterFactory.getAdapter(
     BLOCKCHAIN_NAME.STELLAR
+  );
+
+  private readonly rippleAdapter: RippleAdapter = this.adapterFactory.getAdapter(
+    BLOCKCHAIN_NAME.RIPPLE
   );
 
   constructor(
@@ -52,12 +57,12 @@ export class TrustlineService {
               reject(new Error('Connected wallet must be the same as receiver'));
             }
 
-            if (!this.adapter.connected) {
-              this.adapter.initWeb3Client();
+            if (!this.stellarAdapter.connected) {
+              this.stellarAdapter.initWeb3Client();
             }
 
-            this.adapter.signer.setWalletAddress(address);
-            this.adapter.signer.setWallet(wallet);
+            this.stellarAdapter.signer.setWalletAddress(address);
+            this.stellarAdapter.signer.setWallet(wallet);
 
             resolve(true);
           } catch (err) {
@@ -78,9 +83,16 @@ export class TrustlineService {
     }
   }
 
-  public async addTrustline(tokenAddress: string): Promise<string | null> {
+  public async addTrustline(
+    tokenAddress: string,
+    blockchain:
+      | typeof BLOCKCHAIN_NAME.STELLAR
+      | typeof BLOCKCHAIN_NAME.RIPPLE = BLOCKCHAIN_NAME.STELLAR
+  ): Promise<string | null> {
     try {
-      const hash = await this.adapter.addTrustline(tokenAddress);
+      const adapter =
+        blockchain === BLOCKCHAIN_NAME.RIPPLE ? this.rippleAdapter : this.stellarAdapter;
+      const hash = await adapter.addTrustline(tokenAddress);
       return hash;
     } catch (err) {
       this.errorService.catch(err);
@@ -100,14 +112,16 @@ export class TrustlineService {
     };
 
     try {
-      if (to.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+      if (to.blockchain === BLOCKCHAIN_NAME.STELLAR || to.blockchain === BLOCKCHAIN_NAME.RIPPLE) {
+        const adapter =
+          to.blockchain === BLOCKCHAIN_NAME.RIPPLE ? this.rippleAdapter : this.stellarAdapter;
         const address = from.blockchain === to.blockchain ? fromAddress : receiver;
         if (address) {
-          if (!this.adapter.connected) {
-            this.adapter.initWeb3Client();
+          if (!adapter.connected) {
+            adapter.initWeb3Client();
           }
 
-          const needTrustline = await this.adapter.needTrustline(to, address);
+          const needTrustline = await adapter.needTrustline(to, address);
 
           return TRUSTLINE_AFTER_SWAP_PROVIDERS.includes(type)
             ? { ...defaultOptions, needTrustlineAfterSwap: needTrustline }
@@ -119,7 +133,7 @@ export class TrustlineService {
         const transitToken = trade.getTrustlineTransitToken();
 
         if (transitToken) {
-          const needTransitTokenTrustline = await this.adapter.needTrustline(
+          const needTransitTokenTrustline = await this.stellarAdapter.needTrustline(
             new TokenAmount({
               ...transitToken,
               tokenAmount: '0'

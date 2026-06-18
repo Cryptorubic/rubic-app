@@ -85,7 +85,10 @@ export class TrustlineComponent implements OnInit {
   private async addTrustline(): Promise<void> {
     this.setLoadingState();
 
-    const hash = await this.trustlineService.addTrustline(this.options.trustlineToken.address);
+    const hash = await this.trustlineService.addTrustline(
+      this.options.trustlineToken.address,
+      this.options.toBlockchain as typeof BLOCKCHAIN_NAME.STELLAR | typeof BLOCKCHAIN_NAME.RIPPLE
+    );
     if (hash) {
       this.onTrustlineAdd.emit();
     } else {

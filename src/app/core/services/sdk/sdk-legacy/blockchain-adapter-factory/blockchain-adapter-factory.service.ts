@@ -9,13 +9,15 @@ import {
   StellarBlockchainName,
   SuiBlockchainName,
   TonBlockchainName,
-  TronBlockchainName
+  TronBlockchainName,
+  RippleBlockchainName
 } from '@cryptorubic/core';
 import {
   AbstractAdapter,
   BitcoinAdapter,
   EvmAdapter,
   BlockchainAdapterFactoryService as SdkAdapterFactory,
+  RippleAdapter,
   SolanaAdapter,
   SuiAdapter,
   TonAdapter,
@@ -50,6 +52,7 @@ export class BlockchainAdapterFactoryService {
   public getAdapter(blockchain: SuiBlockchainName): SuiAdapter;
   public getAdapter(blockchain: BitcoinBlockchainName): BitcoinAdapter;
   public getAdapter(blockchain: StellarBlockchainName): StellarAdapter;
+  public getAdapter(blockchain: RippleBlockchainName): RippleAdapter;
   public getAdapter(blockchain: BlockchainName): AbstractAdapter<unknown, unknown, BlockchainName> {
     return this.adapterFactory.getAdapter(blockchain as RubicAny);
   }
