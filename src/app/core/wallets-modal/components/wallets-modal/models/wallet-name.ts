@@ -25,5 +25,6 @@ export enum WALLET_NAME {
   BACKPACK = 'backpack',
   LOBSTR = 'lobstr',
   FREIGHTER = 'freighter',
-  STELLAR_WALLET_CONNECT = 'stellar_wallectconnect'
+  STELLAR_WALLET_CONNECT = 'stellar_wallectconnect',
+  XAMAN = 'xaman'
 }

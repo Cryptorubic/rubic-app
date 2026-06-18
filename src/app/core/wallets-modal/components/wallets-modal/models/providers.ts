@@ -199,5 +199,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Xaman',
+    value: WALLET_NAME.XAMAN,
+    img: './assets/images/icons/wallets/xaman.webp',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];

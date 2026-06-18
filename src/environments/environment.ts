@@ -20,7 +20,8 @@ export const ENVIRONMENT: Env = {
 
   zrxAffiliateAddress: undefined as string,
   onramperApiKey: 'pk_prod_01H03RG3KT4TEKY80D82R1N4ZS',
-  lifiApiKey: '0a1eec2c-b1bd-4dc1-81cf-c988f099c929.f5950d26-5955-4e21-9db2-77ad984ea575'
+  lifiApiKey: '0a1eec2c-b1bd-4dc1-81cf-c988f099c929.f5950d26-5955-4e21-9db2-77ad984ea575',
+  xamanApiKey: '6fa2a9bf-af09-4a78-9cb2-330ac5896441'
 };
 
 /*

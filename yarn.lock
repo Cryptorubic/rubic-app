@@ -8816,6 +8816,13 @@
   resolved "https://registry.yarnpkg.com/@types/web/-/web-0.0.197.tgz#624cf02b57e79ec9d90b61b24b95fe1732713e45"
   integrity sha512-V4sOroWDADFx9dLodWpKm298NOJ1VJ6zoDVgaP+WBb/utWxqQ6gnMzd9lvVDAr/F3ibiKaxH9i45eS0gQPSTaQ==
 
+"@types/websocket@^1.0.5":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@types/websocket/-/websocket-1.0.10.tgz#804b1a02780da522f5742bc184a6d16a2eb78c7c"
+  integrity sha512-svjGZvPB7EzuYS94cI7a+qhwgGU1y89wUgjT6E2wVUfmAGIvRfT7obBvRtnhXCSsoMdlG4gBFGE7MfkIXZLoww==
+  dependencies:
+    "@types/node" "*"
+
 "@types/ws@^7.4.4":
   version "7.4.7"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.7.tgz#f7c390a36f7a0679aa69de2d501319f4f8d9b702"
@@ -12688,6 +12695,11 @@ crypto-browserify@^3.12.0:
     randombytes "^2.1.0"
     randomfill "^1.0.4"
 
+crypto-js@^4.0.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
+
 css-loader@7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-7.1.2.tgz#64671541c6efe06b0e22e750503106bdd86880f8"
@@ -14926,6 +14938,13 @@ feaxios@^0.0.23:
   integrity sha512-eghR0A21fvbkcQBgZuMfQhrXxJzC0GNUGC9fXhBge33D+mFDTwl0aJ35zoQQn575BhyjQitRc5N4f+L4cP708g==
   dependencies:
     is-retry-allowed "^3.0.0"
+
+fetch-ponyfill@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/fetch-ponyfill/-/fetch-ponyfill-7.1.0.tgz#4266ed48b4e64663a50ab7f7fcb8e76f990526d0"
+  integrity sha512-FhbbL55dj/qdVO3YNK7ZEkshvj3eQ7EuIGV2I6ic/2YiocvyWv+7jg2s4AyS0wdRU75s3tA8ZxI/xPigb0v5Aw==
+  dependencies:
+    node-fetch "~2.6.1"
 
 fetch-retry@^6.0.0:
   version "6.0.0"
@@ -19535,6 +19554,13 @@ node-fetch@^2.6.1, node-fetch@^2.6.7, node-fetch@^2.6.9, node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
+  dependencies:
+    whatwg-url "^5.0.0"
+
+node-fetch@~2.6.1:
+  version "2.6.13"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.13.tgz#a20acbbec73c2e09f9007de5cda17104122e0010"
+  integrity sha512-StxNAxh15zr77QvvkmveSQ8uCQ4+v5FkvNTj0OESmiHu+VRi/gXArXtkWMElOsOUNLtUEvI4yS+rdtOHZTwlQA==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -25571,7 +25597,7 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@^1.0.32:
+websocket@^1.0.32, websocket@^1.0.34:
   version "1.0.35"
   resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.35.tgz#374197207d7d4cc4c36cbf8a1bb886ee52a07885"
   integrity sha512-/REy6amwPZl44DDzvRCkaI1q1bIiQB0mEFQLUrhz3z2EK91cp3n72rAjUlrTP0zV22HJIUOVHQGPxhFRjxjt+Q==
@@ -25973,6 +25999,58 @@ xtend@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-3.0.0.tgz#5cce7407baf642cba7becda568111c493f59665a"
   integrity sha512-sp/sT9OALMjRW1fKDlPeuSZlDQpkqReA0pyJukniWbTGoEKefHxhGJynE3PNhUMlcM8qWIjPwecwCw4LArS5Eg==
+
+xumm-js-pkce@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/xumm-js-pkce/-/xumm-js-pkce-1.0.2.tgz#1980407128b5fa105b96d2f048c63592790f9426"
+  integrity sha512-hcadf2mHYBd6vCaKtQhcLJJjoG+1XIIbh2mq+QthheoRHAf3k/gqQNDnVqJnANTK7NBKo7GJWnY2yCkYj/AQzQ==
+  dependencies:
+    crypto-js "^4.0.0"
+
+xumm-oauth2-pkce@^2.8.3:
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/xumm-oauth2-pkce/-/xumm-oauth2-pkce-2.8.7.tgz#0d5e24c61912065d6eb4240b89aa1525a8e6b18f"
+  integrity sha512-gvy3L4WfQAWH9IRiaEOa2TRVDoxXGkzDRYdtVPrAygyo2kB/b216YxqraYWFxW90ngvA1/s8ze0TOtBmzvcmtA==
+  dependencies:
+    debug "^4.1.1"
+    events "^3.3.0"
+    xumm-js-pkce "^1.0.2"
+    xumm-sdk "^1.11.0"
+
+xumm-sdk@^1.11.0, xumm-sdk@^1.11.2:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/xumm-sdk/-/xumm-sdk-1.11.2.tgz#c481e2cab5e275b2006bb3401a9cff64bc8d2af1"
+  integrity sha512-yCS7o0hd36Ijg+FeIYB4ghnx/26kcmnN1ngvTiFzoXY3j/qmTvtlFmuvAwp58kwFM3LIhz3F7XTZjG+CqVheOQ==
+  dependencies:
+    "@types/websocket" "^1.0.5"
+    assert "^2.0.0"
+    bignumber.js "^9.0.0"
+    buffer "^6.0.3"
+    debug "^4.1.1"
+    events "^3.3.0"
+    fetch-ponyfill "^7.1.0"
+    node-fetch "^2.6.1"
+    os-browserify "^0.3.0"
+    websocket "^1.0.34"
+
+xumm-xapp-sdk@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/xumm-xapp-sdk/-/xumm-xapp-sdk-1.7.2.tgz#1168cfd4e2d23af998898ae6a5295f06ff631c91"
+  integrity sha512-kiJAbA+F4gRNRux1zZ+PYJNko9fI4Y8EFf/4EMX4tPcdQEQyXfIMPj7l6tgwSNRy2sISbw2jUYDMayL+ZFlmOg==
+  dependencies:
+    debug "^4.1.1"
+    events "^3.3.0"
+
+xumm@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/xumm/-/xumm-1.8.0.tgz#dfeeaef388e8f6b8f8fd55c9b1e8268093e06b46"
+  integrity sha512-KTNnNR3vWZ46TV0ucUu2qdLz+/28tuUBgzEudDC7uOG/WmKvy1/MSYxAKrDFHkCFW5nPmJK2UyWopDsHH0RJag==
+  dependencies:
+    buffer "^6.0.3"
+    events "^3.3.0"
+    xumm-oauth2-pkce "^2.8.3"
+    xumm-sdk "^1.11.2"
+    xumm-xapp-sdk "^1.7.2"
 
 y18n@^4.0.0:
   version "4.0.3"

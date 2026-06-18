@@ -17,4 +17,5 @@ export interface Env {
   zrxAffiliateAddress: string;
   onramperApiKey: string;
   lifiApiKey: string;
+  xamanApiKey: string;
 }

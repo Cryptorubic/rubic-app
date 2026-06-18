@@ -54,6 +54,7 @@ import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack
 import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
+import { XamanWalletAdapter } from '../wallets-adapters/xrpl/xaman-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -250,6 +251,10 @@ export class WalletConnectorService {
       return new StellarWalletConnectAdapter(...defaultConstructorParameters);
     }
 
+    if (walletName === WALLET_NAME.XAMAN) {
+      return new XamanWalletAdapter(...defaultConstructorParameters);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
@@ -287,6 +292,9 @@ export class WalletConnectorService {
     }
     if (this.chainType === CHAIN_TYPE.STELLAR) {
       return [BLOCKCHAIN_NAME.STELLAR];
+    }
+    if (this.chainType === CHAIN_TYPE.RIPPLE) {
+      return [BLOCKCHAIN_NAME.RIPPLE];
     }
 
     throw new Error('Blockchain is not supported');
