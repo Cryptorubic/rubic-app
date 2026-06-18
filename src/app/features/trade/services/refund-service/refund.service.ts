@@ -51,7 +51,8 @@ export class RefundService {
   public onTradeSelection(trade: SelectedTrade): void {
     if (
       trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO
     ) {
       this.refundAddressCtrl.addValidators([Validators.required]);
       this._isValidRefundAddress$.next(false);
