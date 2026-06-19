@@ -50,7 +50,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
    * Checks possible metamask errors.
    */
   private checkErrors(): void {
-    if (!(this.wallet as RubicAny)?.isMetaMask) {
+    if (!(this.wallet as RubicAny)?.isMetaMask && this.device === 'desktop') {
       throw new MetamaskError();
     }
   }
