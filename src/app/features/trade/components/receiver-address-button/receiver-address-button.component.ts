@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-receiver-address-button',
   templateUrl: './receiver-address-button.component.html',
   styleUrls: ['./receiver-address-button.component.scss'],

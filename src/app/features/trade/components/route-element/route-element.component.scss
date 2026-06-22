@@ -19,7 +19,7 @@
     display: flex;
     gap: var(--tui-padding-xs);
 
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-size: 12px;
 
     > div {
@@ -34,7 +34,7 @@
   }
 
   &__provider-name {
-    color: var(--tui-text-01);
+    color: var(--tui-text-primary);
     font-size: 15px;
   }
 }

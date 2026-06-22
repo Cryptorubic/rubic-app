@@ -1,8 +1,13 @@
+import { provideEventPlugins } from '@taiga-ui/event-plugins';
 import { BrowserModule, Meta } from '@angular/platform-browser';
-import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { ErrorHandler, Inject, NgModule, provideAppInitializer, inject } from '@angular/core';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXsrfConfiguration
+} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TuiAlertModule, TuiDialogModule, TuiRootModule } from '@taiga-ui/core';
+import { TuiRoot, TuiAlert, TuiDialog, tuiHintOptionsProvider } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavigationEnd, Router, Scroll } from '@angular/router';
 import { DOCUMENT, ViewportScroller } from '@angular/common';
@@ -11,37 +16,29 @@ import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
-import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 import * as Sentry from '@sentry/angular';
 import { privacyInitializer } from './features/privacy/utils/privacy-initializer';
 import { PrivateLocalStorageService } from './features/privacy/services/privacy-local-storage.service';
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,
-    TuiRootModule,
-    TuiAlertModule,
-    TuiDialogModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'csrftoken',
-      headerName: 'X-CSRFToken'
-    }),
+    TuiRoot,
+    TuiAlert,
+    TuiDialog,
     AppRoutingModule,
-    HttpClientModule,
     NgxGoogleAnalyticsModule
   ],
   providers: [
-    MOBILE_NATIVE_MODAL_PROVIDER,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (() => () => {})();
+      return initializerFn();
+    }),
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler()
@@ -50,20 +47,23 @@ import { PrivateLocalStorageService } from './features/privacy/services/privacy-
       provide: Sentry.TraceService,
       deps: [Router]
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [Sentry.TraceService],
-      multi: true
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: privacyInitializer,
-      deps: [PrivateLocalStorageService],
-      multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
+    provideAppInitializer(() => {
+      inject(Sentry.TraceService);
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = privacyInitializer(inject(PrivateLocalStorageService));
+      return initializerFn();
+    }),
+    provideEventPlugins(),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withXsrfConfiguration({
+        cookieName: 'csrftoken',
+        headerName: 'X-CSRFToken'
+      })
+    ),
+    tuiHintOptionsProvider({ appearance: 'dark' })
+  ]
 })
 export class AppModule {
   constructor(

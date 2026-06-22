@@ -2,8 +2,9 @@
 
 :host {
   --tui-secondary: var(--io-background);
-  --tui-secondary-hover: var(--tui-secondary);
+  --tui-background-neutral-1-hover: var(--io-background);
   --tui-secondary-active: #2c2d36;
+  --tui-text-action: #9a9ab0;
 }
 
 .preset-container {
@@ -19,6 +20,8 @@
 
     font-size: clamp(12px, 1.2vw + 8px, 15px);
 
+    background-color: var(--io-background);
+
     border-radius: 0;
 
     &:first-child {
@@ -28,17 +31,9 @@
     &:last-child {
       border-bottom-right-radius: var(--tui-radius-m);
     }
-
-    ::ng-deep .t-wrapper {
-      padding: 0;
-
-      color: var(--tui-text-02);
-    }
   }
 }
 
 .active {
-  ::ng-deep .t-wrapper {
-    color: var(--tui-primary) !important;
-  }
+  color: var(--tui-background-accent-1) !important;
 }

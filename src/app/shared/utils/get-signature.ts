@@ -1,5 +1,5 @@
-import crypto from 'crypto';
+import createHmac from 'create-hmac';
 
 export function getSignature(secret: string, body: string): string {
-  return crypto.createHmac('sha256', secret).update(body).digest('hex');
+  return createHmac('sha256', secret).update(body).digest('hex');
 }

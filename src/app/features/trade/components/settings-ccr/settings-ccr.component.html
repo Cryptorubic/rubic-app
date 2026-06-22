@@ -1,3 +1,4 @@
+<!-- TODO: (Taiga UI migration) tuiButton "whiteblock-active" appearance is no longer available. Use 'appearance="outline-grayscale" tuiAppearanceMode="checked"' -->
 <div class="settings">
   <form [formGroup]="crossChainRoutingForm" class="settings__form">
     <div class="settings__row">
@@ -5,7 +6,6 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.crossChainRouting.slippage' | translate"
-        tuiHintAppearance="onDark"
       ></div>
       <label>{{ 'settings.crossChainRouting.slippageTitle' | translate }}</label>
     </div>
@@ -66,14 +66,16 @@
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.crossChainRouting.showReceiverAddress' | translate"
-        tuiHintAppearance="onDark"
       ></div>
       <label>{{ 'settings.crossChainRouting.showReceiverAddressTitle' | translate }}</label>
-      <tui-toggle
+      <input
+        tuiSwitch
+        type="checkbox"
         class="settings__toggle"
+        size="s"
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
-      ></tui-toggle>
+      />
     </div>
   </form>
 </div>

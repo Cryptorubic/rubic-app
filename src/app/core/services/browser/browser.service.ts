@@ -1,6 +1,6 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { BROWSER } from '@shared/models/browser/browser';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { getWallets } from '@wallet-standard/app';
 
@@ -30,5 +30,5 @@ export class BrowserService {
     }
   }
 
-  constructor(@Inject(WINDOW) private window: RubicWindow) {}
+  constructor(@Inject(WA_WINDOW) private window: RubicWindow) {}
 }

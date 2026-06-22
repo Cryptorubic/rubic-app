@@ -84,7 +84,7 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
       } else {
         this.window.location.reload();
       }
-    } catch (error) {
+    } catch {
       throw new WalletlinkError();
     }
   }

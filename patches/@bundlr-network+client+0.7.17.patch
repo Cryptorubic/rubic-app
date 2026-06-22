@@ -1,0 +1,12 @@
+diff --git a/node_modules/@bundlr-network/client/build/common/chunker.js b/node_modules/@bundlr-network/client/build/common/chunker.js
+index 408164f..d05b927 100644
+--- a/node_modules/@bundlr-network/client/build/common/chunker.js
++++ b/node_modules/@bundlr-network/client/build/common/chunker.js
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-const stream_1 = require("stream");
++const stream_1 = require("stream-browserify");
+ class SizeChunker extends stream_1.Transform {
+     constructor(options) {
+         var _a, _b;

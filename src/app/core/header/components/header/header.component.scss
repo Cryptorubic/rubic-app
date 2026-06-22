@@ -39,11 +39,9 @@
 }
 
 .active-router-link {
-  ::ng-deep .t-wrapper {
-    color: black;
+  color: black !important;
 
-    background: var(--tui-primary);
-  }
+  background: var(--tui-background-accent-1);
 
   .icon {
     ::ng-deep svg path {
@@ -76,16 +74,12 @@
   .rubic-header {
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
-  
+
   .swap-button,
   .private-mode-button {
     height: 40px !important;
 
-    ::ng-deep {
-      .t-wrapper {
-        padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-      }
-    }
+    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
   }
 
   app-rubic-menu-toggler,

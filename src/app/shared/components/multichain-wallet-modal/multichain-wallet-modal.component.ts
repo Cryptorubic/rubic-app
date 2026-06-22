@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MultichainWalletOption } from '@app/core/wallets-modal/components/wallets-modal/models/types';
 import { MULTICHAIN_OPTIONS_MAPPING } from '@app/core/wallets-modal/components/wallets-modal/models/multichain-options-mapping';
 
 @Component({
+  standalone: false,
   selector: 'app-multichain-wallet-modal',
   templateUrl: './multichain-wallet-modal.component.html',
   styleUrls: ['./multichain-wallet-modal.component.scss'],

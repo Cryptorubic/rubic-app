@@ -22,6 +22,7 @@ import { PrivateShieldFormConfig } from '../../models/swap-form-types';
 import { HideWindowService } from '../../services/hide-window-service/hide-window.service';
 
 @Component({
+  standalone: false,
   selector: 'app-hide-tokens-window',
   templateUrl: './hide-tokens-window.component.html',
   styleUrls: ['./hide-tokens-window.component.scss'],

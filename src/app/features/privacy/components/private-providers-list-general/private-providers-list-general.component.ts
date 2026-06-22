@@ -13,6 +13,7 @@ import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
+  standalone: false,
   selector: 'app-private-providers-list-general',
   templateUrl: './private-providers-list-general.component.html',
   styleUrls: ['./private-providers-list-general.component.scss'],

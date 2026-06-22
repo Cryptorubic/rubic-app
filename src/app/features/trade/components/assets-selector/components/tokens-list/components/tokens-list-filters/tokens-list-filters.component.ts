@@ -5,6 +5,7 @@ import { tap } from 'rxjs';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-tokens-list-filters',
   templateUrl: './tokens-list-filters.component.html',
   styleUrls: ['./tokens-list-filters.component.scss'],

@@ -8,6 +8,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 const onChinCols = ['from', 'to', 'blockchain', 'date', 'status', 'provider'] as const;
 
 @Component({
+  standalone: false,
   selector: 'app-on-chain-desktop-table',
   templateUrl: './on-chain-desktop-table.component.html',
   styleUrls: ['./on-chain-desktop-table.component.scss'],

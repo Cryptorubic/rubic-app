@@ -3,6 +3,7 @@ import { VolumeApiService } from 'src/app/core/services/backend/volume-api/volum
 import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-volume',
   templateUrl: './rubic-volume.component.html',
   styleUrls: ['./rubic-volume.component.scss'],

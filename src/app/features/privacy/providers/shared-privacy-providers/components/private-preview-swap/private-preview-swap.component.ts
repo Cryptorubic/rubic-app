@@ -4,7 +4,7 @@ import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { AssetSelector } from '@app/shared/models/asset-selector';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import {
   PreviewPrivateSwapOptions,
   PreviewSwapWarning,
@@ -27,6 +27,7 @@ import { GasToken } from '@app/shared/models/tokens/gas-token';
 import { PrivateGasTokenService } from '../../services/gas-token-service/gas-token.service';
 
 @Component({
+  standalone: false,
   selector: 'app-private-preview-swap',
   templateUrl: './private-preview-swap.component.html',
   styleUrls: ['./private-preview-swap.component.scss'],
