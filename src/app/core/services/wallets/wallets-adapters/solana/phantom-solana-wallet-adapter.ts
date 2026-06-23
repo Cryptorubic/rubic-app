@@ -17,9 +17,9 @@ import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
 
-export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
+export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
-    return WALLET_NAME.PHANTOM;
+    return WALLET_NAME.PHANTOM_SOLANA;
   }
 
   constructor(
@@ -106,13 +106,22 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
 
   private handleAccountChange(): void {
     this.wallet.on('accountChanged', (address: PublicKey) => {
-      if (!address) {
-        this.deactivate();
-      } else {
+      if (address) {
         this.selectedAddress = address.toBase58();
         this.zone.run(() => {
           this.onAddressChanges$.next(this.selectedAddress);
         });
+      } else {
+        // New account isn't yet connected to the dApp - reconnect to adopt it
+        this.wallet
+          .connect()
+          .then(() => {
+            this.selectedAddress = new PublicKey(this.wallet.publicKey.toBytes()).toBase58();
+            this.zone.run(() => {
+              this.onAddressChanges$.next(this.selectedAddress);
+            });
+          })
+          .catch(() => this.deactivate());
       }
     });
   }

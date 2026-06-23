@@ -1,19 +1,20 @@
 import { StandardWalletAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-wallet-adapter';
-import { SolanaFeatures } from '@core/services/wallets/wallets-adapters/standard-adapter/models/solana-features';
 import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { SolanaStandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/solana-standard-adapter';
 import { StoreService } from '@app/core/services/store/store.service';
+import { BitcoinStandardAdapter } from './bitcoin-standard-adapter';
+import { BitcoinFeatures } from './models/bitcoin-features';
+import { HttpService } from '@app/core/services/http/http.service';
 
-export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<SolanaFeatures> {
-  public readonly chainType = CHAIN_TYPE.SOLANA;
+export abstract class BitcoinStandardWalletAdapter extends StandardWalletAdapter<BitcoinFeatures> {
+  public readonly chainType = CHAIN_TYPE.BITCOIN;
 
-  protected readonly blockchainName = BLOCKCHAIN_NAME.SOLANA;
+  protected readonly blockchainName = BLOCKCHAIN_NAME.BITCOIN;
 
-  protected readonly chainName = 'solana:mainnet';
+  protected readonly chainName = 'bitcoin:mainnet';
 
   public constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -21,7 +22,8 @@ export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow,
-    storeService: StoreService
+    storeService: StoreService,
+    httpService: HttpService
   ) {
     super(
       onAddressChanges$,
@@ -30,7 +32,8 @@ export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<
       zone,
       window,
       storeService,
-      SolanaStandardAdapter
+      BitcoinStandardAdapter,
+      httpService
     );
   }
 }
