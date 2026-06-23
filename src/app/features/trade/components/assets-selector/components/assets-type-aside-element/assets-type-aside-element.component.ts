@@ -6,6 +6,7 @@ import { temporarelyDisabledBlockchains } from '@features/trade/components/asset
 import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-assets-type-aside-element',
   templateUrl: './assets-type-aside-element.component.html',
   styleUrls: ['./assets-type-aside-element.component.scss'],
@@ -19,6 +20,8 @@ export class AssetsTypeAsideElementComponent {
   @Input({ required: true }) isMobile: boolean = false;
 
   @Input({ required: true }) type: 'from' | 'to';
+
+  @Input() hidePromoBadges = false;
 
   @Output() handleClick = new EventEmitter<BlockchainItem>();
 

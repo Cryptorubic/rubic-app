@@ -150,6 +150,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}ibc.png`,
     name: 'IBC'
   },
+  instaswap: {
+    averageTime: 5,
+    color: '#080d12',
+    image: `${imageBasePath}instaswap.svg`,
+    name: 'InstaSwap'
+  },
   //LLLLLLLLLLLLLLLLL
   layerzero: {
     averageTime: 5,
@@ -175,6 +181,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: 'white',
     image: `${imageBasePath}wormhole.svg`,
     name: `Maker's wormhole`
+  },
+  mayan: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}mayan.svg`,
+    name: 'Mayan'
   },
   mayaprotocol: {
     averageTime: 5,

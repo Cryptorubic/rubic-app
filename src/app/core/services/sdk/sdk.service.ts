@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -15,7 +16,6 @@ import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/statu
 import { SdkLegacyService } from './sdk-legacy/sdk-legacy.service';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 import { RubicApiService } from './sdk-legacy/rubic-api/rubic-api.service';
-import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable()
 export class SdkService {
@@ -33,7 +33,7 @@ export class SdkService {
     private readonly angularHttpClient: HttpClient,
     private readonly sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {
     this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
     this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService, rubicApiService);

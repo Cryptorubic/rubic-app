@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import {
   AbstractControl,
@@ -32,13 +32,14 @@ export function mnemonicValidator(): ValidatorFn {
     try {
       const isValid = Mnemonic.isValidMnemonic(value);
       return isValid ? null : { mnemonic: 'Invalid checksum or unknown words' };
-    } catch (e) {
+    } catch {
       return { mnemonic: 'Invalid mnemonic phrase format' };
     }
   };
 }
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-wallet-import',
   templateUrl: './railgun-wallet-import.component.html',
   styleUrls: ['./railgun-wallet-import.component.scss'],

@@ -1,5 +1,12 @@
-<app-reveal-window
-  (handleReveal)="reveal($event)"
-  [receiverCtrl]="receiverCtrl"
-  [creationConfig]="creationConfig"
-></app-reveal-window>
+<ng-container *ngLet="pendingUnshieldBalance$ | async as pendingUnshieldBalance">
+  <app-reveal-window
+    (handleReveal)="reveal($event)"
+    [receiverCtrl]="receiverCtrl"
+    [creationConfig]="creationConfig"
+  ></app-reveal-window>
+
+  <app-zama-pending-unshield-list
+    *ngIf="pendingUnshieldBalance?.length"
+    [tokens]="pendingUnshieldBalance"
+  ></app-zama-pending-unshield-list>
+</ng-container>

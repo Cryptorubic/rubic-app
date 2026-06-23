@@ -19,6 +19,7 @@ import { RailgunWalletImportComponent } from '@features/privacy/providers/railgu
 import { RailgunWalletCreateComponent } from '@features/privacy/providers/railgun/components/railgun-wallet-create/railgun-wallet-create.component';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-login-page',
   templateUrl: './railgun-login-page.component.html',
   styleUrls: ['./railgun-login-page.component.scss'],
@@ -89,7 +90,7 @@ export class RailgunLoginPageComponent {
       this.secretForm.disable();
       await this.railgunFacade.unlockFromPassword(password);
       this.formSubmit.emit({ password, phrase: '' });
-    } catch (error) {
+    } catch {
       this.secretForm.enable();
 
       const passwordControl = this.secretForm.get('password');

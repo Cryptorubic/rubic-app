@@ -1,8 +1,8 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, RendererFactory2 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IframeParams } from '@core/services/iframe-service/models/iframe-params';
 import { DOCUMENT } from '@angular/common';
-import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export class IframeService {
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {}
 
   public setIframeFalse(): void {

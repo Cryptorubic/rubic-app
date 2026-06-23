@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -6,7 +7,6 @@ import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/e
 import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
 import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/coin-base-wallet-adapter';
 import { StoreService } from '@core/services/store/store.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { TUI_IS_ANDROID, TUI_IS_IOS } from '@taiga-ui/cdk';
@@ -23,7 +23,7 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
-import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
+import { PhantomSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-solana-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
@@ -34,7 +34,7 @@ import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
-import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
+import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/bitcoin/ctrl-wallet-adapter';
 import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
@@ -55,6 +55,8 @@ import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-a
 import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
 import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { DeviceType } from '../wallets-adapters/evm/common/models/device-type';
+import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
+import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
 
 @Injectable({
   providedIn: 'root'
@@ -99,7 +101,7 @@ export class WalletConnectorService {
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     @Inject(TUI_IS_ANDROID) private readonly isAndroid: boolean,
     private readonly zone: NgZone,
@@ -173,6 +175,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.PHANTOM) {
       return new PhantomWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.PHANTOM_SOLANA) {
+      return new PhantomSolanaWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.SOLFLARE) {
@@ -345,6 +351,11 @@ export class WalletConnectorService {
             this.errorService.catch(err);
           }
         }
+      } else if (
+        switchError.message.includes('The Provider is not connected to the requested chain') &&
+        this.provider instanceof PhantomWalletAdapter
+      ) {
+        this.errorService.catch(new PhantomWalletUnsupportedChainError(evmBlockchainName));
       } else {
         this.errorService.catch(switchError);
       }

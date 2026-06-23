@@ -12,7 +12,7 @@ import { BlockchainName } from '@cryptorubic/core';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetListType } from '@features/trade/models/asset';
@@ -21,6 +21,7 @@ import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-blockchains-list',
   templateUrl: './blockchains-list.component.html',
   styleUrls: ['./blockchains-list.component.scss'],
@@ -49,7 +50,7 @@ export class BlockchainsListComponent {
 
   @PolymorpheusInput()
   @Input({ required: true })
-  blockchainsToShow$: Observable<AvailableBlockchain[]> = this.context?.data?.blockchainsToShow;
+  blockchainsToShow$: Observable<AvailableBlockchain[]> = this.context?.data?.blockchainsToShow$;
 
   @Output() handleSearchQuery = new EventEmitter<string>();
 
@@ -72,8 +73,7 @@ export class BlockchainsListComponent {
         isDisabled?: boolean;
         hintText: string;
         totalBlockchains: number;
-        // eslint-disable-next-line rxjs/finnish
-        blockchainsToShow: Observable<AvailableBlockchain[]>;
+        blockchainsToShow$: Observable<AvailableBlockchain[]>;
         handleSearchQuery?: (query: string) => void;
         handleSelection?: (selection: AssetListType) => void;
       }
@@ -82,7 +82,7 @@ export class BlockchainsListComponent {
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.context.data?.blockchainsToShow.subscribe(el => {
+    this.context.data?.blockchainsToShow$.subscribe(el => {
       this.blockchainsToShow = el;
       this.cdr.detectChanges();
     });

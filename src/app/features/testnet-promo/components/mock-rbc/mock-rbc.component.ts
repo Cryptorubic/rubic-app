@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
+  standalone: false,
   selector: 'app-mock-rbc',
   templateUrl: './mock-rbc.component.html',
   styleUrls: ['./mock-rbc.component.scss'],

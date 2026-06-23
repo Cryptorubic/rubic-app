@@ -29,6 +29,7 @@ import {
 } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-page-view',
   templateUrl: './privacy-page-view.component.html',
   styleUrls: ['./privacy-page-view.component.scss'],
@@ -94,7 +95,9 @@ export class PrivacyPageViewComponent implements OnInit {
 
   public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
 
-  public readonly tabs = Object.values(PRIVATE_MODE_TAB);
+  public readonly tabs = Object.values(PRIVATE_MODE_TAB).filter(
+    tab => tab !== PRIVATE_MODE_TAB.ON_CHAIN
+  );
 
   private readonly store = inject(StoreService);
 

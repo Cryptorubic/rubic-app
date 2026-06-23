@@ -25,6 +25,8 @@ import { PrivateLocalStorageService } from '@app/features/privacy/services/priva
 import { PRIVATE_TRADE_TYPE } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateStatisticsService } from '../../shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
+import { getScannerUrl } from './common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -101,7 +103,7 @@ export class PrivacycashSwapService {
   }
 
   // withdraw private-public
-  public async transfer(token: TokenAmount, receiverAddr: string): Promise<void> {
+  public async transfer(token: TokenAmount, receiverAddr: string): Promise<PrivateActionRes> {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const recipientPK = new PublicKey(receiverAddr);
     const feesResp = await this.privacycashApiService.fetchFees();
@@ -117,14 +119,13 @@ export class PrivacycashSwapService {
       return;
     }
 
-    await this.makePartialWithdraw(
+    const txHash = await this.makePartialWithdraw(
       toPrivacyCashTokenAddr(token.address),
       token.weiAmount.toNumber(),
       senderPK,
       recipientPK
     );
 
-    this.notificationsService.showInfo(`Transfer successful. Check the receiver’s wallet balance.`);
     this.privacycashTokensService.updatePrivateBalances();
     this.privateStatisticsService.saveAction(
       'TRANSFER',
@@ -136,21 +137,22 @@ export class PrivacycashSwapService {
       ['transfer'],
       []
     );
+
+    return { txScannerUrl: getScannerUrl(token, txHash) };
   }
 
-  public async shield(token: TokenAmount): Promise<void> {
+  public async shield(token: TokenAmount): Promise<PrivateActionRes> {
     try {
       const userPK = new PublicKey(this.walletConnectorService.address);
       const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
-      await this.makeDeposit(
+      const txHash = await this.makeDeposit(
         toPrivacyCashTokenAddr(token.address),
         token.weiAmount.toNumber(),
         userPK,
         (tx: VersionedTransaction) => wallet.signTransaction(tx)
       );
 
-      this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
       this.privacycashTokensService.updatePrivateBalances();
       this.privateLocalStorageService.markProviderAsShielded(PRIVATE_TRADE_TYPE.PRIVACY_CASH);
       this.privateStatisticsService.saveAction(
@@ -163,14 +165,16 @@ export class PrivacycashSwapService {
         ['shield'],
         []
       );
+      return { txScannerUrl: getScannerUrl(token, txHash) };
     } catch (err) {
       if (err.message.includes('User rejected the request')) {
         throw new UserRejectError();
       }
+      throw err;
     }
   }
 
-  public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
+  public async unshield(token: TokenAmount, receiverAddr: string): Promise<PrivateActionRes> {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const recipientPK = new PublicKey(receiverAddr);
     const feesResp = await this.privacycashApiService.fetchFees();
@@ -186,16 +190,13 @@ export class PrivacycashSwapService {
       return;
     }
 
-    await this.makePartialWithdraw(
+    const txHash = await this.makePartialWithdraw(
       toPrivacyCashTokenAddr(token.address),
       token.weiAmount.toNumber(),
       senderPK,
       recipientPK
     );
 
-    this.notificationsService.showInfo(
-      'Unshielding successful. Check the receiver’s wallet balance.'
-    );
     this.privacycashTokensService.updatePrivateBalances();
     this.privateStatisticsService.saveAction(
       'UNSHIELD',
@@ -207,6 +208,8 @@ export class PrivacycashSwapService {
       ['unshield'],
       []
     );
+
+    return { txScannerUrl: getScannerUrl(token, txHash) };
   }
 
   /**
@@ -220,7 +223,7 @@ export class PrivacycashSwapService {
     srcToken: BlockchainToken,
     dstToken: BlockchainToken,
     srcAmountWei: BigNumber
-  ): Promise<void> {
+  ): Promise<PrivateActionRes> {
     const successfullSteps: string[] = [];
     const failedSteps: string[] = [];
     try {
@@ -304,9 +307,10 @@ export class PrivacycashSwapService {
       // deposit destination token from burner wallet
       this.notificationsService.showInfo(`Shielding target tokens...`);
       let retries = 0;
+      let txHash = '';
       while (retries < 5) {
         try {
-          await this.makeDeposit(
+          txHash = await this.makeDeposit(
             dstToken.address,
             dstTokenDepositAmount.toNumber(),
             ephemeralKeypair.publicKey,
@@ -316,7 +320,7 @@ export class PrivacycashSwapService {
             }
           );
           break;
-        } catch (err) {
+        } catch {
           retries++;
           successfullSteps.push(`retry_deposit_dst_coin(count: ${retries})`);
           console.debug(
@@ -326,7 +330,7 @@ export class PrivacycashSwapService {
       }
 
       successfullSteps.push('success');
-      this.notificationsService.showInfo('Swap successful.');
+      return { txScannerUrl: getScannerUrl(dstToken, txHash) };
     } catch (err) {
       this.notificationsService.showInfo('Transaction failed. Please request a refund.');
       failedSteps.push(err.message);
@@ -369,13 +373,14 @@ export class PrivacycashSwapService {
 
   /**
    * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   * @returns txHash
    */
   private async makeDeposit(
     tokenAddr: string,
     depositAmountWei: number,
     depositorWalletPK: PublicKey,
     transactionSignerFn: (tx: VersionedTransaction) => Promise<VersionedTransaction>
-  ): Promise<void> {
+  ): Promise<string> {
     await this.privacycashSignatureService.checkRequirements();
 
     const lightWasm = this.privacycashSignatureService.lightWasm;
@@ -386,7 +391,7 @@ export class PrivacycashSwapService {
     try {
       console.debug(`[RUBIC] Start deposit ${tokenAddr}...`);
       if (compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)) {
-        await deposit({
+        const res = await deposit({
           lightWasm,
           amount_in_lamports: depositAmountWei,
           connection,
@@ -397,8 +402,10 @@ export class PrivacycashSwapService {
           keyBasePath: pathToZkProof,
           storage: localStorage
         });
+        console.debug('[PrivacyCashSwapService_makeDeposit] ✅ Successfull deposit!');
+        return res.tx;
       } else {
-        await depositSPL({
+        const res = await depositSPL({
           lightWasm,
           base_units: depositAmountWei,
           connection,
@@ -410,8 +417,9 @@ export class PrivacycashSwapService {
           storage: localStorage,
           mintAddress: tokenAddr
         });
+        console.debug('[PrivacyCashSwapService_makeDeposit] ✅ Successfull deposit!');
+        return res.tx;
       }
-      console.debug('[PrivacyCashSwapService_makeDeposit] ✅ Successfull deposit!');
     } catch (err) {
       console.debug('[PrivacyCashSwapService_makeDeposit] ❌ Failed deposit!');
       throw err;
@@ -420,13 +428,14 @@ export class PrivacycashSwapService {
 
   /**
    * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   * @returns txHash
    */
   private async makePartialWithdraw(
     tokenAddr: string,
     withdrawAmountWei: number,
     senderPK: PublicKey,
     recipientPK: PublicKey
-  ): Promise<void> {
+  ): Promise<string> {
     await this.privacycashSignatureService.checkRequirements();
 
     const connection = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA).public;
@@ -436,7 +445,7 @@ export class PrivacycashSwapService {
 
     try {
       if (compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)) {
-        await withdraw({
+        const res = await withdraw({
           lightWasm,
           amount_in_lamports: withdrawAmountWei,
           connection,
@@ -446,8 +455,10 @@ export class PrivacycashSwapService {
           keyBasePath: pathToZkProof,
           storage: localStorage
         });
+        console.debug('[PrivacyCashSwapService_makePartialWithdraw] ✅ Successfull withdrawal!');
+        return res.tx;
       } else {
-        await withdrawSPL({
+        const res = await withdrawSPL({
           lightWasm,
           base_units: withdrawAmountWei,
           connection,
@@ -458,8 +469,9 @@ export class PrivacycashSwapService {
           storage: localStorage,
           mintAddress: tokenAddr
         });
+        console.debug('[PrivacyCashSwapService_makePartialWithdraw] ✅ Successfull withdrawal!');
+        return res.tx;
       }
-      console.debug('[PrivacyCashSwapService_makePartialWithdraw] ✅ Successfull withdrawal!');
     } catch (err) {
       console.debug('[PrivacyCashSwapService_makePartialWithdraw] ❌ Failed withdrawal!');
       throw err;

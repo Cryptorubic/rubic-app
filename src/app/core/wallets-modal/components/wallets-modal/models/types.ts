@@ -9,3 +9,9 @@ export interface WalletProvider {
   display: boolean;
   disabled: boolean;
 }
+
+export interface MultichainWalletOption {
+  label: string;
+  icon: string;
+  value: WALLET_NAME;
+}

@@ -13,6 +13,7 @@ import { PublicAccount } from '@features/privacy/providers/railgun/models/public
 import { StoreService } from '@core/services/store/store.service';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-form',
   templateUrl: './railgun-form.component.html',
   styleUrls: ['./railgun-form.component.scss'],

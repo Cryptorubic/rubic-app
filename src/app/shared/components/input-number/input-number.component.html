@@ -1,9 +1,9 @@
 <div class="input-wrapper" (click)="onWrapperClick()">
   <tui-input-number
+    [tuiNumberFormat]="{ precision: TUI_PRECISION }"
     [formControl]="inputControl"
     (focusedChange)="emitValue()"
     tuiTextfieldSize="s"
-    [precision]="TUI_PRECISION"
     tuiTextfieldInputMode="decimal"
   >
   </tui-input-number>

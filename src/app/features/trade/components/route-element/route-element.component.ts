@@ -17,6 +17,7 @@ interface ProviderStep {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-route-element',
   templateUrl: './route-element.component.html',
   styleUrls: ['./route-element.component.scss'],

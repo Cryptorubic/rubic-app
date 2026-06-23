@@ -8,4 +8,5 @@ export type AssetsSelectorConfig = {
   showAllChains: boolean;
   listType?: AssetListType;
   platformLoading$?: Observable<boolean>;
+  hidePromoBadges?: boolean;
 };

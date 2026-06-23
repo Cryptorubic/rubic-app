@@ -1,5 +1,5 @@
 module.exports = {
-  '**/*.{ts, js}': 'eslint --fix',
+  '**/*.ts': 'node --max_old_space_size=8192 ./node_modules/eslint/bin/eslint.js --fix',
   '**/*.css': 'stylelint --fix',
   '**/*.scss': 'stylelint --syntax=scss --fix',
   '**/*.json': 'jsonlint -q',

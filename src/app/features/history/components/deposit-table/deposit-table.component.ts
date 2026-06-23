@@ -6,6 +6,7 @@ import { DepositTableData } from '../../models/deposit-table-data';
 const cols = ['from', 'to', 'date', 'status', 'receiver', 'tradeType'] as const;
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-table',
   templateUrl: './deposit-table.component.html',
   styleUrls: ['./deposit-table.component.scss'],

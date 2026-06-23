@@ -244,9 +244,10 @@
     <ng-container *ngIf="state.tradeState.trade.warnings.length">
       <ng-container *ngFor="let warning of state.tradeState.trade.warnings">
         <tui-notification
+          size="m"
           *ngIf="warning.code.toString().startsWith('70')"
           class="notification"
-          status="warning"
+          appearance="warning"
         >
           {{ warning.reason }}
         </tui-notification>

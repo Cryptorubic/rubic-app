@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ChartService } from '../../services/chart-service/chart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-crypto-rate-chart',
   templateUrl: './crypto-rate-chart.component.html',
   styleUrls: ['./crypto-rate-chart.component.scss'],

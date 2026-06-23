@@ -5,6 +5,7 @@ import { PreviewSwapService } from '@app/features/trade/services/preview-swap/pr
 import { combineLatestWith, map, Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-spindle-banner',
   templateUrl: './spindle-banner.component.html',
   styleUrls: ['./spindle-banner.component.scss'],

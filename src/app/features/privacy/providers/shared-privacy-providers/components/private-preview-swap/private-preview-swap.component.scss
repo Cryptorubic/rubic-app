@@ -109,26 +109,29 @@
   }
 
   &__fiat-amount {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   &__token-info {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   &__action-container {
     display: flex;
     gap: var(--tui-padding-s);
     align-items: center;
-
-    button {
-      flex-shrink: 1;
-      width: 100%;
-    }
+    width: 100%;
   }
 
   &__action-button {
+    flex: 1 1 100%;
     width: 100%;
+
+    text-decoration: none;
+
+    ::ng-deep .t-wrapper {
+      pointer-events: none;
+    }
   }
 
   &__success-info {
@@ -184,7 +187,7 @@ app-swap-data-element ::ng-deep {
           width: 2px;
           height: calc(100% - 70px);
 
-          background: var(--tui-base-04);
+          background: var(--tui-border-normal);
 
           content: '';
         }
@@ -220,7 +223,7 @@ app-swap-data-element ::ng-deep {
     }
 
     &__token-amount {
-      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+      @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
     }
 
     &__main-image {
@@ -238,28 +241,44 @@ app-swap-data-element ::ng-deep {
 }
 
 .loader {
-  display: flex;
-  gap: 5px;
-  align-items: center;
+  position: relative;
 
-  &__dot {
-    width: 5px;
-    height: 5px;
-    margin-top: 6px;
+  display: inline-block;
+  padding: 10px 0;
+  overflow: hidden;
 
-    background-color: #333;
-    border-radius: 50%;
+  &__text {
+    position: relative;
+    z-index: 0;
+  }
 
-    animation: pulse 1.4s infinite linear;
-    &:nth-child(3) { animation-delay: 0.2s; };
-    &:nth-child(4) { animation-delay: 0.4s; }
+  &__element {
+    position: absolute;
+    top: 50%;
+
+    left: 0;
+    z-index: 1;
+
+    width: 45px;
+    height: 20px;
+
+    background-color: var(--tui-primary);
+    transform: translateY(-50%);
+
+    animation: pulse 0.8s ease-in-out infinite alternate;
+
+    will-change: transform;
   }
 }
 
 @keyframes pulse {
-  0% { opacity: 0.2; }
-  20% { opacity: 1; }
-  100% { opacity: 0.2; }
+  0% {
+    transform: translateY(-50%) translateX(-100%);
+  }
+
+  100% {
+    transform: translateY(-50%) translateX(170px);
+  }
 }
 
 :host ::ng-deep .window-container {

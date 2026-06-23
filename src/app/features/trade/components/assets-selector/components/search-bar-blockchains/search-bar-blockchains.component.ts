@@ -10,6 +10,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 
 @Component({
+  standalone: false,
   selector: 'app-search-blockchains-bar',
   templateUrl: './search-bar-blockchains.component.html',
   styleUrls: ['./search-bar-blockchains.component.scss'],

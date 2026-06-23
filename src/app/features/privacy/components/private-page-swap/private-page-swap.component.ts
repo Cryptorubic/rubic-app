@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,12 +7,11 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
-  inject
+  inject,
+  DestroyRef
 } from '@angular/core';
-import { BehaviorSubject, skip, takeUntil } from 'rxjs';
+import { BehaviorSubject, skip } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -27,14 +27,15 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
 import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@app/core/services/google-tag-manager/models/google-tag-manager';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-private-main-page-swap',
   templateUrl: './private-page-swap.component.html',
   styleUrls: ['./private-page-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: PrivacyMainPageFromPrivateAssetsService },
     { provide: ToAssetsService, useClass: PrivacyMainPageToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacyMainPageTokensFacadeService }
@@ -74,24 +75,37 @@ export class PrivatePageSwapComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   public get swapInfo(): PrivacyFormValue {
     return this.privacyMainPageService.formValue;
   }
 
   constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly privacyMainPageService: PrivacyMainPageService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+
+    this.showAllProviders$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(showAllProviders => {
+      if (showAllProviders) {
+        this.patchSwapInfo({
+          fromAsset: null,
+          toAsset: null
+        });
+      } else {
+        this.patchSwapInfo(this.privacyMainPageService.prevFormValue || {});
+      }
+    });
   }
 
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
       // used skip(1) to prevent emitting formChanged with empty value and override existing queryParams
-      .pipe(skip(1), takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
@@ -126,12 +140,14 @@ export class PrivatePageSwapComponent implements OnInit {
           this.patchSwapInfo({ fromAsset: selectedToken });
         }
 
-        this.gtmService.firePrivateFormSelectTokenEvent(
-          'from',
-          selectedToken.blockchain,
-          selectedToken.symbol,
-          selectedToken.address
-        );
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'from',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 
@@ -152,12 +168,14 @@ export class PrivatePageSwapComponent implements OnInit {
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
 
-        this.gtmService.firePrivateFormSelectTokenEvent(
-          'to',
-          selectedToken.blockchain,
-          selectedToken.symbol,
-          selectedToken.address
-        );
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'to',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 
@@ -175,4 +193,6 @@ export class PrivatePageSwapComponent implements OnInit {
     );
     this.privacyMainPageService.setShowAllProviders(value);
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }
