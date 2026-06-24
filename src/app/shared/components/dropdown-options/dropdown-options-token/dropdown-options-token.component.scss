@@ -29,7 +29,7 @@
   }
 
   &:hover {
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: var(--tui-radius-m);
   }
 
@@ -49,7 +49,7 @@
     &:hover {
       text-decoration: none;
 
-      background: var(--tui-base-01);
+      background: var(--tui-background-base);
       border-radius: var(--tui-radius-s);
     }
 
@@ -57,13 +57,12 @@
       width: 20px;
       height: 20px;
     }
-
   }
 
   &__favorite {
     &_active {
       ::ng-deep path {
-        stroke: var(--tui-primary);
+        stroke: var(--tui-background-accent-1);
       }
     }
   }
@@ -93,4 +92,3 @@
     line-height: 1.2;
   }
 }
-

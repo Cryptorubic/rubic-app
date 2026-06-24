@@ -20,5 +20,9 @@ export const WALLETS_DEEP_LINK_MAPPING: Partial<
   [WALLET_NAME.PHANTOM]: window =>
     `https://phantom.app/ul/browse/${encodeURIComponent(window.location.href)}?ref=${
       window.location.href
+    }`,
+  [WALLET_NAME.PHANTOM_SOLANA]: window =>
+    `https://phantom.app/ul/browse/${encodeURIComponent(window.location.href)}?ref=${
+      window.location.href
     }`
 };

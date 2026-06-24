@@ -12,6 +12,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-empty-list',
   templateUrl: './empty-list.component.html',
   styleUrls: ['./empty-list.component.scss'],

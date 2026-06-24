@@ -8,6 +8,7 @@ import {
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-preset-amount-list',
   templateUrl: './preset-amount-list.component.html',
   styleUrls: ['./preset-amount-list.component.scss'],

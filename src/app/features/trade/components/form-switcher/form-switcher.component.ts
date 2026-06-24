@@ -10,6 +10,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { map } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-form-switcher',
   templateUrl: './form-switcher.component.html',
   styleUrls: ['./form-switcher.component.scss'],

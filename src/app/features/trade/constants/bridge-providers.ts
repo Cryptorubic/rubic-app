@@ -150,6 +150,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}ibc.png`,
     name: 'IBC'
   },
+  instaswap: {
+    averageTime: 5,
+    color: '#080d12',
+    image: `${imageBasePath}instaswap.svg`,
+    name: 'InstaSwap'
+  },
   //LLLLLLLLLLLLLLLLL
   layerzero: {
     averageTime: 5,

@@ -2,10 +2,11 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-password-verification-modal',
   templateUrl: './password-verification-modal.component.html',
   styleUrls: ['./password-verification-modal.component.scss'],

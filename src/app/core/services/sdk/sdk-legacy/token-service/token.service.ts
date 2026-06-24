@@ -172,7 +172,7 @@ export class TokenService {
         )
       );
       return result;
-    } catch (error) {
+    } catch {
       return {
         address: tokenAddress,
         network: blockchain,

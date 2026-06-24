@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-details-element',
   templateUrl: './transaction-details-element.component.html',
   styleUrls: ['./transaction-details-element.component.scss'],

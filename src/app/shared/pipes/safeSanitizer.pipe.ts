@@ -9,6 +9,7 @@ import {
 } from '@angular/platform-browser';
 
 @Pipe({
+  standalone: false,
   name: 'safeSanitizer'
 })
 export class SafeSanitizerPipe implements PipeTransform {

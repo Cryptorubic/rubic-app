@@ -4,7 +4,7 @@
   height: var(--tui-height-m);
   margin-bottom: var(--tui-padding-s);
 
-  background: var(--tui-base-01);
+  background: var(--tui-background-base);
   border-radius: var(--tui-radius-m);
 
   @include b($mobile-sm-middle) {
@@ -14,12 +14,14 @@
 
   ._active .icon ::ng-deep svg path,
   button:hover .icon ::ng-deep svg path {
-    fill: var(--tui-text-01);
+    fill: var(--tui-text-primary);
   }
 
   button {
     margin: 0 !important;
     padding: 0 var(--tui-padding-l);
+
+    font: var(--tui-font-text-m);
 
     @include b($mobile-sm-middle) {
       padding: 0 var(--tui-padding-s);
@@ -38,7 +40,7 @@
     ::ng-deep svg path {
       transition: 0.3s ease-in-out;
 
-      fill: var(--tui-text-03);
+      fill: var(--tui-text-tertiary);
     }
   }
 }
@@ -59,5 +61,11 @@
 
   &__select {
     width: 120px;
+  }
+
+  &::ng-deep {
+    tui-icon {
+      border: none;
+    }
   }
 }

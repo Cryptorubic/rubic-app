@@ -82,7 +82,7 @@ input::-webkit-inner-spin-button {
   appearance: none;
 }
 
-input[type=number] {
+input[type='number'] {
   /* stylelint-disable-next-line */
   -moz-appearance: textfield;
 }
@@ -93,7 +93,6 @@ button {
   background: none;
   border: none;
   cursor: pointer;
-
 }
 
 .noscroll {
@@ -191,7 +190,7 @@ a {
   justify-content: center;
   color: #fff;
   background-color: #282935;
-  
+
   font-family: Red-Hat-Display, sans-serif;
   opacity: 1;
 
@@ -202,7 +201,6 @@ a {
 
     opacity: 0;
   }
-  
 
   img,
   h1 {
@@ -224,8 +222,14 @@ a {
   }
 }
 
-[id^='tui-hint_price-impact'] {
+tui-hint[data-appearance='dark'] {
+  --tui-background-elevation-1: #3b3d4f;
   color: var(--tui-text-01) !important;
+  filter: drop-shadow(0 0 0.125rem rgba(0, 0, 0, 0.16)) drop-shadow(0 1.5rem 1rem rgba(0, 0, 0, 0.03)) drop-shadow(0 0.75rem 0.75rem rgba(0, 0, 0, 0.04)) drop-shadow(0 0.25rem 0.375rem rgba(0, 0, 0, 0.05));
+}
+
+[id^='tui-hint_price-impact'] {
+  color: var(--tui-text-primary) !important;
 
   background: rgb(238, 238, 238) !important;
 }
@@ -253,8 +257,6 @@ html.dark {
   .window-container {
     padding-top: var(--tui-padding-m) !important;
   }
-
-
 }
 
 .privacy-content {
@@ -271,8 +273,6 @@ html.dark {
   > * {
     width: 100%;
   }
-
-
 }
 
 tui-hints-host tui-hint[data-appearance='warning-hint'] {

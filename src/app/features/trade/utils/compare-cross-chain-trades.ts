@@ -3,7 +3,6 @@ import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 
-// eslint-disable-next-line complexity
 export function compareCrossChainTrades(
   nextWrappedTrade: WrappedCrossChainTradeOrNull,
   prevWrappedTrade: WrappedCrossChainTradeOrNull,

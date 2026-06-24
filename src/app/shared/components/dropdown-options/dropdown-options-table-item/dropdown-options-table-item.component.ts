@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -5,9 +6,9 @@ import {
   Inject,
   Input
 } from '@angular/core';
-import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
+  standalone: false,
   selector: 'app-dropdown-options-table-item',
   templateUrl: './dropdown-options-table-item.component.html',
   styleUrls: ['./dropdown-options-table-item.component.scss'],
@@ -23,7 +24,7 @@ export class DropdownOptionsTableItemComponent {
   public isCopyClicked: boolean = false;
 
   constructor(
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef
   ) {}
 

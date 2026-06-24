@@ -22,6 +22,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-tokens-list-element',
   templateUrl: './tokens-list-element.component.html',
   styleUrls: ['./tokens-list-element.component.scss'],

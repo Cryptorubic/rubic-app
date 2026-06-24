@@ -1,0 +1,16 @@
+diff --git a/node_modules/avsc/package.json b/node_modules/avsc/package.json
+index abc1234..def5678 100644
+--- a/node_modules/avsc/package.json
++++ b/node_modules/avsc/package.json
+@@ -37,7 +37,10 @@
+   "browser": {
+     "./lib": "./etc/browser/avsc.js",
+     "./lib/files": "./etc/browser/lib/files.js",
+-    "crypto": "./etc/browser/lib/crypto.js"
++    "crypto": "./etc/browser/lib/crypto.js",
++    "zlib": "browserify-zlib",
++    "stream": "stream-browserify",
++    "path": "path-browserify"
+   },
+   "engines": {
+     "node": ">=0.11"

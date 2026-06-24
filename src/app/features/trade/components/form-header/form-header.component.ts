@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { ChartService } from '../../services/chart-service/chart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-form-header',
   templateUrl: './form-header.component.html',
   styleUrls: ['./form-header.component.scss'],

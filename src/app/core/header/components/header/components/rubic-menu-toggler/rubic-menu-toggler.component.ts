@@ -4,6 +4,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-menu-toggler',
   templateUrl: './rubic-menu-toggler.component.html',
   styleUrls: ['./rubic-menu-toggler.component.scss']

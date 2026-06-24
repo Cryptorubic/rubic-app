@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters';
 @Component({
+  standalone: false,
   selector: 'app-blockchains-filter-list',
   templateUrl: './blockchains-filter-list.component.html',
   styleUrls: ['./blockchains-filter-list.component.scss'],

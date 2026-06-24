@@ -5,20 +5,24 @@
       [inlineSVG]="isDark ? '/assets/images/icons/night.svg' : '/assets/images/icons/day.svg'"
     ></div>
 
-    <tui-toggle
+    <input
+      tuiSwitch
+      type="checkbox"
       class="theme-toggle__switch"
-      size="l"
+      size="m"
       [ngModel]="isDark"
       (ngModelChange.stop)="switchTheme()"
-    ></tui-toggle>
+    />
   </ng-container>
 
   <ng-container *ngIf="isMobile">
-    <tui-toggle
+    <input
+      tuiSwitch
+      type="checkbox"
       class="theme-toggle__switch"
-      size="l"
+      size="m"
       [ngModel]="isDark"
       (ngModelChange.stop)="switchTheme()"
-    ></tui-toggle>
+    />
   </ng-container>
 </ng-container>

@@ -1,8 +1,8 @@
 // Straight Jasmine testing without Angular's testing support
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 describe('SdkService', () => {
@@ -11,7 +11,8 @@ describe('SdkService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
     });
 
     httpService = TestBed.inject(HttpClient);

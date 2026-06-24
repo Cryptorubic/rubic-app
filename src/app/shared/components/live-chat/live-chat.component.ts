@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 
 @Component({
+  standalone: false,
   selector: 'app-live-chat',
   templateUrl: './live-chat.component.html',
   styleUrls: ['./live-chat.component.scss'],

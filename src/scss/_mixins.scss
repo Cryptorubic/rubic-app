@@ -152,17 +152,17 @@
 @mixin rubicText($type, $size) {
   @if $type==accent {
     font-weight: 700;
-    color: var(--tui-text-01);
+    color: var(--tui-text-primary);
   }
 
   @if $type==default {
     font-weight: 400;
-    color: var(--tui-text-01);
+    color: var(--tui-text-primary);
   }
 
   @if $type==hidden {
     font-weight: 400;
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
   }
 
   @if $type==s {
