@@ -15,24 +15,18 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { DeviceType } from './common/models/device-type';
-import { createEVMClient, EIP1193Provider } from '@metamask/connect-evm';
+import { createEVMClient, MetamaskConnectEVM } from '@metamask/connect-evm';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 import { EvmWalletAdapter } from './common/evm-wallet-adapter';
 import { isNil } from '@app/shared/utils/utils';
+import { toHex } from 'viem';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
   private readonly device: DeviceType;
 
-  private readonly fallbackDelay = 1_500;
-
-  private readonly metamaskLinks = {
-    scheme: (encodedUri: string) => `metamask://wc?uri=${encodedUri}`,
-    appStore: 'https://apps.apple.com/app/metamask/id1438144202',
-    playStore: 'https://play.google.com/store/apps/details?id=io.metamask',
-    androidPackage: 'io.metamask'
-  } as const;
+  private metamaskClient: MetamaskConnectEVM | null = null;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -57,51 +51,13 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      let provider: EIP1193Provider;
-
       if (this.device !== 'desktop') {
-        const supportedNetworks = Object.values(EVM_BLOCKCHAIN_NAME)
-          .map(chain => {
-            const rpc = rpcList[chain][0];
-            return rpc ? [`0x${blockchainId[chain]}`, rpcList[chain][0]] : null;
-          })
-          .filter(v => !isNil(v));
-
-        const client = await createEVMClient({
-          dapp: {
-            name: 'Rubic Exchange'
-          },
-          api: {
-            supportedNetworks: Object.fromEntries(supportedNetworks)
-          },
-          mobile: {}
-        });
-
-        provider = client.getProvider();
+        await this.activateMobile();
       } else {
-        provider = await this.getProvider({
-          provider: 'metamask',
-          reserveProvider: 'rabby wallet'
-        });
+        await this.activateDesktop();
       }
 
-      if (!provider) {
-        throw new MetamaskError();
-      }
-
-      this.wallet = provider;
-
-      const accounts = (await this.wallet.request({
-        method: 'eth_requestAccounts'
-      })) as RubicAny;
-      this.checkErrors();
-
-      const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
-
-      [this.selectedAddress] = accounts;
-      this.selectedChain =
-        (BlockchainsInfo.getBlockchainNameById(chain as number) as EvmBlockchainName) ?? null;
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 
@@ -123,24 +79,84 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     }
   }
 
-  public override deactivate(): void {
-    this.wallet
-      .request({
-        method: 'wallet_revokePermissions',
-        params: [{ eth_accounts: {} }]
-      })
-      .catch(() => {});
-    super.deactivate();
+  private async activateDesktop(): Promise<void> {
+    const provider = await this.getProvider({
+      provider: 'metamask',
+      reserveProvider: 'rabby wallet'
+    });
+
+    if (!provider) {
+      throw new MetamaskError();
+    }
+
+    this.wallet = provider;
+
+    const accounts = (await this.wallet.request({
+      method: 'eth_requestAccounts'
+    })) as RubicAny;
+    this.checkErrors();
+
+    const chain = await this.wallet.request({ method: 'eth_chainId' });
+
+    [this.selectedAddress] = accounts;
+    this.selectedChain =
+      (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
   }
 
-  /**
-   * Subscribes to wallet connect deep link url and redirects after getting.
-   */
-  private initMobileSubscription(): void {
-    //@ts-ignore
-    this.wallet.on('display_uri', (uri: string) => {
-      const encodedUri = encodeURIComponent(uri);
-      this.window.location.href = `metamask://wc?uri=${encodedUri}`;
+  private async activateMobile(): Promise<void> {
+    const supportedNetworkEntries = Object.values(EVM_BLOCKCHAIN_NAME)
+      .map(chain => {
+        const rpc = rpcList[chain][0];
+        return rpc ? ([toHex(blockchainId[chain]), rpc] as const) : null;
+      })
+      .filter(v => !isNil(v));
+
+    const supportedNetworks = Object.fromEntries(supportedNetworkEntries);
+    const chainIds = Object.keys(supportedNetworks) as `0x${string}`[];
+
+    const client = await createEVMClient({
+      dapp: {
+        name: 'Rubic Exchange',
+        url: this.window.location.origin
+      },
+      api: {
+        supportedNetworks
+      },
+      ui: {
+        headless: true,
+        preferExtension: false
+      },
+      mobile: {
+        useDeeplink: true,
+        preferredOpenLink: (deeplink: string) => {
+          this.window.location.href = deeplink;
+        }
+      }
     });
+
+    this.metamaskClient = client;
+    this.wallet = client.getProvider();
+
+    const { accounts, chainId } = await client.connect({ chainIds });
+
+    [this.selectedAddress] = accounts;
+    this.selectedChain =
+      (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
+  }
+
+  public override deactivate(): void {
+    if (this.metamaskClient) {
+      this.metamaskClient.disconnect().catch(() => {});
+      this.metamaskClient = null;
+    } else {
+      this.wallet
+        .request({
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }]
+        })
+        .catch(() => {});
+    }
+
+    super.deactivate();
   }
 }
