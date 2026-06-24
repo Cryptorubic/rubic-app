@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PrizePool } from '@features/testnet-promo/interfaces/api-models';
 
 @Component({
+  standalone: false,
   selector: 'app-promo-info',
   templateUrl: './promo-info.component.html',
   styleUrls: ['./promo-info.component.scss'],

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs';
 import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
@@ -65,9 +65,9 @@ export function mapToVoid(): OperatorFunction<unknown, void> {
 /**
  * Await for side-effect action like switchMap, but not modify the stream
  */
-export function switchTap<T>(handler: (arg: T) => Observable<unknown>): OperatorFunction<T, T> {
+export function switchTap<T>(handler$: (arg: T) => Observable<unknown>): OperatorFunction<T, T> {
   return switchMap(arg => {
-    return handler(arg).pipe(map(() => arg));
+    return handler$(arg).pipe(map(() => arg));
   });
 }
 
@@ -79,14 +79,14 @@ export function switchTap<T>(handler: (arg: T) => Observable<unknown>): Operator
  */
 export function switchIif<A = void, T = never, F = never>(
   condition: (args: A) => boolean,
-  trueResultFn: (args: A) => Observable<T>,
-  falseResultFn: (args: A) => Observable<F>
+  trueResultFn$: (args: A) => Observable<T>,
+  falseResultFn$: (args: A) => Observable<F>
 ): OperatorFunction<A, T | F> {
   return switchMap((args: A) =>
     iif(
       () => condition(args),
-      defer(() => trueResultFn(args)),
-      defer(() => falseResultFn(args))
+      defer(() => trueResultFn$(args)),
+      defer(() => falseResultFn$(args))
     )
   );
 }

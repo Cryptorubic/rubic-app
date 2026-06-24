@@ -4,7 +4,7 @@ import { PrivacyCashFeesResp } from '../providers/privacycash/models/privacycash
 import { firstValueFrom } from 'rxjs';
 import { Cache as Memo } from '@cryptorubic/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PrivacyApiService {
   constructor(private readonly httpService: HttpService) {}
 

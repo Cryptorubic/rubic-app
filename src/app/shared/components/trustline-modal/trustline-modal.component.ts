@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 
 @Component({
+  standalone: false,
   selector: 'app-trustline-modal',
   templateUrl: './trustline-modal.component.html',
   styleUrls: ['./trustline-modal.component.scss'],

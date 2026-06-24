@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { StoreService } from '@core/services/store/store.service';
 
-export const privacyDisclaimerGuard: CanActivateFn = async () => {
+export const privacyDisclaimerGuard$: CanActivateFn = async () => {
   const modalService = inject(ModalService);
   const store = inject(StoreService);
   const router = inject(Router);

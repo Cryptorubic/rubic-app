@@ -28,7 +28,7 @@ const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   { providerName: 'RAILGUN', type: 'swap' }
 ];
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PrivacyMainPageService {
   private readonly form = new FormGroup<PrivacyForm>({
     fromAsset: new FormControl(null),

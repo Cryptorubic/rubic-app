@@ -2,6 +2,7 @@ import { Directive, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 
 @Directive({
+  standalone: false,
   selector: '[noFrame]'
 })
 export class NoFrameDirective<T> implements OnInit {

@@ -4,6 +4,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
+  standalone: false,
   selector: 'app-pepe',
   templateUrl: './pepe.component.html',
   styleUrls: ['./pepe.component.scss'],

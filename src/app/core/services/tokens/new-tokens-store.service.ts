@@ -45,11 +45,11 @@ export class NewTokensStoreService {
       const chainObject = this.tokens[blockchain];
 
       chainObject._pageLoading$.next(true);
-      const currentTokens = chainObject._tokensObject$;
+      const currentTokens$ = chainObject._tokensObject$;
 
       tokens.list.forEach(token => {
-        if (!currentTokens.value[token.address]) {
-          currentTokens.value[token.address] = {
+        if (!currentTokens$.value[token.address]) {
+          currentTokens$.value[token.address] = {
             ...token,
             favorite: false,
             amount: new BigNumber(NaN)
@@ -65,7 +65,7 @@ export class NewTokensStoreService {
         })
         .reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
 
-      currentTokens.next({ ...currentTokens.value, ...newValues });
+      currentTokens$.next({ ...currentTokens$.value, ...newValues });
       chainObject._pageLoading$.next(false);
       chainObject.page = chainObject.page + 1;
       chainObject.totalTokens = tokens.total;
@@ -79,27 +79,27 @@ export class NewTokensStoreService {
     blockchain: BlockchainName,
     balanceTokens: BalanceToken[]
   ): void {
-    const tokens = this.tokens[blockchain]._tokensObject$;
+    const tokens$ = this.tokens[blockchain]._tokensObject$;
     balanceTokens.forEach(token => {
-      if (tokens.value[token.address]) {
-        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      if (tokens$.value[token.address]) {
+        tokens$.value[token.address] = { ...tokens$.value?.[token.address], ...token };
       } else {
-        tokens.value[token.address] = token;
+        tokens$.value[token.address] = token;
       }
     });
-    tokens.next(tokens.value);
+    tokens$.next(tokens$.value);
   }
 
   public updateBlockchainTokens(blockchain: BlockchainName, newTokens: ReadonlyArray<Token>): void {
-    const tokens = this.tokens[blockchain]._tokensObject$;
+    const tokens$ = this.tokens[blockchain]._tokensObject$;
     newTokens.forEach(token => {
-      if (tokens.value[token.address]) {
-        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      if (tokens$.value[token.address]) {
+        tokens$.value[token.address] = { ...tokens$.value?.[token.address], ...token };
       } else {
-        tokens.value[token.address] = { ...token, favorite: false, amount: new BigNumber(NaN) };
+        tokens$.value[token.address] = { ...token, favorite: false, amount: new BigNumber(NaN) };
       }
     });
-    tokens.next(tokens.value);
+    tokens$.next(tokens$.value);
   }
 
   private createBlockchainUtilityStore(): BlockchainUtilityState {

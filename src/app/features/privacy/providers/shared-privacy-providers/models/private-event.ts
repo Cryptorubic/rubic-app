@@ -1,3 +1,4 @@
+/* eslint-disable rxjs-x/finnish */
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { PrivateSwapInfo } from './swap-info';
 import { PreviewSwapModalFactory } from '../components/private-preview-swap/models/preview-swap-modal-factory';

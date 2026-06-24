@@ -14,6 +14,7 @@ import { TRUSTLINE_TYPE_TEXT } from './models/trustline-type';
 import { TrustlineComponentOptions } from './models/trustline-component-options';
 
 @Component({
+  standalone: false,
   selector: 'app-trustline',
   templateUrl: './trustline.component.html',
   styleUrls: ['./trustline.component.scss'],

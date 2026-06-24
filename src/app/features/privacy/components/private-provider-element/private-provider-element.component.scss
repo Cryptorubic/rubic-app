@@ -23,7 +23,7 @@
       width: 100%;
       padding: 15px 16px;
 
-      background-color: var(--tui-base-02);
+      background-color: var(--tui-background-base-alt);
     }
 
     .top {
@@ -57,7 +57,7 @@
           @include flex(row, center, start);
           gap: 10px;
 
-          color: var(--tui-text-02);
+          color: var(--tui-text-secondary);
         }
       }
     }
@@ -98,7 +98,6 @@
       .min-amount {
         @include flex(row, center, start);
         gap: 2px;
-
       }
 
       .security-percent {
@@ -113,7 +112,6 @@
             ::ng-deep svg path {
               clip-path: inset(0 var(--security-offset) 0 0);
               fill: #fff;
-
             }
           }
 
@@ -127,30 +125,37 @@
       }
     }
   }
-}
 
-@include b($laptop) {
-  .provider-element {
-    .top,
-    .bottom {
-      background: var(--tui-secondary) !important;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .bottom {
-    .execution-time {
-      ::ng-deep svg path {
-        stroke: var(--tui-base-02);
+  @include b($laptop) {
+    .provider-element {
+      .top,
+      .bottom {
+        background: var(--tui-background-neutral-1);
       }
     }
+  }
 
-    .stars,
-    .fee-size {
-      @include b($mobile-md) {
-        ::ng-deep svg path {
-          fill: var(--tui-base-02);
+  @include b($mobile-md) {
+    .provider-element {
+      .top,
+      .bottom {
+        background-color: var(--io-background);
+      }
+
+      .bottom {
+        .execution-time {
+          ::ng-deep svg path {
+            stroke: var(--tui-background-base-alt);
+          }
+        }
+
+        .stars,
+        .fee-size {
+          @include b($mobile-md) {
+            ::ng-deep svg path {
+              fill: var(--tui-background-base-alt);
+            }
+          }
         }
       }
     }

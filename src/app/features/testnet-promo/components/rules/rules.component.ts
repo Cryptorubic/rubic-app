@@ -3,6 +3,7 @@ import { PrizePool } from '@features/testnet-promo/interfaces/api-models';
 import { TestnetPromoStateService } from '@features/testnet-promo/services/testnet-promo-state.service';
 
 @Component({
+  standalone: false,
   selector: 'app-rules',
   templateUrl: './rules.component.html',
   styleUrls: ['./rules.component.scss'],

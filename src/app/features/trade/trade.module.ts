@@ -1,3 +1,9 @@
+import {
+  TuiTextfieldControllerModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule
+} from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
@@ -8,35 +14,25 @@ import { CrossChainService } from '@features/trade/services/cross-chain/cross-ch
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 import {
-  TuiButtonModule,
-  TuiExpandModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiModeModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiNotification,
+  TuiExpand,
+  TuiLoader,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint
 } from '@taiga-ui/core';
-import {
-  TuiCarouselModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
-import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
-import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from './services/refund-service/refund.service';
@@ -51,25 +47,25 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     TradeRoutingModule,
     CommonModule,
     SharedModule,
-    TuiExpandModule,
-    TuiScrollbarModule,
+    ...TuiExpand,
+    TuiScrollbar,
+    TuiScrollable,
     TuiTagModule,
     InlineSVGModule,
-    TuiButtonModule,
+    TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
-    TuiHintModule,
+    ...TuiHint,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,
-    TuiToggleModule,
-    TuiHostedDropdownModule,
+    TuiSwitch,
+    ...TuiDropdown,
     TuiInputModule,
-    TuiLoaderModule,
+    TuiLoader,
     AssetsSelectorModule,
-    TuiNotificationModule,
-    TuiModeModule,
-    TuiCarouselModule,
+    TuiNotification,
+    ...TuiCarousel,
     SharedTradeModule
   ],
   providers: [
@@ -78,16 +74,12 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     CrossChainService,
     OnChainService,
     CrossChainApiService,
-    SettingsService,
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
     OnChainApiService,
     DepositService,
     ActionButtonService,
-    FormsTogglerService,
-    TradeInfoManager,
-    FormsTogglerService,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,

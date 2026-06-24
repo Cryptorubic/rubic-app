@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@app/shared/utils/utils';
 
 @Pipe({
+  standalone: false,
   name: 'priceImpactFormat'
 })
 export class PriceImpactFormatPipe implements PipeTransform {

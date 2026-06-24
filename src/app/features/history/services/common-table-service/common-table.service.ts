@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
-import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -53,11 +52,10 @@ export class CommonTableService {
         this.translateService.instant('bridgePage.progressMessage'),
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
-          autoClose: false,
+          appearance: 'positive',
+          autoClose: 5_000,
           data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
+          icon: ''
         }
       );
     };
@@ -81,11 +79,10 @@ export class CommonTableService {
 
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
+        appearance: 'positive',
         autoClose: 15000,
         data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        icon: ''
       });
     } catch (error) {
       console.debug('[ArbitrumBridge] Transaction revert error: ', error);
@@ -126,11 +123,9 @@ export class CommonTableService {
         this.translateService.instant('bridgePage.progressMessage'),
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
-          autoClose: false,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
+          appearance: 'info',
+          autoClose: 0,
+          data: null
         }
       );
     };
@@ -147,11 +142,9 @@ export class CommonTableService {
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
+        appearance: 'success',
         autoClose: 15000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
+        data: null
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);

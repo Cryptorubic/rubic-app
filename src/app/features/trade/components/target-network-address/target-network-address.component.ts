@@ -4,6 +4,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { FormControl } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'app-target-network-address',
   templateUrl: './target-network-address.component.html',
   styleUrls: ['./target-network-address.component.scss'],
