@@ -51,6 +51,10 @@ import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cr
 import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
 import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
 import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
+import { RippleApiCrossChainTrade } from './chains/ripple/ripple-api-cross-chain-trade';
+import { RippleApiCrossChainConstructor } from './chains/ripple/ripple-api-cross-chain-constructor';
+import { RippleApiOnChainTrade } from './chains/ripple/ripple-api-on-chain-trade';
+import { RippleApiOnChainConstructor } from './chains/ripple/ripple-api-on-chain-constructor';
 import {
   BITCOIN_PK_REQUIRED_PROVIDERS,
   BtcTradeTypeRequiringPK
@@ -156,6 +160,12 @@ export class TransformUtils {
         rubicApiService,
         trustlineTransitTokenAddress
       );
+    } else if (chainType === CHAIN_TYPE.RIPPLE) {
+      trade = new RippleApiCrossChainTrade(
+        tradeParams as RippleApiCrossChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
     } else if (chainType === CHAIN_TYPE.SUI) {
       trade = new SuiApiCrossChainTrade(
         tradeParams as SuiApiCrossChainConstructor,
@@ -243,6 +253,12 @@ export class TransformUtils {
     } else if (chainType === CHAIN_TYPE.STELLAR) {
       trade = new StellarApiOnChainTrade(
         tradeParams as StellarApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
+    } else if (chainType === CHAIN_TYPE.RIPPLE) {
+      trade = new RippleApiOnChainTrade(
+        tradeParams as RippleApiOnChainConstructor,
         sdkLegacyService,
         rubicApiService
       );
