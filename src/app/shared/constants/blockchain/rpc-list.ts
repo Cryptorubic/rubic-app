@@ -9,7 +9,6 @@ import {
   StellarBlockchainName,
   RippleBlockchainName
 } from '@cryptorubic/core';
-import { RippleRpcProvider } from '@cryptorubic/web3';
 import { StellarRpcProvider } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/models/stellar-rpc-provider';
 import { TronWebProvider } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
 
@@ -20,7 +19,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<BitcoinBlockchainName, string[]> &
   Record<SuiBlockchainName, string[]> &
   Record<StellarBlockchainName, StellarRpcProvider[]> &
-  Record<RippleBlockchainName, RippleRpcProvider[]> = {
+  Record<RippleBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://x-api.rubic.exchange/drpc/ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://rpc.ankr.com/eth/a569c6f7d83a39592921667624975861dbc1764ce94dac1304793f5945fab681'
@@ -373,6 +372,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
       }
     }
   ],
-  [BLOCKCHAIN_NAME.RIPPLE]: [{ jsonRpc: 'wss://xrplcluster.com' }],
+  [BLOCKCHAIN_NAME.RIPPLE]: ['wss://xrplcluster.com'],
   [BLOCKCHAIN_NAME.MEGAETH]: ['https://mainnet.megaeth.com/rpc']
 };

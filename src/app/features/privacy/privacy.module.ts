@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrivacyRoutingModule } from './privacy-routing.module';
 import { PrivacyPageViewComponent } from './components/privacy-page-view/privacy-page-view.component';
-import { PrivacyMainPageService } from './services/privacy-main-page.service';
 import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { PrivateProvidersListGeneralComponent } from './components/private-providers-list-general/private-providers-list-general.component';
@@ -18,7 +17,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderModule } from '@app/core/header/header.module';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SharedPrivacyProvidersModule } from './providers/shared-privacy-providers/shared-privacy-providers.module';
-import { PrivacyApiService } from './services/privacy-api.service';
 import { PrivatePageSwapComponent } from '@app/features/privacy/components/private-page-swap/private-page-swap.component';
 import { PrivateSwapWindowService } from './providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 import { PrivacyMainPageTokensFacadeService } from './services/privacy-main-page-tokens-facade.service';
@@ -54,8 +52,6 @@ import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-p
     TuiSwitch
   ],
   providers: [
-    PrivacyMainPageService,
-    PrivacyApiService,
     PrivateSwapWindowService,
     PrivacyMainPageTokensFacadeService,
     PrivacyMainPageFromPrivateAssetsService,
