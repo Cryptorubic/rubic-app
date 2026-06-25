@@ -6,6 +6,9 @@ import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { createWalletClient, custom } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
+import { toRippleWalletCore } from '@core/services/wallets/wallets-adapters/xrpl/utils/to-ripple-wallet-core';
+import { XamanSignService } from '@core/services/wallets/wallets-adapters/xrpl/services/xaman-sign.service';
+import { Xumm } from 'xumm';
 
 @Injectable()
 export class SdkLoaderService {
@@ -13,6 +16,7 @@ export class SdkLoaderService {
     private readonly sdkService: SdkService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly xamanSignService: XamanSignService,
     @Inject(WA_WINDOW) private readonly window: Window
   ) {}
 
@@ -37,7 +41,7 @@ export class SdkLoaderService {
       [CHAIN_TYPE.BITCOIN]: provider.wallet,
       [CHAIN_TYPE.SUI]: provider.wallet,
       [CHAIN_TYPE.STELLAR]: provider.wallet,
-      [CHAIN_TYPE.RIPPLE]: provider.wallet
+      [CHAIN_TYPE.RIPPLE]: toRippleWalletCore(provider.wallet as Xumm, this.xamanSignService)
     } as const;
     const core = chainTypeMap?.[chainType as keyof typeof chainTypeMap];
     const walletProviderCore: WalletProviderCore = { address, core };

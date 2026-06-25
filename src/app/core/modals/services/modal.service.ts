@@ -66,6 +66,8 @@ import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { XamanSignModalComponent } from '@shared/components/xaman-sign-modal/xaman-sign-modal.component';
+import { XamanSignModalData } from '@core/services/wallets/wallets-adapters/xrpl/models/xaman-sign-modal-data';
 
 @Injectable({
   providedIn: 'root'
@@ -556,6 +558,16 @@ export class ModalService {
         { size: 'page' }
       )
     );
+  }
+
+  public openXamanSignModal(data: XamanSignModalData): Observable<void> {
+    return this.showDialog<XamanSignModalComponent, void>(XamanSignModalComponent, {
+      title: 'Sign transaction',
+      size: 's',
+      fitContent: true,
+      dismissible: true,
+      data
+    });
   }
 
   public showDisclaimer(): Promise<boolean> {

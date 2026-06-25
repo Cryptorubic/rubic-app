@@ -23,7 +23,11 @@ import {
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { RippleOnChainTradeStruct } from './models/ripple-on-chain-trade-struct';
-import { RippleTransactionConfig } from './models/ripple-transaction-config';
+import {
+  parseRippleTransactionConfig,
+  RippleRawTransactionConfig,
+  RippleTransactionConfig
+} from './models/ripple-transaction-config';
 
 export abstract class RippleOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: RippleTransactionConfig | null = null;
@@ -173,11 +177,11 @@ export abstract class RippleOnChainTrade extends OnChainTrade {
       receiver: options?.receiverAddress || this.walletAddress,
       id: this.apiResponse.id
     };
-    const swapData = await this.fetchSwapData<RippleTransactionConfig>(swapRequestData);
+    const swapData = await this.fetchSwapData<RippleRawTransactionConfig>(swapRequestData);
 
     const amount = swapData.estimate.destinationWeiAmount;
 
-    return { config: swapData.transaction, toAmount: amount };
+    return { config: parseRippleTransactionConfig(swapData.transaction), toAmount: amount };
   }
 
   protected async setTransactionConfig(

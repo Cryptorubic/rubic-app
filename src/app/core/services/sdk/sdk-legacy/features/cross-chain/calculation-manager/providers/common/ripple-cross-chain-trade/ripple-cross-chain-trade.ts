@@ -11,7 +11,11 @@ import {
   TooLowAmountError,
   UserRejectError
 } from '@cryptorubic/web3';
-import { RippleTransactionConfig } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ripple-on-chain-trade/models/ripple-transaction-config';
+import {
+  parseRippleTransactionConfig,
+  RippleRawTransactionConfig,
+  RippleTransactionConfig
+} from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ripple-on-chain-trade/models/ripple-transaction-config';
 
 export abstract class RippleCrossChainTrade extends CrossChainTrade<RippleTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<RippleBlockchainName>;
@@ -105,12 +109,12 @@ export abstract class RippleCrossChainTrade extends CrossChainTrade<RippleTransa
       enableChecks: !testMode
     };
 
-    const swapData = await this.fetchSwapData<RippleTransactionConfig>(swapRequestData);
+    const swapData = await this.fetchSwapData<RippleRawTransactionConfig>(swapRequestData);
 
     this._uniqueInfo = swapData.uniqueInfo ?? {};
     const amount = swapData.estimate.destinationWeiAmount;
 
-    return { config: swapData.transaction, amount };
+    return { config: parseRippleTransactionConfig(swapData.transaction), amount };
   }
 
   public authWallet(): Promise<string> {

@@ -1,0 +1,43 @@
+@use 'src/scss/core' as *;
+
+.modal {
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+
+    text-align: center;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  &__qr {
+    width: 220px;
+    height: 220px;
+
+    border-radius: 12px;
+  }
+
+  &__link {
+    width: 100%;
+  }
+
+  &__hint {
+    margin: 0;
+
+    font-size: 14px;
+
+    opacity: 0.7;
+  }
+
+  &__cancel {
+    width: 100%;
+  }
+}

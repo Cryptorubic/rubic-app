@@ -1,0 +1,34 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <p class="modal__title">Scan with Xaman to sign</p>
+
+      <img class="modal__qr" [src]="data.qrCodeUrl" alt="Xaman sign request QR code" />
+
+      <a
+        class="modal__link"
+        tuiButton
+        appearance="primary"
+        size="m"
+        [href]="data.deepLink"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in Xaman
+      </a>
+
+      <p class="modal__hint">Waiting for confirmation in your Xaman wallet…</p>
+
+      <button
+        class="modal__cancel"
+        tuiButton
+        appearance="flat"
+        size="m"
+        type="button"
+        (click)="onCancel()"
+      >
+        Cancel
+      </button>
+    </main>
+  </div>
+</div>

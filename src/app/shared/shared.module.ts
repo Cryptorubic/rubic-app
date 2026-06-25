@@ -81,6 +81,7 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
+import { XamanSignModalComponent } from './components/xaman-sign-modal/xaman-sign-modal.component';
 import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 
@@ -142,7 +143,8 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     InputNumberComponent,
     TrustlineModalComponent,
     TrustlineComponent,
-    PrivacyDisclaimerModalComponent
+    PrivacyDisclaimerModalComponent,
+    XamanSignModalComponent
   ],
   imports: [
     CommonModule,
