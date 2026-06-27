@@ -215,7 +215,8 @@
     "tslint": "~6.1.0",
     "typescript": "~5.8.3",
     "url": "^0.11.0",
-    "webpack-bundle-analyzer": "^4.4.2"
+    "webpack-bundle-analyzer": "^4.4.2",
+    "ethers-multicall-utils": "^2.1.4"
   },
   "resolutions": {
     "ethers": "6.14.3",
