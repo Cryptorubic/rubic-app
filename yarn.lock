@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.7.0-alpha-xrpl-adapter.3":
-  version "1.7.0-alpha-xrpl-adapter.3"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.0-alpha-xrpl-adapter.3.tgz#d043b7bf128dc1f58b708377f1199f06a4a86fb6"
-  integrity sha512-GZo75nsH/OAOF1PS7X+tv7tYNUNS6lAmkM0zZC24DkMtha2iMuCza+7SLFlHn2/bdQZjNeuFetykyvRNjnTpew==
+"@cryptorubic/core@1.7.0-alpha-xrpl-adapter.4":
+  version "1.7.0-alpha-xrpl-adapter.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.0-alpha-xrpl-adapter.4.tgz#2d6c7d5ae0274ef87eb5c768f726932a5b72e546"
+  integrity sha512-ziRA4CmvugD2AERSw/vCbpgSL6p+I5rYRLEdUw+8I+6xKVcc2N49crcslD2gFR29IKQg7Aer0JxKpohqx/qvYA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.7.0-alpha-xrpl-adapter.3":
-  version "1.7.0-alpha-xrpl-adapter.3"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.0-alpha-xrpl-adapter.3.tgz#63ee968c737bfe4d2e35a16e4b7905488a45f9aa"
-  integrity sha512-EtDUO55+L5mVuW11mEFLrHDxjtdzrET0g0tbcVmCtfWeM5Rj2DXjHbNamgJhblsJcBXnw0MmfAO/J1WXX7migg==
+"@cryptorubic/web3@1.7.0-alpha-xrpl-adapter.4":
+  version "1.7.0-alpha-xrpl-adapter.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.0-alpha-xrpl-adapter.4.tgz#2d08968a65dd56467b11e1c26b188e7548de7513"
+  integrity sha512-X6d7GBL0YnFdnj5m9XnhtpCkOwXdW2WZfVz5oMC4kJeW9lUgASDnfleQkh7XHiLVEam5DoYgGgsjl8FeznWmUA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"

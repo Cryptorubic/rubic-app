@@ -32,7 +32,10 @@ export class TrustlineComponent implements OnInit {
   }
 
   public get trustlineText(): string {
-    return TRUSTLINE_TYPE_TEXT[this.options.trustlineType](this.options.trustlineToken.symbol);
+    return TRUSTLINE_TYPE_TEXT[this.options.trustlineType](
+      this.options.trustlineToken.symbol,
+      this.options.toBlockchain
+    );
   }
 
   private readonly _buttonState$ = new BehaviorSubject<TrustlineButtonState | null>(null);
