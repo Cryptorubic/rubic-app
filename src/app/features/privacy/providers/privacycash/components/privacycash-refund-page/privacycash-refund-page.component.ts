@@ -61,9 +61,10 @@ export class PrivacycashRefundPageComponent {
         return;
       }
 
-      const receiverAddr = this.receiverCtrl.value
-        ? this.receiverCtrl.value
-        : this.walletConnectorService.address;
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: token.blockchain
+      });
+      const receiverAddr = this.receiverCtrl.value ? this.receiverCtrl.value : walletAddr;
 
       const preview$ = openPreview({
         steps: [

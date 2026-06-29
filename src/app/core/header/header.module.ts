@@ -33,10 +33,10 @@ import { MobileNavigationMenuComponent } from './components/header/components/mo
 import { LogoComponent } from './components/header/components/logo/logo.component';
 import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
-import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
 import { BannersService } from './services/banners.service';
+import { UserProfileWalletsComponent } from './components/header/components/user-profile-wallets/user-profile-wallets.component';
 
 @NgModule({
   declarations: [
@@ -51,9 +51,9 @@ import { BannersService } from './services/banners.service';
     MobileNavigationMenuComponent,
     LogoComponent,
     SettingsComponent,
-    ProfileMenuTogglerComponent,
     HistoryButtonComponent,
-    BannersComponent
+    BannersComponent,
+    UserProfileWalletsComponent
   ],
   imports: [
     CommonModule,

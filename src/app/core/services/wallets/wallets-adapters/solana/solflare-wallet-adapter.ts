@@ -10,14 +10,17 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWallet> {
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.SOLFLARE;
   }
 
+  public readonly walletNameUI: string = 'Solflare';
+
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -37,8 +40,13 @@ export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWal
     this.selectedAddress = publicKey.toBase58();
     this.selectedChain = BLOCKCHAIN_NAME.SOLANA;
 
+    const addressChangedMsg: AddressChangedMsg = {
+      address: this.selectedAddress,
+      chainType: this.chainType,
+      walletName: this.walletName
+    };
     this.onNetworkChanges$.next(this.selectedChain);
-    this.onAddressChanges$.next(this.selectedAddress);
+    this.onAddressChanges$.next(addressChangedMsg);
   }
 
   private async checkErrors(wallet: SolflareWallet): Promise<void> {

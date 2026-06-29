@@ -37,7 +37,7 @@ export class DepositTradeInfoComponent {
     switchIif(
       Boolean,
       address => of(address),
-      () => this.walletConnector.addressChange$
+      () => this.walletConnector.addressChange$.pipe(map(msg => msg.address))
     )
   );
 

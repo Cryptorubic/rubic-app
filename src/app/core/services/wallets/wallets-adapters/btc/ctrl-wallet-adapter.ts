@@ -17,14 +17,17 @@ import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/com
 import { BtcWallet } from '@core/services/wallets/wallets-adapters/solana/models/btc-wallet';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   public readonly chainType = CHAIN_TYPE.BITCOIN;
 
+  public readonly walletNameUI: string = 'Ctrl';
+
   public readonly walletName = WALLET_NAME.CTRL;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -71,8 +74,14 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       this.isEnabled = true;
       this.selectedChain = BLOCKCHAIN_NAME.BITCOIN;
       [this.selectedAddress] = accounts;
+
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
       this.onNetworkChanges$.next(this.selectedChain);
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next(addressChangedMsg);
 
       this.initSubscriptionsOnChanges();
     } catch (error) {
@@ -101,7 +110,12 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       (accounts: string[]) => {
         this.selectedAddress = accounts[0] || null;
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       }
     );
@@ -143,7 +157,12 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
     }
 
     if (this.isEnabled) {
-      this.onAddressChanges$.next(this.selectedAddress);
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
+      this.onAddressChanges$.next(addressChangedMsg);
     }
   }
 }

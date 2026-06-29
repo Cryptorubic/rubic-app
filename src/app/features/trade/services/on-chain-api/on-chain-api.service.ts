@@ -76,12 +76,14 @@ export class OnChainApiService {
     const referral = this.sessionStorage.getItem('referral');
     const swapId = this.sessionStorage.getItem('swapId');
     const slippage = trade.getTradeInfo().slippage / 100;
-
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
+    const walletAdapter = this.walletConnectorService.getActiveProvider({
+      blockchain: trade.from.blockchain
+    });
 
     const tradeInfo: OnChainTradeCreationToBackend = {
       price_impact: trade.getTradeInfo().priceImpact,
-      walletName: this.walletConnectorService.provider.walletName,
+      walletName: walletAdapter.walletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop',
       slippage,
       expected_amount: trade.lastTo.stringWeiAmount,
@@ -93,8 +95,8 @@ export class OnChainApiService {
       to_token: toAddress,
       from_amount: trade.from.stringWeiAmount,
       to_amount: trade.lastTo.stringWeiAmount,
-      user: this.authService.userAddress,
-      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      user: walletAdapter.address,
+      receiver: this.targetNetworkAddressService.address || walletAdapter.address,
       hash,
       ...(preTradeId && { pretrade_id: preTradeId }),
       ...(referral && { referrer: referral }),
@@ -121,10 +123,13 @@ export class OnChainApiService {
     const referral = this.sessionStorage.getItem('referral');
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[trade.type];
     const slippage = trade.getTradeInfo().slippage / 100;
+    const walletAdapter = this.walletConnectorService.getActiveProvider({
+      blockchain: trade.from.blockchain
+    });
 
     const preTradeInfo: Omit<OnChainTradeCreationToBackend, 'pretrade_id'> = {
       price_impact: trade.getTradeInfo().priceImpact,
-      walletName: this.walletConnectorService.provider.walletName,
+      walletName: walletAdapter.walletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop',
       slippage,
       expected_amount: trade.to.stringWeiAmount,
@@ -136,8 +141,8 @@ export class OnChainApiService {
       to_token: toAddress,
       from_amount: Token.toWei(fromAmount, fromDecimals),
       to_amount: trade.to.stringWeiAmount,
-      user: this.authService.userAddress,
-      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      user: walletAdapter.address,
+      receiver: this.targetNetworkAddressService.address || walletAdapter.address,
       ...(referral && { referrer: referral })
     };
 

@@ -27,7 +27,6 @@ import { CrossChainService } from '@features/trade/services/cross-chain/cross-ch
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AuthService } from '@core/services/auth/auth.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
@@ -81,6 +80,7 @@ import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -123,7 +123,7 @@ export class SwapsControllerService {
     private readonly onChainService: OnChainService,
     private readonly swapsStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
     private readonly settingsService: SettingsService,
@@ -407,9 +407,8 @@ export class SwapsControllerService {
   }
 
   private subscribeOnAddressChange(): void {
-    this.authService.currentUser$
+    this.walletConnectorService.activeWallets$
       .pipe(
-        distinctUntilChanged(),
         switchMap(() => this.swapFormService.isFilled$),
         filter(isFilled => isFilled)
       )
@@ -628,9 +627,12 @@ export class SwapsControllerService {
               wrappedTrade?.error
             );
 
+            const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+              blockchain: wrappedTrade.trade?.from.blockchain
+            });
             const needAddTrustline = this.trustlineService.checkTrustline(
               wrappedTrade.trade,
-              this.authService.userAddress,
+              walletAddr,
               this.targetNetworkAddressService.address
             );
 

@@ -20,6 +20,7 @@ import { HinkalInstanceService } from './hinkal-sdk/hinkal-instance.service';
 import { HinkalFacadeService } from './hinkal-sdk/hinkal-facade.service';
 import { HINKAL_SUPPORTED_WALLETS } from '../constants/hinkal-supported-wallets';
 import { HinkalBalanceService } from './hinkal-sdk/hinkal-balance.service';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class HinkalActionButtonService extends PrivateActionButtonService {
@@ -41,10 +42,10 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
             this._receiverAddress$,
             this.hinkalInstanceService.currSignature$
           ]).pipe(
-            switchMap(([network, userAddr, swapInfo, receiver, currSignature]) => {
+            switchMap(([network, addrChangedMsg, swapInfo, receiver, currSignature]) => {
               return this.getButtonState(
                 network,
-                userAddr,
+                addrChangedMsg,
                 swapInfo.fromAsset,
                 swapInfo.fromAmount,
                 receiver,
@@ -94,7 +95,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
 
   private async getButtonState(
     network: BlockchainName | null,
-    userAddr: string | null,
+    addrChangedMsg: AddressChangedMsg | null,
     fromAsset: BalanceToken | null,
     assetAmount: {
       visibleValue: string;
@@ -212,7 +213,7 @@ export class HinkalActionButtonService extends PrivateActionButtonService {
       };
     }
 
-    if (compareAddresses(userAddr, receiver)) {
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
       return {
         type: 'error',
         text: 'Recipient address must be different'

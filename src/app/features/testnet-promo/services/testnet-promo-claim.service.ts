@@ -125,7 +125,7 @@ export class TestnetPromoClaimService {
   }
 
   private checkBlockchain(): void {
-    if (this.walletConnectorService.network !== BLOCKCHAIN_NAME.ARBITRUM) {
+    if (!this.walletConnectorService.networks.includes(BLOCKCHAIN_NAME.ARBITRUM)) {
       throw new Error('wrong chain');
     }
   }

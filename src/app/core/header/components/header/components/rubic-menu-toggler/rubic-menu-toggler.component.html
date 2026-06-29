@@ -8,7 +8,7 @@
       </div>
       <app-notification-badge
         class="notification-counter"
-        *ngIf="isMobile && (unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+        *ngIf="isMobile && (unreadTrades$ | async) && (hasActiveWallet$ | async) && !isOpened"
         size="xs"
         color="red"
         [value]="unreadTrades$ | async"

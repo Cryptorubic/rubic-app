@@ -9,7 +9,6 @@ import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.com
 import { WalletsModalModule } from '@core/wallets-modal/wallets-modal.module';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
 import { SharedModule } from '@shared/shared.module';
-import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-interceptor';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -24,11 +23,6 @@ import { ModalsModule } from './modals/modals.module';
   declarations: [MaintenanceComponent, RubicFooterComponent],
   providers: [
     CookieService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: WalletsInfoInterceptor,
-      multi: true
-    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RubicExchangeInterceptor,

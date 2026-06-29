@@ -3,12 +3,12 @@
 <header
   class="rubic-header"
   [ngClass]="{ 'large-iframe-header': useLargeIframe }"
-  *ngLet="currentUser$ | async as currentUser"
+  *ngLet="hasActiveWallet$ | async as hasActiveWallet"
 >
   <div class="rubic-header__left">
     <app-logo
       *ngIf="!hideLogo"
-      [currentUser]="!!currentUser"
+      [currentUser]="hasActiveWallet"
       [isDarkTheme]="isDarkTheme$ | async"
       [noFrameLink]="noFrameLink"
     ></app-logo>
@@ -73,7 +73,7 @@
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
     <div class="rubic-header__profile">
-      <ng-container *ngIf="!currentUser?.address; else loggedIn">
+      <ng-container *ngIf="!hasActiveWallet; else loggedIn">
         <app-login-button
           class="rubic-header__login"
           [buttonHierarchy]="'header'"

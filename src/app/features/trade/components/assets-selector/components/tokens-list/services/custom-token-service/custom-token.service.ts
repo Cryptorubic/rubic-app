@@ -1,13 +1,13 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { switchMap } from 'rxjs';
-import { BlockchainsInfo, Token } from '@cryptorubic/core';
+import { Token } from '@cryptorubic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { AuthService } from '@core/services/auth/auth.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class CustomTokenService {
@@ -16,7 +16,7 @@ export class CustomTokenService {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly authService: AuthService
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public openModal(customToken: AvailableTokenAmount): void {
@@ -36,14 +36,13 @@ export class CustomTokenService {
         switchMap(async confirm => {
           if (confirm) {
             try {
-              if (
-                this.authService.userAddress &&
-                this.authService.userChainType ===
-                  BlockchainsInfo.getChainType(customToken.blockchain)
-              ) {
+              const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+                blockchain: customToken.blockchain
+              });
+              if (walletAddr) {
                 const tokenBalance = await this.sdkLegacyService.adaptersFactoryService
                   .getAdapter(customToken.blockchain as RubicAny)
-                  .getBalance(this.authService.userAddress, customToken.address);
+                  .getBalance(walletAddr, customToken.address);
                 return {
                   ...customToken,
                   amount: Token.fromWei(tokenBalance, customToken.decimals)

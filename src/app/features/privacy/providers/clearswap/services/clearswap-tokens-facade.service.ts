@@ -15,6 +15,7 @@ import { Observable, map } from 'rxjs';
 import { isClearswapSupportedChain } from '../constants/clearswap-supported-chains';
 import { PRIVATE_MODE_SUPPORTED_TOKENS } from '@app/features/privacy/constants/private-mode-supported-tokens';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { BalanceFetchingConfig } from '@app/core/services/tokens/models/tokens-balance-service-types';
 
 @Injectable()
 export class ClearswapTokensFacadeService extends TokensFacadeService {
@@ -27,7 +28,13 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
     _inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.tokensBuilderService
-      .getTokensList(type, _query, direction, getEmptySwapFormInput(), true)
+      .getTokensList(
+        type,
+        _query,
+        direction,
+        getEmptySwapFormInput(),
+        this.defineBalanceFetchingConfig(type)
+      )
       .pipe(
         distinctObjectUntilChanged(),
         map(tokens => {
@@ -76,5 +83,15 @@ export class ClearswapTokensFacadeService extends TokensFacadeService {
           return sortedByOpposite;
         })
       );
+  }
+
+  private defineBalanceFetchingConfig(assetType: AssetListType): BalanceFetchingConfig {
+    if (BlockchainsInfo.isBlockchainName(assetType)) {
+      const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+        blockchain: assetType
+      });
+      return { walletAddressesToFetch: walletAddr ? [walletAddr] : [] };
+    }
+    return { walletAddressesToFetch: [] };
   }
 }

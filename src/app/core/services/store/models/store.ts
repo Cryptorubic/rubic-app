@@ -27,7 +27,12 @@ export type Store = PrivacyLocalStorage & {
   /**
    * Current wallet provider selected by user.
    */
-  RUBIC_PROVIDER: WALLET_NAME;
+  // RUBIC_PROVIDER: WALLET_NAME;
+
+  /**
+   * Wallets activated by user.
+   */
+  RUBIC_PROVIDERS: WALLET_NAME[];
 
   /**
    * Current user theme.
@@ -93,7 +98,7 @@ export type Store = PrivacyLocalStorage & {
 };
 
 export const storeRecord: Record<keyof Store, null> = {
-  RUBIC_PROVIDER: null,
+  RUBIC_PROVIDERS: null,
   RUBIC_THEME: null,
   RUBIC_CHAIN_ID: null,
   RUBIC_FAVORITE_TOKENS: null,

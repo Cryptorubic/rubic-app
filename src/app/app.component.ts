@@ -8,7 +8,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, delay, first, map } from 'rxjs/operators';
+import { catchError, delay, first, map, startWith } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
@@ -24,6 +24,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
+import { LastEventInWalletsManager } from './core/services/wallets/models/wallets-manager-types';
+import { TotalBalancesStoreService } from './core/services/tokens/total-balances-store.service';
 
 @Component({
   standalone: false,
@@ -54,7 +56,8 @@ export class AppComponent implements AfterViewInit {
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService,
     private readonly rubicApiService: RubicApiService,
-    private readonly turnstileService: TurnstileService
+    private readonly turnstileService: TurnstileService,
+    private readonly totalBalancesStoreService: TotalBalancesStoreService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -69,15 +72,19 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$
+    this.walletConnectorService.walletsManager.lastEvent$
       .pipe(
         switchIif(
-          () =>
-            this.walletConnectorService.chainType === CHAIN_TYPE.SOLANA &&
-            this.walletConnectorService.provider.walletName === WALLET_NAME.BACKPACK,
-          (address: string) => of(address).pipe(delay(1_000)),
-          (address: string) => of(address)
-        )
+          (event: LastEventInWalletsManager) => {
+            return (
+              event.affectedChainType === CHAIN_TYPE.SOLANA &&
+              event.affectedWalletName === WALLET_NAME.BACKPACK
+            );
+          },
+          (event: LastEventInWalletsManager) => of(event.affectedWalletAddress).pipe(delay(1_000)),
+          (event: LastEventInWalletsManager) => of(event.affectedWalletAddress)
+        ),
+        startWith('')
       )
       .subscribe(userAddress => {
         if (userAddress) this.sdkLoaderService.onAddressChange(userAddress);
@@ -145,6 +152,7 @@ export class AppComponent implements AfterViewInit {
    */
   private initApp(): void {
     this.tokensFacadeService.init();
+    this.totalBalancesStoreService.runUpdateBalancesInterval();
     this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),

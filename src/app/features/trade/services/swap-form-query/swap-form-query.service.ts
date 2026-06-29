@@ -110,8 +110,8 @@ export class SwapFormQueryService {
     let fromChain: AssetListType;
     if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
-    } else if (this.walletConnectorService.network) {
-      fromChain = this.walletConnectorService.network;
+    } else if (this.walletConnectorService.networks.length) {
+      fromChain = this.walletConnectorService.networks[0];
     }
 
     let toChain: AssetListType;

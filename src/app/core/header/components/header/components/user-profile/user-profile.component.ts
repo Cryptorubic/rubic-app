@@ -1,14 +1,10 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { ModalService } from '@app/core/modals/services/modal.service';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Component({
   standalone: false,
@@ -22,10 +18,7 @@ export class UserProfileComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly authService: AuthService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
@@ -35,19 +28,6 @@ export class UserProfileComponent {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-
-    this.walletConnectorService.networkChange$
-      .pipe(
-        combineLatestWith(this.walletConnectorService.addressChange$),
-        tap(([blockchainName]) => {
-          this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        }),
-        switchMap(() => this.authService.setUserData()),
-        takeUntilDestroyed()
-      )
-      .subscribe(() => {
-        this.cdr.markForCheck();
-      });
   }
 
   public readonly isConfirmModalOpened$: Observable<boolean>;
@@ -58,24 +38,10 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
-  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
-    map(user => (user?.name ? user.name : user?.address)),
-    startWith(this.authService.userAddress)
-  );
+  public readonly profileText$: Observable<string> = of('My Profile');
 
-  public readonly avatar$ = this.authService.currentUser$.pipe(
-    combineLatestWith(this.walletConnectorService.networkChange$),
-    map(([user, blockchainName]) => {
-      const currentBlockchainIcon = blockchainName
-        ? blockchainIcon[blockchainName]
-        : `${basePath}default-chain.svg`;
-
-      return user?.avatar ? user.avatar : currentBlockchainIcon;
-    })
-  );
-
-  public logout(): void {
-    this.authService.disconnectWallet();
+  public logout(walletName: WALLET_NAME): void {
+    this.authService.disconnectWallet(walletName);
   }
 
   public getDropdownStatus(status: boolean): void {
@@ -83,8 +49,4 @@ export class UserProfileComponent {
   }
 
   public openLimitOrdersModal(): void {}
-
-  public openProfileModal(): void {
-    this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
-  }
 }

@@ -16,14 +16,17 @@ import CustomError from '@core/errors/models/custom-error';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM_SOLANA;
   }
 
+  public readonly walletNameUI: string = 'Phantom';
+
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -46,8 +49,13 @@ export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<Phanto
     this.handleDeactivation();
     this.handleAccountChange();
 
+    const addressChangedMsg: AddressChangedMsg = {
+      address: this.selectedAddress,
+      chainType: this.chainType,
+      walletName: this.walletName
+    };
     this.onNetworkChanges$.next(this.selectedChain);
-    this.onAddressChanges$.next(this.selectedAddress);
+    this.onAddressChanges$.next(addressChangedMsg);
   }
 
   private async handleDisconnect(wallet: PhantomWallet): Promise<void> {
@@ -109,7 +117,12 @@ export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<Phanto
       if (address) {
         this.selectedAddress = address.toBase58();
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       } else {
         // New account isn't yet connected to the dApp - reconnect to adopt it
@@ -118,7 +131,11 @@ export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<Phanto
           .then(() => {
             this.selectedAddress = new PublicKey(this.wallet.publicKey.toBytes()).toBase58();
             this.zone.run(() => {
-              this.onAddressChanges$.next(this.selectedAddress);
+              this.onAddressChanges$.next({
+                address: this.selectedAddress,
+                walletName: this.walletName,
+                chainType: this.chainType
+              });
             });
           })
           .catch(() => this.deactivate());

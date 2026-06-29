@@ -7,12 +7,15 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { TokenPocketError } from '@core/errors/models/provider/token-pocket-error';
+import { AddressChangedMsg } from '../../models/events';
 
 export class TokenPocketWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.TOKEN_POCKET;
 
+  public readonly walletNameUI: string = 'TokenPocket';
+
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -39,7 +42,13 @@ export class TokenPocketWalletAdapter extends EvmWalletAdapter {
       [this.selectedAddress] = accounts;
       this.selectedChain =
         (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
-      this.onAddressChanges$.next(this.selectedAddress);
+
+      const addressChangedMsg: AddressChangedMsg = {
+        address: this.selectedAddress,
+        chainType: this.chainType,
+        walletName: this.walletName
+      };
+      this.onAddressChanges$.next(addressChangedMsg);
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();

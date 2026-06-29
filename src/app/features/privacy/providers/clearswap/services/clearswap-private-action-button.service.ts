@@ -14,6 +14,7 @@ import { Web3Pure } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { CLEARSWAP_SUPPORTED_WALLETS } from '../constants/clearswap-supported-wallerts';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class ClearswapPrivateActionButtonService extends PrivateActionButtonService {
@@ -115,7 +116,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
 
   private async getTransferState(
     network: BlockchainName | null,
-    userAddr: string,
+    addrChangedMsg: AddressChangedMsg,
     transferAsset: BalanceToken | null,
     transferAmount: {
       visibleValue: string;
@@ -159,7 +160,7 @@ export class ClearswapPrivateActionButtonService extends PrivateActionButtonServ
       };
     }
 
-    if (compareAddresses(userAddr, receiver)) {
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
       return {
         type: 'error',
         text: 'Recipient address must be different'

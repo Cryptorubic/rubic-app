@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { AuthService } from '@app/core/services/auth/auth.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { PreviewSwapService } from '@app/features/trade/services/preview-swap/preview-swap.service';
 import { combineLatestWith, map, Observable } from 'rxjs';
 
@@ -13,14 +13,14 @@ import { combineLatestWith, map, Observable } from 'rxjs';
 })
 export class SpindleBannerComponent {
   public readonly iframeSrc$ = this.headerStore.getMobileDisplayStatus().pipe(
-    combineLatestWith(this.authService.currentUser$),
-    map(([isMobile, user]) => {
-      if (!user?.address) {
+    combineLatestWith(this.walletConnectorService.activeWallets$),
+    map(([isMobile, activeWallets]) => {
+      if (!activeWallets.length) {
         return null;
       }
-
+      const walletAddr = activeWallets[0].address;
       const placementId = this.getPlacementId(isMobile);
-      const src = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${user.address}`;
+      const src = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${walletAddr}`;
       return src;
     })
   );
@@ -41,7 +41,7 @@ export class SpindleBannerComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly previewSwapService: PreviewSwapService
   ) {}
 

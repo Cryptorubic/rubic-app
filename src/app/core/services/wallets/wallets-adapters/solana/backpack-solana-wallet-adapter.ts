@@ -4,5 +4,7 @@ import { SolanaStandardWalletAdapter } from '@core/services/wallets/wallets-adap
 export class BackpackSolanaWalletAdapter extends SolanaStandardWalletAdapter {
   public readonly walletName = WALLET_NAME.BACKPACK;
 
+  public readonly walletNameUI: string = 'Backpack';
+
   protected readonly name = 'Backpack';
 }

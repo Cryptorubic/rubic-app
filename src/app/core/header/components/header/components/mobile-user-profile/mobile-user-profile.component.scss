@@ -1,78 +1,6 @@
 .mobile-user-profile {
   padding: 1rem;
 
-  &__card {
-    padding: 1rem;
-
-    background-color: var(--io-background);
-
-    background-image: url('/assets/images/rubic-account-card.png');
-    background-repeat: no-repeat;
-    background-position: 100% 100%;
-    background-size: 140px;
-    border: 1px solid var(--transparent-line);
-    border-radius: 20px;
-
-    &-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 2rem;
-
-      &-account {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
-      &-address {
-        margin-left: 0.5rem;
-
-        color: #aaa;
-        font-weight: 600;
-        font-size: 16px;
-      }
-
-      &-buttons {
-        display: flex;
-        align-items: center;
-        margin-left: auto;
-
-        > * {
-          margin-left: 1.5rem;
-
-          > button,
-          a {
-            img {
-              width: 20px;
-              height: 20px;
-            }
-          }
-        }
-      }
-    }
-
-    &-body {
-      &-title {
-        margin-bottom: 8px;
-
-        color: var(--tui-text-tertiary);
-        font-weight: 600;
-        font-size: 14px;
-      }
-
-      &-balance {
-        min-height: 20px;
-
-        font-size: 24px;
-
-        &.tui-skeleton {
-          max-width: 150px;
-        }
-      }
-    }
-  }
-
   &__icon {
     ::ng-deep {
       svg {
@@ -82,7 +10,6 @@
 
         path {
           opacity: 0.7;
-
           fill: var(--tui-text-primary);
         }
 

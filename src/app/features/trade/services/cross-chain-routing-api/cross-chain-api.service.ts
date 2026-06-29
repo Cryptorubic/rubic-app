@@ -55,11 +55,14 @@ export class CrossChainApiService {
     const slippage = trade.getTradeInfo().slippage / 100;
     const { additionalData: _, ...ids } = trade.uniqueInfo || {};
     const providerIds = Object.values(ids);
+    const walletAdapter = this.walletConnectorService.getActiveProvider({
+      blockchain: trade.from.blockchain
+    });
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
       slippage,
-      wallet_name: this.walletConnectorService.provider.walletName,
+      wallet_name: walletAdapter.walletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
       expected_amount: trade.lastTo.stringWeiAmount,
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
@@ -71,9 +74,9 @@ export class CrossChainApiService {
       to_token: toAddress,
       from_amount: trade.from.stringWeiAmount,
       to_amount: trade.lastTo.stringWeiAmount,
-      user: this.authService.userAddress,
+      user: walletAdapter.address,
       tx_hash: hash,
-      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      receiver: this.targetNetworkAddressService.address || walletAdapter.address,
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
@@ -110,11 +113,14 @@ export class CrossChainApiService {
     } = TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const slippage = trade.getTradeInfo().slippage / 100;
+    const walletAdapter = this.walletConnectorService.getActiveProvider({
+      blockchain: fromBlockchain
+    });
 
     const preTradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
       slippage,
-      wallet_name: this.walletConnectorService.provider.walletName,
+      wallet_name: walletAdapter.walletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
       expected_amount: trade.to.stringWeiAmount,
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
@@ -126,8 +132,8 @@ export class CrossChainApiService {
       to_token: toAddress,
       from_amount: Token.toWei(fromAmount, fromDecimals),
       to_amount: trade.to.stringWeiAmount,
-      user: this.authService.userAddress,
-      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      user: walletAdapter.address,
+      receiver: this.targetNetworkAddressService.address || walletAdapter.address,
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer

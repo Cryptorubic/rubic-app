@@ -6,12 +6,15 @@ import { blockchainId, BlockchainName } from '@cryptorubic/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import { AddressChangedMsg } from '../../models/events';
 
 export class BinanceWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.BINANCE_WALLET;
 
+  public readonly walletNameUI: string = 'BinanceWallet';
+
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { AuthService } from '@app/core/services/auth/auth.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
+import { map } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -14,13 +15,15 @@ export class RubicMenuTogglerComponent {
 
   public isOpened = false;
 
-  public readonly currentUser$ = this.authService.currentUser$;
+  public readonly hasActiveWallet$ = this.walletConnectorService.activeWallets$.pipe(
+    map(activeWallets => !!activeWallets.length)
+  );
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly recentTradesStoreService: UnreadTradesService
   ) {}
 

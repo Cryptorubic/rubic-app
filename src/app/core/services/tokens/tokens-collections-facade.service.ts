@@ -6,7 +6,7 @@ import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-util
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
 import { inject, Injectable } from '@angular/core';
-import { AuthService } from '@core/services/auth/auth.service';
+import { WalletConnectorService } from '../wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class TokensCollectionsFacadeService {
 
   private readonly apiService = inject(NewTokensApiService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   public readonly allTokens = new AllTokensUtilityStore(this.tokensStore, this.apiService).init();
 
@@ -29,7 +29,7 @@ export class TokensCollectionsFacadeService {
   public readonly favorite = new FavoriteUtilityStore(
     this.tokensStore,
     this.apiService,
-    this.authService
+    this.walletConnectorService
   ).init();
 
   public readonly blockchainTokens = this.tokensStore.tokens;

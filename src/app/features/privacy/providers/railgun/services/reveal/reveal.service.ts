@@ -6,7 +6,6 @@ import {
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import {
   fromRubicToPrivateChainMap,
   RailgunSupportedChain
@@ -15,12 +14,13 @@ import { waitFor } from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BehaviorSubject } from 'rxjs';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class RevealService {
   private readonly railgunFacade = inject(RailgunFacadeService);
 
-  private readonly authService = inject(AuthService);
+  private readonly walletConnector = inject(WalletConnectorService);
 
   private readonly _inProgress$ = new BehaviorSubject(false);
 
@@ -41,8 +41,14 @@ export class RevealService {
         throw new RubicError(`Previos transfer hasn't done yet. Wait a bit.`);
       }
       this._inProgress$.next(true);
+
+      const walletAddr = this.walletConnector.getActiveWalletAddress({
+        blockchain: tokenBlockchain
+      });
+      if (!walletAddr) return;
+
       const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiverAddress)
+        serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiverAddress || walletAddr)
       ];
       const chain = fromRubicToPrivateChainMap[tokenBlockchain];
 

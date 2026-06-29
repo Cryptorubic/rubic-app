@@ -11,6 +11,7 @@ import { StandardAdapter } from '@core/services/wallets/wallets-adapters/standar
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { StoreService } from '@app/core/services/store/store.service';
 import { StandardEventsFeature } from '@wallet-standard/features';
+import { AddressChangedMsg } from '../../models/events';
 import { HttpService } from '@app/core/services/http/http.service';
 
 export abstract class StandardWalletAdapter<
@@ -23,7 +24,7 @@ export abstract class StandardWalletAdapter<
   protected abstract readonly blockchainName: BlockchainName;
 
   protected constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -64,8 +65,13 @@ export abstract class StandardWalletAdapter<
     this.selectedAddress = address;
     this.selectedChain = this.blockchainName;
 
+    const addressChangedMsg: AddressChangedMsg = {
+      address: this.selectedAddress,
+      chainType: this.chainType,
+      walletName: this.walletName
+    };
     this.onNetworkChanges$.next(this.selectedChain);
-    this.onAddressChanges$.next(this.selectedAddress);
+    this.onAddressChanges$.next(addressChangedMsg);
     // @ts-ignore
     this.handleEvents(standardWallet);
   }
@@ -78,10 +84,17 @@ export abstract class StandardWalletAdapter<
         if (this.selectedAddress) {
           this.selectedChain = this.blockchainName;
 
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
           this.onNetworkChanges$.next(this.selectedChain);
-          this.onAddressChanges$.next(this.selectedAddress);
+          this.onAddressChanges$.next(addressChangedMsg);
         } else {
-          this.storeService.deleteItem('RUBIC_PROVIDER');
+          const providers = this.storeService.getItem('RUBIC_PROVIDERS');
+          const filteredProviders = providers.filter(provider => provider !== this.walletName);
+          this.storeService.setItem('RUBIC_PROVIDERS', filteredProviders);
           this.storeService.deleteItem('RUBIC_CHAIN_ID');
           this.deactivate();
         }

@@ -8,8 +8,9 @@ import {
   Output
 } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { AuthService } from '@core/services/auth/auth.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AssetListType } from '@features/trade/models/asset';
+import { map } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -25,10 +26,12 @@ export class EmptyListComponent {
 
   @Output() listSwitch = new EventEmitter<void>();
 
-  public readonly user$ = this.authService.currentUser$;
+  public readonly user$ = this.walletConnectorService.activeWallets$.pipe(
+    map(activeWallets => activeWallets.length > 0)
+  );
 
   constructor(
-    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector
   ) {}

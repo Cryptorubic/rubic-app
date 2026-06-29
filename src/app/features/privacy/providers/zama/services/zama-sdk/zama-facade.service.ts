@@ -73,7 +73,7 @@ export class ZamaFacadeService {
   }
 
   private addSwitchNetworkStep(fromBlockchain: EvmBlockchainName, steps: PrivateStep[]): void {
-    if (fromBlockchain !== this.walletConnectorService.network) {
+    if (!this.walletConnectorService.networks.includes(fromBlockchain)) {
       steps.push({
         label: 'Switch network',
         showLoaderOnAction: false,
@@ -94,12 +94,17 @@ export class ZamaFacadeService {
       label: 'Private Transfer',
       showLoaderOnAction: true,
       action: async () => {
+        const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+          blockchain: token.blockchain
+        });
+        if (!walletAddr) return;
+
         await waitFor(0); // Delay to allow UI to rerender
         return this.zamaSwapService.confidentialTransfer(token, receiver).then(res => {
           this.privateStatisticsService.saveAction(
             'TRANSFER',
             'ZAMA',
-            this.walletConnectorService.address,
+            walletAddr,
             token.address,
             token.weiAmount.toFixed(),
             token.blockchain
@@ -126,6 +131,10 @@ export class ZamaFacadeService {
       label: 'Shield Tokens',
       showLoaderOnAction: true,
       action: async () => {
+        const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+          blockchain: wrapToken.blockchain
+        });
+        if (!walletAddr) return;
         if (needApprove) {
           await this.zamaSwapService.approve(pureTokenAmount);
         }
@@ -134,7 +143,7 @@ export class ZamaFacadeService {
           this.privateStatisticsService.saveAction(
             'SHIELD',
             'ZAMA',
-            this.walletConnectorService.address,
+            walletAddr,
             wrapToken.address,
             wrapToken.weiAmount.toFixed(),
             wrapToken.blockchain
@@ -186,10 +195,15 @@ export class ZamaFacadeService {
         this.zamaSwapService
           .finalizeUnwrap(unwrapToken, burntAmount)
           .then(res => {
+            const walletAddr = this.walletConnectorService.getActiveWalletAddress({
+              blockchain: unwrapToken.blockchain
+            });
+            if (!walletAddr) return;
+
             this.privateStatisticsService.saveAction(
               'UNSHIELD',
               'ZAMA',
-              this.walletConnectorService.address,
+              walletAddr,
               unwrapToken.address,
               unwrapToken.weiAmount.toFixed(),
               unwrapToken.blockchain
@@ -213,24 +227,28 @@ export class ZamaFacadeService {
   }
 
   public async updateSignature(): Promise<void> {
-    const address = this.walletConnectorService.address;
-    if (!this.walletConnectorService.address) {
+    const walletAdapter = this.walletConnectorService.getActiveProvider({
+      chainType: 'EVM'
+    });
+    if (!walletAdapter) {
       this.notificationService.showWarning('Wallet not connected');
       return;
     }
 
     try {
-      let chain = this.walletConnectorService.network as ZamaSupportedChain;
+      let chain = walletAdapter.network as ZamaSupportedChain;
       if (!ZAMA_SUPPORTED_CHAINS.includes(chain)) {
         chain = ZAMA_SUPPORTED_CHAINS[0];
         await this.walletConnectorService.switchChain(chain);
       }
 
-      await this.zamaSignatureService.updateSignature(address, chain).then(isSuccess => {
-        if (isSuccess) {
-          this.privatePageTypeService.activePage = ZAMA_PAGES.find(page => page.type === 'hide');
-        }
-      });
+      await this.zamaSignatureService
+        .updateSignature(walletAdapter.address, chain)
+        .then(isSuccess => {
+          if (isSuccess) {
+            this.privatePageTypeService.activePage = ZAMA_PAGES.find(page => page.type === 'hide');
+          }
+        });
     } catch {}
   }
 

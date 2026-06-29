@@ -14,6 +14,7 @@ import { combineLatest, filter, Observable, switchMap } from 'rxjs';
 import { HoudiniErrorService } from './houdini-error.service';
 import { HoudiniSwapService } from './houdini-swap.service';
 import { HOUDINI_SUPPORTED_WALLETS } from '../constants/wallets';
+import { AddressChangedMsg } from '@app/core/services/wallets/models/events';
 
 @Injectable()
 export class HoudiniPrivateActionButtonService extends PrivateActionButtonService {
@@ -45,7 +46,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
 
   private async getSwapState(
     network: BlockchainName | null,
-    userAddr: string | null,
+    addrChangedMsg: AddressChangedMsg | null,
     swapInfo: PrivateSwapInfo,
     receiver: string,
     tradeError: Partial<ErrorInterface>,
@@ -105,7 +106,7 @@ export class HoudiniPrivateActionButtonService extends PrivateActionButtonServic
       };
     }
 
-    if (userAddr && compareAddresses(userAddr, receiver)) {
+    if (addrChangedMsg && compareAddresses(addrChangedMsg.address, receiver)) {
       return {
         type: 'error',
         text: 'Recipient address must be different'

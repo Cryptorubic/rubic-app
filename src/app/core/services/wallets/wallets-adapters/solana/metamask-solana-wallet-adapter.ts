@@ -4,5 +4,7 @@ import { SolanaStandardWalletAdapter } from '@core/services/wallets/wallets-adap
 export class MetamaskSolanaWalletAdapter extends SolanaStandardWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK_SOLANA;
 
+  public readonly walletNameUI: string = 'MetaMask';
+
   protected readonly name = 'MetaMask';
 }

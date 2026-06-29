@@ -11,7 +11,7 @@
   <button class="native-mobile-menu__item" (click)="openModal($event, 'settings')">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/settings-button.svg'"></span>
   </button>
-  <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
+  <ng-container *ngIf="(currentUser$ | async) === false; else loggedIn">
     <button class="native-mobile-menu__item" (click)="openModal($event, 'wallet')">
       <span [inlineSVG]="'assets/images/icons/mobile-menu/wallet-button.svg'"></span>
     </button>

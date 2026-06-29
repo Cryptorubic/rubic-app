@@ -43,6 +43,7 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     TuiBadge,
     TuiPagination,
     TuiSelectModule,
+    TuiDropdownModule,
     TuiTextfieldControllerModule,
     ...TuiDataListWrapper,
     ReactiveFormsModule,

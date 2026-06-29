@@ -1,0 +1,62 @@
+@use 'src/scss/core' as *;
+
+.chain-types-list {
+  @include flex(column, center, flex-start);
+  gap: 4px;
+  height: 100%;
+  padding: 8px;
+
+  font-weight: 500;
+  font-size: 15px;
+
+  background-color: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  .chain-type__wrapper {
+    @include flex(row, center, space-between);
+    width: 100%;
+    min-width: 169px;
+    max-width: 350px;
+    padding: 12px 15px;
+
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: all 0.1s;
+
+    &:hover {
+      background-color: var(--tui-base-01);
+    }
+
+    &[data-active='true'] {
+      background-color: var(--tui-secondary-active);
+    }
+
+    .chain-type__item {
+      @include flex(row, center, flex-start);
+      gap: 8px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .chain-types-list {
+    @include flex(row, center, normal);
+    gap: 16px;
+    overflow: auto;
+
+    background-color: transparent;
+    scrollbar-width: thin;
+    scrollbar-color: var(--tui-secondary-active) transparent;
+
+    .chain-type__wrapper {
+      @include flex(row, center, center);
+      gap: var(--tui-radius-l);
+      width: fit-content;
+      padding: 15px;
+
+      background-color: var(--tui-base-01);
+      border-radius: var(--tui-radius-l);
+    }
+  }
+}

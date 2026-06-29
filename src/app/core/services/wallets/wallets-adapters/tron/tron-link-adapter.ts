@@ -18,8 +18,11 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { filter, map } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
+import { AddressChangedMsg } from '../../models/events';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
+  public readonly walletNameUI: string = 'TronLink';
+
   public readonly chainType = CHAIN_TYPE.TRON;
 
   public readonly walletName = WALLET_NAME.TRON_LINK;
@@ -27,7 +30,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
   protected selectedChain: TronBlockchainName | null;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -45,7 +48,13 @@ export class TronLinkAdapter extends CommonWalletAdapter {
     this.selectedChain = mainnetNodes.some(mainnetNode => node.includes(mainnetNode))
       ? BLOCKCHAIN_NAME.TRON
       : null;
-    this.onAddressChanges$.next(this.selectedAddress);
+
+    const addressChangedMsg: AddressChangedMsg = {
+      address: this.selectedAddress,
+      chainType: this.chainType,
+      walletName: this.walletName
+    };
+    this.onAddressChanges$.next(addressChangedMsg);
     this.onNetworkChanges$.next(this.selectedChain);
     this.initSubscriptionsOnChanges();
   }
@@ -85,7 +94,12 @@ export class TronLinkAdapter extends CommonWalletAdapter {
       .subscribe((address: string) => {
         this.selectedAddress = address;
         this.zone.run(() => {
-          this.onAddressChanges$.next(this.selectedAddress);
+          const addressChangedMsg: AddressChangedMsg = {
+            address: this.selectedAddress,
+            chainType: this.chainType,
+            walletName: this.walletName
+          };
+          this.onAddressChanges$.next(addressChangedMsg);
         });
       });
 

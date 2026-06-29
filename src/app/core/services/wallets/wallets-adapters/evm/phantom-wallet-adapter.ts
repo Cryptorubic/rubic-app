@@ -10,11 +10,16 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import CustomError from '@app/core/errors/models/custom-error';
+import { AddressChangedMsg } from '../../models/events';
+
+// @TODO_530 add this wallet to new wallet modal
 export class PhantomWalletAdapter extends EvmWalletAdapter {
+  public walletNameUI = 'Phantom';
+
   public readonly walletName = WALLET_NAME.PHANTOM;
 
   constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
@@ -52,7 +57,11 @@ export class PhantomWalletAdapter extends EvmWalletAdapter {
       [this.selectedAddress] = accounts;
       this.selectedChain =
         (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
-      this.onAddressChanges$.next(this.selectedAddress);
+      this.onAddressChanges$.next({
+        address: this.selectedAddress,
+        walletName: this.walletName,
+        chainType: this.chainType
+      });
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();

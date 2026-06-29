@@ -24,6 +24,16 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
   --io-background: #222331;
 
+<<<<<<< HEAD
+  --tui-primary: #00e28d;
+  --tui-primary-hover: #02b774;
+  --tui-primary-active: #02b774;
+  --tui-primary-text: #14141d;
+
+  --tui-secondary: #3b3d4f;
+  --tui-secondary-hover: #2c2d3e;
+  --tui-secondary-active: #4c4e67;
+=======
   --tui-background-accent-1: #00e28d;
   --tui-background-accent-1-hover: #02b774;
   --tui-background-accent-1-pressed: #02b774;
@@ -36,6 +46,7 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-background-elevation-1: #3b3d4f;
   --tui-background-elevation-2: #3b3d4f;
   --tui-background-elevation-3: #3b3d4f;
+>>>>>>> master
 
   --tui-text-action: white;
   --tui-text-action-hover: white;

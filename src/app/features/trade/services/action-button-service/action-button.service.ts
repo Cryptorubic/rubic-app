@@ -12,12 +12,13 @@ import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/featu
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
 type StateOptions = [
   SelectedTrade,
   boolean,
   boolean,
-  string,
+  CommonWalletAdapter[],
   boolean,
   boolean,
   string,
@@ -31,7 +32,7 @@ export class ActionButtonService {
       combineLatestWith([
         this.tradeState.wrongBlockchain$,
         this.tradeState.notEnoughBalance$,
-        this.walletConnector.addressChange$,
+        this.walletConnector.activeWallets$,
         this.targetNetworkAddressService.isAddressValid$,
         this.targetNetworkAddressService.isAddressRequired$,
         this.targetNetworkAddressService.address$,
@@ -71,7 +72,7 @@ export class ActionButtonService {
     currentTrade: SelectedTrade,
     wrongBlockchain: boolean,
     notEnoughBalance: boolean,
-    address: string,
+    activeWallets: CommonWalletAdapter[],
     isReceiverValid: boolean,
     isAddressRequired: boolean,
     receiverAddress: string,
@@ -109,7 +110,7 @@ export class ActionButtonService {
       };
     }
 
-    if (!address && !isTransferFromNonEvm) {
+    if (!activeWallets.length && !isTransferFromNonEvm) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -199,12 +200,12 @@ export class ActionButtonService {
     SelectedTrade,
     boolean,
     boolean,
-    string,
+    CommonWalletAdapter[],
     boolean,
     boolean,
     string,
     SwapFormInput
   ] {
-    return [null, false, false, '', true, false, '', getEmptySwapFormInput()];
+    return [null, false, false, [], true, false, '', getEmptySwapFormInput()];
   }
 }

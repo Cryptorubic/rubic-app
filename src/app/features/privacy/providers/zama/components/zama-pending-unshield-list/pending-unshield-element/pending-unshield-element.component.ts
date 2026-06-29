@@ -40,7 +40,12 @@ export class PendingUnshieldElementComponent {
   public async finalizeUnwrap(): Promise<void> {
     this._unwrapLoading$.next(true);
     try {
-      if (this.token.blockchain !== this.walletConnectorService.network) {
+      const walletAdapter = this.walletConnectorService.getActiveProvider({
+        blockchain: this.token.blockchain
+      });
+      if (!walletAdapter) return;
+
+      if (this.token.blockchain !== walletAdapter.network) {
         await this.walletConnectorService.switchChain(this.token.blockchain as EvmBlockchainName);
       }
 
@@ -58,7 +63,7 @@ export class PendingUnshieldElementComponent {
         this.privateStatisticsService.saveAction(
           'UNSHIELD',
           'ZAMA',
-          this.walletConnectorService.address,
+          walletAdapter.address,
           this.token.address,
           Token.toWei(this.token.decryptedNonWeiAmount, publicToken.decimals),
           this.token.blockchain

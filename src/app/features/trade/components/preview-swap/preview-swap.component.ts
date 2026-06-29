@@ -152,8 +152,7 @@ export class PreviewSwapComponent implements OnDestroy {
     });
   }
 
-  private logoutAndChangeWallet(): void {
-    this.authService.disconnectWallet();
+  private changeWallet(): void {
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 
@@ -177,10 +176,10 @@ export class PreviewSwapComponent implements OnDestroy {
       .openWalletModal(this.injector, { direction: 'column' })
       .pipe(
         switchMap(() =>
-          forkJoin([this.walletConnector.addressChange$, this.swapsStateService.notEnoughBalance$])
+          forkJoin([this.walletConnector.activeWallets$, this.swapsStateService.notEnoughBalance$])
         ),
-        switchMap(([address, balanceError]) =>
-          Boolean(address) && !balanceError ? this.previewSwapService.requestTxSign() : of(null)
+        switchMap(([activeWallets, balanceError]) =>
+          activeWallets.length && !balanceError ? this.previewSwapService.requestTxSign() : of(null)
         )
       )
       .subscribe();
@@ -267,14 +266,17 @@ export class PreviewSwapComponent implements OnDestroy {
       state.needTrustline = true;
     }
 
+    const walletForSrcChain = this.walletConnector.getActiveProvider({
+      chainType: fromBlockchainType
+    });
     if (
       (el.data.wrongNetwork &&
         !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
         el.step !== transactionStep.success) ||
-      fromBlockchainType !== this.walletConnector.chainType
+      !walletForSrcChain
     ) {
       state.disabled = false;
-      state.action = () => this.logoutAndChangeWallet();
+      state.action = () => this.changeWallet();
       state.label = 'Change Wallet';
     }
 
@@ -286,7 +288,7 @@ export class PreviewSwapComponent implements OnDestroy {
         el.step === transactionStep.swapReady ||
         el.step === transactionStep.idle) &&
       BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
-      fromBlockchainType === this.walletConnector.chainType
+      walletForSrcChain
     ) {
       state.disabled = false;
       state.action = () => this.switchChain();

@@ -31,7 +31,9 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
           const availableTokensForBlockchains = event[blockchain].Spendable.erc20Amounts;
 
           return this.tokensBuilderService
-            .getTokensList(blockchain, _query, direction, inputValue, false)
+            .getTokensList(blockchain, _query, direction, inputValue, {
+              walletAddressesToFetch: []
+            })
             .pipe(
               map(tokens => {
                 return tokens
@@ -72,7 +74,7 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
             }));
           });
           return this.tokensBuilderService
-            .getTokensList(type, _query, direction, inputValue, false)
+            .getTokensList(type, _query, direction, inputValue, { walletAddressesToFetch: [] })
             .pipe(
               map(tokens => {
                 return tokens
