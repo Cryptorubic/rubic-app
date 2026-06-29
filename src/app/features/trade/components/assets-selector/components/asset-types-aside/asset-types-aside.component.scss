@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 :host {
-  --tui-secondary: var(--io-background);
+  --tui-background-neutral-1: var(--io-background);
   --tui-padding: 0;
   --tui-height-l: 60px;
 }
@@ -38,7 +38,7 @@
   padding-top: 10px;
   padding-bottom: 10px;
 
-  background: var(--tui-secondary);
+  background: var(--tui-background-neutral-1);
   border-bottom-right-radius: var(--tui-radius-m);
   border-bottom-left-radius: var(--tui-radius-m);
 
@@ -52,8 +52,8 @@
     margin-bottom: 2px;
 
     ::ng-deep {
-      .tui-autofill {
-        background-color: var(--tui-secondary);
+      [tuiWrapper][data-appearance='textfield'] {
+        background-color: var(--tui-background-neutral-1);
         border-radius: 0;
         border-top-left-radius: var(--tui-radius-m);
         border-top-right-radius: var(--tui-radius-m);
@@ -72,21 +72,15 @@
         height: 51px;
 
         app-filter-list-element {
-          ::ng-deep {
-            .t-wrapper {
-              width: 51px;
-              height: 51px;
-            }
+          ::ng-deep button.filter-list-element {
+            width: 51px;
+            height: 51px;
 
-            .t-content {
-              color: var(--tui-text-02);
-            }
+            color: var(--tui-text-secondary);
           }
 
           ::ng-deep .filter-list-element__clicked-element {
-            .t-content {
-              color: black;
-            }
+            color: black !important;
           }
         }
 
@@ -95,12 +89,12 @@
         }
 
         ::ng-deep {
-          .tui-autofill {
+          [tuiWrapper][data-appearance='textfield'] {
             height: 51px;
           }
 
-          .t-wrapper {
-            background: var(--tui-base-01);
+          button[tuiWrapper] {
+            background: var(--tui-background-base) !important;
           }
         }
       }
@@ -130,17 +124,9 @@
           pointer-events: auto;
         }
 
-        ::ng-deep {
-          .t-wrapper {
-            background: var(--tui-secondary-hover) !important;
-            opacity: 1 !important;
-          }
-        }
-      }
-
-      ::ng-deep {
-        .t-content {
-          justify-content: space-between;
+        ::ng-deep button {
+          background-color: var(--tui-background-neutral-1-hover) !important;
+          opacity: 1 !important;
         }
       }
     }
@@ -174,7 +160,7 @@
       }
     }
 
-    .t-wrapper {
+    button[tuiButton] {
       padding: 0 !important;
     }
   }
@@ -234,11 +220,11 @@
       padding: 0 1rem;
 
       &-label {
-        @include font(18px, 18px, 400, var(--tui-text-01), 0.54px);
+        @include font(18px, 18px, 400, var(--tui-text-primary), 0.54px);
       }
 
       &-expand {
-        color: var(--tui-primary);
+        color: var(--tui-background-accent-1);
         font-weight: 400;
         font-size: 16px;
       }

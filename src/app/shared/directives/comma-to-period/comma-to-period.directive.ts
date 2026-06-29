@@ -1,6 +1,7 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Directive({
+  standalone: false,
   selector: '[appCommaToPeriod]'
 })
 export class CommaToPeriodDirective {

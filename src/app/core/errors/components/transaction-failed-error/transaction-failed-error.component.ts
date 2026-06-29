@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-failed-error',
   templateUrl: './transaction-failed-error.component.html',
   styleUrls: ['./transaction-failed-error.component.scss'],

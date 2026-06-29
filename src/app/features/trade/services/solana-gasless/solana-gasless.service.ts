@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Injectable, DestroyRef, inject } from '@angular/core';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SolanaGaslessStateService } from './solana-gasless-state.service';
 import { HttpService } from '@app/core/services/http/http.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { firstValueFrom } from 'rxjs';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE } from '@cryptorubic/core';
 
@@ -14,7 +14,6 @@ export class SolanaGaslessService {
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
     private readonly httpService: HttpService,
-    private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnUserAddressChange();
@@ -59,13 +58,17 @@ export class SolanaGaslessService {
   }
 
   private subscribeOnUserAddressChange(): void {
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(msg => {
-      if (msg?.address) this.solanaGaslessStateService.markInfoAsNotShown();
-      if (msg?.chainType === CHAIN_TYPE.SOLANA) {
-        this.updateGaslessTxCount24Hrs(msg.address);
-      } else {
-        this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
-      }
-    });
+    this.walletConnectorService.addressChange$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(msg => {
+        if (msg?.address) this.solanaGaslessStateService.markInfoAsNotShown();
+        if (msg?.chainType === CHAIN_TYPE.SOLANA) {
+          this.updateGaslessTxCount24Hrs(msg.address);
+        } else {
+          this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
+        }
+      });
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

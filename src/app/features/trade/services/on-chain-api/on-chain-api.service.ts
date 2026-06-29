@@ -59,7 +59,7 @@ export class OnChainApiService {
       provider: type
     };
 
-    return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
+    return firstValueFrom(this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req));
   }
 
   /**

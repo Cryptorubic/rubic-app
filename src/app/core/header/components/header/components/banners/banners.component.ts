@@ -5,6 +5,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
+  standalone: false,
   selector: 'app-banners',
   templateUrl: './banners.component.html',
   styleUrls: ['./banners.component.scss'],

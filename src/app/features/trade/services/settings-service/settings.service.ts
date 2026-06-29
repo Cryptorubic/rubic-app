@@ -1,4 +1,3 @@
-/* eslint-disable rxjs/finnish */
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -46,7 +45,7 @@ export class SettingsService {
     return this.settingsForm.get(SWAP_PROVIDER_TYPE.INSTANT_TRADE).value;
   }
 
-  public get instantTradeValueChanges(): Observable<ItSettingsForm> {
+  public get instantTradeValueChanges$(): Observable<ItSettingsForm> {
     return this.settingsForm.get(SWAP_PROVIDER_TYPE.INSTANT_TRADE).valueChanges;
   }
 
@@ -58,7 +57,7 @@ export class SettingsService {
     return this.settingsForm.get(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING).value;
   }
 
-  public get crossChainRoutingValueChanges(): Observable<CcrSettingsForm> {
+  public get crossChainRoutingValueChanges$(): Observable<CcrSettingsForm> {
     return this.settingsForm.get(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING).valueChanges;
   }
 

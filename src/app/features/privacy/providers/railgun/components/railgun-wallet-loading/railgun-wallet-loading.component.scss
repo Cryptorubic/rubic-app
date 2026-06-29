@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .progress {
   display: flex;
   gap: var(--tui-padding-m);
@@ -5,5 +7,11 @@
   &__image {
     width: 24px;
     height: 24px;
+  }
+
+  tui-progress-circle {
+    ::ng-deep .t-track {
+      stroke: var(--tui-background-base);
+    }
   }
 }

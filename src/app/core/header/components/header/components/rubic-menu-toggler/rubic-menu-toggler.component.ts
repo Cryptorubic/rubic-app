@@ -5,6 +5,7 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
 import { map } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-menu-toggler',
   templateUrl: './rubic-menu-toggler.component.html',
   styleUrls: ['./rubic-menu-toggler.component.scss']

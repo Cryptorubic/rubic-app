@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { BlockchainName } from '@cryptorubic/core';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 
 @Component({
+  standalone: false,
   selector: 'polymorpheus-symbiosis-warning-tx-modal',
   templateUrl: './symbiosis-warning-tx-modal.component.html',
   styleUrls: ['./symbiosis-warning-tx-modal.component.scss'],

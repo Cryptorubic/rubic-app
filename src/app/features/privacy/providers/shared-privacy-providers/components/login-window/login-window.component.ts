@@ -5,6 +5,7 @@ import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/mo
 import { map } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-login-window',
   templateUrl: './login-window.component.html',
   styleUrls: ['./login-window.component.scss'],

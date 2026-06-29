@@ -12,6 +12,7 @@ import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { StoreService } from '@app/core/services/store/store.service';
 import { StandardEventsFeature } from '@wallet-standard/features';
 import { AddressChangedMsg } from '../../models/events';
+import { HttpService } from '@app/core/services/http/http.service';
 
 export abstract class StandardWalletAdapter<
   SpecificFeatures extends Wallet['features']
@@ -29,7 +30,11 @@ export abstract class StandardWalletAdapter<
     zone: NgZone,
     window: RubicWindow,
     private storeService: StoreService,
-    protected readonly ChainAdapter: new (wallet: Wallet) => StandardAdapter<SpecificFeatures>
+    protected readonly ChainAdapter: new (
+      wallet: Wallet,
+      httpService?: HttpService
+    ) => StandardAdapter<SpecificFeatures>,
+    private httpService?: HttpService
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
@@ -45,7 +50,7 @@ export abstract class StandardWalletAdapter<
       el => el.name === this.name && el.chains.includes(this.chainName)
     );
 
-    const wallet = new this.ChainAdapter(standardWallet as RubicAny);
+    const wallet = new this.ChainAdapter(standardWallet as RubicAny, this.httpService);
     const isConnected = await wallet.connect();
     if (!isConnected) {
       throw new WalletError();

@@ -38,7 +38,7 @@ export class TestnetPromoClaimService {
     try {
       const isClaimed = await this.checkClaimed(contractAddress, nodeIndex);
       this._buttonStatus$.next(isClaimed ? 'claimed' : 'active');
-    } catch (err) {
+    } catch {
       this._buttonStatus$.next('claimed');
     }
   }

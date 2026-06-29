@@ -1,10 +1,10 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 
 import { StoreService } from '@core/services/store/store.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
@@ -31,6 +31,8 @@ import {
 import { WalletsManager } from '../wallets-manager/wallets-manager';
 import { WalletAdapterFactory } from './wallet-adapter-factory';
 import { AddressChangedMsg } from '../models/events';
+import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
+import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
 
 @Injectable({
   providedIn: 'root'
@@ -105,7 +107,7 @@ export class WalletConnectorService {
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     httpService: HttpService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone,
     private readonly modalsService: ModalService
@@ -248,6 +250,11 @@ export class WalletConnectorService {
             this.errorService.catch(err);
           }
         }
+      } else if (
+        switchError.message.includes('The Provider is not connected to the requested chain') &&
+        provider instanceof PhantomWalletAdapter
+      ) {
+        this.errorService.catch(new PhantomWalletUnsupportedChainError(evmBlockchainName));
       } else {
         this.errorService.catch(switchError);
       }

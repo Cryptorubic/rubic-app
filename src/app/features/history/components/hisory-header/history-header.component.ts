@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { compareAddresses } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-history-header',
   templateUrl: './history-header.component.html',
   styleUrls: ['./history-header.component.scss'],

@@ -37,7 +37,7 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
         ...providerConfig?.qrModalOptions,
         themeMode: 'dark',
         themeVariables: {
-          '--wcm-accent-color': 'var(--tui-primary)',
+          '--wcm-accent-color': 'var(--tui-background-accent-1)',
           // @ts-ignore
           '--wcm-color-bg-1': 'var(--app-background)',
           '--wcm-background-color': 'var(--app-background)'
@@ -88,7 +88,7 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();
-    } catch (error) {
+    } catch {
       throw new WalletlinkError();
     }
   }

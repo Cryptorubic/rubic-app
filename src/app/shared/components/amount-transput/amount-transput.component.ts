@@ -9,6 +9,7 @@ import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { TokenAmountDirective } from '@shared/directives/token-amount/token-amount.directive';
 
 @Component({
+  standalone: false,
   selector: 'app-amount-transput',
   templateUrl: './amount-transput.component.html',
   styleUrls: ['./amount-transput.component.scss'],

@@ -10,6 +10,7 @@ import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/featu
 import { FormControl } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-private-trade-info',
   templateUrl: './deposit-private-trade-info.component.html',
   styleUrls: ['./deposit-private-trade-info.component.scss'],

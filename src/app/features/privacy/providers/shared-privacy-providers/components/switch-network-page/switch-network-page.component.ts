@@ -4,6 +4,7 @@ import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blo
 import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-switch-network-page',
   templateUrl: './switch-network-page.component.html',
   styleUrls: ['./switch-network-page.component.scss'],

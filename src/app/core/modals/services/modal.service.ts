@@ -10,7 +10,6 @@ import {
   Observable,
   of
 } from 'rxjs';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -21,7 +20,7 @@ import {
   ModalName,
   ModalStruct
 } from '../models/mobile-native-options';
-import { TuiDialogOptions } from '@taiga-ui/core';
+import type { TuiDialogOptions } from '@taiga-ui/core/components/dialog';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
@@ -43,7 +42,7 @@ import { DepositRateChangedModalComponent } from '@app/shared/components/deposit
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
+import { MultichainWalletModalComponent } from '@shared/components/multichain-wallet-modal/multichain-wallet-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
@@ -65,6 +64,8 @@ import { NavigationItem } from '@app/core/header/components/header/components/ru
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { NewWalletsModalComponent } from '@app/core/wallets-modal/components/new-wallets-modal/new-wallets-modal.component';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 
 @Injectable({
   providedIn: 'root'
@@ -279,8 +280,7 @@ export class ModalService {
     isDisabled: boolean,
     hintText: string,
     totalBlockchains: number,
-    // eslint-disable-next-line rxjs/finnish
-    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    blockchainsToShow$: Observable<AvailableBlockchain[]>,
     handleSearchQuery?: (query: string) => void,
     handleSelection?: (selection: AssetListType) => void
   ): void {
@@ -295,8 +295,7 @@ export class ModalService {
           isDisabled,
           hintText,
           totalBlockchains,
-          // eslint-disable-next-line rxjs/finnish
-          blockchainsToShow,
+          blockchainsToShow$,
           handleSearchQuery,
           handleSelection
         }
@@ -433,7 +432,7 @@ export class ModalService {
    */
   public showDialog<Component, Output>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<Output> {
     //@ts-ignore
@@ -451,7 +450,7 @@ export class ModalService {
 
   public openClosableDialog<Component, ClosableDialogOutput>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<RubicAny>>,
     injector?: Injector
   ): Observable<ClosableDialogOutput> {
     return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(
@@ -465,7 +464,7 @@ export class ModalService {
    */
   public openArbitrumWarningModal(): Observable<void> {
     this.setOpenedModalName('arbitrum-warning');
-    return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
+    return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's', closeable: false });
   }
 
   public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
@@ -485,7 +484,7 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(TrustlineModalComponent, {
         size: 's',
-        closeable: true,
+        closeable: false,
         dismissible: false,
         fitContent: true,
         data: options
@@ -506,7 +505,8 @@ export class ModalService {
     this.setOpenedModalName('mev-bot');
     return this.showDialog(MevBotModalComponent, {
       size: 's',
-      scrollableContent: true
+      scrollableContent: true,
+      closeable: false
     });
   }
 
@@ -535,13 +535,16 @@ export class ModalService {
     );
   }
 
-  public openMetamaskModal(walletsToHide: WALLET_NAME[] = []): Promise<WALLET_NAME> {
+  public openMultichainWalletModal(
+    walletName: WALLET_NAME,
+    walletsToHide: WALLET_NAME[] = []
+  ): Promise<WALLET_NAME> {
     return firstValueFrom(
-      this.showDialog(MetamaskModalComponent, {
+      this.showDialog(MultichainWalletModalComponent, {
         size: 'auto',
-        closeable: true,
+        closeable: false,
         fitContent: true,
-        data: { walletsToHide }
+        data: { walletName, walletsToHide }
       })
     );
   }

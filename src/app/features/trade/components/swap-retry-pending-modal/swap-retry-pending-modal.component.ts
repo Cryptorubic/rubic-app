@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { Observable } from 'rxjs';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { SwapRetryModalInput } from './models/swap-retry-modal-input';
@@ -12,6 +12,7 @@ import { RubicStep } from '@app/core/services/sdk/sdk-legacy/features/cross-chai
 import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-retry-pending-modal',
   templateUrl: './swap-retry-pending-modal.component.html',
   styleUrls: ['./swap-retry-pending-modal.component.scss'],

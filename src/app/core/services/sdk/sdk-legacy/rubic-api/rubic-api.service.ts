@@ -57,9 +57,9 @@ import {
   throttleTime
 } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
-import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { WA_NAVIGATOR, WA_WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -90,8 +90,8 @@ export class RubicApiService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly turnstileService: TurnstileService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_WINDOW) private readonly window: Window
   ) {}
 
   public setSocket(): void {
@@ -326,7 +326,7 @@ export class RubicApiService {
         useCFProtection ? this.turnstileService.token$.pipe(first(el => el !== null)) : of('token')
       ),
       switchMap(token => {
-        if (!token) return throwError(() => 'cloudflare token is undefined');
+        if (!token) return throwError(() => new Error('cloudflare token is undefined'));
 
         return fromEvent<
           WsQuoteResponseInterface & {
@@ -464,7 +464,7 @@ export class RubicApiService {
    */
   private handleWsApiError(err: WsErrorResponseInterface): Observable<boolean> {
     const result = err.error;
-    switch (result.code) {
+    switch (result?.code) {
       case 6001:
       case 6002: {
         return from(this.refreshCloudflareToken(true)).pipe(map(res => res.success));
@@ -476,7 +476,7 @@ export class RubicApiService {
 
   private getApiError(err: SwapErrorResponseInterface): RubicSdkError {
     const result = err.error;
-    switch (result.code) {
+    switch (result?.code) {
       case 3003: {
         return new InsufficientFundsError((result.data as { tokenSymbol: string }).tokenSymbol);
       }

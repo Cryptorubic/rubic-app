@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,11 +8,10 @@ import {
   inject
 } from '@angular/core';
 import { PageType } from './models/page-type';
-import { HeaderStore } from '@core/header/services/header.store';
 import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-providers/components/page-navigation/models/page-type-image';
-import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
+  standalone: false,
   selector: 'app-page-navigation',
   templateUrl: './page-navigation.component.html',
   styleUrls: ['./page-navigation.component.scss'],
@@ -28,9 +28,7 @@ export class PageNavigationComponent {
 
   @Output() onSelect = new EventEmitter<PageType>();
 
-  private readonly headerStore = inject(HeaderStore);
-
-  private readonly window = inject(WINDOW);
+  private readonly window = inject(WA_WINDOW);
 
   public readonly isMobile = this.window.innerWidth <= 768;
 

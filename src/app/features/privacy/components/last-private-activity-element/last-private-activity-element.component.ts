@@ -3,6 +3,7 @@ import { PrivateActivityItem } from '../../models/activity-item';
 import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-last-private-activity-element',
   templateUrl: './last-private-activity-element.component.html',
   styleUrls: ['./last-private-activity-element.component.scss'],

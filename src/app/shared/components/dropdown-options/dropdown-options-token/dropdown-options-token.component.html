@@ -1,8 +1,10 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
-  <tui-hosted-dropdown
-    #dropdown
-    [content]="content"
-    [(open)]="isDropdownOpen"
+  <!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
+  <div
+    tuiDropdown
+    #dropdown="tuiDropdown"
+    [tuiDropdown]="content"
+    [(tuiDropdownOpen)]="isDropdownOpen"
     *ngIf="
       canBeAddedToFavorite ||
       showCopyToClipboardOption ||
@@ -11,16 +13,16 @@
   >
     <button
       appearance="flat"
-      icon="tuiIconMoreVertical"
+      iconStart="@tui.ellipsis-vertical"
       tuiIconButton
       type="button"
       [size]="isMobile ? 'm' : 's'"
-      [pseudoHover]="dropdown.open || null"
+      [tuiAppearanceState]="isDropdownOpen ? 'hover' : null"
     ></button>
-  </tui-hosted-dropdown>
+  </div>
 
-  <ng-template #content let-activeZone>
-    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+  <ng-template #content>
+    <tui-data-list tuiDataListDropdownManager size="m">
       <div class="dropdown-content__wrapper">
         <div class="dropdown-content">
           <ng-container *ngIf="showCopyToClipboardOption">
@@ -28,7 +30,6 @@
               class="dropdown-content__element"
               (click)="copyToClipboard()"
               [tuiHint]="copyHint"
-              tuiHintAppearance="onDark"
               [tuiHintShowDelay]="50"
               tuiHintDirection="top-right"
               [tuiHintHideDelay]="100"
@@ -86,7 +87,6 @@
                   [inlineSVG]="
                     'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
                   "
-                  tuiHintAppearance="onDark"
                   tuiHintDirection="top-right"
                   rel="noopener noreferrer"
                   target="_blank"

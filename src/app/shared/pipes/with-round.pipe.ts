@@ -5,6 +5,7 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 type RoundMode = 'toClosestValue' | 'fixedValue';
 
 @Pipe({
+  standalone: false,
   name: 'withRound'
 })
 export class WithRoundPipe implements PipeTransform {

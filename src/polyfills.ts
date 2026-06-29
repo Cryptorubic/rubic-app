@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
@@ -57,6 +56,8 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js';
+import { Buffer } from 'buffer';
+import process from 'process';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included with Angular CLI.
 
 /** *************************************************************************************************
@@ -66,6 +67,6 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included wit
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 (window as RubicWindow).global = window;
 (window as RubicWindow).dataLayer = (window as any).dataLayer;
-(window as RubicWindow).process = window.process || require('process');
-(window as RubicWindow).Buffer = (window as any).Buffer || require('buffer').Buffer;
+(window as RubicWindow).process = process;
+(window as RubicWindow).Buffer = (window as any).Buffer || Buffer;
 (window as RubicWindow).ga = (window as any)?.ga;

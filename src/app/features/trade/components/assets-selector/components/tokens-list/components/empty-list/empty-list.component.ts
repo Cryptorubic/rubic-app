@@ -13,6 +13,7 @@ import { AssetListType } from '@features/trade/models/asset';
 import { map } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-empty-list',
   templateUrl: './empty-list.component.html',
   styleUrls: ['./empty-list.component.scss'],

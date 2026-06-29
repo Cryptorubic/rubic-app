@@ -1,14 +1,17 @@
+import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LANGUAGES_LIST } from '@core/header/models/languages-list';
 import { map, startWith } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { TuiButton, TuiDropdown, TuiGroup } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-language-selector',
   templateUrl: './language-selector.component.html',
   styleUrls: ['./language-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AsyncPipe, NgFor, ...TuiDropdown, TuiGroup, TuiButton]
 })
 export class LanguageSelectorComponent {
   public readonly languages = LANGUAGES_LIST;

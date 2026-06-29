@@ -60,7 +60,7 @@ export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWal
     if (!wallet.isConnected) {
       try {
         await wallet.connect();
-      } catch (error: unknown) {
+      } catch {
         throw new SignRejectError();
       }
     }

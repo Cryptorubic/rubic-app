@@ -63,7 +63,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     if (this.isIos) {
       try {
         this.window.location.assign(`trust://${deepLink}`);
-      } catch (err) {
+      } catch {
         this.window.location.assign(`https://link.trustwallet.com/${deepLink}`);
       }
     } else {

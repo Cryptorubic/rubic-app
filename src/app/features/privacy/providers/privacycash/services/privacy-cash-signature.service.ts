@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Injectable, DestroyRef, inject } from '@angular/core';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletNotConnectedError } from '@cryptorubic/web3';
 import { Keypair, PublicKey } from '@solana/web3.js';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EncryptionService } from 'privacycash/utils';
-import { BehaviorSubject, filter, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 
@@ -41,8 +41,7 @@ export class PrivacycashSignatureService {
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly notificationsService: NotificationsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly notificationsService: NotificationsService
   ) {
     this._encryptionService = new EncryptionService();
     WasmFactory.getInstance().then(wasmFactory => (this._lightWasm = wasmFactory));
@@ -54,7 +53,7 @@ export class PrivacycashSignatureService {
     this.walletConnectorService.addressChange$
       .pipe(
         filter(msg => msg.chainType === CHAIN_TYPE.SOLANA),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this._signature$.next(null);
@@ -145,4 +144,6 @@ export class PrivacycashSignatureService {
 
     return new Uint8Array(derivedBits);
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

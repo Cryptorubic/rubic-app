@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -16,7 +17,6 @@ import {
 import { EXTERNAL_LINKS } from '@app/shared/constants/common/links';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { securityMessages, TokenSecurityStatus } from '@app/shared/models/tokens/token-security';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -30,6 +30,7 @@ import { AssetListType } from '@features/trade/models/asset';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dropdown-options-token',
   templateUrl: './dropdown-options-token.component.html',
   styleUrls: ['./dropdown-options-token.component.scss'],
@@ -55,7 +56,7 @@ export class DropdownOptionsTokenComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(
-    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator,
     private cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly walletConnectorService: WalletConnectorService,

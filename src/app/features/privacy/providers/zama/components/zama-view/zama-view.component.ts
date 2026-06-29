@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { ZAMA_PAGES } from '../../constants/zama-pages';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { combineLatestWith, distinctUntilChanged, filter, first, map, takeUntil } from 'rxjs';
+import { combineLatestWith, distinctUntilChanged, filter, first, map } from 'rxjs';
 import { ZamaSignatureService } from '../../services/zama-sdk/zama-signature.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ZamaActionButtonService } from '../../services/zama-action-button.service';
@@ -17,19 +17,19 @@ import { PrivateLocalStorageService } from '@app/features/privacy/services/priva
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-view',
   templateUrl: './zama-view.component.html',
   styleUrls: ['./zama-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     {
       provide: PrivateActionButtonService,
       useClass: ZamaActionButtonService
     }
   ]
 })
-export class ZamaViewComponent {
+export class ZamaViewComponent implements OnInit, OnDestroy {
   public readonly activePage$ = this.privatePageTypeService.activePage$;
 
   public readonly pages = ZAMA_PAGES;
@@ -48,7 +48,6 @@ export class ZamaViewComponent {
   constructor(
     private readonly zamaFacadeService: ZamaFacadeService,
     private readonly privatePageTypeService: PrivatePageTypeService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly zamaSignatureService: ZamaSignatureService,
     private readonly zamaHideTokensFacade: ZamaHideTokensFacadeService,
     private readonly privateQueryParamsService: PrivateQueryParamsService,
@@ -65,17 +64,14 @@ export class ZamaViewComponent {
       .pipe(
         distinctUntilChanged(),
         map(() => this.walletConnectorService.getActiveProvider({ chainType: 'EVM' })),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe(evmWalletAdapter => {
         if (evmWalletAdapter) {
           const isUpdated = this.zamaSignatureService.updateSignatureFromStore(
             evmWalletAdapter.address
           );
-          if (isUpdated) {
-            this.privatePageTypeService.activePage = this.pages.find(page => page.type === 'hide');
-            return;
-          }
+          if (isUpdated) return;
         }
 
         this.zamaSignatureService.resetSignature();

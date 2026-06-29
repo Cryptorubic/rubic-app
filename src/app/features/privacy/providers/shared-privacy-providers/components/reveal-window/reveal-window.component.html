@@ -38,7 +38,7 @@
   ></app-preset-amount-list>
 
   <app-target-network-address
-    [round]="'all'"
+    [round]="creationConfig.showPresets && state.revealAsset ? 'all' : 'bottom'"
     [addressCtrl]="receiverCtrl"
     [placeholderText]="creationConfig?.receiverPlaceholder"
   ></app-target-network-address>

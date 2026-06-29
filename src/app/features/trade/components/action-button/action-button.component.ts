@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 
 @Component({
+  standalone: false,
   selector: 'app-action-button',
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],

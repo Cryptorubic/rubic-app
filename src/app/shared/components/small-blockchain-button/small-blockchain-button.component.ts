@@ -3,6 +3,7 @@ import { BlockchainItem } from '@app/features/trade/components/assets-selector/s
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-small-blockchain-button',
   templateUrl: './small-blockchain-button.component.html',
   styleUrls: ['./small-blockchain-button.component.scss'],

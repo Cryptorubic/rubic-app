@@ -1,51 +1,33 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
-import { ModalService } from '@app/core/modals/services/modal.service';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Component({
+  standalone: false,
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class UserProfileComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
-    private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly authService: AuthService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
-    this.router.events.pipe(takeUntil(this.destroy$)).subscribe(event => {
+    this.router.events.pipe(takeUntilDestroyed()).subscribe(event => {
       if (event instanceof NavigationStart) {
         this.headerStore.setMobileMenuOpeningStatus(false);
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-
-    // this.walletConnectorService.networkChange$
-    //   .pipe(
-    //     combineLatestWith(this.walletConnectorService.addressChange$),
-    //     tap(([blockchainName]) => {
-    //       this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-    //     }),
-    //     switchMap(() => this.authService.setUserData()),
-    //     takeUntil(this.destroy$)
-    //   )
-    //   .subscribe(() => {
-    //     this.cdr.markForCheck();
-    //   });
   }
 
   public readonly isConfirmModalOpened$: Observable<boolean>;
@@ -57,17 +39,6 @@ export class UserProfileComponent {
   public dropdownIsOpened = false;
 
   public readonly profileText$: Observable<string> = of('My Profile');
-
-  // public readonly avatar$ = this.authService.currentUser$.pipe(
-  //   combineLatestWith(this.walletConnectorService.networkChange$),
-  //   map(([user, blockchainName]) => {
-  //     const currentBlockchainIcon = blockchainName
-  //       ? blockchainIcon[blockchainName]
-  //       : `${basePath}default-chain.svg`;
-
-  //     return user?.avatar ? user.avatar : currentBlockchainIcon;
-  //   })
-  // );
 
   public logout(walletName: WALLET_NAME): void {
     this.authService.disconnectWallet(walletName);

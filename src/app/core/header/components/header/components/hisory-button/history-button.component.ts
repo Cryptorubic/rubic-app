@@ -5,6 +5,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
+  standalone: false,
   selector: 'app-history-button',
   templateUrl: './history-button.component.html',
   styleUrls: ['./history-button.component.scss'],

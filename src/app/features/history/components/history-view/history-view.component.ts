@@ -3,6 +3,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
+  standalone: false,
   selector: 'app-history-view',
   templateUrl: './history-view.component.html',
   styleUrls: ['./history-view.component.scss'],
