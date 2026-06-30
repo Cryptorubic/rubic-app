@@ -31,7 +31,7 @@
     "analyze:sme": "source-map-explorer dist/rubic/**/*.js --no-border-checks > bundle-analysis.html",
     "test": "ng test",
     "test:ci": "ng test --karma-config=src/karma-ci.conf.js --no-progress",
-    "lint": "ng lint --max_old_space_size=8196",
+    "lint": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng lint",
     "e2e": "ng e2e",
     "lint-css": "stylelint '**/*.scss'",
     "pre-commit": "npx lint-staged",

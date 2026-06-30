@@ -33,7 +33,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all
 });
 
-export const config = defineConfig([
+export default defineConfig([
   {
     languageOptions: {
       ecmaVersion: 2022,
