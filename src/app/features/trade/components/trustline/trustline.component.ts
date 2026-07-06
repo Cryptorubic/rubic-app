@@ -54,7 +54,7 @@ export class TrustlineComponent implements OnInit {
   }
 
   private setInitialState(): void {
-    if (this.options.receiver && this.options.toBlockchain === BLOCKCHAIN_NAME.STELLAR) {
+    if (this.options.receiver && this.isReceiverWalletConnectionRequired()) {
       this.setButtonState({
         label: 'Connect Receiver',
         action: () => this.connectReceiver(),
@@ -69,10 +69,20 @@ export class TrustlineComponent implements OnInit {
     }
   }
 
+  private isReceiverWalletConnectionRequired(): boolean {
+    return (
+      this.options.toBlockchain === BLOCKCHAIN_NAME.STELLAR ||
+      this.options.toBlockchain === BLOCKCHAIN_NAME.RIPPLE
+    );
+  }
+
   private async connectReceiver(): Promise<void> {
     this.setLoadingState();
 
-    const isConnected = await this.trustlineService.connectReceiverWallet(this.options.receiver);
+    const isConnected = await this.trustlineService.connectReceiverWallet(
+      this.options.receiver,
+      this.options.toBlockchain as typeof BLOCKCHAIN_NAME.STELLAR | typeof BLOCKCHAIN_NAME.RIPPLE
+    );
 
     if (isConnected) {
       this.setButtonState({

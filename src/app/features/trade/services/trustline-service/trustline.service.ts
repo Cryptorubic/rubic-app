@@ -18,6 +18,11 @@ import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/featur
 import { WALLET_CONNECT_CONFIG } from './constants/wallet-connect-config';
 import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 import { RippleAdapter } from '@cryptorubic/web3';
+import { XamanInstance } from '@app/core/services/wallets/wallets-adapters/xrpl/utils/xaman-instance';
+import { toRippleWalletCore } from '@app/core/services/wallets/wallets-adapters/xrpl/utils/to-ripple-wallet-core';
+import { XamanSignService } from '@app/core/services/wallets/wallets-adapters/xrpl/services/xaman-sign.service';
+
+const XRPL_MAINNET_NETWORK_TYPE = 'MAINNET';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +38,66 @@ export class TrustlineService {
 
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly xamanSignService: XamanSignService
   ) {}
 
-  public async connectReceiverWallet(receiverAddress: string): Promise<boolean> {
+  public async connectReceiverWallet(
+    receiverAddress: string,
+    blockchain: typeof BLOCKCHAIN_NAME.STELLAR | typeof BLOCKCHAIN_NAME.RIPPLE
+  ): Promise<boolean> {
+    if (blockchain === BLOCKCHAIN_NAME.RIPPLE) {
+      return this.connectRippleReceiverWallet(receiverAddress);
+    }
+
+    return this.connectStellarReceiverWallet(receiverAddress);
+  }
+
+  private async connectRippleReceiverWallet(receiverAddress: string): Promise<boolean> {
+    const xumm = XamanInstance.getInstance();
+
+    try {
+      await xumm.environment.ready;
+
+      if (!xumm.state.signedIn) {
+        const authorizeResult = await xumm.authorize();
+
+        if (authorizeResult instanceof Error) {
+          throw authorizeResult;
+        }
+      }
+
+      const networkType = await xumm.user.networkType;
+
+      if (networkType !== XRPL_MAINNET_NETWORK_TYPE) {
+        throw new Error('Only XRP Ledger mainnet is supported.');
+      }
+
+      const address = await xumm.user.account;
+
+      if (!address) {
+        throw new Error('Failed to get Xaman wallet address.');
+      }
+
+      if (address !== receiverAddress) {
+        throw new Error('Connected wallet must be the same as receiver');
+      }
+
+      if (!this.rippleAdapter.connected) {
+        this.rippleAdapter.initWeb3Client();
+      }
+
+      this.rippleAdapter.signer.setWalletAddress(address);
+      this.rippleAdapter.signer.setWallet(toRippleWalletCore(xumm, this.xamanSignService));
+
+      return true;
+    } catch (err) {
+      this.errorService.catch(err);
+      return false;
+    }
+  }
+
+  private async connectStellarReceiverWallet(receiverAddress: string): Promise<boolean> {
     const wallet = new StellarWalletsKit({
       network: WalletNetwork.PUBLIC,
       modules: [
@@ -75,8 +136,7 @@ export class TrustlineService {
     });
 
     try {
-      const isWalletConnected = await promise;
-      return isWalletConnected;
+      return await promise;
     } catch (err) {
       this.errorService.catch(err);
       return false;
