@@ -14,6 +14,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TradeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/trade-info';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-details',
   templateUrl: './transaction-details.component.html',
   styleUrls: ['./transaction-details.component.scss'],
@@ -83,5 +84,10 @@ export class TransactionDetailsComponent {
       this.swapsStateService.currentTrade.tradeType !== 'WRAPPED'
       ? this.targetAddressService.address
       : this.walletConnector.address;
+  }
+
+  public showSlippageInfo(trade: CrossChainTrade | OnChainTrade): boolean {
+    if (!trade) return false;
+    return !trade.warnings.some(warning => warning.code === 7002);
   }
 }

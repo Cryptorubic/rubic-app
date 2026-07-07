@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-back-button',
   templateUrl: './back-button.component.html',
   styleUrls: ['./back-button.component.scss'],

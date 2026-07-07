@@ -13,15 +13,18 @@ import {
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-login-button',
   templateUrl: './login-button.component.html',
   styleUrls: ['./login-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginButtonComponent {
-  public currentUser$ = this.authService.currentUser$;
-
   @Input() appearance: TuiAppearance | string = 'primary';
+
+  @Input() buttonHierarchy?: 'header' | 'form';
+
+  public currentUser$ = this.authService.currentUser$;
 
   private readonly headerStore = inject(HeaderStore);
 
@@ -34,9 +37,14 @@ export class LoginButtonComponent {
   ) {}
 
   public showModal(): void {
+    if (this.buttonHierarchy) {
+      this.gtmService.fireClickOnConnectWalletButtonEvent(this.buttonHierarchy);
+    }
     const wallets = this.filterWallets();
-    this.gtmService.fireClickOnConnectWalletButtonEvent();
-    this.modalService.openWalletModal(this.injector, { providers: wallets }).subscribe();
+    const modalDirection = this.router.url.includes('privacy') ? 'row' : 'column';
+    this.modalService
+      .openWalletModal(this.injector, { providers: wallets, direction: modalDirection })
+      .subscribe();
   }
 
   private filterWallets(): WALLET_NAME[] {

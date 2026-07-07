@@ -5,7 +5,7 @@
 }
 
 .modal {
-  --tui-secondary: var(--tui-secondary-hover);
+  --tui-background-neutral-1: var(--tui-background-neutral-1-hover);
   position: relative;
 
   ::ng-deep .window-container {
@@ -36,10 +36,37 @@
   }
 
   &__body {
-    display: grid;
-    grid-row-gap: var(--tui-padding-4xl);
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    &-column {
+      display: grid;
+      grid-row-gap: var(--tui-padding-4xl);
+      grid-template-rows: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    &-row {
+      display: grid;
+      grid-auto-flow: column;
+      justify-content: start;
+      padding-bottom: 16px;
+      overflow-x: auto;
+
+      column-gap: 6px;
+
+      &::-webkit-scrollbar {
+        display: block;
+        height: 8px;
+      }
+    
+      &::-webkit-scrollbar-thumb {
+        background-color: #626472;
+        border-radius: 4px;
+      }
+    
+      &::-webkit-scrollbar-track {
+        background-color: var(--io-background);
+        border-radius: 4px;
+      }
+    }
   }
 
   &__provider {
@@ -47,6 +74,8 @@
     flex-direction: column;
     gap: var(--tui-padding-xs);
     align-items: center;
+    width: 135px;
+    
 
     text-align: center;
 
@@ -63,55 +92,41 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-
-    background-color: var(--primary-background);
-    border-radius: var(--tui-radius-s);
 
     img {
       width: 28px;
     }
-
-    &:hover {
-      background-color: var(--tui-secondary);
-    }
   }
 
   &__button {
-    flex: 1;
+      
+
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-s);
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+
+    white-space: nowrap;
 
     text-decoration: none;
+
+    background-color: var(--primary-background);
+    border-radius: var(--tui-radius-s);
 
     transition: 0.2s ease-in-out;
 
     &:hover {
+      background-color: var(--tui-background-neutral-1);
       scale: 1.05;
     }
-
-
-    ::ng-deep {
-      .t-wrapper {
-        background: none;
-
-        &:hover {
-          background: none;
-        }
-      }
-
-      .t-content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--tui-padding-s);
-        justify-content: center;
-
-        white-space: nowrap;
-      }
-    }
+      
   }
 
   &__link {
-    color: var(--tui-primary);
+    color: var(--tui-background-accent-1);
   }
 }
 
@@ -126,6 +141,10 @@
       grid-template-columns: repeat(2, 50%);
     }
 
+    &__provider {
+      width: 130px;
+    }
+
     &__provider-icon {
       width: 64px;
       height: 64px;
@@ -135,7 +154,7 @@
       }
 
       &:hover {
-        background-color: var(--tui-secondary);
+        background-color: var(--tui-background-neutral-1);
       }
     }
 

@@ -5,6 +5,7 @@ import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { tap } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-refund-address',
   templateUrl: './refund-address.component.html',
   styleUrls: ['./refund-address.component.scss'],

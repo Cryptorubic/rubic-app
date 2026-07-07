@@ -1,15 +1,20 @@
+import { TuiTextfieldControllerModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/legacy';
+import { TuiActiveZone } from '@taiga-ui/cdk';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { SharedModule } from '@shared/shared.module';
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule,
-  TuiNotificationModule
+  TuiNotification,
+  TuiDataList,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint,
+  TuiAppearance,
+  TuiFallbackSrcPipe,
+  TuiInitialsPipe
 } from '@taiga-ui/core';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
@@ -18,7 +23,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
@@ -44,13 +48,7 @@ import { ShieldedTokensListElementComponent } from './components/shielded-tokens
 import { DropdownOptionsShieldedTokenComponent } from './components/shielded-tokens-list/components/dropdown-options-shielded-token/dropdown-options-shielded-token.component';
 import { PasswordVerificationModalComponent } from './components/password-verification-modal/password-verification-modal.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import {
-  TuiAvatarModule,
-  TuiDataListWrapperModule,
-  TuiInputModule,
-  TuiSelectModule
-} from '@taiga-ui/kit';
+import { TuiDataListWrapper, TuiAvatar, TuiButtonLoading } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
@@ -71,6 +69,8 @@ import { PrivateQueryParamsService } from './services/query-params/private-query
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { MobileStubComponent } from './components/mobile-stub/mobile-stub.component';
 import { RouterModule } from '@angular/router';
+import { PrivateGasTokenService } from './services/gas-token-service/gas-token.service';
+import { PresetAmountListComponent } from './components/preset-amount-list/preset-amount-list.component';
 
 @NgModule({
   declarations: [
@@ -92,29 +92,35 @@ import { RouterModule } from '@angular/router';
     LoginWindowComponent,
     DepositStatusInfoComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PresetAmountListComponent
   ],
   imports: [
     CommonModule,
     AssetsSelectorModule,
     SharedTradeModule,
     SharedModule,
-    TuiButtonModule,
-    TuiScrollbarModule,
-    TuiHostedDropdownModule,
-    TuiDataListModule,
+    TuiButton,
+    TuiScrollbar,
+    TuiScrollable,
+    ...TuiDropdown,
+    ...TuiDataList,
     InlineSVGModule,
-    TuiHintModule,
-    TuiActiveZoneModule,
+    ...TuiHint,
+    TuiActiveZone,
     TuiInputModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
-    TuiNotificationModule,
-    TuiDataListWrapperModule,
-    TuiAvatarModule,
+    TuiNotification,
+    ...TuiDataListWrapper,
+    TuiAvatar,
     TuiSelectModule,
     ClipboardModule,
-    RouterModule
+    RouterModule,
+    TuiButtonLoading,
+    TuiAppearance,
+    TuiFallbackSrcPipe,
+    TuiInitialsPipe
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -130,13 +136,13 @@ import { RouterModule } from '@angular/router';
     SwitchNetworkPageComponent,
     LoginWindowComponent,
     DepositPrivateTradeInfoComponent,
-    MobileStubComponent
+    MobileStubComponent,
+    PrivateActionButtonComponent
   ],
   providers: [
     SwapsFormService,
     PreviewSwapService,
     SwapsStateService,
-    SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,
@@ -163,7 +169,8 @@ import { RouterModule } from '@angular/router';
     RevealWindowService,
     PrivateRefundWindowService,
     PrivateQueryParamsService,
-    PrivateStatisticsService
+    PrivateStatisticsService,
+    PrivateGasTokenService
   ]
 })
 export class SharedPrivacyProvidersModule {}

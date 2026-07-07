@@ -2,9 +2,13 @@ import { Injectable } from '@angular/core';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { CookieService } from 'ngx-cookie-service';
-import { addMinutes } from 'date-and-time';
-import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import {
+  FormSteps,
+  PrivateFlowTabEvent,
+  PrivateProviderMetricTypeEvent,
+  PrivateProviderNameEvent,
+  SwitchModeEvent
+} from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -14,6 +18,7 @@ import { OnChainTrade } from '../sdk/sdk-legacy/features/on-chain/calculation-ma
 import { BlockchainName, nativeTokensList, PriceTokenAmount, Token } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { ActivatedRoute, Router } from '@angular/router';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -44,43 +49,40 @@ export class GoogleTagManagerService {
     this._needTrackFormEventsNow$.next(value);
   }
 
-  get isGtmSessionActive(): boolean {
-    return Boolean(this.cookieService.get('gtmSessionActive'));
-  }
-
   constructor(
-    private readonly cookieService: CookieService,
     private readonly angularGtmService: GoogleAnalyticsService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
   ) {}
 
-  /**
-   * Reloads GTM session.
-   */
-  public reloadGtmSession(): void {
-    if (!this.isGtmSessionActive) {
-      return;
-    }
-
-    this.cookieService.delete('gtmSessionActive');
-
-    this.cookieService.set(
-      'gtmSessionActive',
-      'true',
-      addMinutes(new Date(), 30),
-      null,
-      null,
-      null,
-      null
-    );
+  private getCurrentPage(): string {
+    const pathWithoutQuery = this.router.url.split('?')[0].split('#')[0];
+    const segments = pathWithoutQuery.split('/').filter(segment => segment.length > 0);
+    const lastSegment = segments[segments.length - 1] ?? '';
+    return lastSegment ? `${lastSegment}_page` : 'main_page';
   }
 
   /**
-   * Fires click on banner GTM event.
+   * gtag / GA4 may coerce strings that look like hex literals (e.g. "0x8335…") to numbers.
+   * Prefix so the value stays a string in reports.
    */
-  public fireClickOnBannerEvent(banner_type: string): void {
+  private formatEvmAddressForAnalytics(address: string): string {
+    if (!address) {
+      return address;
+    }
+    return address.startsWith('0x') ? `evm:${address}` : address;
+  }
+
+  /**
+   * Fires when clicking on banner.
+   */
+  public fireClickOnBannerEvent(bannerText: string, bannerLink: string): void {
     this.angularGtmService.gtag('event', 'click_banner', {
-      banner_type
+      page: this.getCurrentPage(),
+      page_section: 'top_banner',
+      banner_text: bannerText,
+      destination: bannerLink
     });
   }
 
@@ -105,10 +107,13 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Fires wallet GTM event.
+   * Fires when clicking on connect wallet button.
    */
-  public fireClickOnConnectWalletButtonEvent(): void {
-    this.angularGtmService.gtag('event', 'click_connect_wallet');
+  public fireClickOnConnectWalletButtonEvent(buttonHierarchy: 'header' | 'form'): void {
+    this.angularGtmService.gtag('event', 'click_connect_wallet', {
+      page: this.getCurrentPage(),
+      button_hierarchy: buttonHierarchy
+    });
   }
 
   /**
@@ -212,15 +217,15 @@ export class GoogleTagManagerService {
 
     this.angularGtmService.gtag('event', 'swap_error', {
       input_token: trade.from.name,
-      input_token_address: trade.from.address,
+      input_token_address: this.formatEvmAddressForAnalytics(trade.from.address),
       input_token_amount: trade.from.tokenAmount.toFixed(),
       output_token: trade.to.name,
-      output_token_address: trade.to.address,
+      output_token_address: this.formatEvmAddressForAnalytics(trade.to.address),
       output_token_amount: trade.to.tokenAmount.toFixed(),
       network_from: trade.from.blockchain,
       network_to: trade.to.blockchain,
       provider: trade.type,
-      wallet_address: walletAddress,
+      wallet_address: this.formatEvmAddressForAnalytics(walletAddress),
       token_from_ballance: srcTokenBalance,
       token_native_ballance: nativeBalance,
       identified_app_error: !isErrorDefined,
@@ -249,5 +254,118 @@ export class GoogleTagManagerService {
 
   public fireClickOnVerifyEvent(): void {
     this.angularGtmService.gtag('event', 'click_verify');
+  }
+
+  /**
+   * Fires when the private mode page is opened.
+   */
+  public fireViewPrivateModePageEvent(entrySource?: string): void {
+    entrySource =
+      entrySource ?? this.activatedRoute.snapshot.queryParamMap.get('entry_source') ?? 'direct';
+    this.angularGtmService.gtag('event', 'view_private_mode_page', {
+      page: this.getCurrentPage(),
+      entry_source: entrySource
+    });
+  }
+
+  /**
+   * Fires when switching app mode from header (Regular / Private / Testnets).
+   */
+  public fireSwitchModeEvent(selectedMode: SwitchModeEvent): void {
+    this.angularGtmService.gtag('event', 'switch_mode', {
+      page: this.getCurrentPage(),
+      selected_mode: selectedMode
+    });
+  }
+
+  /**
+   * Fires when switching private flow tab (On-Chain / Cross-Chain / Transfer).
+   */
+  public fireSelectPrivateFlowTabEvent(flowType: PrivateFlowTabEvent): void {
+    this.angularGtmService.gtag('event', 'select_private_flow_tab', {
+      page: this.getCurrentPage(),
+      flow_type: flowType
+    });
+  }
+
+  /**
+   * Fires when toggling "Show all … providers" on the private swap form.
+   */
+  public fireToggleShowAllProvidersEvent(flowType: PrivateFlowTabEvent, isEnabled: boolean): void {
+    this.angularGtmService.gtag('event', 'toggle_show_all_providers', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      is_enabled: isEnabled
+    });
+  }
+
+  /**
+   * Fires when floating live chat is opened.
+   */
+  public fireOpenChatEvent(): void {
+    this.angularGtmService.gtag('event', 'open_chat', {
+      page: this.getCurrentPage(),
+      page_section: 'floating_chat'
+    });
+  }
+
+  /**
+   * Fires when token selector is opened on the private form.
+   */
+  public firePrivateFormOpenTokenSelectorEvent(selectorSide: 'from' | 'to'): void {
+    this.angularGtmService.gtag('event', 'private_form_open_token_selector', {
+      page: this.getCurrentPage(),
+      selector_side: selectorSide
+    });
+  }
+
+  /**
+   * Fires when token is selected on the private form.
+   */
+  public firePrivateFormSelectTokenEvent(
+    selectorSide: 'from' | 'to',
+    selectedChain: BlockchainName,
+    selectedTokenSymbol: string,
+    selectedTokenAddress: string
+  ): void {
+    this.angularGtmService.gtag('event', 'private_form_select_token', {
+      page: this.getCurrentPage(),
+      selector_side: selectorSide,
+      selected_chain: selectedChain,
+      selected_token_symbol: selectedTokenSymbol,
+      selected_token_address: this.formatEvmAddressForAnalytics(selectedTokenAddress)
+    });
+  }
+
+  /**
+   * Fires when private provider is selected.
+   */
+  public fireSelectPrivateProviderEvent(
+    flowType: PrivateFlowTabEvent,
+    providerName: PrivateProviderNameEvent,
+    showAllProvidersEnabled: boolean
+  ): void {
+    this.angularGtmService.gtag('event', 'select_private_provider', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      provider_name: providerName,
+      show_all_providers_enabled: showAllProvidersEnabled
+    });
+  }
+
+  /**
+   * Fires when user hovers provider metric tooltip.
+   */
+  public fireViewProviderMetricTooltipEvent(
+    flowType: PrivateFlowTabEvent,
+    providerName: PrivateProviderNameEvent,
+    metricType: PrivateProviderMetricTypeEvent
+  ): void {
+    this.angularGtmService.gtag('event', 'view_provider_metric_tooltip', {
+      page: this.getCurrentPage(),
+      flow_type: flowType,
+      provider_name: providerName,
+      metric_type: metricType
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-no-result',
   templateUrl: './no-result.component.html',
   styleUrls: ['./no-result.component.scss'],

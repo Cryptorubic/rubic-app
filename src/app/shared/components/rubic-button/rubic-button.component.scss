@@ -3,7 +3,7 @@
 :host ::ng-deep {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-focus: transparent;
+  --tui-border-focus: transparent;
 
   [tuiButton] {
     font-weight: 400 !important;
@@ -30,26 +30,19 @@
     }
 
     &._disabled {
+      color: rgba($rubic-text-disable, 0.7) !important;
+
+      background-color: var(--primary-background) !important;
       border: 0;
-
-      ::ng-deep .t-wrapper {
-        color: rgba($rubic-text-disable, 0.7);
-
-        background-color: var(--primary-background);
-        opacity: 1 !important;
-      }
+      opacity: 1 !important;
     }
 
-    &[data-tui-host-size='l'] {
-      ::ng-deep .t-wrapper {
-        padding: 0 29px;
-      }
+    &[data-size='l'] {
+      padding: 0 29px;
     }
 
-    &[data-tui-host-size='s'] {
-      ::ng-deep .t-wrapper {
-        padding: 0 15px;
-      }
+    &[data-size='s'] {
+      padding: 0 15px;
     }
 
     ::ng-deep img {
@@ -67,9 +60,7 @@
     }
 
     &[data-appearance='primary'] {
-      ::ng-deep .t-wrapper {
-        transition: none;
-      }
+      transition: none;
     }
   }
 }

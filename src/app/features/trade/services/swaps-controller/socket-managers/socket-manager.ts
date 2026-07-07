@@ -10,11 +10,10 @@ export abstract class ApiSocketManager {
     protected readonly swapsControllerService: SwapsControllerService
   ) {}
 
-  public abstract allowCalculation(): boolean;
-
   public abstract initSubs(): void;
 
   public removeSubs(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+    this.subs.length = 0;
   }
 }

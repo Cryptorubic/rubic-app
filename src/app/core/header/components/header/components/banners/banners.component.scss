@@ -1,6 +1,5 @@
 @use 'src/scss/core' as *;
 
-
 :host::ng-deep {
   tui-carousel fieldset {
     padding: 0 !important;
@@ -43,7 +42,7 @@
 
       line-height: normal;
       text-align: left;
-    };
+    }
   }
 
   .banner__button {
@@ -55,7 +54,7 @@
     text-wrap: nowrap;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 
-    background: var(--tui-primary);
+    background: var(--tui-background-accent-1);
     border-radius: 8px;
 
     @include b(421) {

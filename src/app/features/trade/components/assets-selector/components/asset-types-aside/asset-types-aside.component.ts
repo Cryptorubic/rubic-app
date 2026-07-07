@@ -10,6 +10,7 @@ import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
@@ -29,6 +30,8 @@ export class AssetTypesAsideComponent {
   @Input({ required: true }) assetListType: AssetListType;
 
   @Input({ required: true }) showAllChains: boolean;
+
+  @Input() hidePromoBadges = false;
 
   @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
 

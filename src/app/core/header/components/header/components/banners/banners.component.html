@@ -3,6 +3,7 @@
     <ng-container *ngFor="let banner of state.banners">
       <ng-container *tuiItem>
         <a
+          (click)="clickOnBanner(banner, state.mobile)"
           class="banner"
           [ngStyle]="{
             'background-image':

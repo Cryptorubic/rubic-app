@@ -15,6 +15,7 @@ import { BRIDGE_TYPE } from '@app/core/services/sdk/sdk-legacy/features/cross-ch
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
 @Component({
+  standalone: false,
   selector: 'app-cross-chain-desktop-table',
   templateUrl: './cross-chain-desktop-table.component.html',
   styleUrls: ['./cross-chain-desktop-table.component.scss'],
@@ -97,7 +98,12 @@ export class CrossChainDesktopTableComponent {
       fromBlockchain === BLOCKCHAIN_NAME.ARBITRUM
     ) {
       const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-      if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+      if (isSwitched) {
+        await this.commonTableService.claimArbitrumBridgeTokens(
+          item.fromTx.hash,
+          item.fromBlockchain.name
+        );
+      }
     }
 
     if (

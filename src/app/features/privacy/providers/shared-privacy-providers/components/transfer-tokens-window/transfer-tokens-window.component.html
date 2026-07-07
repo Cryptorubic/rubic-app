@@ -24,6 +24,7 @@
         inputMode="input"
         (amountUpdated)="updateInputValue($event)"
         [amountValue]="state.transferAmount"
+        [allowManualInputClear]="true"
       ></app-amount-transput>
       <app-user-balance-container
         *ngIf="creationConfig.withMaxBtn"

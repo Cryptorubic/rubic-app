@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 
 @Pipe({
+  standalone: false,
   name: 'slippageFormat'
 })
 export class SlippageFormatPipe implements PipeTransform {

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-disclaimer-modal',
   templateUrl: './privacy-disclaimer-modal.component.html',
   styleUrls: ['./privacy-disclaimer-modal.component.scss'],

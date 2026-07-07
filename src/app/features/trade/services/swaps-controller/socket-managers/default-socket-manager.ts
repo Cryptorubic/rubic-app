@@ -3,10 +3,6 @@ import { ApiSocketManager } from './socket-manager';
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
 
 export class DefaultSocketManager extends ApiSocketManager {
-  public allowCalculation(): boolean {
-    return true;
-  }
-
   constructor(rubicApiService: RubicApiService, swapsControllerService: SwapsControllerService) {
     super(rubicApiService, swapsControllerService);
   }

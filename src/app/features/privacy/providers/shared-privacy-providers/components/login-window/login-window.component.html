@@ -11,7 +11,7 @@
       size="m"
       appearance="primary"
       (click)="onClick()"
-      [showLoader]="showLoader"
+      [loading]="showLoader"
     >
       Sign
     </button>
@@ -20,6 +20,6 @@
     <b> You logged in successfully.</b>
   </ng-template>
   <ng-template #connectWallet>
-    <app-login-button></app-login-button>
+    <app-login-button [buttonHierarchy]="'form'"></app-login-button>
   </ng-template>
 </div>

@@ -9,11 +9,12 @@ import {
 } from '@angular/core';
 import { FormType } from '@features/trade/models/form-type';
 import { Asset } from '@features/trade/models/asset';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-token-selector-page',
   templateUrl: './token-selector-page.component.html',
   styleUrls: ['./token-selector-page.component.scss'],
@@ -29,7 +30,7 @@ export class TokenSelectorPageComponent {
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, { formType: FormType }>,
+    private readonly context: TuiDialogContext<Asset, { formType: FormType }>,
     private readonly headerStore: HeaderStore
   ) {
     this.formType = this.context?.data?.formType;
@@ -37,5 +38,6 @@ export class TokenSelectorPageComponent {
 
   public handleTokenSelect(asset: Asset): void {
     this.tokenSelected.emit(asset);
+    this.context?.completeWith(asset);
   }
 }

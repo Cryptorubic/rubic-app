@@ -11,10 +11,5 @@ module.exports = {
     changeOrigin: true,
     logLevel: 'debug'
   },
-  '/': {
-    secure: false,
-    bypass: function (req, res) {
-      req.headers['X-Custom-Header'] = 'yes';
-    }
-  }
+
 };

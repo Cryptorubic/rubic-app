@@ -5,6 +5,7 @@ import {
   PrivacycashSupportedChain
 } from '../../../../constants/chains';
 import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
+import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-scanner';
 
 export function getMinimalTokensByChain(type: AssetListType): MinimalToken[] {
   return BlockchainsInfo.isBlockchainName(type)
@@ -35,4 +36,10 @@ export function convertAddressesConfigToMinimalTokenMap(): Record<
 
 export function getTokenKey(token: MinimalToken): string {
   return `${token.blockchain}::${token.address.toLowerCase()}`;
+}
+
+export function getScannerUrl(token: MinimalToken, txHash: string): string {
+  const baseUrl = blockchainScanner[token.blockchain].baseUrl;
+  const txPath = blockchainScanner[token.blockchain].TRANSACTION;
+  return baseUrl + txPath + txHash;
 }

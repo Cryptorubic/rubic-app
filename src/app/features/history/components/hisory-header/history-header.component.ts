@@ -6,6 +6,7 @@ import { OnChainTableService } from '@features/history/services/on-chain-table-s
 import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
 
 @Component({
+  standalone: false,
   selector: 'app-history-header',
   templateUrl: './history-header.component.html',
   styleUrls: ['./history-header.component.scss'],

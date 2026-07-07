@@ -1,31 +1,19 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
-
-import {
-  NotWhitelistedProviderError,
-  UnapprovedContractError,
-  UnapprovedMethodError
-} from '@cryptorubic/web3';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { WINDOW } from '@ng-web-apis/common';
 import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { SettingsService } from '../settings-service/settings.service';
 import { ProviderCcrStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
-import {
-  BlockchainName,
-  CrossChainTradeType,
-  TO_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_CROSS_CHAIN_PROVIDERS,
-  Token
-} from '@cryptorubic/core';
+import { TO_BACKEND_BLOCKCHAINS, TO_BACKEND_CROSS_CHAIN_PROVIDERS, Token } from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
@@ -41,21 +29,8 @@ export class CrossChainApiService {
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WA_WINDOW) private readonly window: RubicWindow
   ) {}
-
-  public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
-    blockchain: BlockchainName,
-    tradeType: CrossChainTradeType
-  ): Observable<void> {
-    return this.httpService.post(`info/new_provider`, {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: 'cross-chain'
-    });
-  }
 
   public saveProvidersStatistics(data: ProviderCcrStatistic): Observable<void> {
     return this.httpService.post('route_calculation_statistic/save', data, null, {
@@ -63,30 +38,6 @@ export class CrossChainApiService {
         Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
       }
     });
-  }
-
-  public saveNotWhitelistedCcrProvider(
-    error: UnapprovedContractError | UnapprovedMethodError,
-    blockchain: BlockchainName,
-    tradeType: CrossChainTradeType
-  ): Observable<void> {
-    if (error instanceof UnapprovedContractError) {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-        address: error.contract,
-        cause: 'cross-chain',
-        selector: 'unknown'
-      });
-    } else {
-      return this.httpService.post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-        address: 'unknown',
-        cause: 'cross-chain',
-        selector: error.method
-      });
-    }
   }
 
   /**

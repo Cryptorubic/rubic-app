@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName } from '@cryptorubic/core';
 
-const nonOnChainNetworks = [
+const _nonOnChainNetworks = [
   BLOCKCHAIN_NAME.BITGERT,
   BLOCKCHAIN_NAME.DFK,
   BLOCKCHAIN_NAME.BOBA_BSC,
@@ -14,7 +14,7 @@ const nonOnChainNetworks = [
   BLOCKCHAIN_NAME.XDC,
   BLOCKCHAIN_NAME.BITCOIN_CASH
 ] as const;
-type NonOnChainNetworks = (typeof nonOnChainNetworks)[number];
+type NonOnChainNetworks = (typeof _nonOnChainNetworks)[number];
 
 export type SupportedOnChainNetworks = Exclude<
   EvmBlockchainName | TronBlockchainName,

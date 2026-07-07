@@ -90,7 +90,7 @@
     width: 100%;
     overflow: hidden;
 
-    background: var(--tui-base-01);
+    background: var(--tui-background-base);
     border-radius: var(--tui-radius-m);
 
     th {
@@ -114,7 +114,7 @@
   .status-to-link-arrow {
     margin-left: var(--tui-padding-s);
 
-    color: var(--tui-link);
+    color: var(--tui-text-action);
   }
 
   .statusTo {
@@ -170,7 +170,7 @@
       max-width: calc(50% - (var(--tui-padding-m) / 2));
       padding: var(--tui-padding-l);
 
-      background: var(--tui-base-01);
+      background: var(--tui-background-base);
       border-radius: var(--tui-radius-m);
 
       @include b($mobile-sm-middle) {

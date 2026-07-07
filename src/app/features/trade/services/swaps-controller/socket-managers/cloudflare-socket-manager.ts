@@ -7,10 +7,6 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 export class CloudflareSocketManager extends ApiSocketManager {
   protected subs: Subscription[];
 
-  public allowCalculation(): boolean {
-    return !!this.turnstileService.token;
-  }
-
   constructor(
     rubicApiService: RubicApiService,
     swapsControllerService: SwapsControllerService,

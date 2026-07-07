@@ -25,7 +25,7 @@ export abstract class PrivacycashPrivateTokensFacadeService extends TokensFacade
   ): Observable<AvailableTokenAmount[]> {
     return forkJoin([
       this.tokensBuilderService
-        .getTokensList(type, _query, direction, getEmptySwapFormInput())
+        .getTokensList(type, _query, direction, getEmptySwapFormInput(), false)
         .pipe(first()),
       this.privacycashTokensService.tokens$.pipe(first()),
       this.swapInfo$.pipe(first())

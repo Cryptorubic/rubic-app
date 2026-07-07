@@ -1,6 +1,6 @@
 .faq-accordion {
-  --tui-base-06: var(--tui-primary);
-  --tui-base-07: var(--tui-primary-hover);
+  --tui-text-secondary: var(--tui-background-accent-1);
+  --tui-background-accent-opposite-pressed: var(--tui-background-accent-1-hover);
 
   ::ng-deep tui-accordion-item > .t-wrapper {
     &::after {

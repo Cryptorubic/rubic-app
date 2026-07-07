@@ -143,7 +143,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
   protected async getTransactionConfigAndAmount(
     testMode?: boolean,
     receiverAddress?: string
-  ): Promise<{ config: EvmTransactionConfig; amount: string }> {
+  ): Promise<{ config: { data: string; warnings: ErrorInterface[] }; amount: string }> {
     const swapRequestParams: SwapRequestInterface = {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
@@ -156,7 +156,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
       makeLogs: true
     };
 
-    const { transaction, estimate, warnings } = await this.fetchSwapData<EvmTransactionConfig>(
+    const { transaction, estimate, warnings } = await this.fetchSwapData<{ data: string }>(
       swapRequestParams
     );
 

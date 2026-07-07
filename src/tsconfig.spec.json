@@ -3,10 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "emitDecoratorMetadata": false,
-    "types": [
-      "jasmine",
-      "node"
-    ],
+    "types": ["jasmine", "node"],
     "baseUrl": "..",
     "paths": {
       "stream": ["node_modules/stream-browserify"],
@@ -25,12 +22,6 @@
       "zlib": ["node_modules/browserify-zlib"]
     }
   },
-  "files": [
-    "test.ts",
-    "polyfills.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["test.ts", "polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

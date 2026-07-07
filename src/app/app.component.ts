@@ -1,3 +1,4 @@
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,7 +10,6 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SpindlService } from './core/services/spindl-ads/spindl.service';
@@ -26,6 +26,7 @@ import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-
 import { TurnstileService } from './core/services/turnstile/turnstile.service';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -43,7 +44,7 @@ export class AppComponent implements AfterViewInit {
     private readonly cookieService: CookieService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
-    @Inject(WINDOW) private window: RubicWindow,
+    @Inject(WA_WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
     private readonly spindlService: SpindlService,

@@ -190,7 +190,8 @@ export class SwapsStateService {
           needTrustlineOptions: {
             needTrustlineAfterSwap: false,
             needTrustlineBeforeSwap: false
-          }
+          },
+          warnings: []
         }
       : {
           error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
@@ -202,7 +203,8 @@ export class SwapsStateService {
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade),
-          centralizationStatus: this.setCentralizationStatus(trade)
+          centralizationStatus: this.setCentralizationStatus(trade),
+          warnings: trade.warnings
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -464,11 +466,11 @@ export class SwapsStateService {
 
   private initCalculationStatus(): Observable<CalculationStatus> {
     return this.swapsFormService.fromToken$.pipe(
-      distinctUntilChanged(this.shouldEmitToken),
+      distinctUntilChanged(this.shouldEmitToken.bind(this)),
       combineLatestWith(
-        this.swapsFormService.toToken$.pipe(distinctUntilChanged(this.shouldEmitToken))
+        this.swapsFormService.toToken$.pipe(distinctUntilChanged(this.shouldEmitToken.bind(this)))
       ),
-      switchMap(this.getTimerObservable),
+      switchMap(this.getTimerObservable.bind(this)),
       combineLatestWith(
         this.swapsFormService.isFilled$.pipe(distinctUntilChanged()),
         this.tradesStore$,

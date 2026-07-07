@@ -7,14 +7,13 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
-  Self
+  Output
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
+  debounceTime,
   distinctUntilChanged,
   filter,
   first,
@@ -38,13 +37,15 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
+  standalone: false,
   selector: 'app-assets-selector-page',
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   private lastDefaultMode: AssetListType = 'allChains';
@@ -55,7 +56,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     withChainsFilter: true,
     withTokensFilter: true,
     withFavoriteTokens: true,
-    showAllChains: true
+    showAllChains: true,
+    hidePromoBadges: false
   };
 
   @Input() customHeaderText: string | null = null;
@@ -102,16 +104,18 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public blockchainsToShow$: Observable<AvailableBlockchain[]>;
 
+  private isFirstRendering: boolean = true;
+
   constructor(
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly formService: SwapsFormService,
     private readonly fromAssetsService: FromAssetsService,
     private readonly toAssetsService: ToAssetsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -142,12 +146,21 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     );
     this.tokensToShow$ = this.assetListType$.pipe(
       combineLatestWith(
-        this.tokensSearchQuery$,
-        this.balanceLoading$.pipe(filter(loading => !loading))
+        this.tokensSearchQuery$.pipe(distinctUntilChanged()),
+        this.balanceLoading$.pipe(filter(loading => !loading)),
+        this.authService.currentUser$
       ),
-      switchMap(([type, query]) =>
-        this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue)
-      )
+      debounceTime(50), // skip many repeated updates at the same time
+      switchMap(([type, query, _, __]) =>
+        this.tokensFacade.getTokensList(
+          type,
+          query,
+          this.type,
+          this.formService.inputValue,
+          this.isFirstRendering // load balances once when selector just opened
+        )
+      ),
+      tap(() => (this.isFirstRendering = false))
     );
     this.pageLoading$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),

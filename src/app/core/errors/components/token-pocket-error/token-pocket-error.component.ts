@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-token-pocket-error',
   templateUrl: './token-pocket-error.component.html',
   styleUrls: ['./token-pocket-error.component.scss'],

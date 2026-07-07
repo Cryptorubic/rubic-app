@@ -1,4 +1,4 @@
-import { getApprovedUtxos, getInputUtxoAndBalance, Hinkal } from '@hinkal/common';
+import { getInputUtxoAndBalance, Hinkal } from '@hinkal/common';
 import { HinkalPrivateBalance } from '../../../../models/hinkal-private-balances';
 import { BlockchainsInfo } from '@cryptorubic/core';
 
@@ -10,10 +10,9 @@ export class HinkalWorkerBalanceService {
   }
 
   public async getBalances(): Promise<{ balances: HinkalPrivateBalance; chainId: number }> {
-    const chainId = this.hinkal.getCurrentChainId();
+    const chainId = this.hinkal.getProviderAdapter().getChainId();
 
     try {
-      await this.hinkal.getEventsFromHinkal();
       const ethAddress = await this.hinkal.getEthereumAddress();
       const balances = await this.fetchBalances(chainId, ethAddress);
       const blockchain = BlockchainsInfo.getBlockchainNameById(chainId);
@@ -31,8 +30,6 @@ export class HinkalWorkerBalanceService {
     address: string
   ): Promise<{ tokenAddress: string; amount: string }[]> {
     try {
-      const approvedUtxos = await getApprovedUtxos(this.hinkal, false);
-
       const { inputUtxos } = await getInputUtxoAndBalance({
         hinkal: this.hinkal,
         chainId,
@@ -41,12 +38,10 @@ export class HinkalWorkerBalanceService {
         allowRemoteDecryption: true
       });
 
-      const allUtxoAddresses = [
-        ...inputUtxos.map(utxo => ({ tokenAddress: utxo.erc20TokenAddress, amount: utxo.amount })),
-        ...approvedUtxos.map(utxo => ({ tokenAddress: utxo.tokenAddress, amount: utxo.amount }))
-      ];
-
-      console.log('UTXO', allUtxoAddresses);
+      const allUtxoAddresses = inputUtxos.map(utxo => ({
+        tokenAddress: utxo.erc20TokenAddress,
+        amount: utxo.amount
+      }));
 
       const fetchedBalances = allUtxoAddresses.reduce((acc, val) => {
         const balance = acc[val.tokenAddress.toLowerCase()];

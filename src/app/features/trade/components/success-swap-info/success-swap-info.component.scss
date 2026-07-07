@@ -10,14 +10,14 @@
   background-size: cover;
 
   &__title {
-    color: var(--tui-positive);
+    color: var(--tui-text-positive);
     font-weight: 500;
     font-size: 21px;
   }
 }
 
 .highlight_green {
-  color: var(--tui-primary);
+  color: var(--tui-background-accent-1);
 
   cursor: pointer;
 }

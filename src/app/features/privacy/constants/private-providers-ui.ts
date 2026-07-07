@@ -12,9 +12,17 @@ const ACTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint: strin
   THREE: { steps: 3, hint: 'Completing the target action requires 3 steps.' }
 };
 
-const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProviderRawInfo> = {
+const DISCONNECTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint: string }> = {
+  ONE: { steps: 1, hint: 'Private Transfer' },
+  TWO: { steps: 2, hint: 'Shield → Private Transfer' },
+  THREE: { steps: 3, hint: 'Shield → Private Transfer → Unshield' }
+};
+
+const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<
+  Exclude<PrivateTradeType, 'HINKAL'>,
+  PrivateProviderRawInfo
+> = {
   ZAMA: {
-    //getMinAmountUsd: () => 0,
     getExecutionStepsInfo: () => ACTION_STEPS.THREE,
     getFeeInfo: () => Promise.resolve({ feeSize: 'zero fees', feeRate: 0 }),
     url: PRIVATE_MODE_URLS.ZAMA,
@@ -23,7 +31,11 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     uiName: 'Zama',
     privacyType: 'FHE, ZK, MPC',
     security: 3,
-    executionTimeRate: 1
+    executionTimeRate: 1,
+    disconnectionRate: 1,
+    disconnectionSteps: DISCONNECTION_STEPS.THREE,
+    disconnectionRateHint:
+      'Please note that Zama doesn’t break the link between wallets, it only hides balances.'
   },
   RAILGUN: {
     //getMinAmountUsd: () => 0,
@@ -39,25 +51,31 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
       hint: 'This is a one-hour protective quarantine during which the system verifies the “purity” of the funds and prepares ZK evidence. During this period, only refunds to the original wallet are permitted, full anonymity is enabled once the process is complete.'
     },
     security: 4,
-    executionTimeRate: 3
+    executionTimeRate: 3,
+    disconnectionRate: 4,
+    disconnectionSteps: DISCONNECTION_STEPS.TWO
   },
-  HINKAL: {
-    //getMinAmountUsd: () => 0,
-    getExecutionStepsInfo: () => ACTION_STEPS.THREE,
-    getFeeInfo: (tab: PrivateModeTab) =>
-      Promise.resolve(
-        tab === PRIVATE_MODE_TAB.TRANSFER
-          ? { feeSize: '0.05%', feeRate: 1 }
-          : { feeSize: 'zero fees', feeRate: 0 }
-      ),
-    url: PRIVATE_MODE_URLS.HINKAL,
-    icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HINKAL],
-    name: PRIVATE_TRADE_TYPE.HINKAL,
-    uiName: 'Hinkal',
-    privacyType: 'ZK',
-    security: 3.55,
-    executionTimeRate: 1
-  },
+  /**
+   * hinkal was hacked
+   */
+  // HINKAL: {
+  //   getExecutionStepsInfo: () => ACTION_STEPS.THREE,
+  //   getFeeInfo: (tab: PrivateModeTab) =>
+  //     Promise.resolve(
+  //       tab === PRIVATE_MODE_TAB.TRANSFER
+  //         ? { feeSize: '0.05%', feeRate: 1 }
+  //         : { feeSize: 'zero fees', feeRate: 0 }
+  //     ),
+  //   url: PRIVATE_MODE_URLS.HINKAL,
+  //   icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HINKAL],
+  //   name: PRIVATE_TRADE_TYPE.HINKAL,
+  //   uiName: 'Hinkal',
+  //   privacyType: 'ZK',
+  //   security: 3.55,
+  //   executionTimeRate: 1,
+  //   disconnectionRate: 3.55,
+  //   disconnectionSteps: DISCONNECTION_STEPS.TWO
+  // },
   PRIVACY_CASH: {
     //getMinAmountUsd: (tab: PrivateModeTab) => (tab === PRIVATE_MODE_TAB.TRANSFER ? 0 : 10),
     getExecutionStepsInfo: (tab: PrivateModeTab) =>
@@ -88,7 +106,9 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     uiName: 'PrivacyCash',
     privacyType: ' ZK based privacy pool',
     security: 3,
-    executionTimeRate: 1
+    executionTimeRate: 1,
+    disconnectionRate: 3,
+    disconnectionSteps: DISCONNECTION_STEPS.TWO
   },
   CLEARSWAP: {
     //getMinAmountUsd: () => 49,
@@ -100,7 +120,9 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     privacyType: 'Dual exchange system',
     uiName: 'Clearswap',
     security: 3,
-    executionTimeRate: 2
+    executionTimeRate: 2,
+    disconnectionRate: 3,
+    disconnectionSteps: DISCONNECTION_STEPS.ONE
   },
   HOUDINI: {
     //getMinAmountUsd: () => 50,
@@ -116,7 +138,9 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
       hint: 'Private transactions take 20–40 minutes on average.'
     },
     security: 3,
-    executionTimeRate: 2
+    executionTimeRate: 2,
+    disconnectionRate: 3
+    // disconnectionSteps: DISCONNECTION_STEPS.ONE
   }
 };
 

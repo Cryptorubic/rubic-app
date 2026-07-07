@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Injector,
+  Input,
+  Output
+} from '@angular/core';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-empty-list',
   templateUrl: './empty-list.component.html',
   styleUrls: ['./empty-list.component.scss'],
@@ -20,7 +29,8 @@ export class EmptyListComponent {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly walletsModalService: WalletsModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public switchToDefaultList(): void {
@@ -28,6 +38,6 @@ export class EmptyListComponent {
   }
 
   public openAuthModal(): void {
-    this.walletsModalService.open$();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

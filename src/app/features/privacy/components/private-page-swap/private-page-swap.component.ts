@@ -1,3 +1,4 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,12 +7,11 @@ import {
   Input,
   OnInit,
   Output,
-  Self,
-  inject
+  inject,
+  DestroyRef
 } from '@angular/core';
-import { BehaviorSubject, skip, takeUntil } from 'rxjs';
+import { BehaviorSubject, skip } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { receiverAnimation } from '@app/features/privacy/providers/shared-privacy-providers/animations/receiver-animation';
 import { PrivateSwapFormConfig } from '@app/features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateModalsService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -19,20 +19,23 @@ import { PrivacyMainPageService } from '../../services/privacy-main-page.service
 import { PrivacyFormValue } from '../../services/models/privacy-form';
 import { AssetsSelectorConfig } from '@app/features/trade/components/assets-selector/models/assets-selector-layout';
 import { PRIVATE_MODE_TAB } from '../../constants/private-mode-tab';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { PrivacyMainPageFromPrivateAssetsService } from '../../services/privacy-main-page-from-private-assets.service';
 import { PrivacyMainPageTokensFacadeService } from '../../services/privacy-main-page-tokens-facade.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { PrivacyMainPageToPrivateAssetsService } from '../../services/privacy-main-page-to-private-assets.service';
+import { PRIVATE_TAB_TO_FLOW_TYPE_EVENT } from '@app/core/services/google-tag-manager/models/google-tag-manager';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-private-main-page-swap',
   templateUrl: './private-page-swap.component.html',
   styleUrls: ['./private-page-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: PrivacyMainPageFromPrivateAssetsService },
     { provide: ToAssetsService, useClass: PrivacyMainPageToPrivateAssetsService },
     { provide: TokensFacadeService, useClass: PrivacyMainPageTokensFacadeService }
@@ -72,23 +75,37 @@ export class PrivatePageSwapComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   public get swapInfo(): PrivacyFormValue {
     return this.privacyMainPageService.formValue;
   }
 
   constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
-    private readonly privacyMainPageService: PrivacyMainPageService
+    private readonly privacyMainPageService: PrivacyMainPageService,
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+
+    this.showAllProviders$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(showAllProviders => {
+      if (showAllProviders) {
+        this.patchSwapInfo({
+          fromAsset: null,
+          toAsset: null
+        });
+      } else {
+        this.patchSwapInfo(this.privacyMainPageService.prevFormValue || {});
+      }
+    });
   }
 
   private subscribeOnFormInputChanged(): void {
     this.swapInfo$
       // used skip(1) to prevent emitting formChanged with empty value and override existing queryParams
-      .pipe(skip(1), takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
       .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
@@ -105,6 +122,8 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   public openInputSelector(): void {
+    this.gtmService.firePrivateFormOpenTokenSelectorEvent('from');
+
     const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
     const config: AssetsSelectorConfig = {
       ...this.creationConfig.assetsSelectorConfig,
@@ -120,10 +139,21 @@ export class PrivatePageSwapComponent implements OnInit {
         } else {
           this.patchSwapInfo({ fromAsset: selectedToken });
         }
+
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'from',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 
   public openOutputSelector(): void {
+    this.gtmService.firePrivateFormOpenTokenSelectorEvent('to');
+
     const isOnChain = this.privacyMainPageService.selectedTab === PRIVATE_MODE_TAB.ON_CHAIN;
     const fromChain = this.privacyMainPageService.swapInfo.fromAsset?.blockchain;
     const config: AssetsSelectorConfig = {
@@ -137,6 +167,15 @@ export class PrivatePageSwapComponent implements OnInit {
       .openPrivateTokensModal(this.injector, 'to', config)
       .subscribe((selectedToken: BalanceToken) => {
         this.patchSwapInfo({ toAsset: selectedToken });
+
+        if (selectedToken) {
+          this.gtmService.firePrivateFormSelectTokenEvent(
+            'to',
+            selectedToken.blockchain,
+            selectedToken.symbol,
+            selectedToken.address
+          );
+        }
       });
   }
 
@@ -148,6 +187,12 @@ export class PrivatePageSwapComponent implements OnInit {
   }
 
   public switchShowAllProviders(value: boolean): void {
+    this.gtmService.fireToggleShowAllProvidersEvent(
+      PRIVATE_TAB_TO_FLOW_TYPE_EVENT[this.privacyMainPageService.selectedTab],
+      value
+    );
     this.privacyMainPageService.setShowAllProviders(value);
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

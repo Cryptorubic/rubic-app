@@ -1,19 +1,14 @@
 @use 'src/scss/core' as *;
 
 :host {
-
   @include b($mobile-md) {
     .asset-types-aside__list-element {
+
+      justify-content: center;
       width: 80px;
       height: 62px;
 
       border-radius: 16px;
-
-      ::ng-deep {
-        .t-content {
-          justify-content: center;
-        }
-      }
     }
 
     .icon {
@@ -25,12 +20,13 @@
   .asset-types-aside__list-element {
     width: 169px;
     height: 41px;
+    padding: 0;
 
     border-radius: 8px;
     cursor: pointer;
 
     &:hover {
-      background: var(--tui-secondary-hover);
+      background: var(--tui-background-neutral-1-hover);
     }
 
     app-blockchains-promo-badge {
@@ -41,17 +37,13 @@
   }
 
   .disabled {
-    background: var(--tui-secondary-hover);
+    background: var(--tui-background-neutral-1-hover);
     cursor: not-allowed;
   }
 
-  .selected {
-    ::ng-deep {
-      .t-wrapper {
-        background: var(--tui-secondary-hover);
-        border-radius: 8px;
-      }
-    }
+  .selected.asset-types-aside__list-element {
+    background-color: var(--tui-background-neutral-1-hover) !important;
+    border-radius: 8px;
   }
 
   .icon {

@@ -14,7 +14,6 @@ export interface RubicWindow extends Window {
   global?: unknown;
   process?: Process;
   Buffer?: Buffer;
-  dataLayer?: unknown[];
   ga?: Function | { create: Function; loaded: boolean };
   chrome?: boolean;
   turnstile?: Turnstile;

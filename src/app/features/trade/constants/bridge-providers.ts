@@ -150,6 +150,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}ibc.png`,
     name: 'IBC'
   },
+  instaswap: {
+    averageTime: 5,
+    color: '#080d12',
+    image: `${imageBasePath}instaswap.svg`,
+    name: 'InstaSwap'
+  },
   //LLLLLLLLLLLLLLLLL
   layerzero: {
     averageTime: 5,
@@ -175,6 +181,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: 'white',
     image: `${imageBasePath}wormhole.svg`,
     name: `Maker's wormhole`
+  },
+  mayan: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}mayan.svg`,
+    name: 'Mayan'
   },
   mayaprotocol: {
     averageTime: 5,
@@ -245,6 +257,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Owlto'
   },
   //PPPPPPPPPPPPPPP
+  pact_swap: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}pactswap.svg`,
+    name: 'PactSwap'
+  },
   polygon: {
     averageTime: 5,
     color: '#5d25ba',
@@ -342,6 +360,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#999999',
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate V2'
+  },
+  stealthex: {
+    averageTime: 5,
+    color: '#yellow',
+    image: `${imageBasePath}stealthex.png`,
+    name: 'Stealthex'
   },
   symbiosis: {
     averageTime: 5,

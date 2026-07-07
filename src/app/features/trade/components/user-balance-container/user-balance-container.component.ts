@@ -8,6 +8,7 @@ import { FromAssetsService } from '../assets-selector/services/from-assets.servi
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 
 @Component({
+  standalone: false,
   selector: 'app-user-balance-container',
   templateUrl: './user-balance-container.component.html',
   styleUrls: ['./user-balance-container.component.scss'],

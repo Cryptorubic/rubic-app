@@ -6,6 +6,7 @@ import { map, Observable, timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'app-shielded-tokens-list-element',
   templateUrl: './shielded-tokens-list-element.component.html',
   styleUrls: ['./shielded-tokens-list-element.component.scss'],

@@ -1,4 +1,4 @@
-import { Hinkal, prepareHinkalWithSignature } from '@hinkal/common';
+import { Hinkal, networkRegistry, prepareHinkalWithSignature } from '@hinkal/common';
 
 export class HinkalWorkerSnapshotService {
   private _currSignature: string | null = null;
@@ -11,8 +11,9 @@ export class HinkalWorkerSnapshotService {
 
   public async updateInstance(address: string, chainId: number, signature: string): Promise<void> {
     try {
-      await prepareHinkalWithSignature(this.hinkal, address, chainId, signature);
-      await this.hinkal.resetMerkle();
+      await prepareHinkalWithSignature(this.hinkal, address, signature);
+      await this.hinkal.switchNetwork(networkRegistry[chainId]);
+      await this.hinkal.resetMerkle([chainId]);
       this._currSignature = signature;
     } catch (err) {
       console.error('FAILED TO UPDATE WORKER SIGNATURE', err);
@@ -20,15 +21,16 @@ export class HinkalWorkerSnapshotService {
   }
 
   public async switchNetwork(chainId: number, address: string): Promise<void> {
-    if (this.hinkal.getProviderAdapter().chainId !== chainId) {
-      this.hinkal.snapshotsClearInterval();
-      await this.updateInstance(address, chainId, this._currSignature);
-    }
+    try {
+      if (this.hinkal.getProviderAdapter().getChainId() !== chainId) {
+        this.hinkal.snapshotsClearInterval();
+        await this.updateInstance(address, chainId, this._currSignature);
+      }
+    } catch {}
   }
 
   public async clearSnapshotsInterval(): Promise<void> {
     try {
-      await this.hinkal.getEventsFromHinkal();
       this.hinkal.snapshotsClearInterval();
     } catch {}
   }

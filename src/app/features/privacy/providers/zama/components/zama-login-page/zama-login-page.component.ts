@@ -5,6 +5,7 @@ import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { ZAMA_SUPPORTED_WALLETS } from '../../constants/zama-supported-wallets';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-login-page',
   templateUrl: './zama-login-page.component.html',
   styleUrls: ['./zama-login-page.component.scss'],

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 
 @Component({
+  standalone: false,
   selector: 'app-private-action-button',
   templateUrl: './private-action-button.component.html',
   styleUrls: ['./private-action-button.component.scss'],
