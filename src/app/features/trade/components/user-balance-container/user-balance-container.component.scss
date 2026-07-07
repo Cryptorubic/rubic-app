@@ -7,7 +7,7 @@
   &__balance {
     margin-right: var(--tui-padding-xs);
 
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-size: 15px;
     line-height: 15px;
   }
@@ -44,7 +44,7 @@
   :host {
     width: 100%;
   }
-  
+
   .user-balance-container {
     justify-content: space-between;
     width: 100%;

@@ -50,7 +50,7 @@
 
         <ng-template tuiAccordionItemContent>
           <ng-container *ngFor="let menu of item.value">
-            <div>
+            <div class="data-list__option-container">
               <ng-container
                 *ngIf="menu.type === 'internal'; then internal; else external"
               ></ng-container>

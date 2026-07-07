@@ -39,6 +39,7 @@ import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/featur
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
+  standalone: false,
   selector: 'app-preview-swap',
   templateUrl: './preview-swap.component.html',
   styleUrls: ['./preview-swap.component.scss'],
@@ -213,7 +214,6 @@ export class PreviewSwapComponent implements OnDestroy {
     return this.tradeInfoManager.getGasData(trade);
   }
 
-  // eslint-disable-next-line complexity
   private async getState(
     el: TransactionState,
     tradeState: SelectedTrade,

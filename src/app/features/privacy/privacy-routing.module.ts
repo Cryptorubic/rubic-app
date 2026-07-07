@@ -8,10 +8,10 @@ const routes: Routes = [
     path: '',
     component: PrivacyPageViewComponent
   },
-  {
-    path: PRIVATE_MODE_URLS.HINKAL,
-    loadChildren: () => import('./providers/hinkal/hinkal.module').then(m => m.HinkalModule)
-  },
+  // {
+  //   path: PRIVATE_MODE_URLS.HINKAL,
+  //   loadChildren: () => import('./providers/hinkal/hinkal.module').then(m => m.HinkalModule)
+  // },
   {
     path: PRIVATE_MODE_URLS.PRIVACY_CASH,
     loadChildren: () =>

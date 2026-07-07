@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
 
 @Component({
+  standalone: false,
   selector: 'app-action-buttons',
   templateUrl: './action-buttons.component.html',
   styleUrls: ['./action-buttons.component.scss'],

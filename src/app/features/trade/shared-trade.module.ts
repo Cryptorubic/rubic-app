@@ -1,3 +1,9 @@
+import {
+  TuiTextfieldControllerModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule
+} from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
@@ -5,23 +11,18 @@ import { CommonModule } from '@angular/common';
 import { ProvidersListGeneralComponent } from '@features/trade/components/providers-list-general/providers-list-general.component';
 import { ProviderElementComponent } from './components/provider-element/provider-element.component';
 import {
-  TuiButtonModule,
-  TuiExpandModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiNotificationModule,
-  TuiModeModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiNotification,
+  TuiExpand,
+  TuiLoader,
+  TuiScrollbar,
+  TuiScrollable,
+  TuiDropdown,
+  TuiButton,
+  TuiHint,
+  TuiAppearance,
+  TuiNumberFormat
 } from '@taiga-ui/core';
-import {
-  TuiCarouselModule,
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -74,8 +75,6 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
-import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 
 @NgModule({
@@ -156,43 +155,42 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
   imports: [
     CommonModule,
     SharedModule,
-    TuiExpandModule,
-    TuiScrollbarModule,
+    ...TuiExpand,
+    TuiScrollbar,
+    TuiScrollable,
     TuiTagModule,
     InlineSVGModule,
-    TuiButtonModule,
+    TuiButton,
     ClipboardModule,
     ReactiveFormsModule,
-    TuiHintModule,
+    ...TuiHint,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,
-    TuiToggleModule,
-    TuiHostedDropdownModule,
+    TuiSwitch,
+    ...TuiDropdown,
     TuiInputModule,
-    TuiLoaderModule,
+    TuiLoader,
     AssetsSelectorModule,
-    TuiNotificationModule,
-    TuiModeModule,
-    TuiCarouselModule
+    TuiNotification,
+    ...TuiCarousel,
+    TuiAppearance,
+    TuiNumberFormat
   ],
   providers: [
+    SettingsService,
     SwapsStateService,
     SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,
     OnChainService,
     CrossChainApiService,
-    SettingsService,
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
     OnChainApiService,
     DepositService,
     ActionButtonService,
-    FormsTogglerService,
-    TradeInfoManager,
-    FormsTogglerService,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,

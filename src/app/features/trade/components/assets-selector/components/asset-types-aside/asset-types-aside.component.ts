@@ -10,6 +10,7 @@ import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],

@@ -15,15 +15,15 @@
   }
 
   &__priceImpact-low {
-    color: var(--tui-success-fill);
+    color: var(--tui-status-positive);
   }
 
   &__priceImpact-medium {
-    color: var(--tui-warning-fill);
+    color: var(--tui-status-warning);
   }
 
   &__priceImpact-high {
-    color: var(--tui-error-fill);
+    color: var(--tui-status-negative);
   }
 }
 

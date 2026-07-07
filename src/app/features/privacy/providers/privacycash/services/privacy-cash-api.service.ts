@@ -44,7 +44,7 @@ export class PrivacycashApiService {
     );
 
     const transaction = VersionedTransaction.deserialize(
-      Buffer.from(orderResponse.transaction, 'base64')
+      new Uint8Array(Buffer.from(orderResponse.transaction, 'base64'))
     );
 
     transaction.sign([ephemeralKeypair]);

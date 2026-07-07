@@ -1,27 +1,26 @@
+import { TuiDropdownOpen } from '@taiga-ui/core';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Output,
-  Self,
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { TuiHostedDropdownComponent } from '@taiga-ui/core';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: []
 })
 export class SettingsComponent {
-  @ViewChild(TuiHostedDropdownComponent) component?: TuiHostedDropdownComponent;
+  @ViewChild(TuiDropdownOpen) component?: TuiDropdownOpen;
 
   @Output() handleClose = new EventEmitter<void>();
 
@@ -33,8 +32,7 @@ export class SettingsComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly themeService: ThemeService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly themeService: ThemeService
   ) {}
 
   /**

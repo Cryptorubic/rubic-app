@@ -17,6 +17,7 @@ import { ClearswapBalancesService } from '../../services/clearswap-balances.serv
 import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
+  standalone: false,
   selector: 'app-clearswap-view',
   templateUrl: './clearswap-view.component.html',
   styleUrls: ['./clearswap-view.component.scss'],

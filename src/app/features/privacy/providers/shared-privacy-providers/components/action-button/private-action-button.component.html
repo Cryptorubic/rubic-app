@@ -4,7 +4,7 @@
     appearance="primary"
     type="button"
     size="m"
-    [showLoader]="showLoader"
+    [loading]="showLoader"
     [disabled]="state.type === 'error'"
     (click)="state.type === 'parent' ? onClick.emit() : state.action()"
   >

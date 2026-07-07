@@ -11,7 +11,7 @@
   padding: var(--tui-padding-xs) var(--tui-padding-s);
 
   &:hover {
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: var(--tui-radius-m);
   }
 
@@ -83,7 +83,7 @@
 
   &__name,
   &__dollar-amount {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-size: 12px;
     line-height: 12px;
     white-space: nowrap;
@@ -129,7 +129,7 @@
     border-radius: var(--tui-radius-m);
 
     &:hover {
-      background: var(--tui-base-01);
+      background: var(--tui-background-base);
     }
 
     &__image-container {
