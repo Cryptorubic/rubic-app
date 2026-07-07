@@ -9,7 +9,7 @@
   }
 
   &__second-label {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
     font-weight: 400;
     font-size: 15px;
   }
@@ -81,14 +81,14 @@
     font-weight: 700;
     font-size: 1rem;
 
-    background: var(--tui-secondary);
+    background: var(--tui-background-neutral-1);
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
     &-gas-form {
       width: 200px;
 
       &__disabled {
-        color: var(--tui-text-03);
+        color: var(--tui-text-tertiary);
       }
     }
 
@@ -100,7 +100,7 @@
       width: 25px;
       height: 100%;
 
-      background: var(--tui-secondary);
+      background: var(--tui-background-neutral-1);
       border-radius: 0 50px 50px 0;
 
       content: '';

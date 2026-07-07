@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { CrossChainTradeType } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-rate-update-modal',
   templateUrl: './deposit-rate-changed-modal.component.html',
   styleUrls: ['./deposit-rate-changed-modal.component.scss'],

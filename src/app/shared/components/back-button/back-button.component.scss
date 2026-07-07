@@ -30,12 +30,12 @@
       height: 100%;
 
       path {
-        fill: var(--tui-text-01);
+        fill: var(--tui-text-primary);
       }
     }
   }
 
-  ::ng-deep .t-wrapper[data-appearance='secondary'] {
+  ::ng-deep button[data-appearance='secondary'] {
     background: transparent !important;
   }
 }

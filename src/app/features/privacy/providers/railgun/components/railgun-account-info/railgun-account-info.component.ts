@@ -1,3 +1,4 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,13 +9,13 @@ import {
   Output
 } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-account-info',
   templateUrl: './railgun-account-info.component.html',
   styleUrls: ['./railgun-account-info.component.scss'],
@@ -36,7 +37,7 @@ export class RailgunAccountInfoComponent {
 
   public hintShown: boolean;
 
-  private readonly navigator = inject(NAVIGATOR);
+  private readonly navigator = inject(WA_NAVIGATOR);
 
   private readonly cdr = inject(ChangeDetectorRef);
 

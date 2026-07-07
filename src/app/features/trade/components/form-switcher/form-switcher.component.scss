@@ -36,7 +36,7 @@
   &:hover {
     &:not(.disabled) {
       background-color: var(--secondary-background);
-  
+
       .switcher__img-container {
         rotate: 180deg;
       }

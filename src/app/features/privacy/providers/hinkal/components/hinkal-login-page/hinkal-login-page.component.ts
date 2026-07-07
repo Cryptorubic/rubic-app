@@ -5,6 +5,7 @@ import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.ser
 import { HINKAL_SUPPORTED_WALLETS } from '../../constants/hinkal-supported-wallets';
 
 @Component({
+  standalone: false,
   selector: 'app-hinkal-login-page',
   templateUrl: './hinkal-login-page.component.html',
   styleUrls: ['./hinkal-login-page.component.scss'],

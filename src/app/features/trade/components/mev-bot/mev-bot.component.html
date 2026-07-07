@@ -1,26 +1,29 @@
 <ng-container *ngLet="routingForm$ | async as routingForm">
   <tui-notification
+    size="m"
     *ngIf="displayMev"
-    [status]="routingForm.value.useMevBotProtection ? 'success' : 'warning'"
+    [appearance]="routingForm.value.useMevBotProtection ? 'success' : 'warning'"
     class="mev-bot"
     [tuiHint]="
       'You can turn on the MEV-bot protection, this will ensure better security of your trade.'
     "
     [tuiHintManual]="!routingForm.value.useMevBotProtection"
     tuiHintDirection="right"
-  >
-    <div class="tui-text_body-l-2">
-      <strong>MEV bot protection</strong>
-    </div>
-    <div class="mev-bot__row">
-      Use private RPC to protect your trades
-      <form [formGroup]="routingForm" class="settings__form">
-        <tui-toggle
-          class="mev-bot__toggle"
-          id="useMevBotProtection"
-          formControlName="useMevBotProtection"
-        ></tui-toggle>
-      </form>
-    </div>
-  </tui-notification>
+    ><div>
+      <div class="tui-text_body-l-2">
+        <strong>MEV bot protection</strong>
+      </div>
+      <div class="mev-bot__row">
+        Use private RPC to protect your trades
+        <form [formGroup]="routingForm" class="settings__form">
+          <input
+            tuiSwitch
+            type="checkbox"
+            class="mev-bot__toggle"
+            id="useMevBotProtection"
+            formControlName="useMevBotProtection"
+          />
+        </form>
+      </div></div
+  ></tui-notification>
 </ng-container>

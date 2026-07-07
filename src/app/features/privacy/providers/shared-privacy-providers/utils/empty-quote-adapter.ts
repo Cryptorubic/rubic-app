@@ -3,7 +3,7 @@ import { PrivateQuoteAdapter } from '../models/quote-adapter';
 import BigNumber from 'bignumber.js';
 
 export class EmptyQuoteAdapter implements PrivateQuoteAdapter {
-  public quoteCallback(): Observable<{ toAmountWei: BigNumber; tradeId?: string }> {
+  public quoteCallback$(): Observable<{ toAmountWei: BigNumber; tradeId?: string }> {
     return of({ toAmountWei: new BigNumber(0) });
   }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { StepType } from '@features/privacy/providers/railgun/models/step';
@@ -21,13 +21,14 @@ import { PAGE_TYPE_IMAGE } from '@features/privacy/providers/shared-privacy-prov
 import { RailgunHideFacadeService } from '@features/privacy/providers/railgun/services/railgun-hide-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-main-page',
   templateUrl: './railgun-main-page.component.html',
   styleUrls: ['./railgun-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [fadeAnimation]
 })
-export class RailgunMainPageComponent {
+export class RailgunMainPageComponent implements OnInit {
   private readonly privacyService = inject(PrivatePageTypeService);
 
   private readonly railgunFacade = inject(RailgunFacadeService);

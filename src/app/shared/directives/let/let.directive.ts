@@ -5,6 +5,7 @@ interface LetContext<T> {
 }
 
 @Directive({
+  standalone: false,
   selector: '[ngLet]'
 })
 export class LetDirective<T> {

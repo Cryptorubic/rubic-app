@@ -29,7 +29,7 @@
     border-radius: var(--tui-radius-s);
 
     &:hover {
-      background-color: var(--tui-secondary-hover);
+      background-color: var(--tui-background-neutral-1-hover);
     }
   }
 
@@ -53,7 +53,7 @@
     height: 41px;
     margin: 0 auto;
     margin-left: -18px;
-    
+
     background: #2c2d3e;
     border-radius: 8px;
 
@@ -64,12 +64,12 @@
     }
 
     &:hover {
-      background: var(--tui-secondary-hover);
+      background: var(--tui-background-neutral-1-hover);
       cursor: pointer;
     }
-        
+
     &__active {
-      background: var(--tui-secondary-active);
+      background: var(--tui-background-neutral-1-pressed);
     }
 
     &__icon {

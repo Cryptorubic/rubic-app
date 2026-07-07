@@ -15,7 +15,7 @@
     width: 1px;
     height: calc(100% - 4px);
 
-    background: var(--tui-neutral-fill);
+    background: var(--tui-status-neutral);
     opacity: 0.5;
 
     content: '';
@@ -35,7 +35,7 @@
     width: 16px;
     height: 16px;
 
-    background: var(--tui-neutral-fill);
+    background: var(--tui-status-neutral);
     border-radius: 100%;
 
     img {
@@ -48,19 +48,19 @@
     }
 
     &_done {
-      background: var(--tui-success-fill);
+      background: var(--tui-status-positive);
     }
 
     &_fail {
-      background: var(--tui-error-fill);
+      background: var(--tui-status-negative);
     }
   }
 
   &__element-text {
-    color: var(--tui-text-03);
+    color: var(--tui-text-tertiary);
 
     &_white {
-      color: var(--tui-text-01);
+      color: var(--tui-text-primary);
     }
   }
 }
@@ -70,9 +70,9 @@
     svg {
       width: 10px;
       height: 10px;
-      
+
       path {
-        stroke: var(--tui-text-01);
+        stroke: var(--tui-text-primary);
       }
     }
   }

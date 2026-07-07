@@ -1,8 +1,15 @@
 module.exports = {
-  parserOptions: {
-    ecmaVersion: 11
-  },
-  env: {
-    es6: true
-  }
+  overrides: [
+    {
+      parserOptions: {
+        ecmaVersion: 11,
+        // projectService: true,
+        project: ['tsconfig.json'],
+        tsconfigRootDir: __dirname
+      },
+      env: {
+        es6: true
+      }
+    }
+  ]
 };

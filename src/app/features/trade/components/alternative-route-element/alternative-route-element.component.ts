@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 
 @Component({
+  standalone: false,
   selector: 'app-alternative-route-element',
   templateUrl: './alternative-route-element.component.html',
   styleUrls: ['./alternative-route-element.component.scss'],

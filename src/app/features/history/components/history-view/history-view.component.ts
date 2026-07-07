@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
+  standalone: false,
   selector: 'app-history-view',
   templateUrl: './history-view.component.html',
   styleUrls: ['./history-view.component.scss'],

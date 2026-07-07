@@ -8,6 +8,7 @@ import { DepositService } from '../../services/deposit/deposit.service';
 import { depositInfoText } from './constants/cn-info-text';
 
 @Component({
+  standalone: false,
   selector: 'app-deposit-trade-info',
   templateUrl: './deposit-trade-info.component.html',
   styleUrls: ['./deposit-trade-info.component.scss'],

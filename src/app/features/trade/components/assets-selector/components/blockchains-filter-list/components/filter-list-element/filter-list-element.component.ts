@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainFilters } from '../../models/BlockchainFilters';
 
 @Component({
+  standalone: false,
   selector: 'app-filter-list-element',
   templateUrl: './filter-list-element.component.html',
   styleUrls: ['./filter-list-element.component.scss'],

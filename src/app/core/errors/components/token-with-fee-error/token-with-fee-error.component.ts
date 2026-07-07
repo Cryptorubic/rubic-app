@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-token-with-fee-error',
   templateUrl: './token-with-fee-error.component.html',
   styleUrls: ['./token-with-fee-error.component.scss'],
