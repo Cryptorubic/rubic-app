@@ -1,19 +1,3 @@
-// const { defineConfig } = require('eslint/config');
-// const _import = require('eslint-plugin-import');
-// const unusedImports = require('eslint-plugin-unused-imports');
-// // const angularRubic = require('eslint-plugin-angular-rubic');
-// const rxjsX = require('eslint-plugin-rxjs-x').default;
-
-// const { fixupPluginRules } = require('@eslint/compat');
-
-// const jasmine = require('eslint-plugin-jasmine');
-// const sortKeysFix = require('eslint-plugin-sort-keys-fix');
-// const js = require('@eslint/js');
-// const prettierPlugin = require('eslint-plugin-prettier');
-// const prettierConfig = require('eslint-config-prettier');
-
-// const { FlatCompat } = require('@eslint/eslintrc');
-
 import { defineConfig } from 'eslint/config';
 import _import from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
