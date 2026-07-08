@@ -48,6 +48,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Avalanche Bridge'
   },
   //BBBBBBBBBBBBBBB
+  baltex: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}baltex.svg`,
+    name: 'Baltex'
+  },
   bridgers: {
     averageTime: 5,
     color: '#E6F3FF',
