@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.6.5-alpha-rub-2694.0":
-  version "1.6.5-alpha-rub-2694.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.5-alpha-rub-2694.0.tgz#e63513ca2d975f52a123d80366a46ce0cd5b469a"
-  integrity sha512-0ZDpR7L/Lznq/6LYQF1nzvbLRQ/UXyY5LcY6aSS1M2BG7srIOLseZ2ur+FUYNPlm/ymvOpiRLkIgE/Tlk/OTLw==
+"@cryptorubic/core@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.5.tgz#e6071385309d794c1455846d26955f306e2b733f"
+  integrity sha512-u4+jE8BNI0xIcNKSDWm11W/OwiI5bhAA+agskkSIGpmjLVzGR3G0DGecxjQurCIPbAZRH2ZLcvkuw4T107CJKQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.6.5-alpha-rub-2694.0":
-  version "1.6.5-alpha-rub-2694.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.5-alpha-rub-2694.0.tgz#65090d56eed4f1547be56aef44b966c4b5d4f7d5"
-  integrity sha512-cgGxoYit+OeceHYoRRw6xxdFf4UQrqFc1kUhIcSQDTjrna2c581S+PbMvSMKGueEwY6x0Kb+c/ke2KIm3onvrA==
+"@cryptorubic/web3@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.5.tgz#f45217b507f87f6779ada26f839e5159114a6e93"
+  integrity sha512-xZ5wMyetDuaf5YhNuCZfMtY//RMdAFjo/aOeORjPQJmmV3lwCKEhjSSmoW7EOJXIYZAUf0k7ME1Tb7AS7rrTXw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
