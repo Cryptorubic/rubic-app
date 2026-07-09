@@ -1,26 +1,23 @@
-const { defineConfig } = require('eslint/config');
-const _import = require('eslint-plugin-import');
-const unusedImports = require('eslint-plugin-unused-imports');
-// const angularRubic = require('eslint-plugin-angular-rubic');
-const rxjsX = require('eslint-plugin-rxjs-x').default;
-
-const { fixupPluginRules } = require('@eslint/compat');
-
-const jasmine = require('eslint-plugin-jasmine');
-const sortKeysFix = require('eslint-plugin-sort-keys-fix');
-const js = require('@eslint/js');
-const prettierPlugin = require('eslint-plugin-prettier');
-const prettierConfig = require('eslint-config-prettier');
-
-const { FlatCompat } = require('@eslint/eslintrc');
+import { defineConfig } from 'eslint/config';
+import _import from 'eslint-plugin-import';
+import unusedImports from 'eslint-plugin-unused-imports';
+// import angularRubic from 'eslint-plugin-angular-rubic';
+import rxjsX from 'eslint-plugin-rxjs-x';
+import { fixupPluginRules } from '@eslint/compat';
+import jasmine from 'eslint-plugin-jasmine';
+import sortKeysFix from 'eslint-plugin-sort-keys-fix';
+import js from '@eslint/js';
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
+import { FlatCompat } from '@eslint/eslintrc';
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: import.meta.dirname,
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all
 });
 
-module.exports = defineConfig([
+export default defineConfig([
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -46,7 +43,7 @@ module.exports = defineConfig([
     languageOptions: {
       parserOptions: {
         project: ['./tsconfig.json', './src/tsconfig.app.json'],
-        tsconfigRootDir: __dirname
+        tsconfigRootDir: import.meta.dirname
       }
     },
 
