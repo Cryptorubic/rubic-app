@@ -110,6 +110,7 @@ export class DepositService {
 
   public removePrevDeposit(): void {
     this._depositTrade$.next(null);
+    this._status$.next(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
   }
 
   private saveTrade(tradeData: CrossChainTransferTrade): void {

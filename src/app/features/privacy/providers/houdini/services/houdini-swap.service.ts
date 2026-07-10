@@ -187,7 +187,7 @@ export class HoudiniSwapService {
 
         if (failed) {
           //TODO: move it to api later
-          if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+          if ('minAmount' in failed.data?.data && 'tokenSymbol' in failed.data?.data) {
             const errorData = {
               minAmount: new BigNumber(failed.data.data?.minAmount as string),
               tokenSymbol: failed.data.data?.tokenSymbol as string
