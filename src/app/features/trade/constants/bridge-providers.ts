@@ -48,6 +48,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Avalanche Bridge'
   },
   //BBBBBBBBBBBBBBB
+  baltex: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}baltex.svg`,
+    name: 'Baltex'
+  },
   bridgers: {
     averageTime: 5,
     color: '#E6F3FF',
@@ -78,6 +84,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#1682dc',
     image: `${imageBasePath}celerim.png`,
     name: 'Celerim'
+  },
+  change_hero: {
+    averageTime: 5,
+    color: '#1682dc',
+    image: `${imageBasePath}change-hero.svg`,
+    name: 'ChangeHero'
   },
   changelly: {
     averageTime: 5,
