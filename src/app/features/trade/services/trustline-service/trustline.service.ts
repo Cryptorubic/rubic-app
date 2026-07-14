@@ -54,10 +54,8 @@ export class TrustlineService {
   }
 
   private async connectRippleReceiverWallet(receiverAddress: string): Promise<boolean> {
-    const xumm = XamanInstance.getInstance();
-
     try {
-      await xumm.environment.ready;
+      const xumm = await XamanInstance.waitUntilReady();
 
       if (!xumm.state.signedIn) {
         const authorizeResult = await xumm.authorize();

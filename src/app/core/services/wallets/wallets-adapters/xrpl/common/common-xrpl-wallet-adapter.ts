@@ -29,10 +29,8 @@ export abstract class CommonXrplWalletAdapter extends CommonWalletAdapter<XamanW
   }
 
   public async activate(): Promise<void> {
-    const xumm = XamanInstance.getInstance();
-
     try {
-      await xumm.environment.ready;
+      const xumm = await XamanInstance.waitUntilReady();
       this.subscribeToLogout(xumm);
 
       if (!xumm.state.signedIn) {
@@ -79,7 +77,7 @@ export abstract class CommonXrplWalletAdapter extends CommonWalletAdapter<XamanW
       this.logoutListener = null;
     }
 
-    void xumm.logout();
+    void XamanInstance.logout();
     super.deactivate();
   }
 
@@ -94,6 +92,8 @@ export abstract class CommonXrplWalletAdapter extends CommonWalletAdapter<XamanW
           xumm.off('logout', this.logoutListener);
           this.logoutListener = null;
         }
+        // SDK already ran logout(); ready promise is broken until next unblock.
+        XamanInstance.markReadyNeedsUnblock();
         super.deactivate();
       });
     };
