@@ -158,7 +158,7 @@
       },
       {
         "title": "¿ Cómo Ponerse En Contacto Con El Soporte?",
-        "answer": "Si necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte aquí enviando un ticket en nuestro sitio web o en nuestro Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>\n\n Chat en vivo: Póngase en contacto con el equipo de Rubic para obtener asistencia inmediata mediante el chat. Disponible 24/7.\n \nEmail soporte - <a href='mailto:support@rubic.finanzas'>soporte@rubic.finanzas</a>. Envíe un mensaje al soporte de Rubic en cualquier momento con preguntas más complejas o técnicas. Estamos aquí para ayudar."
+        "answer": "Si necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte aquí enviando un ticket en nuestro sitio web o en nuestro Telegram: <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>\n\n Chat en vivo: Póngase en contacto con el equipo de Rubic para obtener asistencia inmediata mediante el chat. Disponible 24/7.\n \nEmail soporte - <a href='mailto:support@rubic.finanzas'>soporte@rubic.finanzas</a>. Envíe un mensaje al soporte de Rubic en cualquier momento con preguntas más complejas o técnicas. Estamos aquí para ayudar."
       },
       {
         "title": "¿Qué es el widget de relé Rubic y cómo podemos integrarlo?",
@@ -170,7 +170,7 @@
       },
       {
         "title": "¿Por qué mi intercambio en cadena tiene un estado \"Pendiente\" de larga duración?",
-        "answer": "Razón:\nEs posible que la tarifa de gas que se estableció no sea suficiente para procesar su transacción.\n \n Cómo resolver:\n Si la transacción está \"Pendiente\", lo mejor es acelerar la transacción manualmente, cambiando al valor deseado de gas, para forzar la finalización de la transacción. Se puede hacer a través de su billetera. Usted podrá pagar una tarifa de gas adicional.\n \nSi aún necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte enviando un ticket o en Telegram <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>"
+        "answer": "Razón:\nEs posible que la tarifa de gas que se estableció no sea suficiente para procesar su transacción.\n \n Cómo resolver:\n Si la transacción está \"Pendiente\", lo mejor es acelerar la transacción manualmente, cambiando al valor deseado de gas, para forzar la finalización de la transacción. Se puede hacer a través de su billetera. Usted podrá pagar una tarifa de gas adicional.\n \nSi aún necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte enviando un ticket o en Telegram <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>"
       },
       {
         "title": "¿Por qué obtengo el error de \"Saldo insuficiente\"?",
@@ -194,7 +194,7 @@
       },
       {
         "title": "¿Por qué tengo un estado \"Pendiente\" de larga duración de una transacción de múltiples cadenas?",
-        "answer": "Presumiblemente, los precios de la tarifa de red aumentaron dramáticamente durante ese tiempo. \nSi los métodos anteriores no ayudaron, póngase en contacto con nuestro equipo de soporte a través del chat en el sitio web o Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>."
+        "answer": "Presumiblemente, los precios de la tarifa de red aumentaron dramáticamente durante ese tiempo. \nSi los métodos anteriores no ayudaron, póngase en contacto con nuestro equipo de soporte a través del chat en el sitio web o Telegram: <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>."
       },
       {
         "title": "¿Por qué no puedo hacer el intercambio de cadenas múltiples?",
