@@ -11,7 +11,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   public abstract readonly walletName: WALLET_NAME;
 
-  protected selectedAddress: string;
+  protected selectedAddress: string | null;
 
   protected selectedChain: BlockchainName | null;
 
@@ -67,8 +67,10 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     this.onNetworkChangesSub?.unsubscribe();
     this.onDisconnectSub?.unsubscribe();
     this.onCustomEventSub?.unsubscribe();
+    this.isEnabled = false;
+    this.selectedAddress = null;
+    this.selectedChain = null;
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
   }
 }
