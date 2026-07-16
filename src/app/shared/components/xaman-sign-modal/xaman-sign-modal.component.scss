@@ -18,6 +18,19 @@
     font-size: 18px;
   }
 
+  &__warning {
+    margin: 0;
+    padding: 12px 14px;
+
+    color: #1a1a1a;
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-all;
+
+    background: $rubic-warning;
+    border-radius: 10px;
+  }
+
   &__qr {
     width: 220px;
     height: 220px;

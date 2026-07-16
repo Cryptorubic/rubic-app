@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { BLOCKCHAIN_NAME, TokenAmount } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, CHAIN_TYPE, TokenAmount } from '@cryptorubic/core';
 import {
   FreighterModule,
   LobstrModule,
@@ -21,8 +21,8 @@ import { RippleAdapter } from '@cryptorubic/web3';
 import { XamanInstance } from '@app/core/services/wallets/wallets-adapters/xrpl/utils/xaman-instance';
 import { toRippleWalletCore } from '@app/core/services/wallets/wallets-adapters/xrpl/utils/to-ripple-wallet-core';
 import { XamanSignService } from '@app/core/services/wallets/wallets-adapters/xrpl/services/xaman-sign.service';
-
-const XRPL_MAINNET_NETWORK_TYPE = 'MAINNET';
+import { SdkLoaderService } from '@app/core/services/sdk/sdk-loader.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,9 @@ export class TrustlineService {
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly errorService: ErrorsService,
-    private readonly xamanSignService: XamanSignService
+    private readonly xamanSignService: XamanSignService,
+    private readonly sdkLoaderService: SdkLoaderService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public async connectReceiverWallet(
@@ -55,19 +57,30 @@ export class TrustlineService {
 
   private async connectRippleReceiverWallet(receiverAddress: string): Promise<boolean> {
     try {
-      const xumm = await XamanInstance.waitUntilReady();
+      await this.ensureRippleTrustlineWallet(receiverAddress, true);
+      return true;
+    } catch (err) {
+      this.errorService.catch(err);
+      return false;
+    }
+  }
 
-      if (!xumm.state.signedIn) {
-        const authorizeResult = await xumm.authorize();
+  private async ensureRippleTrustlineWallet(
+    expectedAccount: string,
+    isReceiverAccount: boolean
+  ): Promise<void> {
+    const xumm = await XamanInstance.waitUntilReady();
 
-        if (authorizeResult instanceof Error) {
-          throw authorizeResult;
-        }
+    if (!xumm.state.signedIn) {
+      const authorizeResult = await xumm.authorize();
+
+      if (authorizeResult instanceof Error) {
+        throw authorizeResult;
       }
 
       const networkType = await xumm.user.networkType;
 
-      if (networkType !== XRPL_MAINNET_NETWORK_TYPE) {
+      if (networkType !== 'MAINNET') {
         throw new Error('Only XRP Ledger mainnet is supported.');
       }
 
@@ -77,22 +90,26 @@ export class TrustlineService {
         throw new Error('Failed to get Xaman wallet address.');
       }
 
-      if (address !== receiverAddress) {
+      if (address !== expectedAccount) {
         throw new Error('Connected wallet must be the same as receiver');
       }
-
-      if (!this.rippleAdapter.connected) {
-        this.rippleAdapter.initWeb3Client();
-      }
-
-      this.rippleAdapter.signer.setWalletAddress(address);
-      this.rippleAdapter.signer.setWallet(toRippleWalletCore(xumm, this.xamanSignService));
-
-      return true;
-    } catch (err) {
-      this.errorService.catch(err);
-      return false;
     }
+
+    if (!this.rippleAdapter.connected) {
+      this.rippleAdapter.initWeb3Client();
+    }
+
+    this.rippleAdapter.signer.setWalletAddress(expectedAccount);
+    this.rippleAdapter.signer.setWallet(
+      toRippleWalletCore(xumm, this.xamanSignService, {
+        expectedAccount,
+        isReceiverAccount,
+        submitSignedBlob: async blob => {
+          const response = await this.rippleAdapter.public.submitAndWait(blob);
+          return response.result.hash;
+        }
+      })
+    );
   }
 
   private async connectStellarReceiverWallet(receiverAddress: string): Promise<boolean> {
@@ -145,9 +162,22 @@ export class TrustlineService {
     tokenAddress: string,
     blockchain:
       | typeof BLOCKCHAIN_NAME.STELLAR
-      | typeof BLOCKCHAIN_NAME.RIPPLE = BLOCKCHAIN_NAME.STELLAR
+      | typeof BLOCKCHAIN_NAME.RIPPLE = BLOCKCHAIN_NAME.STELLAR,
+    expectedAccount?: string,
+    isReceiverAccount = false
   ): Promise<string | null> {
+    const shouldRestoreConnectedRippleWallet =
+      blockchain === BLOCKCHAIN_NAME.RIPPLE && isReceiverAccount;
+
     try {
+      if (blockchain === BLOCKCHAIN_NAME.RIPPLE) {
+        if (!expectedAccount) {
+          throw new Error('Expected XRPL account is required to add trustline.');
+        }
+
+        await this.ensureRippleTrustlineWallet(expectedAccount, isReceiverAccount);
+      }
+
       const adapter =
         blockchain === BLOCKCHAIN_NAME.RIPPLE ? this.rippleAdapter : this.stellarAdapter;
       const hash = await adapter.addTrustline(tokenAddress);
@@ -155,7 +185,22 @@ export class TrustlineService {
     } catch (err) {
       this.errorService.catch(err);
       return null;
+    } finally {
+      if (shouldRestoreConnectedRippleWallet) {
+        this.restoreRippleConnectedWallet();
+      }
     }
+  }
+
+  private restoreRippleConnectedWallet(): void {
+    if (
+      !this.walletConnectorService.address ||
+      this.walletConnectorService.chainType !== CHAIN_TYPE.RIPPLE
+    ) {
+      return;
+    }
+
+    this.sdkLoaderService.onAddressChange(this.walletConnectorService.address);
   }
 
   public async checkTrustline(
@@ -163,7 +208,7 @@ export class TrustlineService {
     fromAddress: string,
     receiver?: string
   ): Promise<NeedTrustlineOptions> {
-    const { from, to, type } = trade;
+    const { from: _from, to, type } = trade;
     const defaultOptions: NeedTrustlineOptions = {
       needTrustlineAfterSwap: false,
       needTrustlineBeforeSwap: false
@@ -173,7 +218,7 @@ export class TrustlineService {
       if (to.blockchain === BLOCKCHAIN_NAME.STELLAR || to.blockchain === BLOCKCHAIN_NAME.RIPPLE) {
         const adapter =
           to.blockchain === BLOCKCHAIN_NAME.RIPPLE ? this.rippleAdapter : this.stellarAdapter;
-        const address = from.blockchain === to.blockchain ? fromAddress : receiver;
+        const address = receiver || fromAddress;
         if (address) {
           if (!adapter.connected) {
             adapter.initWeb3Client();

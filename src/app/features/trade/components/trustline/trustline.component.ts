@@ -95,10 +95,7 @@ export class TrustlineComponent implements OnInit {
   }
 
   private isReceiverWalletConnectionRequired(): boolean {
-    return (
-      this.options.toBlockchain === BLOCKCHAIN_NAME.STELLAR ||
-      this.options.toBlockchain === BLOCKCHAIN_NAME.RIPPLE
-    );
+    return this.options.toBlockchain === BLOCKCHAIN_NAME.STELLAR;
   }
 
   private async connectWallet(): Promise<void> {
@@ -127,9 +124,14 @@ export class TrustlineComponent implements OnInit {
   private async addTrustline(): Promise<void> {
     this.setLoadingState();
 
+    const expectedAccount = this.options.receiver || this.walletConnectorService.address;
+    const isReceiverAccount = Boolean(this.options.receiver);
+
     const hash = await this.trustlineService.addTrustline(
       this.options.trustlineToken.address,
-      this.options.toBlockchain as typeof BLOCKCHAIN_NAME.STELLAR | typeof BLOCKCHAIN_NAME.RIPPLE
+      this.options.toBlockchain as typeof BLOCKCHAIN_NAME.STELLAR | typeof BLOCKCHAIN_NAME.RIPPLE,
+      expectedAccount,
+      isReceiverAccount
     );
     if (hash) {
       this.onTrustlineAdd.emit();

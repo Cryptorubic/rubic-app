@@ -3,6 +3,10 @@
     <main class="modal__body">
       <p class="modal__title">Scan with Xaman to sign</p>
 
+      @if (data.warningText) {
+        <p class="modal__warning" [innerHTML]="data.warningText"></p>
+      }
+
       <img class="modal__qr" [src]="data.qrCodeUrl" alt="Xaman sign request QR code" />
 
       <a

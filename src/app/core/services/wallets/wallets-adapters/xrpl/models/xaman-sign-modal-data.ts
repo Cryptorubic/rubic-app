@@ -1,6 +1,10 @@
 export interface XamanSignModalData {
   qrCodeUrl: string;
   deepLink: string;
+  /**
+   * Highlighted instruction shown above the QR (e.g. which account must sign a trustline).
+   */
+  warningText?: string;
 }
 
 export interface XamanSignRequestRef {
