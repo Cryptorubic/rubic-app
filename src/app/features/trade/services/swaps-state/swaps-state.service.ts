@@ -12,6 +12,7 @@ import {
   switchMap
 } from 'rxjs/operators';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
@@ -194,7 +195,9 @@ export class SwapsStateService {
           warnings: []
         }
       : {
-          error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
+          error:
+            wrappedTrade?.error ||
+            this.setSpecificError(type, needTrustlineOptions, trade?.to.blockchain),
           trade,
           needApprove,
           needAuthWallet,
@@ -595,13 +598,15 @@ export class SwapsStateService {
 
   private setSpecificError(
     type: SWAP_PROVIDER_TYPE,
-    options: NeedTrustlineOptions
+    options: NeedTrustlineOptions,
+    toBlockchain: BlockchainName
   ): RubicSdkError | undefined {
     //@TODO remove after fix receiver connection on mobile
     if (
       type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
       this.headerStore.isMobile &&
-      (options.needTrustlineAfterSwap || options.needTrustlineBeforeSwap)
+      (options.needTrustlineAfterSwap || options.needTrustlineBeforeSwap) &&
+      toBlockchain === BLOCKCHAIN_NAME.STELLAR
     ) {
       return new RubicSdkError(
         'Trustline not detected. Please open your wallet and add the trustline to enable this swap.'
