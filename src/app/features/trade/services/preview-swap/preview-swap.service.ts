@@ -63,6 +63,7 @@ import {
   CHAIN_TYPE,
   CrossChainTradeType,
   EvmBlockchainName,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTradeType
 } from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -79,6 +80,9 @@ import {
   TransferTradeType
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
+import { HttpClient } from '@angular/common/http';
+import { SquidrouterStatusResponse } from './models/squidrouter-status-response';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 @Injectable()
 export class PreviewSwapService {
@@ -179,6 +183,7 @@ export class PreviewSwapService {
     private readonly ccrApiService: CrossChainApiService,
     private readonly spindlService: SpindlService,
     private readonly modalService: ModalService,
+    private readonly httpClient: HttpClient,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -424,6 +429,55 @@ export class PreviewSwapService {
     this.subscriptions$.push(pollingSubscription$);
   }
 
+  private initSquidrouterXrplStatusPolling(
+    txHash: string,
+    toBlockchain: BlockchainName,
+    quoteId: string
+  ): void {
+    const pollingSubscription$ = interval(5_000)
+      .pipe(
+        startWith(-1),
+        switchMap(() =>
+          this.httpClient
+            .get<SquidrouterStatusResponse>('https://apiplus.squidrouter.com/v2/status', {
+              headers: {
+                'x-integrator-id': 'rubic-api-coral-a719-bbfc'
+              },
+              params: {
+                fromChainId: 'xrpl-mainnet',
+                toChainId: 'xrpl-mainnet',
+                transactionId: txHash,
+                quoteId
+              }
+            })
+            .pipe(
+              catchError(() =>
+                of<SquidrouterStatusResponse>({
+                  status: 'awaiting',
+                  toChain: { transactionId: '' }
+                })
+              )
+            )
+        ),
+        tap(response => {
+          if (response.status === 'success') {
+            this.setNextTxState({
+              step: 'success',
+              data: {
+                hash: response.toChain.transactionId,
+                toBlockchain
+              }
+            });
+          } else if (response.status !== 'awaiting') {
+            this.setNextTxState({ step: 'error', data: this.transactionState.data });
+          }
+        }),
+        takeWhile(response => response.status === 'awaiting')
+      )
+      .subscribe();
+    this.subscriptions$.push(pollingSubscription$);
+  }
+
   private subscribeOnNetworkChange(): void {
     const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(
       network => this.checkNetwork(network)
@@ -633,14 +687,37 @@ export class PreviewSwapService {
                     }
 
                     this.initDstTxStatusPolling(txHash, tradeState.trade.to.blockchain);
-                  } else {
-                    this.setNextTxState({
-                      step: 'success',
-                      data: {
-                        hash: txHash,
-                        toBlockchain: tradeState.trade.to.blockchain
+                  } else if (tradeState.trade instanceof OnChainTrade) {
+                    const isXrplSquidrouterSwap =
+                      tradeState.trade.from.blockchain === BLOCKCHAIN_NAME.RIPPLE &&
+                      tradeState.trade.type === ON_CHAIN_TRADE_TYPE.SQUIDROUTER;
+
+                    if (isXrplSquidrouterSwap) {
+                      const quoteId =
+                        tradeState.trade.lastSwapResponse?.uniqueInfo?.squidrouterRequestId;
+
+                      if (!quoteId) {
+                        this.setNextTxState({ step: 'error', data: this.transactionState.data });
+                      } else {
+                        this.setNextTxState({
+                          step: 'sourcePending',
+                          data: { ...this.transactionState.data }
+                        });
+                        this.initSquidrouterXrplStatusPolling(
+                          txHash,
+                          tradeState.trade.to.blockchain,
+                          quoteId
+                        );
                       }
-                    });
+                    } else {
+                      this.setNextTxState({
+                        step: 'success',
+                        data: {
+                          hash: txHash,
+                          toBlockchain: tradeState.trade.to.blockchain
+                        }
+                      });
+                    }
                   }
                 }
 
