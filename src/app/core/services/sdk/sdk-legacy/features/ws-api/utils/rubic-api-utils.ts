@@ -6,6 +6,7 @@ import {
   CrossChainTradeType,
   nativeTokensList,
   PriceTokenAmount,
+  PriceTokenAmountStruct,
   QuoteRequestInterface,
   QuoteResponseInterface,
   TokenInerface
@@ -17,44 +18,39 @@ import { RubicStep } from '../../cross-chain/calculation-manager/providers/commo
 import { ApiCrossChainConstructor } from '../models/api-cross-chain-constructor';
 import { ApiOnChainConstructor } from '../models/api-on-chain-constructor';
 import { RubicApiParser } from './rubic-api-parser';
-import { Web3Pure } from '@cryptorubic/web3';
-import { TokenService } from '../../../token-service/token.service';
+import { RubicApiError, Web3Pure } from '@cryptorubic/web3';
 
 export class RubicApiUtils {
   public static getTradeParams(
     quote: QuoteRequestInterface,
     response: QuoteResponseInterface,
     providerType: string,
-    tokenService: TokenService
+    err?: RubicApiError
   ): Promise<ApiCrossChainConstructor<BlockchainName>> {
     const isFailedResponse = !response;
 
     return isFailedResponse
-      ? RubicApiUtils.getEmptyTradeParams(quote, providerType, tokenService)
+      ? RubicApiUtils.getEmptyTradeParams(quote, providerType, err)
       : RubicApiUtils.getFullTradeParams(quote, response);
   }
 
   private static async getEmptyTradeParams(
     quote: QuoteRequestInterface,
     providerType: string,
-    tokenService: TokenService
+    err?: RubicApiError
   ): Promise<ApiCrossChainConstructor<BlockchainName>> {
-    const [fromToken, toToken] = await Promise.all([
-      tokenService.createPriceTokenAmount(
-        {
-          address: quote.srcTokenAddress,
-          blockchain: quote.srcTokenBlockchain
-        },
-        new BigNumber(quote.srcTokenAmount)
-      ),
-      tokenService.createPriceTokenAmount(
-        {
-          address: quote.dstTokenAddress,
-          blockchain: quote.dstTokenBlockchain
-        },
-        new BigNumber(0)
-      )
-    ]);
+    const data = err?.data as { tokensData?: object };
+    const { fromTokenStruct, toTokenStruct } = data?.tokensData as {
+      fromTokenStruct: PriceTokenAmountStruct<BlockchainName>;
+      toTokenStruct: PriceTokenAmountStruct<BlockchainName>;
+    };
+    const { fromToken, toToken } = {
+      fromToken: new PriceTokenAmount({
+        ...fromTokenStruct,
+        price: new BigNumber(fromTokenStruct.price)
+      }),
+      toToken: new PriceTokenAmount({ ...toTokenStruct, price: new BigNumber(toTokenStruct.price) })
+    };
 
     const swapType = fromToken.blockchain === toToken.blockchain ? 'on-chain' : 'cross-chain';
     const routePath: RubicStep[] = [
