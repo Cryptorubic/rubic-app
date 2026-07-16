@@ -158,7 +158,7 @@
       },
       {
         "title": "Wie und wo erhalte ich Hilfestellung?",
-        "answer": "Wenn Du Hilfe benötigst, nutze gerne unser Ticketsystem oder wende Dich an unseren Telegram-Bot: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>\n\n Für sofortige Hilfe steht Dir rund um die Uhr unser Live Chat zur Verfügung.\n\nBei komplexen Problemstellungen und technischen Fragen kannst uns auch gerne eine E-Mail an <a href='mailto:support@rubic.finance'>support@rubic.finance</a>schicken. Wir helfen jederzeit gerne!"
+        "answer": "Wenn Du Hilfe benötigst, nutze gerne unser Ticketsystem oder wende Dich an unseren Telegram-Bot: <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>\n\n Für sofortige Hilfe steht Dir rund um die Uhr unser Live Chat zur Verfügung.\n\nBei komplexen Problemstellungen und technischen Fragen kannst uns auch gerne eine E-Mail an <a href='mailto:support@rubic.finance'>support@rubic.finance</a>schicken. Wir helfen jederzeit gerne!"
       },
       {
         "title": "Was ist das Rubic Relay Widget und wie kann ich es selbst integrieren?",
@@ -170,7 +170,7 @@
       },
       {
         "title": "Weshalb benötigen On-Chain-Transaktionen oftmals mehr Zeit und werden als “ausstehend” gekennzeichnet?",
-        "answer": "Es ist möglich, dass die initial genehmigte Gas-Gebühr nicht ausreicht, um die Transaktion abzuschließen. \n\nDu kannst die Transaktion beschleunigen, indem Du das Gas-Limit manuell erhöhst und damit bereit bist, höhere Gas-Gebühren zu tragen. Dies erfolgt direkt über Dein Wallet (und nicht über unsere Plattform).\n\nWenn Du Hilfe benötigst, nutze gerne unser Ticketsystem oder wende Dich an unseren Telegram-Bot <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
+        "answer": "Es ist möglich, dass die initial genehmigte Gas-Gebühr nicht ausreicht, um die Transaktion abzuschließen. \n\nDu kannst die Transaktion beschleunigen, indem Du das Gas-Limit manuell erhöhst und damit bereit bist, höhere Gas-Gebühren zu tragen. Dies erfolgt direkt über Dein Wallet (und nicht über unsere Plattform).\n\nWenn Du Hilfe benötigst, nutze gerne unser Ticketsystem oder wende Dich an unseren Telegram-Bot <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>"
       },
       {
         "title": "Warum erhalte ich die Meldung “Guthaben reicht nicht aus”?",
@@ -194,7 +194,7 @@
       },
       {
         "title": "Meine Multi-Chain-Transaktionen wird seit längerem mit “Ausstehend” gekennzeichnet. Was ist der Grund?",
-        "answer": "In der Regel liegt es daran, dass sich die Gas-Preise zwischenzeitlich stark erhöht haben. \nWenn die bisher Problemlösungen nicht helfen, erhältst Du Hilfestellung in unserem Live Chat oder über unseren Telegram Bot: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
+        "answer": "In der Regel liegt es daran, dass sich die Gas-Preise zwischenzeitlich stark erhöht haben. \nWenn die bisher Problemlösungen nicht helfen, erhältst Du Hilfestellung in unserem Live Chat oder über unseren Telegram Bot: <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>"
       },
       {
         "title": "Warum stehen nicht sämtliche Multi-Chain Swaps zur Verfügung?",

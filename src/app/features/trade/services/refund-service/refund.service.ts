@@ -52,7 +52,8 @@ export class RefundService {
     if (
       trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
       trade.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO
     ) {
       this.refundAddressCtrl.addValidators([Validators.required]);
       this._isValidRefundAddress$.next(false);

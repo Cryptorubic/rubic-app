@@ -108,6 +108,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this.houdiniSwapService.subscribeOnFormUpdate(this.receiverCtrl);
+    this.houdiniSwapService.resetCurrentTrade();
   }
 
   ngOnDestroy(): void {
