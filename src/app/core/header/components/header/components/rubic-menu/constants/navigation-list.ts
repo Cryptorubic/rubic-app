@@ -88,7 +88,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Telegram',
       type: 'external',
-      link: 'https://t.me/cryptorubic_chat'
+      link: 'https://telegram.me/cryptorubic_chat'
     },
     {
       translateKey: 'Dune',

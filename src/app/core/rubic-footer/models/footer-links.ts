@@ -17,7 +17,7 @@ export const FOOTER_LINKS: FooterLink[] = [
     dark: 'assets/images/contacts/telegram.svg',
     light: 'assets/images/contacts/telegram_light.svg',
     altText: 'Telegram',
-    link: 'https://t.me/cryptorubic_chat'
+    link: 'https://telegram.me/cryptorubic_chat'
   },
   {
     dark: 'assets/images/contacts/dune.svg',

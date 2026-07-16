@@ -89,7 +89,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: '#1682dc',
     image: `${imageBasePath}change-hero.svg`,
-    name: 'Change Hero'
+    name: 'ChangeHero'
   },
   changelly: {
     averageTime: 5,
