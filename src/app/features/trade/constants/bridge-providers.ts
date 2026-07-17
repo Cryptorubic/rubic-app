@@ -451,6 +451,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Xflows'
   },
   //XXXXXXXXXXXXXXXXXX
+  xgram: {
+    averageTime: 5,
+    color: '#FFFFFF',
+    image: `${imageBasePath}xgram.svg`,
+    name: 'Xgram'
+  },
   xy: {
     averageTime: 5,
     color: '#1687ee',
