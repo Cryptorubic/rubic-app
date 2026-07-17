@@ -21,7 +21,6 @@ import {
   EvmBasicTransactionOptions,
   FailedToCheckForTransactionReceiptError,
   parseError,
-  RubicSdkError,
   SuiAdapter
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
@@ -62,7 +61,7 @@ export abstract class SuiOnChainTrade extends OnChainTrade {
   };
 
   protected get spenderAddress(): string {
-    throw new RubicSdkError('No spender address!');
+    return '';
   }
 
   protected override get chainAdapter(): SuiAdapter {

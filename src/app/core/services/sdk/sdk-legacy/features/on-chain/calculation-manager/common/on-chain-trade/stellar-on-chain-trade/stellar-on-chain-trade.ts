@@ -16,8 +16,7 @@ import { OnChainTrade } from '../on-chain-trade';
 import {
   EvmBasicTransactionOptions,
   FailedToCheckForTransactionReceiptError,
-  parseError,
-  RubicSdkError
+  parseError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -60,7 +59,7 @@ export abstract class StellarOnChainTrade extends OnChainTrade {
   };
 
   protected get spenderAddress(): string {
-    throw new RubicSdkError('No spender address!');
+    return '';
   }
 
   protected override get chainAdapter(): StellarAdapter {

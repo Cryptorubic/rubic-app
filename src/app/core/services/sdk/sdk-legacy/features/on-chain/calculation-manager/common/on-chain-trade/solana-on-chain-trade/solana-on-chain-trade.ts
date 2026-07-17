@@ -20,7 +20,6 @@ import {
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
   parseError,
-  RubicSdkError,
   SolanaAdapter
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
@@ -61,7 +60,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
   };
 
   protected get spenderAddress(): string {
-    throw new RubicSdkError('No spender address!');
+    return '';
   }
 
   protected override get chainAdapter(): SolanaAdapter {
