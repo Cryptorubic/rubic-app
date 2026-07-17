@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProofInfo } from '@features/testnet-promo/interfaces/api-models';
 
 @Component({
+  standalone: false,
   selector: 'app-inactive-claim',
   templateUrl: './inactive-claim.component.html',
   styleUrls: ['./inactive-claim.component.scss'],

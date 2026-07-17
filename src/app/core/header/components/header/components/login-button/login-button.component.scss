@@ -4,11 +4,7 @@
   button {
     height: 40px !important;
 
-    ::ng-deep {
-      .t-wrapper {
-        padding: 0 16px !important;
-      }
-    }
+    padding: 0 16px !important;
   }
 }
 

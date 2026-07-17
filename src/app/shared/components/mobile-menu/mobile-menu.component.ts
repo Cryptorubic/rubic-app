@@ -7,6 +7,7 @@ import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
+  standalone: false,
   selector: 'app-mobile-menu',
   templateUrl: './mobile-menu.component.html',
   styleUrls: ['./mobile-menu.component.scss'],

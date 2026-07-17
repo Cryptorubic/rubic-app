@@ -14,6 +14,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { GasToken } from '@app/shared/models/tokens/gas-token';
 
 @Component({
+  standalone: false,
   selector: 'app-swap-data-element',
   templateUrl: './swap-data-element.component.html',
   styleUrls: ['./swap-data-element.component.scss'],

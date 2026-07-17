@@ -9,7 +9,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { PrivacyAuthService } from '../services/privacy-auth.service';
 import { firstValueFrom } from 'rxjs';
 
-export const privacyAuthGuard: CanActivateFn = async (
+export const privacyAuthGuard$: CanActivateFn = async (
   _route: ActivatedRouteSnapshot,
   _state: RouterStateSnapshot
 ) => {

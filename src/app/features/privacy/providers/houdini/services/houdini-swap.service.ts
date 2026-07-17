@@ -72,7 +72,7 @@ import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cro
 
 @Injectable()
 export class HoudiniSwapService {
-  private _currentReceiverFieldValidator: AsyncValidatorFn;
+  private _currentReceiverFieldValidator$: AsyncValidatorFn;
 
   private readonly _currentTradeData$ = new BehaviorSubject<DepositTradeData | null>(null);
 
@@ -187,7 +187,7 @@ export class HoudiniSwapService {
 
         if (failed) {
           //TODO: move it to api later
-          if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+          if ('minAmount' in failed.data?.data && 'tokenSymbol' in failed.data?.data) {
             const errorData = {
               minAmount: new BigNumber(failed.data.data?.minAmount as string),
               tokenSymbol: failed.data.data?.tokenSymbol as string
@@ -424,12 +424,12 @@ export class HoudiniSwapService {
 
         if (!swapInfo.toAsset?.blockchain) return;
 
-        if (this._currentReceiverFieldValidator) {
-          receiverCtrl.removeAsyncValidators(this._currentReceiverFieldValidator);
+        if (this._currentReceiverFieldValidator$) {
+          receiverCtrl.removeAsyncValidators(this._currentReceiverFieldValidator$);
         }
-        this._currentReceiverFieldValidator = isReceiverCorrect(swapInfo.toAsset.blockchain);
+        this._currentReceiverFieldValidator$ = isReceiverCorrect(swapInfo.toAsset.blockchain);
 
-        receiverCtrl.addAsyncValidators(this._currentReceiverFieldValidator);
+        receiverCtrl.addAsyncValidators(this._currentReceiverFieldValidator$);
         receiverCtrl.updateValueAndValidity();
       });
 

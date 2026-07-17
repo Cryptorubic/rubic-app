@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -6,11 +13,10 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { firstValueFrom, startWith, takeUntil, tap } from 'rxjs';
+import { firstValueFrom, startWith, tap } from 'rxjs';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { RailgunSupportedChain } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateStatisticsService } from '@features/privacy/providers/shared-privacy-providers/services/private-statistics/private-statistics.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PrivateActionButtonService } from '@features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
@@ -18,8 +24,10 @@ import { RailgunPrivateActionButtonService } from '@features/privacy/providers/r
 import { RevealWindowService } from '@features/privacy/providers/shared-privacy-providers/services/reveal-window/reveal-window.service';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 import { getScannerUrl } from '../../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'app-railgun-reveal-page',
   templateUrl: './railgun-reveal-page.component.html',
   styleUrls: ['./railgun-reveal-page.component.scss'],
@@ -28,7 +36,6 @@ import { getScannerUrl } from '../../../privacycash/services/common/token-facade
     RailgunPrivateAssetsService,
     { provide: ToAssetsService, useExisting: RailgunPrivateAssetsService },
     { provide: TokensFacadeService, useClass: RailgunRevealFacadeService },
-    TuiDestroyService,
     RailgunPrivateActionButtonService,
     { provide: PrivateActionButtonService, useExisting: RailgunPrivateActionButtonService }
   ]
@@ -58,8 +65,6 @@ export class RailgunRevealPageComponent implements OnInit {
 
   private readonly authService = inject(AuthService);
 
-  private readonly destroy$ = inject(TuiDestroyService);
-
   private readonly windowService = inject(RevealWindowService);
 
   private readonly actionButtonService = inject(PrivateActionButtonService);
@@ -71,11 +76,11 @@ export class RailgunRevealPageComponent implements OnInit {
         tap(address => {
           this.actionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
     this.railgunFacade.completedChains$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(chains => this.toAssetsService.setBlockchainList(chains));
   }
 
@@ -130,4 +135,6 @@ export class RailgunRevealPageComponent implements OnInit {
       loadingCallback();
     }
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

@@ -6,7 +6,7 @@
     width: 100%;
     padding: 16px 16px 23px 23px;
 
-    background-color: var(--tui-base-02);
+    background-color: var(--tui-background-base-alt);
     border-radius: var(--tui-radius-s);
 
     user-select: none;
@@ -27,7 +27,7 @@
       }
 
       .type {
-        color: var(--tui-text-02);
+        color: var(--tui-text-secondary);
         font-size: 12px;
       }
     }

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Self } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  DestroyRef,
+  inject
+} from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { HoudiniPrivateAssetsService } from '@app/features/privacy/providers/houdini/services/houdini-private-assets.service';
 import { HoudiniSwapService } from '@app/features/privacy/providers/houdini/services/houdini-swap.service';
@@ -18,7 +26,6 @@ import {
   lastValueFrom,
   retry,
   startWith,
-  takeUntil,
   tap,
   throwError,
   timer
@@ -26,7 +33,6 @@ import {
 import { HoudiniErrorService } from '../../services/houdini-error.service';
 import { HoudiniPrivateActionButtonService } from '../../services/houdini-private-action-button.service';
 import { PrivateActionButtonService } from '../../../shared-privacy-providers/services/private-action-button/private-action-button.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { houdiniFormConfig } from '../../constants/form-config';
 import { FormControl } from '@angular/forms';
@@ -41,12 +47,12 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { donePrivateStep } from '@features/privacy/providers/shared-privacy-providers/components/private-preview-swap/constants/done-private-step';
 
 @Component({
+  standalone: false,
   selector: 'app-houdini-main-page',
   templateUrl: './houdini-main-page.component.html',
   styleUrls: ['./houdini-main-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    TuiDestroyService,
     { provide: FromAssetsService, useClass: HoudiniPrivateAssetsService },
     { provide: ToAssetsService, useClass: HoudiniPrivateAssetsService },
     { provide: TokensFacadeService, useClass: HoudiniTokensFacadeService },
@@ -81,8 +87,7 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
     private readonly privateQueryParamsService: PrivateQueryParamsService,
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly authService: AuthService,
-    private readonly errorService: ErrorsService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly errorService: ErrorsService
   ) {
     this.privatePageTypeService.activePage = {
       type: 'swap',
@@ -98,11 +103,12 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         tap(address => {
           this.privateActionButtonService.setReceiverAddress(address);
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
     this.houdiniSwapService.subscribeOnFormUpdate(this.receiverCtrl);
+    this.houdiniSwapService.resetCurrentTrade();
   }
 
   ngOnDestroy(): void {
@@ -176,4 +182,6 @@ export class HoudiniMainPageComponent implements OnInit, OnDestroy {
         this.privateQueryParamsService.parseMainSwapInfoAndQueryParams(List(supportedTokens));
       });
   }
+
+  readonly destroyRef = inject(DestroyRef);
 }

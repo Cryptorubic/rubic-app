@@ -1,11 +1,12 @@
+import { WA_NAVIGATOR } from '@ng-web-apis/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
 import { SwapErrorResponseInterface } from '@cryptorubic/web3';
 
 @Component({
+  standalone: false,
   selector: 'app-simulation-failed-error',
   templateUrl: './simulation-failed-error.component.html',
   styleUrls: ['./simulation-failed-error.component.scss'],
@@ -20,7 +21,7 @@ export class SimulationFailedErrorComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     context: TuiDialogContext<void, { apiError: SwapErrorResponseInterface }>,
     private readonly cdr: ChangeDetectorRef,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(WA_NAVIGATOR) private readonly navigator: Navigator
   ) {
     this.apiError = context.data.apiError;
   }

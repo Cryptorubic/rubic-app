@@ -1,7 +1,8 @@
+import { TuiStatus } from '@taiga-ui/legacy';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TuiStatus } from '@taiga-ui/kit';
 
 @Component({
+  standalone: false,
   selector: 'app-rubic-badge',
   templateUrl: './rubic-badge.component.html',
   styleUrls: ['./rubic-badge.component.scss'],

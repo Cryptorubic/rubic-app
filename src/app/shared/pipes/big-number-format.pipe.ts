@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { formatBigNumber } from '@shared/utils/format-big-number';
 
-@Pipe({ name: 'bigNumberFormat' })
+@Pipe({
+  standalone: false,
+  name: 'bigNumberFormat'
+})
 export class BigNumberFormatPipe implements PipeTransform {
   /**
    * Converts number to {@link BIG_NUMBER_FORMAT}.

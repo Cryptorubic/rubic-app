@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
+  standalone: false,
   selector: 'app-switch-list-type-button',
   templateUrl: './switch-tokens-list-type-button.component.html',
   styleUrls: ['./switch-tokens-list-type-button.component.scss'],

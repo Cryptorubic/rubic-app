@@ -1,15 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
   inject,
   Injector,
   Input,
   Output,
-  Self
+  OnInit
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject, filter, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -21,17 +22,17 @@ import { receiverAnimation } from '../../animations/receiver-animation';
 import { RevealWindowService } from '../../services/reveal-window/reveal-window.service';
 import { PrivateUnshieldFormConfig } from '@features/privacy/providers/shared-privacy-providers/models/swap-form-types';
 import { getCorrectAddressValidator } from '@app/features/trade/components/target-network-address/utils/get-correct-address-validator';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'app-reveal-window',
   templateUrl: './reveal-window.component.html',
   styleUrls: ['./reveal-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [receiverAnimation()],
-  providers: [TuiDestroyService]
+  animations: [receiverAnimation()]
 })
-export class RevealWindowComponent {
+export class RevealWindowComponent implements OnInit {
   @Input() receiverCtrl: FormControl<string>;
 
   @Input() creationConfig: PrivateUnshieldFormConfig = {
@@ -68,11 +69,11 @@ export class RevealWindowComponent {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.revealWindowService.revealAsset$
-      .pipe(filter(Boolean), takeUntil(this.destroy$))
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
       .subscribe(token => {
         this.receiverCtrl.clearAsyncValidators();
         this.receiverCtrl.setAsyncValidators(

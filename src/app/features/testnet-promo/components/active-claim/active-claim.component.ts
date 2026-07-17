@@ -4,6 +4,7 @@ import { TestnetPromoClaimService } from '@features/testnet-promo/services/testn
 import { Token } from '@cryptorubic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-active-claim',
   templateUrl: './active-claim.component.html',
   styleUrls: ['./active-claim.component.scss'],

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 
 @Component({
+  standalone: false,
   selector: 'app-provider-element',
   templateUrl: './provider-element.component.html',
   styleUrls: ['./provider-element.component.scss'],
