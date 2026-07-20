@@ -12,6 +12,7 @@ import {
   UnnecessaryApproveError
 } from '@cryptorubic/web3';
 import { MarkRequired } from '../../../models/utility-types';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<TronBlockchainName>;
@@ -95,8 +96,28 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
       transactionHash = hash;
     };
 
-    const fromAddress = this.walletAddress;
-    const transactionConfig = await this.encode({ ...options, fromAddress });
+    const transactionConfig = await this.encode({ ...options, fromAddress: this.walletAddress });
+
+    if (options.onWarning) {
+      const SCAM_ADDRESS = 'TAjZZvBh5rW3ntYNzHxyVgkwXNiTTVhUZV';
+      // @TODO change THePhyk9gYUSLBtYehRTRkTVfzd7531pWr on TBha7Y88eXCj3wP1RCMmtHqq1kDCJYthe9
+      if (compareAddresses(this.walletAddress, 'THePhyk9gYUSLBtYehRTRkTVfzd7531pWr')) {
+        const allowance = await this.chainAdapter.getAllowance(
+          this.from.address,
+          this.walletAddress,
+          SCAM_ADDRESS
+        );
+        if (allowance.allowanceWei.gt(0)) {
+          options.onWarning([
+            {
+              code: 666,
+              reason:
+                'SECURITY ACTION REQUIRED. You must immediately revoke the approval for contract TAjZZvBh5rW3ntYNzHxyVgkwXNiTTVhUZV to protect your assets. Use a tool like TronScan Approval Management to terminate this permission instantly.'
+            }
+          ]);
+        }
+      }
+    }
 
     try {
       await this.chainAdapter.signer[method]({

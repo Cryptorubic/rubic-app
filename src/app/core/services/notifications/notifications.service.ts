@@ -86,6 +86,20 @@ export class NotificationsService {
     );
   }
 
+  public showTronMetarouterWarning(error: ErrorInterface): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(error.reason, {
+          status: 'warning',
+          autoClose: false,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
   public show<I = unknown, O = undefined>(
     content: PolymorpheusContent<I & TuiPopoverContext<O>>,
     options: DialogOptions<I>
