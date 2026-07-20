@@ -75,6 +75,7 @@
     "@maskito/core": "^3.11.1",
     "@maskito/kit": "^3.11.1",
     "@maskito/phone": "^3.11.1",
+    "@metamask/connect-evm": "^2.1.0",
     "@ng-web-apis/common": "^4.14.0",
     "@ng-web-apis/intersection-observer": "^4.14.0",
     "@ng-web-apis/mutation-observer": "^4.14.0",
