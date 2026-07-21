@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone, Inject } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE, TokenAmount } from '@cryptorubic/core';
 import {
@@ -23,6 +23,9 @@ import { toRippleWalletCore } from '@app/core/services/wallets/wallets-adapters/
 import { XamanSignService } from '@app/core/services/wallets/wallets-adapters/xrpl/services/xaman-sign.service';
 import { SdkLoaderService } from '@app/core/services/sdk/sdk-loader.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { authorizeXamanWallet } from '@app/core/services/wallets/wallets-adapters/xrpl/utils/authorize-xaman-wallet';
+import { WA_WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +44,9 @@ export class TrustlineService {
     private readonly errorService: ErrorsService,
     private readonly xamanSignService: XamanSignService,
     private readonly sdkLoaderService: SdkLoaderService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly zone: NgZone,
+    @Inject(WA_WINDOW) private readonly window: RubicWindow
   ) {}
 
   public async connectReceiverWallet(
@@ -72,11 +77,7 @@ export class TrustlineService {
     const xumm = await XamanInstance.waitUntilReady();
 
     if (!xumm.state.signedIn) {
-      const authorizeResult = await xumm.authorize();
-
-      if (authorizeResult instanceof Error) {
-        throw authorizeResult;
-      }
+      await authorizeXamanWallet(xumm, this.window, this.zone);
 
       const networkType = await xumm.user.networkType;
 

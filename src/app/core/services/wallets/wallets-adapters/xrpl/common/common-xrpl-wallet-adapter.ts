@@ -10,6 +10,7 @@ import { SignRejectError } from '@app/core/errors/models/provider/sign-reject-er
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { UniversalSdkEvent } from 'xumm';
+import { authorizeXamanWallet } from '../utils/authorize-xaman-wallet';
 
 const XRPL_MAINNET_NETWORK_TYPE = 'MAINNET';
 
@@ -34,11 +35,7 @@ export abstract class CommonXrplWalletAdapter extends CommonWalletAdapter<XamanW
       this.subscribeToLogout(xumm);
 
       if (!xumm.state.signedIn) {
-        const authorizeResult = await xumm.authorize();
-
-        if (authorizeResult instanceof Error) {
-          throw this.mapAuthorizeError(authorizeResult);
-        }
+        await this.authorizeWallet(xumm);
       }
 
       const networkType = await xumm.user.networkType;
@@ -99,6 +96,19 @@ export abstract class CommonXrplWalletAdapter extends CommonWalletAdapter<XamanW
     };
 
     xumm.on('logout', this.logoutListener);
+  }
+
+  /**
+   * On mobile, Xaman opens as a deeplink while the origin browser tab keeps its WebSocket session.
+   * We listen for SDK events and tab visibility so authorization can finish in the same tab once the
+   * user switches back from Xaman, without relying on a return URL that opens a new browser window.
+   */
+  private async authorizeWallet(xumm: XamanWallet): Promise<void> {
+    try {
+      await authorizeXamanWallet(xumm, this.window, this.zone);
+    } catch (err) {
+      throw this.mapAuthorizeError(err);
+    }
   }
 
   private mapAuthorizeError(err: unknown): SignRejectError | RubicError<ERROR_TYPE.TEXT> {

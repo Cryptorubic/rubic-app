@@ -2,6 +2,10 @@ export interface XamanSignModalData {
   qrCodeUrl: string;
   deepLink: string;
   /**
+   * When true, the user is on the same device as Xaman (mobile deeplink flow).
+   */
+  isMobile: boolean;
+  /**
    * Highlighted instruction shown above the QR (e.g. which account must sign a trustline).
    */
   warningText?: string;

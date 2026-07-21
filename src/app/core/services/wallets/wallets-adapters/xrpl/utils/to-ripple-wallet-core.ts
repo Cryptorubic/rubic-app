@@ -2,6 +2,7 @@ import { Xumm } from 'xumm';
 import { RippleWallet } from '@cryptorubic/web3';
 import { XamanSignService } from '../services/xaman-sign.service';
 import { WrongWalletSelectedError } from '@app/core/errors/models/provider/wrong-wallet-selected-error';
+import { isXamanMobileDevice } from './is-xaman-mobile-device';
 
 /**
  * Minimal shape of the xumm-sdk `createAndSubscribe` result that this adapter relies on.
@@ -58,6 +59,37 @@ function buildTrustlineSignInstruction(options: XamanManualSubmissionOptions): {
 }
 
 /**
+ * On mobile we deliberately omit `return_url` so Xaman delivers the result over WebSocket to the
+ * origin browser tab instead of opening a new browser window after signing.
+ *
+ * @see https://docs.xaman.dev/js-ts-sdk/examples-user-stories/sign-requests-payloads/browser
+ */
+function buildPayloadRequest(
+  txjson: Parameters<RippleWallet['payload']['createAndSubscribe']>[0],
+  manualSubmission: XamanManualSubmissionOptions | undefined,
+  isMobile: boolean
+): Parameters<RippleWallet['payload']['createAndSubscribe']>[0] {
+  if (manualSubmission) {
+    return {
+      txjson,
+      options: {
+        submit: false,
+        force_network: 'MAINNET'
+      },
+      custom_meta: {
+        instruction: buildTrustlineSignInstruction(manualSubmission).walletInstruction
+      }
+    } as Parameters<RippleWallet['payload']['createAndSubscribe']>[0];
+  }
+
+  if (isMobile) {
+    return { txjson } as Parameters<RippleWallet['payload']['createAndSubscribe']>[0];
+  }
+
+  return txjson;
+}
+
+/**
  * The universal Xumm SDK exposes `payload`/`user` through an internal Proxy that only forwards a
  * method call when `obj.constructor.name === 'Promise'`. Under Angular, zone.js replaces the global
  * Promise with `ZoneAwarePromise` (its `Symbol.toStringTag` is `'Promise'`, but `constructor.name`
@@ -100,18 +132,10 @@ export function toRippleWalletCore(
           };
         };
 
-        const payloadRequest = manualSubmission
-          ? {
-              txjson,
-              options: {
-                submit: false,
-                force_network: 'MAINNET'
-              },
-              custom_meta: {
-                instruction: buildTrustlineSignInstruction(manualSubmission).walletInstruction
-              }
-            }
-          : txjson;
+        const isMobile = isXamanMobileDevice(
+          typeof navigator !== 'undefined' ? navigator.userAgent : ''
+        );
+        const payloadRequest = buildPayloadRequest(txjson, manualSubmission, isMobile);
 
         const subscription = (await payload.createAndSubscribe(
           payloadRequest as Parameters<typeof payload.createAndSubscribe>[0],
@@ -121,6 +145,7 @@ export function toRippleWalletCore(
         const modalRef = signService.openSignRequest({
           qrCodeUrl: subscription.created.refs.qr_png,
           deepLink: subscription.created.next.always,
+          isMobile,
           warningText: manualSubmission?.isReceiverAccount
             ? buildTrustlineSignInstruction(manualSubmission).modalWarning
             : undefined
