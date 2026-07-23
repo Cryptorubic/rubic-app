@@ -11,7 +11,8 @@ export const transferTradeSupportedProviders = [
   CROSS_CHAIN_TRADE_TYPE.STEALTHEX,
   CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
   CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
-  CROSS_CHAIN_TRADE_TYPE.BALTEX
+  CROSS_CHAIN_TRADE_TYPE.BALTEX,
+  CROSS_CHAIN_TRADE_TYPE.XGRAM
 ] as const;
 
 export type TransferTradeType = (typeof transferTradeSupportedProviders)[number];
