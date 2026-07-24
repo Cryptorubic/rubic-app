@@ -306,3 +306,11 @@ app-form-switcher {
     }
   }
 }
+
+app-target-network-address {
+  ::ng-deep {
+    tui-input {
+      border-radius: var(--tui-radius-m) !important;
+    }
+  }
+}

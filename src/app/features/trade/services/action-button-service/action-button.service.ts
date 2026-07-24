@@ -7,8 +7,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
-import { BlockchainsInfo } from '@cryptorubic/core';
-import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { isDepositTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/is-deposit-trade';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
@@ -97,9 +96,7 @@ export class ActionButtonService {
         };
       }
     }
-    const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+    const isDeposit = isDepositTrade(currentTrade.trade);
 
     if (currentTrade.error) {
       return {
@@ -109,14 +106,14 @@ export class ActionButtonService {
       };
     }
 
-    if (!address && !isTransferFromNonEvm) {
+    if (!address && !isDeposit) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
       };
     }
-    if (notEnoughBalance && !isTransferFromNonEvm) {
+    if (notEnoughBalance && !isDeposit) {
       return {
         type: 'error',
         text: 'Insufficient balance',
@@ -129,12 +126,11 @@ export class ActionButtonService {
       currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
       (currentTrade.trade && wrongBlockchain)
     ) {
-      // Handle Non EVM trade
       if (isAddressRequired) {
         const trulyAddress = Boolean(receiverAddress);
 
         if (isReceiverValid && trulyAddress) {
-          if (isTransferFromNonEvm) {
+          if (isDeposit) {
             return {
               type: 'action',
               text: 'Preview swap',
@@ -158,6 +154,13 @@ export class ActionButtonService {
             type: 'error',
             text: 'Enter correct receiver address',
             action: () => {}
+          };
+        }
+        if (isDeposit) {
+          return {
+            type: 'action',
+            text: 'Preview swap',
+            action: this.deposit.bind(this)
           };
         }
         return {

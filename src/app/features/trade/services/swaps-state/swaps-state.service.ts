@@ -360,6 +360,13 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return currentTrades.sort((a, b) => {
+      if (a.trade?.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+        return -1;
+      }
+      if (b.trade?.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+        return 1;
+      }
+
       let aValue: BigNumber;
       let bValue: BigNumber;
 
