@@ -46,7 +46,7 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
 
   protected readonly apiResponse: QuoteResponseInterface;
 
-  private readonly transferRubicApiService: RubicApiService;
+  protected readonly transferRubicApiService: RubicApiService;
 
   constructor(
     from: PriceTokenAmount,
