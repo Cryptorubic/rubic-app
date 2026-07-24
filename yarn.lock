@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.6.tgz#5cc08b013ce556a7f3dd792e924d5d711fadbc51"
-  integrity sha512-6I+UysXgdXOrbOpfIwh4iDarGhKmfa79QjI6gtCLLaDxD++zozN4p6EiRMrva69Tj4bKlTAjPzXIXWB5WWmn2A==
+"@cryptorubic/core@1.7.0-alpha.clearswap.4":
+  version "1.7.0-alpha.clearswap.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.0-alpha.clearswap.4.tgz#bff055506da509572e80718ef7715223d89893f3"
+  integrity sha512-YHjvoaEbKxbyy55yGzTf+K4KYHwkIBG6iqLneFXLJ6/9hrzzrrgivlXvW5OA5F7v2jELO4glvM5K34v0L2bv4g==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.6.tgz#7d5d19ed62328ef092a91414b7b86a0c848e9043"
-  integrity sha512-kjifV9+SS2rUtYmm/9FjK/gUfrSqAiT4sLjtYTEWYcSVVTA+lheuwmWfopTJN6BFJmAznbAhVG+pnm2Em8ge2w==
+"@cryptorubic/web3@1.7.0-alpha.clearswap.4":
+  version "1.7.0-alpha.clearswap.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.0-alpha.clearswap.4.tgz#2ab3f4b554d0b8ed530dbb6301d104939df88ba5"
+  integrity sha512-rPdbgmY44hn/QXZuyyV95G2yR2GODiygZfAKlzY58y8Qu30fDAYWuy0khiju+X1teyJZj1uDCH6LSN/FOMzYeA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -21123,9 +21123,9 @@ prismjs@^1.30.0:
   integrity sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==
 
 privacycash@^1.1.15:
-  version "1.1.23"
-  resolved "https://registry.yarnpkg.com/privacycash/-/privacycash-1.1.23.tgz#20d994caa677b5619fcdf97efa1ff251732dbf58"
-  integrity sha512-S9+hfcmbxf2IzFTw6eG8s9KWidDvO2nefdPWGrNcwJNocna9wfHy8xOtHQn/s50sjXkbXOAa1fZ+KilwWBVk6Q==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/privacycash/-/privacycash-1.2.2.tgz#c6df25bb04b780bd2e93a4c043336716a9c0f1a5"
+  integrity sha512-LxEE8x++DzeqQ8fzghpJYgxvaaYaLYvfgMEz+z4J2f+8yHAV60M0mhlgE7ygX9eQaxBOZqnaKDFq+yIWYfetBQ==
   dependencies:
     "@coral-xyz/anchor" "^0.31.1"
     "@ethersproject/keccak256" "^5.8.0"

@@ -5,7 +5,7 @@ import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
-import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
+import { DepositTrade } from '@app/features/trade/models/deposit-trade';
 import { StoreService } from '@core/services/store/store.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -27,11 +27,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
 
 @Injectable()
-export class DepositTableService extends TableService<
-  'date',
-  CrossChainTransferTrade,
-  DepositTableData
-> {
+export class DepositTableService extends TableService<'date', DepositTrade, DepositTableData> {
   public readonly statusFilter = new FormControl<string>('All');
 
   private readonly _tableUpdate$ = new BehaviorSubject<void>(null);
@@ -148,7 +144,7 @@ export class DepositTableService extends TableService<
     );
   }
 
-  protected transformResponse(_response: CrossChainTransferTrade): {
+  protected transformResponse(_response: DepositTrade): {
     data: DepositTableData[];
     total: number;
   } {
@@ -158,7 +154,7 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
+  public getDepositStatus(trade: DepositTrade): Observable<CrossChainDepositStatus> {
     if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
 
     try {

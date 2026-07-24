@@ -24,9 +24,13 @@ import { TronApiCrossChainTrade } from './chains/tron/tron-api-cross-chain-trade
 import { TronApiOnChainTrade } from './chains/tron/tron-api-on-chain-trade';
 
 import {
-  transferTradeSupportedProviders,
-  TransferTradeType
+  crossChainTransferTradeSupportedProviders,
+  CrossChainTransferTradeType
 } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import {
+  onChainTransferTradeSupportedProviders,
+  OnChainTransferTradeType
+} from '../on-chain/calculation-manager/common/on-chain-transfer-trade/constants/on-chain-transfer-trade-supported-providers';
 import { BitcoinApiCrossChainConstructor } from './chains/bitcoin/bitcoin-api-cross-chain-constructor';
 import { BitcoinApiCrossChainTrade } from './chains/bitcoin/bitcoin-api-cross-chain-trade';
 import { EvmApiCrossChainConstructor } from './chains/evm/evm-api-cross-chain-constructor';
@@ -36,6 +40,7 @@ import { SolanaApiOnChainConstructor } from './chains/solana/solana-api-on-chain
 import { TonApiCrossChainConstructor } from './chains/ton/ton-api-cross-chain-constructor';
 import { TonApiOnChainConstructor } from './chains/ton/ton-api-on-chain-constructor';
 import { ApiCrossChainTransferTrade } from './chains/transfer-trade/api-cross-chain-transfer-trade';
+import { ApiOnChainTransferTrade } from './chains/transfer-trade/api-on-chain-transfer-trade';
 import { TronApiCrossChainConstructor } from './chains/tron/tron-api-cross-chain-constructor';
 import { TronApiOnChainConstructor } from './chains/tron/tron-api-on-chain-constructor';
 import { RubicApiError } from './models/rubic-api-error';
@@ -83,8 +88,9 @@ export class TransformUtils {
     let trade: CrossChainTrade | null = null;
 
     const isTransferTrade =
-      transferTradeSupportedProviders.includes(tradeType as TransferTradeType) &&
-      chainType !== CHAIN_TYPE.EVM;
+      crossChainTransferTradeSupportedProviders.includes(
+        tradeType as CrossChainTransferTradeType
+      ) && chainType !== CHAIN_TYPE.EVM;
 
     const needProvidePubKey =
       BITCOIN_PK_REQUIRED_PROVIDERS.includes(tradeType as BtcTradeTypeRequiringPK) &&
@@ -191,7 +197,13 @@ export class TransformUtils {
 
     let trade: OnChainTrade | null = null;
 
-    if (chainType === CHAIN_TYPE.EVM) {
+    const isTransferTrade = onChainTransferTradeSupportedProviders.includes(
+      tradeType as OnChainTransferTradeType
+    );
+
+    if (isTransferTrade) {
+      trade = new ApiOnChainTransferTrade(tradeParams, sdkLegacyService, rubicApiService);
+    } else if (chainType === CHAIN_TYPE.EVM) {
       trade = new EvmApiOnChainTrade(
         tradeParams as EvmApiOnChainConstructor,
         sdkLegacyService,

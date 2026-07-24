@@ -75,8 +75,8 @@ import { UserRejectError } from '@app/core/errors/models/provider/user-reject-er
 import { SwapRetryModalInput } from '../../components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { checkAmountChange } from '../../utils/check-amount-change';
 import {
-  transferTradeSupportedProviders,
-  TransferTradeType
+  crossChainTransferTradeSupportedProviders,
+  CrossChainTransferTradeType
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
 
@@ -453,7 +453,9 @@ export class PreviewSwapService {
     const isFromEvm = fromChainType === CHAIN_TYPE.EVM;
     const shouldShowHint =
       trade?.tradeType &&
-      transferTradeSupportedProviders.indexOf(trade?.tradeType as TransferTradeType) > -1 &&
+      crossChainTransferTradeSupportedProviders.indexOf(
+        trade?.tradeType as CrossChainTransferTradeType
+      ) > -1 &&
       isFromEvm;
     if (!shouldShowHint) return;
 

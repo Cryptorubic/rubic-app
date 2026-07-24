@@ -13,7 +13,7 @@ import { SwapTransactionOptions } from '../../../../../common/models/swap-transa
 import { CrossChainTrade } from '../cross-chain-trade';
 import { GasData } from './models/gas-data';
 
-import { transferTradeSupportedProviders } from '../cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { crossChainTransferTradeSupportedProviders } from '../cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import {
   EvmAdapter,
   EvmBasicTransactionOptions,
@@ -83,7 +83,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
       return false;
     }
 
-    const isTransferTrade = transferTradeSupportedProviders.some(
+    const isTransferTrade = crossChainTransferTradeSupportedProviders.some(
       transferTradeType => transferTradeType === this.type
     );
 

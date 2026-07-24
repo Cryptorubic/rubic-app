@@ -9,9 +9,12 @@
     isValidRefundAddress: isValidRefundAddress$ | async,
     spesificStatusText: specificProviderStatusText$ | async,
     isRefundAddressRequired: isRefundAddressRequired$ | async,
+    isReceiverAddressRequired: isReceiverAddressRequired$ | async,
+    canShowDepositAddress: canShowDepositAddress$ | async,
     isToAmountCalculated: isToAmountCalculated$ | async,
     needTrustline: needTrustline$ | async,
-    trustlineInfo: trustlineInfo$ | async
+    trustlineInfo: trustlineInfo$ | async,
+    receiverAddressLabel: receiverAddressLabel$ | async
   } as state"
 >
   <ng-container header>
@@ -57,6 +60,12 @@
       </div>
     </div>
 
+    <div class="required-step" *ngIf="state.isReceiverAddressRequired">
+      <app-target-network-address
+        [addressCtrl]="receiverAddressCtrl"
+        [placeholderText]="state.receiverAddressLabel"
+      ></app-target-network-address>
+    </div>
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
@@ -67,7 +76,7 @@
       ></app-trustline>
     </div>
     <div
-      *ngIf="state.isValidRefundAddress && !state.needTrustline"
+      *ngIf="state.canShowDepositAddress"
       @showDepositAddressAnimation
       class="target-address"
       [ngClass]="{ 'target-address__disabled': state.status === 'expired' }"
@@ -92,19 +101,17 @@
 
     <div
       class="status-wrapper"
-      [class.status-wrapper__inactive]="!state.isValidRefundAddress || state.needTrustline"
+      [class.status-wrapper__inactive]="!state.canShowDepositAddress"
     >
       <div class="row row-status">
         <div class="row-item status-item">
           <div
             class="status-item__circle"
-            *ngIf="
-              (state.status === 'waiting' && !state.isValidRefundAddress) || state.needTrustline
-            "
+            *ngIf="(state.status === 'waiting' && !state.canShowDepositAddress) || state.needTrustline"
           ></div>
           <div
             class="status-item__spinner"
-            *ngIf="state.status === 'waiting' && state.isValidRefundAddress && !state.needTrustline"
+            *ngIf="state.status === 'waiting' && state.canShowDepositAddress"
           ></div>
           <div
             class="status-item__circle_complete"
@@ -124,9 +131,9 @@
             class="row-item__value status-item__value"
             [ngClass]="{
               'status-item__value_completed':
-                state.status !== 'expired' && state.isValidRefundAddress && !state.needTrustline,
+                state.status !== 'expired' && state.canShowDepositAddress,
               'status-item__value_failed':
-                state.status === 'expired' && state.isValidRefundAddress && !state.needTrustline
+                state.status === 'expired' && state.canShowDepositAddress
             }"
           >
             {{ state.status === 'expired' ? 'Expired' : 'Awaiting deposit' }}

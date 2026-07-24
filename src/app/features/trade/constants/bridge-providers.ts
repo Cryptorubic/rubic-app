@@ -103,6 +103,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}changenow.png`,
     name: 'ChangeNOW'
   },
+  clearswap_bridge: {
+    averageTime: 5,
+    color: '#8e28fe',
+    image: `${imageBasePath}clearswap.svg`,
+    name: 'Clearswap'
+  },
   connext: {
     averageTime: 5,
     color: '#8e28fe',
