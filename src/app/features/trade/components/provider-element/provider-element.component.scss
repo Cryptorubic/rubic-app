@@ -13,7 +13,7 @@
   }
 
   &_clearswap {
-    background: linear-gradient(192.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
+    background: linear-gradient(102.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
 
     .element__provider-container_selected {
       background: transparent;
@@ -145,6 +145,33 @@
 
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
     cursor: pointer;
+  }
+
+  &__private-badge {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    height: 24px;
+    padding: 0 7px;
+
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, #2c2969 0%, #1b1a2e 50%, #2c2969 100%);
+    border: 1px solid #615eaa;
+    border-radius: 4px;
+  }
+
+  &__private-badge-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__private-badge-text {
+    color: #bbb7ff;
   }
 
   ::ng-deep &__expander {

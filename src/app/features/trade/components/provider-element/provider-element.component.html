@@ -58,6 +58,16 @@
                 [tuiHint]="'The most profitable trade according to our calculations'"
                 [tuiHintHideDelay]="hideHint ? 0 : 200"
               ></tui-tag>
+              <span *ngIf="isClearswap" class="element__private-badge">
+                <img
+                  class="element__private-badge-icon"
+                  src="assets/images/icons/private-lock.svg"
+                  alt=""
+                  width="16"
+                  height="16"
+                />
+                <span class="element__private-badge-text">PRIVATE</span>
+              </span>
               <app-promotion-badge
                 *ngFor="let badge of tradeState.badges"
                 [data]="badge"
