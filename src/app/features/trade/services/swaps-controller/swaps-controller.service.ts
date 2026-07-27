@@ -485,7 +485,7 @@ export class SwapsControllerService {
   }
 
   private checkIsNotLinkedAccount(
-    trade: CrossChainTrade | OnChainTrade,
+    trade: CrossChainTrade | OnChainTrade | null,
     error: RubicSdkError | undefined
   ): Observable<boolean> {
     if (error && error instanceof NoLinkedAccountError) {
@@ -614,12 +614,14 @@ export class SwapsControllerService {
           const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade && this.swapFormService.isFilled) {
-            const isEqualFromAmount = this.checkIsEqualFromAmount(
-              wrappedTrade.trade.from.tokenAmount
-            );
+            if (wrappedTrade.trade) {
+              const isEqualFromAmount = this.checkIsEqualFromAmount(
+                wrappedTrade.trade.from.tokenAmount
+              );
 
-            if (!isEqualFromAmount) {
-              wrappedTrade.trade = null;
+              if (!isEqualFromAmount) {
+                wrappedTrade.trade = null;
+              }
             }
 
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);

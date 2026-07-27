@@ -50,11 +50,15 @@ export class SwapDataElementComponent {
 
   @Input() hintDirection: HintDirection = 'bottom-right';
 
-  @Input({ required: true }) set feeInfoChange(value: {
-    fee: FeeInfo | null;
-    nativeToken: Token;
-    displayAmount?: string | null;
-  }) {
+  @Input({ required: true }) set feeInfoChange(
+    value: {
+      fee: FeeInfo;
+      nativeToken: Token;
+      displayAmount?: string | null;
+    } | null
+  ) {
+    if (!value) return;
+
     this.feeInfo = value.fee;
     if (value.displayAmount !== undefined) {
       this.displayAmount = value.displayAmount;

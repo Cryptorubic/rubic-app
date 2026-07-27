@@ -89,15 +89,19 @@ export class TrustlineService {
   }
 
   public async checkTrustline(
-    trade: CrossChainTrade | OnChainTrade,
+    trade: CrossChainTrade | OnChainTrade | null,
     fromAddress: string,
     receiver?: string
   ): Promise<NeedTrustlineOptions> {
-    const { from, to, type } = trade;
     const defaultOptions: NeedTrustlineOptions = {
       needTrustlineAfterSwap: false,
       needTrustlineBeforeSwap: false
     };
+    if (!trade) {
+      return defaultOptions;
+    }
+
+    const { from, to, type } = trade;
 
     try {
       if (to.blockchain === BLOCKCHAIN_NAME.STELLAR) {

@@ -58,7 +58,7 @@ export class ProvidersListComponent {
 
   public isBestProvider(tradeState: TradeState): boolean {
     const nonClearswap = this.states.filter(
-      state => state.trade?.type !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
+      state => state.tradeType !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
     );
     if (nonClearswap.length > 0) {
       return tradeState.tradeType === nonClearswap[0].tradeType;

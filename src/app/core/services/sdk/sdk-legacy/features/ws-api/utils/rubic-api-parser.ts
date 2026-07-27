@@ -93,7 +93,7 @@ export class RubicApiParser {
       return new MaxDecimalsError(Number(decimals));
     }
 
-    throw new RubicSdkError(err.reason);
+    return new RubicSdkError(err.reason);
   }
 
   public static parseRubicApiWarnings(warnings: RubicApiErrorDto[]): RubicApiWarnings {

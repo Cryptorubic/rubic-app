@@ -1,6 +1,7 @@
 import { inject, Inject, Injectable } from '@angular/core';
 import {
   EvmBlockchainName,
+  ON_CHAIN_TRADE_TYPE,
   QuoteAllInterface,
   QuoteRequestInterface,
   QuoteResponseInterface,
@@ -42,6 +43,7 @@ import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error
 import { WrappedAsyncTradeOrNull } from '../features/ws-api/models/wrapped-async-trade-or-null';
 import { RubicApiErrorDto } from '../features/ws-api/models/rubic-api-error';
 import { TransformUtils } from '../features/ws-api/transform-utils';
+import { RubicApiParser } from '../features/ws-api/utils/rubic-api-parser';
 import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-tx-status-config';
 import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
@@ -398,7 +400,17 @@ export class RubicApiService {
                     rubicApiError as RubicAny
                   );
             return from(promise).pipe(
-              catchError(() => of(null)),
+              catchError(() => {
+                if (data && wsResponse.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+                  return of({
+                    trade: null,
+                    tradeType: wsResponse.type,
+                    error: RubicApiParser.parseRubicApiErrors(data)
+                  });
+                }
+
+                return of(null);
+              }),
               map(wrappedTrade => ({
                 total,
                 calculated,
