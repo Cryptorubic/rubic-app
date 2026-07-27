@@ -63,7 +63,7 @@ export class ProvidersListComponent {
     if (nonClearswap.length > 0) {
       return tradeState.tradeType === nonClearswap[0].tradeType;
     }
-    return tradeState.trade?.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+    return false;
   }
 
   public handleTradeSelection(

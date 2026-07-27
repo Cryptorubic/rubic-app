@@ -6,6 +6,7 @@ import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-m
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -26,6 +27,10 @@ export class ProviderElementComponent {
   @Input({ required: true }) hideHint$: Observable<boolean>;
 
   public expanded = false;
+
+  public get isClearswap(): boolean {
+    return this.tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+  }
 
   constructor(private readonly tradeInfoManager: TradeInfoManager) {}
 

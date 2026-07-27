@@ -12,6 +12,14 @@
     opacity: 0.75;
   }
 
+  &_clearswap {
+    background: linear-gradient(192.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
+
+    .element__provider-container_selected {
+      background: transparent;
+    }
+  }
+
   &__provider-container {
     padding: var(--tui-padding-l);
 
