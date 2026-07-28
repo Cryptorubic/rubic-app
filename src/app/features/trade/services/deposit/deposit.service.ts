@@ -17,6 +17,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
+import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
 
 @Injectable()
 export class DepositService {
@@ -110,7 +111,15 @@ export class DepositService {
     if (response.status === CLEARSWAP_STATUS.FAIL) {
       return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
     }
-    return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+
+    const stepsStatuses = response.stepsStatuses.split(':') as [
+      CrossChainTxStatusConfig['subStatus'],
+      CrossChainTxStatusConfig['subStatus']
+    ];
+    const secondProviderStatus = stepsStatuses[1]
+      ? API_SUBSTATUS_TO_DEPOSIT_STATUS[stepsStatuses[1]]
+      : CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+    return secondProviderStatus;
   }
 
   public setupUpdate(): void {

@@ -20,7 +20,7 @@ import { FormControl } from '@angular/forms';
 export class TargetNetworkAddressComponent {
   @Input() public round: 'top' | 'bottom' | 'all' | 'none' = 'bottom';
 
-  @Input({ required: true }) addressCtrl: FormControl<string>;
+  @Input({ required: true }) addressCtrl!: FormControl<string>;
 
   @Input()
   public set placeholderText(value: string | null | undefined) {

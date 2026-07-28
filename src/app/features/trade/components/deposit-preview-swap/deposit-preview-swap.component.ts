@@ -64,7 +64,9 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     this.depositService.depositTrade$.pipe(startWith(null))
   ]).pipe(
     map(([status, depositTrade]) => {
-      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      const specificStatusText = depositTrade?.tradeType
+        ? specificProviderStatusText[depositTrade.tradeType]?.[status]
+        : null;
       return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status;
     })
   );
@@ -74,7 +76,9 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     this.depositService.depositTrade$
   ]).pipe(
     map(([status, depositTrade]) => {
-      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      const specificStatusText = depositTrade?.tradeType
+        ? specificProviderStatusText[depositTrade.tradeType]?.[status]
+        : null;
       return specificStatusText ? specificStatusText : null;
     })
   );
@@ -114,12 +118,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
       map(tradeState => {
-        const info = tradeState.trade.getTradeInfo();
+        const info = tradeState!.trade!.getTradeInfo();
 
         return {
           ...tradeState,
-          feeInfo: info?.feeInfo
-        };
+          feeInfo: info.feeInfo
+        } as SelectedTrade & { feeInfo: FeeInfo };
       })
     );
 
@@ -134,16 +138,16 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
     map(
       tradeState =>
-        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
-        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
-        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
-        tradeState.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP
+        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
+        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
+        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
+        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
+        tradeState!.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP
     )
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => tradeState.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+    map(tradeState => tradeState!.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
   );
 
   public get receiverAddressCtrl() {
@@ -166,13 +170,13 @@ export class DepositPreviewSwapComponent implements OnDestroy {
 
   public readonly trustlineInfo$ = this.previewSwapService.selectedTradeState$.pipe(
     map(selectedTrade => {
-      const { trade } = selectedTrade;
+      const { trade } = selectedTrade!;
       return {
         receiver: this.targetAddressService.address,
-        toBlockchain: trade.to.blockchain,
+        toBlockchain: trade!.to.blockchain,
         trustlineToken: {
-          address: trade.to.address,
-          symbol: trade.to.symbol
+          address: trade!.to.address,
+          symbol: trade!.to.symbol
         },
         trustlineType: 'default'
       };
