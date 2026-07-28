@@ -154,6 +154,8 @@ export class OnChainApiService {
   public getClearswapStatus(
     id: string
   ): Promise<{ status: CLEARSWAP_STATUS; stepsStatuses: string; destTxHash: string }> {
-    return firstValueFrom(this.httpService.get(`v3/tmp/statuses/clearswap/status?rubic_id=${id}`));
+    return firstValueFrom(
+      this.httpService.get(`v3/internal/statuses/clearswap/status?rubic_id=${id}`)
+    );
   }
 }

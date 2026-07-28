@@ -15,6 +15,7 @@ import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import { ON_CHAIN_PROVIDERS } from '@app/features/trade/constants/on-chain-providers';
 import {
   API_STATUS_TO_DEPOSIT_STATUS,
   CROSS_CHAIN_DEPOSIT_STATUS,
@@ -25,6 +26,9 @@ import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
+import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable()
 export class DepositTableService extends TableService<'date', DepositTrade, DepositTableData> {
@@ -61,7 +65,8 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
   constructor(
     protected readonly walletConnector: WalletConnectorService,
     private readonly storeService: StoreService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly onChainApiService: OnChainApiService
   ) {
     super('date');
   }
@@ -122,7 +127,9 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
             image: blockchainIcon[toBlockchainName]
           };
 
-          const providerInfo = BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType];
+          const providerInfo =
+            BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType] ??
+            ON_CHAIN_PROVIDERS[tradeData.tradeType as OnChainTradeType];
 
           return {
             ...data[index],
@@ -156,6 +163,21 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
   })
   public getDepositStatus(trade: DepositTrade): Observable<CrossChainDepositStatus> {
     if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
+
+    if (trade.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+      return from(this.onChainApiService.getClearswapStatus(trade.rubicId)).pipe(
+        map(response => {
+          if (response.status === CLEARSWAP_STATUS.SUCCESS) {
+            return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+          }
+          if (response.status === CLEARSWAP_STATUS.FAIL) {
+            return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+          }
+          return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+        }),
+        catchError(() => of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING))
+      );
+    }
 
     try {
       return from(this.rubicApiService.fetchCrossChainTxStatusExtended(trade.rubicId)).pipe(
