@@ -26,7 +26,7 @@
 
   <app-providers-list
     *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
-    [states]="states.slice(0, 1)"
+    [states]="mobileStates"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"

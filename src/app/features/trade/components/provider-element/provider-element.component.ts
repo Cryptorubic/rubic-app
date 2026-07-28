@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   standalone: false,
@@ -33,6 +34,10 @@ export class ProviderElementComponent {
     return this.tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
   }
 
+  public get isShortedMobileClearswap(): boolean {
+    return this.shortedInfo && this.isMobile && this.isClearswap;
+  }
+
   public get minMaxErrorLabel(): string | null {
     const error = this.tradeState?.error;
     if (!error || !(error instanceof MinAmountError || error instanceof MaxAmountError))
@@ -48,7 +53,12 @@ export class ProviderElementComponent {
     return null;
   }
 
-  constructor(private readonly tradeInfoManager: TradeInfoManager) {}
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly headerStore: HeaderStore
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();

@@ -18,6 +18,15 @@
     .element__provider-container_selected {
       background: transparent;
     }
+
+    &.element_shorted {
+      .element__provider-container {
+        padding: 9px 15px;
+  
+        border: 1px solid #5632a2;
+        border-radius: var(--tui-radius-m);
+      }
+    }
   }
 
   &__provider-container {

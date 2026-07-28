@@ -32,7 +32,9 @@
                 —
               }
             </div>
-            <div class="element__token-provider">Provider</div>
+            @if (!isShortedMobileClearswap) {
+              <div class="element__token-provider">Provider</div>
+            }
             <div class="element__token-info">
               <img
                 class="element__token-image"
@@ -119,12 +121,14 @@
         </ng-template>
       </tui-expand>
     </div>
-    <app-swap-data-element
-      [gasInfo]="getGasData()"
-      [feeInfoChange]="getFeeInfo()"
-      [averageTimeMins]="getAverageTimeString()"
-      [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
-      [hideHint]="hideHint"
-    ></app-swap-data-element>
+    @if (!isShortedMobileClearswap) {
+      <app-swap-data-element
+        [gasInfo]="getGasData()"
+        [feeInfoChange]="getFeeInfo()"
+        [averageTimeMins]="getAverageTimeString()"
+        [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
+        [hideHint]="hideHint"
+      ></app-swap-data-element>
+    }
   </div>
 </ng-container>

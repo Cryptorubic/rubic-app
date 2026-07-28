@@ -56,6 +56,25 @@ export class ProvidersListComponent {
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
+  constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<
+      TradeProvider,
+      {
+        states: TradeState[];
+        selectedTradeType: TradeProvider;
+        calculationProgress: CalculationProgress;
+        isModal: boolean;
+        shortedInfo: boolean;
+        noRoutes: boolean;
+      }
+    >,
+    private readonly swapsFormService: SwapsFormService,
+    private readonly providerHintService: ProviderHintService,
+    private readonly tokensFacade: TokensFacadeService
+  ) {}
+
   public isBestProvider(tradeState: TradeState): boolean {
     const nonClearswap = this.states.filter(
       state => state.tradeType !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
@@ -85,23 +104,4 @@ export class ProvidersListComponent {
       this.selectTrade.emit(tradeType);
     }
   }
-
-  constructor(
-    @Optional()
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      TradeProvider,
-      {
-        states: TradeState[];
-        selectedTradeType: TradeProvider;
-        calculationProgress: CalculationProgress;
-        isModal: boolean;
-        shortedInfo: boolean;
-        noRoutes: boolean;
-      }
-    >,
-    private readonly swapsFormService: SwapsFormService,
-    private readonly providerHintService: ProviderHintService,
-    private readonly tokensFacade: TokensFacadeService
-  ) {}
 }
