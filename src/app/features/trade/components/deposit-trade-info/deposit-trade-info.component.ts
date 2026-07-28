@@ -46,4 +46,8 @@ export class DepositTradeInfoComponent {
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly depositService: DepositService
   ) {}
+
+  public formatTradeId(tradeId: string): string {
+    return tradeId.length <= 18 ? tradeId : tradeId.slice(0, 7) + '...' + tradeId.slice(-7);
+  }
 }
