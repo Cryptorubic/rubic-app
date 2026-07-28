@@ -175,12 +175,21 @@ export default defineConfig([
   {
     files: ['**/*.component.html'],
 
-    extends: compat.extends(
-      'plugin:@angular-eslint/template/recommended'
-      // 'plugin:prettier/recommended'
-    ),
+    plugins: {
+      prettier: prettierPlugin
+    },
+
+    extends: [
+      ...compat.extends(
+        'plugin:@angular-eslint/template/recommended',
+        'plugin:prettier/recommended'
+      ),
+      prettierConfig
+    ],
 
     rules: {
+      'prettier/prettier': ['error', { parser: 'angular' }],
+
       'max-len': [
         'warn',
         {

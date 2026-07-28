@@ -201,7 +201,7 @@
     "ngx-unused-css": "^3.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "prettier": "^2.4.1",
+    "prettier": "^3.6.2",
     "protractor": "~7.0.0",
     "source-map-explorer": "^2.5.3",
     "stream-browserify": "^3.0.0",
