@@ -13,7 +13,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, filter, first, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -41,6 +41,7 @@ import {
   Token
 } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Component({
   standalone: false,
@@ -118,11 +119,11 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
       map(tradeState => {
-        const info = tradeState!.trade!.getTradeInfo();
+        const info = tradeState?.trade?.getTradeInfo();
 
         return {
           ...tradeState,
-          feeInfo: info.feeInfo
+          feeInfo: info?.feeInfo
         } as SelectedTrade & { feeInfo: FeeInfo };
       })
     );
@@ -138,11 +139,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
     map(
       tradeState =>
-        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
-        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
-        tradeState!.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
-        tradeState!.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP
+        tradeState &&
+        (tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
+          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
+          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
+          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
+          tradeState.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
     )
   );
 
@@ -160,8 +162,16 @@ export class DepositPreviewSwapComponent implements OnDestroy {
 
   public readonly isValidReceiverAddress$ = combineLatest([
     this.targetAddressService.address$,
-    this.targetAddressService.isAddressValid$
-  ]).pipe(map(([address, isValid]) => Boolean(address) && isValid));
+    this.previewSwapService.selectedTradeState$
+  ]).pipe(
+    switchMap(async ([address, tradeState]) => {
+      if (!tradeState?.trade?.to.blockchain) return false;
+      return (
+        Boolean(address) &&
+        (await Web3Pure.isAddressCorrect(tradeState.trade.to.blockchain, address!))
+      );
+    })
+  );
 
   public readonly needTrustline$ = this.transactionState$.pipe(
     map(state => state.data.needTrustlineOptions?.needTrustlineBeforeSwap),
@@ -214,7 +224,6 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     private readonly tokensFacade: TokensFacadeService
   ) {
     this.previewSwapService.setSelectedProvider();
-    this.refundService.setRefundAddress('');
     this.setupTradeIfValidAddresses();
     this.previewSwapService.activateDepositPage();
   }
@@ -332,8 +341,6 @@ export class DepositPreviewSwapComponent implements OnDestroy {
       .subscribe(isValid => {
         if (isValid) {
           this.setupTrade();
-        } else {
-          this.depositService.removePrevDeposit();
         }
       });
   }
