@@ -43,7 +43,6 @@ import {
   CentralizationStatus,
   hasCentralizationStatus
 } from '../../constants/centralization-status';
-import { ON_CHAIN_PROVIDERS } from '../../constants/on-chain-providers';
 import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
@@ -54,8 +53,7 @@ import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/
 import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
-import { MinAmountError, MaxAmountError, RubicSdkError } from '@cryptorubic/web3';
-import { BRIDGE_PROVIDERS } from '../../constants/bridge-providers';
+import { RubicSdkError } from '@cryptorubic/web3';
 
 @Injectable()
 export class SwapsStateService {
@@ -209,11 +207,6 @@ export class SwapsStateService {
           warnings: trade.warnings
         };
 
-    const shouldStoreProvider = Boolean(
-      trade ||
-        wrappedTrade.error instanceof MinAmountError ||
-        wrappedTrade.error instanceof MaxAmountError
-    );
     let currentTrades = this._tradesStore$.getValue();
 
     // Already contains trades
@@ -221,26 +214,29 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider.tradeType === wrappedTrade.tradeType
+          provider => provider?.trade?.type === wrappedTrade?.tradeType
         );
         // New or old
         if (providerIndex !== -1) {
-          if (shouldStoreProvider) {
+          if (trade) {
             currentTrades[providerIndex] = {
               ...currentTrades[providerIndex],
-              ...defaultState
+              trade: defaultState.trade!,
+              needApprove: defaultState.needApprove,
+              error: defaultState.error,
+              routes: defaultState.routes
             };
           } else {
             currentTrades.splice(providerIndex, 1);
           }
-        } else if (shouldStoreProvider) {
+        } else if (trade) {
           currentTrades.push(defaultState);
         }
-      } else if (shouldStoreProvider) {
+      } else if (trade) {
         // Make a new list with one element
         currentTrades = [defaultState];
       }
-    } else if (shouldStoreProvider) {
+    } else if (trade) {
       currentTrades.push(defaultState);
     }
     this.swapType = type;
@@ -261,7 +257,7 @@ export class SwapsStateService {
   public removeOldProvider(tradeType: CrossChainTradeType | OnChainTradeType): void {
     let currentTrades = this._tradesStore$.getValue();
 
-    const providerIndex = currentTrades.findIndex(provider => provider.tradeType === tradeType);
+    const providerIndex = currentTrades.findIndex(provider => provider?.trade?.type === tradeType);
     if (providerIndex !== -1) {
       currentTrades.splice(providerIndex, 1);
     }
@@ -273,12 +269,8 @@ export class SwapsStateService {
     let currentTrades = this._tradesStore$.getValue();
 
     if (currentTrades.length) {
-      const isOnChain = currentTrades.some(el =>
-        Object.prototype.hasOwnProperty.call(ON_CHAIN_PROVIDERS, el?.tradeType)
-      );
-      const isCrossChain = currentTrades.some(el =>
-        Object.prototype.hasOwnProperty.call(BRIDGE_PROVIDERS, el?.tradeType)
-      );
+      const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
+      const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       const isThereTokenWithoutPrice = currentTrades
         .filter(trade => trade?.trade?.to)
         .some(currentTrade => !currentTrade.trade.to?.price?.gt(0));
@@ -428,8 +420,8 @@ export class SwapsStateService {
         return 1;
       } else {
         // @TODO remove after lifi fix
-        if (a.tradeType === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
-        if (b.tradeType === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
+        if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
+        if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
 
         return 0;
       }
@@ -565,7 +557,7 @@ export class SwapsStateService {
     const wrapTrade =
       trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
 
-    const hasRealTrades = trades.some(el => Boolean(el.trade || el.error));
+    const hasRealTrades = trades.filter(el => Boolean(el.trade)).length > 0;
     const activeCalculation = progress.current !== progress.total;
 
     const calculationResult: CalculationStatus = {

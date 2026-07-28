@@ -22,7 +22,6 @@ import { Asset } from '../../models/asset';
 import { FormType } from '../../models/form-type';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { DOCUMENT } from '@angular/common';
-import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 
 @Component({
   standalone: false,
@@ -48,14 +47,7 @@ export class TradeViewContainerComponent {
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
     tap(providers => this.setProvidersVisibility(providers)),
-    map(providers =>
-      providers.filter(
-        provider =>
-          provider.trade ||
-          provider.error instanceof MinAmountError ||
-          provider.error instanceof MaxAmountError
-      )
-    )
+    map(providers => providers.filter(provider => provider.trade))
   );
 
   public readonly calculationStatus$ = this.swapsState.calculationStatus$;

@@ -18,12 +18,15 @@
       <div class="element__amounts-container">
         <div class="element__amount">
           <div class="element__token">
-            <div class="element__token-amount" [ngClass]="{ 'element__token-amount_error': tradeState?.error }">
-              @if (trade) {
-                {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount : 7 : 5 : true }}&nbsp;{{
+            <div
+              class="element__token-amount"
+              [ngClass]="{ 'element__token-amount_error': tradeState?.error && isClearswap }"
+            >
+              @if (trade && !(tradeState?.error && isClearswap)) {
+                {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount: 7 : 5 : true }}&nbsp;{{
                   trade.to.symbol
                 }}
-              } @else if (tradeState?.error) {
+              } @else if (tradeState?.error && isClearswap) {
                 {{ minMaxErrorLabel }}
               } @else {
                 —
@@ -45,7 +48,7 @@
             *ngIf="trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)"
             class="element__amount-price"
           >
-            ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
+            ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
             <div class="element__row-badges">
