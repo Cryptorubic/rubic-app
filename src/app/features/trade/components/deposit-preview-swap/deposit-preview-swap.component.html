@@ -61,10 +61,23 @@
     </div>
 
     <div class="required-step" *ngIf="state.isReceiverAddressRequired">
-      <app-target-network-address
-        [addressCtrl]="receiverAddressCtrl"
-        [placeholderText]="state.receiverAddressLabel"
-      ></app-target-network-address>
+      <div class="receiver-address-container">
+        <div class="receiver-address__title">
+          <img
+            class="receiver-address__title-icon"
+            src="assets/images/icons/yellow-warn.png"
+            width="15"
+            height="15"
+            alt="warn-icon"
+          />
+          <p class="receiver-address__title-text">You must have access to this address</p>
+        </div>
+
+        <app-target-network-address
+          [addressCtrl]="receiverAddressCtrl"
+          [placeholderText]="state.receiverAddressLabel"
+        ></app-target-network-address>
+      </div>
     </div>
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
