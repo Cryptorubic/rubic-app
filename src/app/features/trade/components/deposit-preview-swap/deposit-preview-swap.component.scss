@@ -306,3 +306,34 @@ app-form-switcher {
     }
   }
 }
+
+.receiver-address-container {
+  @include flex(column, normal, normal);
+  gap: 2px;
+  width: 100%;
+
+  font-size: 15px;
+
+  .receiver-address__title {
+    @include flex(row, flex-start, normal);
+    gap: 7px;
+
+    padding: var(--tui-padding-l);
+
+    color: var(--tui-warn);
+    font-weight: bold;
+
+    background: var(--primary-background);
+
+    border-top-left-radius: var(--tui-radius-m);
+    border-top-right-radius: var(--tui-radius-m);
+
+    &-text {
+      margin: 0;
+    }
+
+    &-icon {
+      margin-top: 2px;
+    }
+  }
+}

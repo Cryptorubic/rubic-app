@@ -4,7 +4,8 @@
     class="element"
     [ngClass]="{
       element_shorted: shortedInfo,
-      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0)
+      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0),
+      element_clearswap: isClearswap
     }"
   >
     <div
@@ -17,12 +18,23 @@
       <div class="element__amounts-container">
         <div class="element__amount">
           <div class="element__token">
-            <div class="element__token-amount">
-              {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount : 7 : 5 : true }}&nbsp;{{
-                trade.to.symbol
-              }}
+            <div
+              class="element__token-amount"
+              [ngClass]="{ 'element__token-amount_error': tradeState?.error && isClearswap }"
+            >
+              @if (trade && !(tradeState?.error && isClearswap)) {
+                {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount: 7 : 5 : true }}&nbsp;{{
+                  trade.to.symbol
+                }}
+              } @else if (tradeState?.error && isClearswap) {
+                {{ minMaxErrorLabel }}
+              } @else {
+                —
+              }
             </div>
-            <div class="element__token-provider">Provider</div>
+            @if (!isShortedMobileClearswap) {
+              <div class="element__token-provider">Provider</div>
+            }
             <div class="element__token-info">
               <img
                 class="element__token-image"
@@ -34,12 +46,15 @@
           </div>
         </div>
         <div class="element__right">
-          <div
-            *ngIf="trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)"
-            class="element__amount-price"
-          >
-            ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
-          </div>
+          @if (trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)) {
+            <div class="element__amount-price">
+              @if (!minMaxErrorAmount || !trade.from?.price?.gt(0)) {
+                ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
+              } @else {
+                ~ {{ minMaxErrorAmount | getUsdPrice: trade.from.price : 2 : true }}&nbsp;$
+              }
+            </div>
+          }
           <div class="element__row">
             <div class="element__row-badges">
               <tui-tag
@@ -51,13 +66,23 @@
                 [tuiHint]="'The most profitable trade according to our calculations'"
                 [tuiHintHideDelay]="hideHint ? 0 : 200"
               ></tui-tag>
+              <span *ngIf="isClearswap" class="element__private-badge">
+                <img
+                  class="element__private-badge-icon"
+                  src="assets/images/icons/private-lock.svg"
+                  alt=""
+                  width="16"
+                  height="16"
+                />
+                <span class="element__private-badge-text">PRIVATE</span>
+              </span>
               <app-promotion-badge
                 *ngFor="let badge of tradeState.badges"
                 [data]="badge"
                 [hideHint]="hideHint"
               ></app-promotion-badge>
               <tui-tag
-                *ngIf="tradeState?.error"
+                *ngIf="tradeState?.error && !isClearswap"
                 class="element__warning-badge"
                 size="s"
                 status="custom"
@@ -67,6 +92,7 @@
             </div>
 
             <div
+              *ngIf="trade"
               (click)="toggleExpand($event)"
               inlineSVG="assets/images/icons/arrow-down.svg"
               class="element__expander"
@@ -98,12 +124,14 @@
         </ng-template>
       </tui-expand>
     </div>
-    <app-swap-data-element
-      [gasInfo]="getGasData()"
-      [feeInfoChange]="getFeeInfo()"
-      [averageTimeMins]="getAverageTimeString()"
-      [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
-      [hideHint]="hideHint"
-    ></app-swap-data-element>
+    @if (!isShortedMobileClearswap) {
+      <app-swap-data-element
+        [gasInfo]="getGasData()"
+        [feeInfoChange]="getFeeInfo()"
+        [averageTimeMins]="getAverageTimeString()"
+        [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
+        [hideHint]="hideHint"
+      ></app-swap-data-element>
+    }
   </div>
 </ng-container>

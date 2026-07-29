@@ -1,15 +1,14 @@
-<div class="network-container">
+<div class="network-container" *ngLet="isCorrectTargetAddressSet$ | async as isCorrectAddressSet">
   <tui-input
     [ngClass]="{
-    'input_round-top': round === 'top',
-    'input_round-bottom': round === 'bottom',
-    'input_round-all': round === 'all',
-    'input_round-none': round === 'none',
-  }"
-    [tuiTextfieldCustomContent]="!!addressCtrl.value ? (addressCtrl.valid ? success : error) : ''"
+      'input_round-top': round === 'top',
+      'input_round-bottom': round === 'bottom',
+      'input_round-all': round === 'all',
+      'input_round-none': round === 'none'
+    }"
+    [tuiTextfieldCustomContent]="!!addressCtrl.value ? (isCorrectAddressSet ? success : error) : ''"
     tuiTextfieldSize="l"
     [formControl]="addressCtrl"
-
     [pseudoInvalid]="addressCtrl.invalid"
     [tuiTextfieldCleaner]="false"
     [tuiTextfieldLabelOutside]="false"
@@ -26,12 +25,13 @@
     </div>
   </tui-input>
 
-  <span
-    *ngIf="!!addressCtrl.value"
-    class="clear-btn"
-    [inlineSVG]="'assets/images/icons/close.svg'"
-    (click)="clear()"
-  ></span>
+  @if (!!addressCtrl.value && addressCtrl.enabled) {
+    <span
+      class="clear-btn"
+      [inlineSVG]="'assets/images/icons/close.svg'"
+      (click)="clear()"
+    ></span>
+  }
 
   <ng-template #success>
     <div

@@ -1,6 +1,6 @@
 import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
-export const transferTradeSupportedProviders = [
+export const crossChainTransferTradeSupportedProviders = [
   CROSS_CHAIN_TRADE_TYPE.CHANGENOW,
   CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
   CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
@@ -14,4 +14,5 @@ export const transferTradeSupportedProviders = [
   CROSS_CHAIN_TRADE_TYPE.BALTEX
 ] as const;
 
-export type TransferTradeType = (typeof transferTradeSupportedProviders)[number];
+export type CrossChainTransferTradeType =
+  (typeof crossChainTransferTradeSupportedProviders)[number];

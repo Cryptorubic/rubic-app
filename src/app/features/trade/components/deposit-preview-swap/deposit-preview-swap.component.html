@@ -9,9 +9,12 @@
     isValidRefundAddress: isValidRefundAddress$ | async,
     spesificStatusText: specificProviderStatusText$ | async,
     isRefundAddressRequired: isRefundAddressRequired$ | async,
+    isReceiverAddressRequired: isReceiverAddressRequired$ | async,
+    canShowDepositAddress: canShowDepositAddress$ | async,
     isToAmountCalculated: isToAmountCalculated$ | async,
     needTrustline: needTrustline$ | async,
-    trustlineInfo: trustlineInfo$ | async
+    trustlineInfo: trustlineInfo$ | async,
+    receiverAddressLabel: receiverAddressLabel$ | async
   } as state"
 >
   <ng-container header>
@@ -57,6 +60,27 @@
       </div>
     </div>
 
+    @if (state.isReceiverAddressRequired) {
+      <div class="required-step">
+        <div class="receiver-address-container">
+          <div class="receiver-address__title">
+            <img
+              class="receiver-address__title-icon"
+              src="assets/images/icons/yellow-warn.png"
+              width="15"
+              height="15"
+              alt="warn-icon"
+            />
+            <p class="receiver-address__title-text">You must have access to this address</p>
+          </div>
+
+          <app-target-network-address
+            [addressCtrl]="receiverAddressCtrl"
+            [placeholderText]="state.receiverAddressLabel"
+          ></app-target-network-address>
+        </div>
+      </div>
+    }
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
@@ -67,7 +91,7 @@
       ></app-trustline>
     </div>
     <div
-      *ngIf="state.isValidRefundAddress && !state.needTrustline"
+      *ngIf="state.canShowDepositAddress"
       @showDepositAddressAnimation
       class="target-address"
       [ngClass]="{ 'target-address__disabled': state.status === 'expired' }"
@@ -76,7 +100,7 @@
       <div *ngIf="state.depositTrade?.depositAddress" class="target-address__text">
         {{
           state.depositTrade.depositAddress
-            | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
+            | shortAddress: (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
         }}
         <button
           *ngIf="state.status !== 'expired'"
@@ -90,48 +114,39 @@
       </div>
     </div>
 
-    <div
-      class="status-wrapper"
-      [class.status-wrapper__inactive]="!state.isValidRefundAddress || state.needTrustline"
-    >
+    <div class="status-wrapper" [class.status-wrapper__inactive]="!state.canShowDepositAddress">
       <div class="row row-status">
         <div class="row-item status-item">
-          <div
-            class="status-item__circle"
-            *ngIf="
-              (state.status === 'waiting' && !state.isValidRefundAddress) || state.needTrustline
-            "
-          ></div>
-          <div
-            class="status-item__spinner"
-            *ngIf="state.status === 'waiting' && state.isValidRefundAddress && !state.needTrustline"
-          ></div>
-          <div
-            class="status-item__circle_complete"
-            *ngIf="state.status !== 'waiting' && state.status !== 'expired'"
-          >
-            <img
-              class="scheme__state.status-icon"
-              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
-              alt=""
-            />
-          </div>
-          <ng-container *ngIf="state.status === 'expired'">
-            <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
-          </ng-container>
+          @if (
+            (state.status === 'waiting' && !state.canShowDepositAddress) || state.needTrustline
+          ) {
+            <div class="status-item__circle"></div>
+          } @else if (state.status === 'waiting' && state.canShowDepositAddress) {
+            <div class="status-item__spinner"></div>
+          } @else if (state.status !== 'waiting' && state.status !== 'expired') {
+            <div class="status-item__circle_complete">
+              <img
+                class="scheme__state.status-icon"
+                src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+                alt=""
+              />
+            </div>
+          } @else if (state.status === 'expired') {
+            <ng-container *ngTemplateOutlet="failedStatus"></ng-container>
+          }
 
           <div
             class="row-item__value status-item__value"
             [ngClass]="{
               'status-item__value_completed':
-                state.status !== 'expired' && state.isValidRefundAddress && !state.needTrustline,
-              'status-item__value_failed':
-                state.status === 'expired' && state.isValidRefundAddress && !state.needTrustline
+                state.status !== 'expired' && state.canShowDepositAddress,
+              'status-item__value_failed': state.status === 'expired' && state.canShowDepositAddress
             }"
           >
             {{ state.status === 'expired' ? 'Expired' : 'Awaiting deposit' }}
           </div>
         </div>
+
         <img
           class="arrow-step"
           src="assets/images/icons/arrow/arrow-right-white.svg"
@@ -139,36 +154,25 @@
         />
 
         <div class="row-item status-item">
-          <div
-            class="status-item__circle"
-            *ngIf="state.status === 'waiting' || state.status === 'expired'"
-          ></div>
-          <div
-            class="status-item__line status-item__line_confirming"
-            [ngClass]="{
-              'status-item__line_completed':
-                state.status === 'exchanging' ||
-                state.status === 'sending' ||
-                state.status === 'finished',
-              'status-item__line_load': state.status === 'confirming'
-            }"
-          ></div>
-          <div class="status-item__spinner" *ngIf="state.status === 'confirming'"></div>
-          <div
-            class="status-item__circle_complete"
-            *ngIf="
-              state.status === 'exchanging' ||
-              state.status === 'sending' ||
-              state.status === 'finished' ||
-              state.status === 'failed'
-            "
-          >
-            <img
-              class="scheme__state.status-icon"
-              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
-              alt=""
-            />
-          </div>
+          @if (state.status === 'waiting' || state.status === 'expired') {
+            <div class="status-item__circle"></div>
+          } @else if (state.status === 'confirming') {
+            <div class="status-item__spinner"></div>
+          } @else if (
+            state.status === 'exchanging' ||
+            state.status === 'sending' ||
+            state.status === 'finished' ||
+            state.status === 'failed'
+          ) {
+            <div class="status-item__circle_complete">
+              <img
+                class="scheme__state.status-icon"
+                src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+                alt=""
+              />
+            </div>
+          }
+
           <div
             class="row-item__value status-item__value"
             [ngClass]="{
@@ -191,34 +195,25 @@
         />
 
         <div class="row-item status-item">
-          <div
-            class="status-item__circle"
-            *ngIf="
-              state.status === 'waiting' ||
-              state.status === 'confirming' ||
-              state.status === 'failed' ||
-              state.status === 'expired'
-            "
-          ></div>
-          <div
-            class="status-item__line status-item__line_exchanging"
-            [ngClass]="{
-              'status-item__line_completed':
-                state.status === 'sending' || state.status === 'finished',
-              'status-item__line_load': state.status === 'exchanging'
-            }"
-          ></div>
-          <div class="status-item__spinner" *ngIf="state.status === 'exchanging'"></div>
-          <div
-            class="status-item__circle_complete"
-            *ngIf="state.status === 'sending' || state.status === 'finished'"
-          >
-            <img
-              class="scheme__state.status-icon"
-              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
-              alt=""
-            />
-          </div>
+          @if (
+            state.status === 'waiting' ||
+            state.status === 'confirming' ||
+            state.status === 'failed' ||
+            state.status === 'expired'
+          ) {
+            <div class="status-item__circle"></div>
+          } @else if (state.status === 'exchanging') {
+            <div class="status-item__spinner"></div>
+          } @else if (state.status === 'sending' || state.status === 'finished') {
+            <div class="status-item__circle_complete">
+              <img
+                class="scheme__state.status-icon"
+                src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+                alt=""
+              />
+            </div>
+          }
+
           <div
             class="row-item__value status-item__value"
             [ngClass]="{
@@ -237,27 +232,29 @@
           src="assets/images/icons/arrow/arrow-right-white.svg"
           alt="Next step"
         />
+
         <div class="row-item status-item">
-          <div
-            class="status-item__circle"
-            *ngIf="
-              state.status === 'waiting' ||
-              state.status === 'confirming' ||
-              state.status === 'exchanging' ||
-              state.status === 'expired'
-            "
-          ></div>
-          <div class="status-item__spinner" *ngIf="state.status === 'sending'"></div>
-          <ng-container *ngIf="state.status === 'failed'">
-            <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
-          </ng-container>
-          <div class="status-item__circle_complete" *ngIf="state.status === 'finished'">
-            <img
-              class="scheme__state.status-icon"
-              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
-              alt=""
-            />
-          </div>
+          @if (
+            state.status === 'waiting' ||
+            state.status === 'confirming' ||
+            state.status === 'exchanging' ||
+            state.status === 'expired'
+          ) {
+            <div class="status-item__circle"></div>
+          } @else if (state.status === 'sending') {
+            <div class="status-item__spinner"></div>
+          } @else if (state.status === 'finished') {
+            <div class="status-item__circle_complete">
+              <img
+                class="scheme__state.status-icon"
+                src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+                alt=""
+              />
+            </div>
+          } @else if (state.status === 'failed') {
+            <ng-container *ngTemplateOutlet="failedStatus"></ng-container>
+          }
+
           <div
             class="row-item__value status-item__value"
             [ngClass]="{

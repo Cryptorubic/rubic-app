@@ -229,21 +229,15 @@ export class SwapsStateService {
           } else {
             currentTrades.splice(providerIndex, 1);
           }
-        } else {
-          if (trade) {
-            currentTrades.push(defaultState);
-          }
+        } else if (trade) {
+          currentTrades.push(defaultState);
         }
-      } else {
-        if (trade) {
-          // Make a new list with one element
-          currentTrades = [defaultState];
-        }
+      } else if (trade) {
+        // Make a new list with one element
+        currentTrades = [defaultState];
       }
-    } else {
-      if (trade) {
-        currentTrades.push(defaultState);
-      }
+    } else if (trade) {
+      currentTrades.push(defaultState);
     }
     this.swapType = type;
     this._tradesStore$.next(currentTrades);
@@ -287,7 +281,16 @@ export class SwapsStateService {
           : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
       }
 
-      const bestTrade = currentTrades[0];
+      this._tradesStore$.next(currentTrades);
+
+      const bestTrade = this.getDefaultSelectedTrade(currentTrades, isCalculationEnd);
+      if (!bestTrade) {
+        this.currentTrade = {
+          ...this.defaultState,
+          status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
+        };
+        return;
+      }
 
       const trade: SelectedTrade = {
         ...bestTrade,
@@ -301,7 +304,6 @@ export class SwapsStateService {
         trade.status = TRADE_STATUS.READY_TO_APPROVE;
       }
 
-      this._tradesStore$.next(currentTrades);
       this.currentTrade = trade;
     } else {
       this.currentTrade = {
@@ -309,6 +311,34 @@ export class SwapsStateService {
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
     }
+  }
+
+  /**
+   * CLEARSWAP stays first in the list, but default selection is the best among other providers.
+   * If CLEARSWAP is the only quote: wait until calculation ends, then select it.
+   */
+  private getDefaultSelectedTrade(
+    currentTrades: TradeState[],
+    isCalculationEnd: boolean
+  ): TradeState | null {
+    const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
+    const nonClearswapTrades = tradesWithQuote.filter(
+      tradeState => tradeState.trade!.type !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
+    );
+
+    if (nonClearswapTrades.length > 0) {
+      return nonClearswapTrades[0];
+    }
+
+    const clearswapTrade = tradesWithQuote.find(
+      tradeState => tradeState.trade!.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP
+    );
+
+    if (clearswapTrade && isCalculationEnd) {
+      return clearswapTrade;
+    }
+
+    return null;
   }
 
   private sortCrossChainTrades(
@@ -360,6 +390,12 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return currentTrades.sort((a, b) => {
+      const aIsClearswap = a.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+      const bIsClearswap = b.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+
+      if (aIsClearswap && !bIsClearswap) return -1;
+      if (bIsClearswap && !aIsClearswap) return 1;
+
       let aValue: BigNumber;
       let bValue: BigNumber;
 

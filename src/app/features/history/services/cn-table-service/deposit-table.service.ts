@@ -5,7 +5,7 @@ import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
-import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
+import { DepositTrade } from '@app/features/trade/models/deposit-trade';
 import { StoreService } from '@core/services/store/store.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -15,6 +15,7 @@ import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import { ON_CHAIN_PROVIDERS } from '@app/features/trade/constants/on-chain-providers';
 import {
   API_STATUS_TO_DEPOSIT_STATUS,
   CROSS_CHAIN_DEPOSIT_STATUS,
@@ -25,13 +26,11 @@ import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable()
-export class DepositTableService extends TableService<
-  'date',
-  CrossChainTransferTrade,
-  DepositTableData
-> {
+export class DepositTableService extends TableService<'date', DepositTrade, DepositTableData> {
   public readonly statusFilter = new FormControl<string>('All');
 
   private readonly _tableUpdate$ = new BehaviorSubject<void>(null);
@@ -126,7 +125,9 @@ export class DepositTableService extends TableService<
             image: blockchainIcon[toBlockchainName]
           };
 
-          const providerInfo = BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType];
+          const providerInfo =
+            BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType] ??
+            ON_CHAIN_PROVIDERS[tradeData.tradeType as OnChainTradeType];
 
           return {
             ...data[index],
@@ -148,7 +149,7 @@ export class DepositTableService extends TableService<
     );
   }
 
-  protected transformResponse(_response: CrossChainTransferTrade): {
+  protected transformResponse(_response: DepositTrade): {
     data: DepositTableData[];
     total: number;
   } {
@@ -158,8 +159,23 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
+  public getDepositStatus(trade: DepositTrade): Observable<CrossChainDepositStatus> {
     if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
+
+    if (trade.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+      return from(this.rubicApiService.getClearswapStatus(trade.rubicId)).pipe(
+        map(response => {
+          if (response.status === CLEARSWAP_STATUS.SUCCESS) {
+            return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+          }
+          if (response.status === CLEARSWAP_STATUS.FAIL) {
+            return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+          }
+          return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+        }),
+        catchError(() => of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING))
+      );
+    }
 
     try {
       return from(this.rubicApiService.fetchCrossChainTxStatusExtended(trade.rubicId)).pipe(

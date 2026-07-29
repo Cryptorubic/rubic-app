@@ -48,8 +48,8 @@ import InsufficientFundsError from '@core/errors/models/instant-trade/insufficie
 import { InsufficientGasError } from '@app/core/errors/models/common/insufficient-gas-error';
 import { HoudiniErrorService } from './houdini-error.service';
 import {
-  transferTradeSupportedProviders,
-  TransferTradeType
+  crossChainTransferTradeSupportedProviders,
+  CrossChainTransferTradeType
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import {
   API_STATUS_TO_DEPOSIT_STATUS,
@@ -221,8 +221,9 @@ export class HoudiniSwapService {
     try {
       const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
       const isTransferTrade =
-        transferTradeSupportedProviders.includes(this.currentTrade.type as TransferTradeType) &&
-        chainType !== CHAIN_TYPE.EVM;
+        crossChainTransferTradeSupportedProviders.includes(
+          this.currentTrade.type as CrossChainTransferTradeType
+        ) && chainType !== CHAIN_TYPE.EVM;
 
       if (!isTransferTrade) {
         //TODO: maybe add some callback later

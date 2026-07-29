@@ -12,7 +12,7 @@
       [description]="text.transactionId.description"
     >
       <div class="row">
-        {{ state.trade.id }}
+        {{ formatTradeId(state.trade.id) }}
         <app-copy-container [text]="state.trade.id"></app-copy-container>
       </div>
     </app-transaction-details-element>
@@ -23,11 +23,11 @@
       [description]="text.receiver.description"
     >
       <div class="receiver-container">
-        {{ state.wallet | shortAddress : 5 : 5 }}
+        {{ state.wallet | shortAddress: 5 : 5 }}
 
         <a
           [safetyLink]="
-            state.wallet | scannerLink : state.trade.toToken.blockchain : ADDRESS_TYPE.WALLET
+            state.wallet | scannerLink: state.trade.toToken.blockchain : ADDRESS_TYPE.WALLET
           "
         >
           <img
@@ -47,7 +47,7 @@
       <div class="row">
         {{
           state.extraField.value.length > 25
-            ? (state.extraField.value | shortAddress : 10 : 10)
+            ? (state.extraField.value | shortAddress: 10 : 10)
             : state.extraField.value
         }}
         <app-copy-container [text]="state.extraField.value"></app-copy-container>
