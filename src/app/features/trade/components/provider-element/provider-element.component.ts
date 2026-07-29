@@ -9,6 +9,7 @@ import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import BigNumber from 'bignumber.js';
 
 @Component({
   standalone: false,
@@ -38,10 +39,23 @@ export class ProviderElementComponent {
     return this.shortedInfo && this.isMobile && this.isClearswap;
   }
 
+  public get minMaxErrorAmount(): BigNumber | null {
+    const error = this.tradeState?.error;
+    if (!error) return null;
+
+    if (error instanceof MinAmountError) {
+      return error.minAmount;
+    }
+    if (error instanceof MaxAmountError) {
+      return error.maxAmount;
+    }
+
+    return null;
+  }
+
   public get minMaxErrorLabel(): string | null {
     const error = this.tradeState?.error;
-    if (!error || !(error instanceof MinAmountError || error instanceof MaxAmountError))
-      return null;
+    if (!error) return null;
 
     if (error instanceof MinAmountError) {
       return `min ${error.minAmount} ${error.tokenSymbol}`;

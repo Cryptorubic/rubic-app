@@ -46,12 +46,15 @@
           </div>
         </div>
         <div class="element__right">
-          <div
-            *ngIf="trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)"
-            class="element__amount-price"
-          >
-            ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
-          </div>
+          @if (trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)) {
+            <div class="element__amount-price">
+              @if (!minMaxErrorAmount || !trade.from?.price?.gt(0)) {
+                ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
+              } @else {
+                ~ {{ minMaxErrorAmount | getUsdPrice: trade.from.price : 2 : true }}&nbsp;$
+              }
+            </div>
+          }
           <div class="element__row">
             <div class="element__row-badges">
               <tui-tag
