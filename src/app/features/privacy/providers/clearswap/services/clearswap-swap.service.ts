@@ -26,6 +26,7 @@ import {
 import { PrivateActionRes } from '../../shared-privacy-providers/components/private-preview-swap/models/preview-swap-options';
 import { getScannerUrl } from '../../privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 import { SdkService } from '@app/core/services/sdk/sdk.service';
+import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -37,6 +38,7 @@ export class ClearswapSwapService {
     private readonly rubicApiService: RubicApiService,
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
+    private readonly tradeStatusService: TradeStatusService,
     private readonly sdkService: SdkService
   ) {}
 
@@ -144,7 +146,7 @@ export class ClearswapSwapService {
         timer(5_000, 30_000).pipe(
           switchMap(() =>
             combineLatest([
-              this.rubicApiService.getClearswapStatus(id),
+              this.tradeStatusService.getClearswapStatus(id),
               from(this.chainAdapter.getTransactionStatus(txHash)).pipe(
                 catchError(() => {
                   return of(TX_STATUS.PENDING);
