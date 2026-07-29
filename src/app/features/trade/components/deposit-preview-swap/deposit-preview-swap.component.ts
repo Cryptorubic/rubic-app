@@ -38,7 +38,9 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   ON_CHAIN_TRADE_TYPE,
   nativeTokensList,
-  Token
+  Token,
+  CrossChainTradeType,
+  OnChainTradeType
 } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { Web3Pure } from '@cryptorubic/web3';
@@ -136,16 +138,16 @@ export class DepositPreviewSwapComponent implements OnDestroy {
 
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
+  private readonly refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTradeType)[] = [
+    CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+    CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
+    CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
+    CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
+    ON_CHAIN_TRADE_TYPE.CLEARSWAP
+  ];
+
   public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(
-      tradeState =>
-        tradeState &&
-        (tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
-          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
-          tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
-          tradeState.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
-    )
+    map(tradeState => tradeState && this.isRefundAddressRequired(tradeState.tradeType))
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
@@ -349,6 +351,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
 
   public onTrustlineAdd(): void {
     this.previewSwapService.handleTrustline();
+  }
+
+  private isRefundAddressRequired(
+    tradeType: OnChainTradeType | CrossChainTradeType
+  ): boolean {
+    return (this.refundAddressRequiredTradeTypes).includes(tradeType);
   }
 
   readonly destroyRef = inject(DestroyRef);

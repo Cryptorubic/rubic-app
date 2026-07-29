@@ -14,7 +14,6 @@ import {
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
@@ -43,8 +42,7 @@ export class DepositService {
     private readonly swapsFormService: SwapsFormService,
     private readonly storeService: StoreService,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly rubicApiService: RubicApiService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async updateTrade(
@@ -103,7 +101,7 @@ export class DepositService {
   }
 
   private async getClearswapDepositStatus(rubicId: string): Promise<CrossChainDepositStatus> {
-    const response = await this.onChainApiService.getClearswapStatus(rubicId);
+    const response = await this.rubicApiService.getClearswapStatus(rubicId);
 
     if (response.status === CLEARSWAP_STATUS.SUCCESS) {
       return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;

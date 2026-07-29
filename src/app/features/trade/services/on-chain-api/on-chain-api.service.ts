@@ -23,7 +23,6 @@ import {
   Token
 } from '@cryptorubic/core';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
-import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable()
 export class OnChainApiService {
@@ -148,14 +147,6 @@ export class OnChainApiService {
           delay(1000),
           map(res => res.pretrade_id)
         )
-    );
-  }
-
-  public getClearswapStatus(
-    id: string
-  ): Promise<{ status: CLEARSWAP_STATUS; stepsStatuses: string; destTxHash: string }> {
-    return firstValueFrom(
-      this.httpService.get(`v3/internal/statuses/clearswap/status?rubic_id=${id}`)
     );
   }
 }

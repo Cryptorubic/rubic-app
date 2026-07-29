@@ -62,6 +62,7 @@ import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-res
 import { ENVIRONMENT } from 'src/environments/environment';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { WA_NAVIGATOR, WA_WINDOW } from '@ng-web-apis/common';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable({
   providedIn: 'root'
@@ -448,6 +449,18 @@ export class RubicApiService {
       this.sdkLegacyService.httpClient.get<CrossChainTxStatusConfig>(
         `${this.apiUrl}/api/info/statusExtended?${params}`
       )
+    );
+  }
+
+  public getClearswapStatus(
+    id: string
+  ): Promise<{ status: CLEARSWAP_STATUS; stepsStatuses: string; destTxHash: string }> {
+    return firstValueFrom(
+      this.sdkLegacyService.httpClient.get<{
+        status: CLEARSWAP_STATUS;
+        stepsStatuses: string;
+        destTxHash: string;
+      }>(`${this.apiUrl}/api/info/clearswap/status?rubicId=${id}`)
     );
   }
 

@@ -5,7 +5,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
-import { CROSS_CHAIN_TRADE_TYPE, ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 
 @Injectable()
 export class RefundService {
@@ -17,6 +17,14 @@ export class RefundService {
   private readonly _isValidRefundAddress$ = new BehaviorSubject<boolean>(false);
 
   public readonly isValidRefundAddress$ = this._isValidRefundAddress$.asObservable();
+
+  private readonly refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTradeType)[] = [
+    CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+    CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
+    CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
+    CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
+    ON_CHAIN_TRADE_TYPE.CLEARSWAP
+  ];
 
   public get refundAddress(): string {
     return this.refundAddressCtrl.value;
@@ -49,13 +57,7 @@ export class RefundService {
   }
 
   public onTradeSelection(trade: SelectedTrade): void {
-    if (
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS ||
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.INSTASWAP ||
-      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO ||
-      trade.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP
-    ) {
+    if (this.isRefundAddressRequired(trade.tradeType)) {
       this.refundAddressCtrl.addValidators([Validators.required]);
       this._isValidRefundAddress$.next(false);
     } else {
@@ -64,5 +66,9 @@ export class RefundService {
     }
 
     this.refundAddressCtrl.updateValueAndValidity();
+  }
+
+  private isRefundAddressRequired(tradeType: OnChainTradeType | CrossChainTradeType): boolean {
+    return (this.refundAddressRequiredTradeTypes).includes(tradeType);
   }
 }

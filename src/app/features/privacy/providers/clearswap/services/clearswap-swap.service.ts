@@ -6,7 +6,6 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
-import { OnChainApiService } from '@app/features/trade/services/on-chain-api/on-chain-api.service';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, ErrorInterface, TokenAmount } from '@cryptorubic/core';
 import { RubicSdkError, TronAdapter, TX_STATUS } from '@cryptorubic/web3';
@@ -38,7 +37,6 @@ export class ClearswapSwapService {
     private readonly rubicApiService: RubicApiService,
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly notificationsService: NotificationsService,
-    private readonly onChainApiService: OnChainApiService,
     private readonly sdkService: SdkService
   ) {}
 
@@ -146,7 +144,7 @@ export class ClearswapSwapService {
         timer(5_000, 30_000).pipe(
           switchMap(() =>
             combineLatest([
-              this.onChainApiService.getClearswapStatus(id),
+              this.rubicApiService.getClearswapStatus(id),
               from(this.chainAdapter.getTransactionStatus(txHash)).pipe(
                 catchError(() => {
                   return of(TX_STATUS.PENDING);
