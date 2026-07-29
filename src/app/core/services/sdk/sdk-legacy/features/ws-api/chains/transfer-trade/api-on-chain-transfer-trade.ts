@@ -52,25 +52,11 @@ export class ApiOnChainTransferTrade extends OnChainTransferTrade {
     refundAddress?: string
   ): Promise<CrossChainTransferData> {
     const swapRequestData: SwapPrivateRequestInterface = {
-      srcTokenAddress: this.apiQuote.srcTokenAddress,
-      srcTokenBlockchain: this.apiQuote.srcTokenBlockchain,
-      srcTokenAmount: this.apiQuote.srcTokenAmount,
-      dstTokenAddress: this.apiQuote.dstTokenAddress,
-      dstTokenBlockchain: this.apiQuote.dstTokenBlockchain,
+      ...this.apiQuote,
       id: this.apiResponse.id,
       receiver: receiverAddress,
       refundAddress: refundAddress || '',
-      enableChecks: !testMode,
-      ...(this.apiQuote.integratorAddress && {
-        integratorAddress: this.apiQuote.integratorAddress
-      }),
-      ...(this.apiQuote.timeout !== undefined && { timeout: this.apiQuote.timeout }),
-      ...(this.apiQuote.showFailedRoutes !== undefined && {
-        showFailedRoutes: this.apiQuote.showFailedRoutes
-      }),
-      ...(this.apiQuote.showDangerousRoutes !== undefined && {
-        showDangerousRoutes: this.apiQuote.showDangerousRoutes
-      })
+      enableChecks: !testMode
     };
 
     const { estimate, transaction } = await this.transferRubicApiService.fetchSwapPrivateTrade(

@@ -396,22 +396,15 @@ export class SwapsStateService {
       if (aIsClearswap && !bIsClearswap) return -1;
       if (bIsClearswap && !aIsClearswap) return 1;
 
-      const aTrade = a.trade;
-      const bTrade = b.trade;
-
       let aValue: BigNumber;
       let bValue: BigNumber;
 
       if (isThereTokenWithoutPrice) {
-        aValue = aTrade?.to.tokenAmount ?? new BigNumber(0);
-        bValue = bTrade?.to.tokenAmount ?? new BigNumber(0);
+        aValue = a.trade.to.tokenAmount;
+        bValue = b.trade.to.tokenAmount;
       } else {
-        aValue = aTrade
-          ? (aTrade as OnChainTrade).to.price.multipliedBy(aTrade.to.tokenAmount)
-          : new BigNumber(0);
-        bValue = bTrade
-          ? (bTrade as OnChainTrade).to.price.multipliedBy(bTrade.to.tokenAmount)
-          : new BigNumber(0);
+        aValue = (a.trade as OnChainTrade).to.price.multipliedBy(a.trade.to.tokenAmount);
+        bValue = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
       }
 
       if (aValue.gt(bValue)) {

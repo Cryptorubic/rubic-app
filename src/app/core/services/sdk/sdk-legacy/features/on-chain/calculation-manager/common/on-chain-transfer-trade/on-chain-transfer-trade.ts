@@ -2,7 +2,6 @@ import {
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
-  SwapRequestInterface,
   Token
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -14,12 +13,9 @@ import {
 } from '../../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 import { FeeInfo } from '../../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { RubicStep } from '../../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
-import { TransferSwapRequestInterface } from '../../../../ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
-import { SwapResponseInterface } from '../../../../ws-api/models/swap-response-interface';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { BasicSendTransactionOptions, RubicSdkError, TradeExpiredError } from '@cryptorubic/web3';
-import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { BasicSendTransactionOptions, RubicSdkError } from '@cryptorubic/web3';
 import { OnChainTrade } from '../on-chain-trade/on-chain-trade';
 import { OnChainTransferConfig } from './models/on-chain-transfer-config';
 
@@ -180,32 +176,5 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       this.checkAmountChange(amount, this.to.stringWeiAmount);
     }
     return config;
-  }
-
-  protected override async fetchSwapData<Data>(
-    body: SwapRequestInterface | TransferSwapRequestInterface
-  ): Promise<SwapResponseInterface<Data>> {
-    try {
-      const res = await this.transferRubicApiService.fetchSwapData<Data>(body);
-      this.lastSwapResponse = res as RubicAny;
-      return res;
-    } catch (err) {
-      if (err instanceof TradeExpiredError) {
-        return this.refetchTransferTrade<Data>(body);
-      }
-
-      throw err;
-    }
-  }
-
-  private refetchTransferTrade<Data>(
-    body: SwapRequestInterface | TransferSwapRequestInterface
-  ): Promise<SwapResponseInterface<Data>> {
-    const res = this.transferRubicApiService.fetchBestSwapData<Data>({
-      ...body,
-      preferredProvider: this.type
-    });
-    this.lastSwapResponse = res as RubicAny;
-    return res;
   }
 }

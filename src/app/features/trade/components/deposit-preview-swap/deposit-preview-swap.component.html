@@ -60,25 +60,27 @@
       </div>
     </div>
 
-    <div class="required-step" *ngIf="state.isReceiverAddressRequired">
-      <div class="receiver-address-container">
-        <div class="receiver-address__title">
-          <img
-            class="receiver-address__title-icon"
-            src="assets/images/icons/yellow-warn.png"
-            width="15"
-            height="15"
-            alt="warn-icon"
-          />
-          <p class="receiver-address__title-text">You must have access to this address</p>
-        </div>
+    @if (state.isReceiverAddressRequired) {
+      <div class="required-step">
+        <div class="receiver-address-container">
+          <div class="receiver-address__title">
+            <img
+              class="receiver-address__title-icon"
+              src="assets/images/icons/yellow-warn.png"
+              width="15"
+              height="15"
+              alt="warn-icon"
+            />
+            <p class="receiver-address__title-text">You must have access to this address</p>
+          </div>
 
-        <app-target-network-address
-          [addressCtrl]="receiverAddressCtrl"
-          [placeholderText]="state.receiverAddressLabel"
-        ></app-target-network-address>
+          <app-target-network-address
+            [addressCtrl]="receiverAddressCtrl"
+            [placeholderText]="state.receiverAddressLabel"
+          ></app-target-network-address>
+        </div>
       </div>
-    </div>
+    }
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
@@ -114,7 +116,6 @@
 
     <div class="status-wrapper" [class.status-wrapper__inactive]="!state.canShowDepositAddress">
       <div class="row row-status">
-        <!-- Expired OR Awaiting deposit -->
         <div class="row-item status-item">
           @if (
             (state.status === 'waiting' && !state.canShowDepositAddress) || state.needTrustline
