@@ -79,7 +79,9 @@ export class TargetNetworkAddressService {
         validatedChain: input.toBlockchain
       })
     );
-    this.addressControl.updateValueAndValidity();
+    this.addressControl.updateValueAndValidity({
+      emitEvent: !this.addressControl.disabled
+    });
   }
 
   public setFormControlDisabled(disabled: boolean): void {
