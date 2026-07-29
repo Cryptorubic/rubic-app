@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { FormControl } from '@angular/forms';
+import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 
 @Component({
   standalone: false,
@@ -40,7 +41,12 @@ export class TargetNetworkAddressComponent {
   public readonly isIntegratorWidget =
     this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
-  constructor(private readonly queryParamsService: QueryParamsService) {}
+  public readonly isCorrectTargetAddressSet$ = this.targetNetworkAddressService.isAddressValid$;
+
+  constructor(
+    private readonly queryParamsService: QueryParamsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
+  ) {}
 
   public onFocusChange(isFocused: boolean): void {
     this.isActiveInput = isFocused || !!this.addressCtrl.value;

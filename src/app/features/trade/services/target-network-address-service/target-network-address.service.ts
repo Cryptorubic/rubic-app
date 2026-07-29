@@ -81,4 +81,12 @@ export class TargetNetworkAddressService {
     );
     this.addressControl.updateValueAndValidity();
   }
+
+  public setFormControlDisabled(disabled: boolean): void {
+    if (disabled) {
+      this.addressControl.disable({ emitEvent: false });
+    } else {
+      this.addressControl.enable({ emitEvent: false });
+    }
+  }
 }

@@ -231,6 +231,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.depositService.subs.forEach(sub => sub.unsubscribe());
     this.previewSwapService.deactivatePage();
+    this.targetAddressService.setFormControlDisabled(false);
   }
 
   public backToForm(): void {
@@ -340,6 +341,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
       .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe(isValid => {
         if (isValid) {
+          this.targetAddressService.setFormControlDisabled(true);
           this.setupTrade();
         }
       });
