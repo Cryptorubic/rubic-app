@@ -28,6 +28,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
 import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
+import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
 
 @Injectable()
 export class DepositTableService extends TableService<'date', DepositTrade, DepositTableData> {
@@ -64,7 +65,8 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
   constructor(
     protected readonly walletConnector: WalletConnectorService,
     private readonly storeService: StoreService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly tradeStatusService: TradeStatusService
   ) {
     super('date');
   }
@@ -163,7 +165,7 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
     if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
 
     if (trade.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
-      return from(this.rubicApiService.getClearswapStatus(trade.rubicId)).pipe(
+      return from(this.tradeStatusService.getClearswapStatus(trade.rubicId)).pipe(
         map(response => {
           if (response.status === CLEARSWAP_STATUS.SUCCESS) {
             return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
