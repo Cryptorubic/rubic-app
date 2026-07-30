@@ -353,10 +353,8 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     this.previewSwapService.handleTrustline();
   }
 
-  private isRefundAddressRequired(
-    tradeType: OnChainTradeType | CrossChainTradeType
-  ): boolean {
-    return (this.refundAddressRequiredTradeTypes).includes(tradeType);
+  private isRefundAddressRequired(tradeType: OnChainTradeType | CrossChainTradeType): boolean {
+    return this.refundAddressRequiredTradeTypes.includes(tradeType);
   }
 
   readonly destroyRef = inject(DestroyRef);

@@ -166,10 +166,10 @@ export class TokensListComponent implements OnInit {
     if (
       Boolean(
         tokensNetworkStateByAsset._pageLoading$.value ||
-          this.tokensSearchQuery ||
-          this.listType === 'favorite' ||
-          !tokensNetworkStateByAsset ||
-          !tokensNetworkStateByAsset.allowFetching
+        this.tokensSearchQuery ||
+        this.listType === 'favorite' ||
+        !tokensNetworkStateByAsset ||
+        !tokensNetworkStateByAsset.allowFetching
       )
     ) {
       return true;

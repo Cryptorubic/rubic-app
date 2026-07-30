@@ -26,8 +26,8 @@ export class RubicError<T extends ERROR_TYPE> extends Error {
     contentProvider: T extends ERROR_TYPE.TEXT
       ? TranslationKey
       : T extends ERROR_TYPE.COMPONENT
-      ? Component
-      : null,
+        ? Component
+        : null,
     data?: object,
     message?: string
   ) {

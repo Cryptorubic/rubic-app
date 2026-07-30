@@ -3,11 +3,7 @@ import { TokenType } from '@features/trade/services/proxy-fee-service/models/tok
 import { FeeValue } from '@features/trade/services/proxy-fee-service/models/fee-value';
 
 export type OnChainTypes =
-  | 'nativeStableSwap'
-  | 'stableSwap'
-  | 'stableTokenSwap'
-  | 'stableWnativeSwap'
-  | 'tokenSwap';
+  'nativeStableSwap' | 'stableSwap' | 'stableTokenSwap' | 'stableWnativeSwap' | 'tokenSwap';
 
 export type OnChainTokenTypes = Exclude<
   `${TokenType}_${TokenType}`,

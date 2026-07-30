@@ -74,9 +74,8 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ...(fromAddress && { fromAddress }),
       ...(refundAddress && { refundAddress })
     };
-    const { estimate, transaction } = await this.fetchSwapData<CrossChainTransferConfig>(
-      swapRequestData
-    );
+    const { estimate, transaction } =
+      await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
 

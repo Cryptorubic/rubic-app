@@ -25,7 +25,7 @@
 
     <div class="token-card__symbol-name-container">
       <div class="token-card__symbol-container">
-        <span class="token-card__symbol">{{ token.symbol | shortenText : 10 }}</span>
+        <span class="token-card__symbol">{{ token.symbol | shortenText: 10 }}</span>
 
         <div
           *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN"
@@ -42,11 +42,11 @@
         </div>
       </div>
 
-      <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
+      <span class="token-card__name">{{ token.name | shortenText: 15 }}</span>
     </div>
 
     <div class="token-card__right">
-      <ng-container *ngLet="token | showPriceChange : listType as pcPercent">
+      <ng-container *ngLet="token | showPriceChange: listType as pcPercent">
         <div
           *ngIf="pcPercent !== null && listType !== 'allChains'"
           class="token-card__price-change-container"
@@ -61,7 +61,7 @@
       <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
         <div class="token-card__amount" *ngIf="token.amount.gt(0) || balanceLoading">
           <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left">{{
-            token.amount | bigNumberFormat | shortenAmount : 6 : 4
+            token.amount | bigNumberFormat | shortenAmount: 6 : 4
           }}</span>
           <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
         </div>

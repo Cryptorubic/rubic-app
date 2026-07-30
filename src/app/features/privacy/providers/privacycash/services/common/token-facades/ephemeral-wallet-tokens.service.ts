@@ -71,10 +71,10 @@ export class EphemeralWalletTokensService {
 
     const nativePromise = adapter
       .getBalance(ephemeralKeypair.publicKey.toBase58())
-      .then(balanceWei => ({ ...nativeTokensList.SOLANA, balanceWei } as MinimalTokenWithBalance))
+      .then(balanceWei => ({ ...nativeTokensList.SOLANA, balanceWei }) as MinimalTokenWithBalance)
       .catch(
         () =>
-          ({ ...nativeTokensList.SOLANA, balanceWei: new BigNumber(0) } as MinimalTokenWithBalance)
+          ({ ...nativeTokensList.SOLANA, balanceWei: new BigNumber(0) }) as MinimalTokenWithBalance
       );
     const tokensPromise = adapter.public.getParsedTokenAccountsByOwner(ephemeralKeypair.publicKey, {
       programId: TOKEN_PROGRAM_ID
@@ -88,7 +88,7 @@ export class EphemeralWalletTokensService {
           balanceWei: new BigNumber(
             accountInfo.account.data['parsed']['info']['tokenAmount']['amount']
           )
-        } as MinimalTokenWithBalance)
+        }) as MinimalTokenWithBalance
     );
 
     return [nativeToken, ...splTokens];

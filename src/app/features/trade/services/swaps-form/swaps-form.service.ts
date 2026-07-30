@@ -122,10 +122,10 @@ export class SwapsFormService {
       map(form =>
         Boolean(
           form.fromBlockchain &&
-            form.fromToken?.address &&
-            form.toBlockchain &&
-            form.toToken?.address &&
-            form.fromAmount?.actualValue?.gt(0)
+          form.fromToken?.address &&
+          form.toBlockchain &&
+          form.toToken?.address &&
+          form.fromAmount?.actualValue?.gt(0)
         )
       )
     ),

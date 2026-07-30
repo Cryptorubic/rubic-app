@@ -34,7 +34,7 @@
                   (error)="onImageError($event)"
                 />
 
-                {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.fromToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
                 {{ item.fromToken.symbol }}
               </div>
             </div>
@@ -48,7 +48,7 @@
                   [alt]="item.toToken.symbol"
                   (error)="onImageError($event)"
                 />
-                {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.toToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
                 {{ item.toToken.symbol }}
               </div>
             </div>
@@ -66,8 +66,8 @@
             </div>
           </td>
           <td *tuiCell="'date'" tuiTd>
-            {{ item?.date | date : 'MMM dd, yyyy' }}
-            {{ ' at ' + (item?.date | date : 'h:mm') }}
+            {{ item?.date | date: 'MMM dd, yyyy' }}
+            {{ ' at ' + (item?.date | date: 'h:mm') }}
           </td>
           <td *tuiCell="'status'" tuiTd>
             <a
@@ -115,7 +115,7 @@
                 (error)="onImageError($event)"
               />
 
-              {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+              {{ item.fromToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
               {{ item.fromToken.symbol }}
             </div>
           </div>
@@ -128,7 +128,7 @@
                 (error)="onImageError($event)"
               />
 
-              {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+              {{ item.toToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
               {{ item.toToken.symbol }}
             </div>
           </div>
@@ -151,7 +151,7 @@
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.date' | translate }}</div>
           <div class="mobile-view__row-value">
-            {{ item?.date | date : 'MMM dd, yyyy' }} {{ ' at ' + (item?.date | date : 'h:mm') }}
+            {{ item?.date | date: 'MMM dd, yyyy' }} {{ ' at ' + (item?.date | date: 'h:mm') }}
           </div>
         </div>
 

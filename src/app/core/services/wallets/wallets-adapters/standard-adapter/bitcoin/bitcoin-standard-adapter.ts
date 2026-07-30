@@ -15,7 +15,10 @@ export class BitcoinStandardAdapter
     return Buffer.from(this.wallet.accounts[0].publicKey).toString('hex');
   }
 
-  constructor(wallet: FeaturesWallet<BitcoinStandardFeatures>, private httpService: HttpService) {
+  constructor(
+    wallet: FeaturesWallet<BitcoinStandardFeatures>,
+    private httpService: HttpService
+  ) {
     super(wallet);
   }
 

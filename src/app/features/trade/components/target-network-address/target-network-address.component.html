@@ -26,11 +26,7 @@
   </tui-input>
 
   @if (!!addressCtrl.value && addressCtrl.enabled) {
-    <span
-      class="clear-btn"
-      [inlineSVG]="'assets/images/icons/close.svg'"
-      (click)="clear()"
-    ></span>
+    <span class="clear-btn" [inlineSVG]="'assets/images/icons/close.svg'" (click)="clear()"></span>
   }
 
   <ng-template #success>

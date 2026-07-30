@@ -135,7 +135,7 @@ export class PrivacyMainPageService {
               feeInfo,
               executionSteps: providerInfo.getExecutionStepsInfo(selectedTab)
               // minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
-            } as PrivateProviderInfoUI)
+            }) as PrivateProviderInfoUI
         );
       })
     );
