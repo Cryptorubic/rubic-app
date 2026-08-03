@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, filter, first, map } from 'rxjs';
 import { MAIN_FORM_TYPE, MainFormType } from './models';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { compareTokens } from '@shared/utils/utils';
 import { QueryParams } from '@core/services/query-params/models/query-params';
+import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
 
 @Injectable({ providedIn: 'root' })
 export class FormsTogglerService {
@@ -26,22 +27,26 @@ export class FormsTogglerService {
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly transferTokensService: TransferTokensService
   ) {}
 
   public selectForm(type: MainFormType): void {
     if (this.selectedForm === type) {
+      if (type === MAIN_FORM_TYPE.TRANSFER) {
+        this.applyTransferTokenValidation();
+      }
       return;
     }
 
     if (type === MAIN_FORM_TYPE.TRANSFER) {
-      this.syncToTokenWithFrom();
+      this.applyTransferTokenValidation();
     } else if (this.isTransferMode) {
       this.clearToTokenIfSameAsFrom();
     }
 
     this._selectedForm$.next(type);
-    this.patchTradeModeQueryParam(type);
+    this.patchFormTypeQueryParam(type);
   }
 
   public syncToTokenWithFrom(): void {
@@ -56,6 +61,35 @@ export class FormsTogglerService {
     });
   }
 
+  private applyTransferTokenValidation(): void {
+    if (this.transferTokensService.isLoaded) {
+      this.validateAndSyncTransferToken();
+      return;
+    }
+
+    this.transferTokensService.loaded$
+      .pipe(
+        filter(loaded => loaded),
+        first()
+      )
+      .subscribe(() => this.validateAndSyncTransferToken());
+  }
+
+  private validateAndSyncTransferToken(): void {
+    const { fromToken } = this.swapsFormService.inputValue;
+    if (fromToken && !this.transferTokensService.hasToken(fromToken)) {
+      this.swapsFormService.inputControl.patchValue({
+        fromToken: null,
+        toToken: null,
+        fromBlockchain: null,
+        toBlockchain: null
+      });
+      return;
+    }
+
+    this.syncToTokenWithFrom();
+  }
+
   private clearToTokenIfSameAsFrom(): void {
     const { fromToken, toToken } = this.swapsFormService.inputValue;
     if (fromToken && toToken && compareTokens(fromToken, toToken)) {
@@ -66,9 +100,9 @@ export class FormsTogglerService {
     }
   }
 
-  private patchTradeModeQueryParam(type: MainFormType): void {
+  private patchFormTypeQueryParam(type: MainFormType): void {
     this.queryParamsService.patchQueryParams({
-      tradeMode: type === MAIN_FORM_TYPE.SWAP ? null : type
+      formType: type === MAIN_FORM_TYPE.SWAP ? null : type
     } as Partial<QueryParams>);
   }
 }

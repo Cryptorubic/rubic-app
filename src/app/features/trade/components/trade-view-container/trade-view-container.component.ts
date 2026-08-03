@@ -76,6 +76,8 @@ export class TradeViewContainerComponent {
 
   public readonly chartInfo$ = this.chartService.chartInfo$;
 
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,

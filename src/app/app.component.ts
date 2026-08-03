@@ -148,7 +148,8 @@ export class AppComponent implements AfterViewInit {
     this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),
-      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
+      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean)),
+      this.tokensFacadeService.transferTokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');

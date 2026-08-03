@@ -6,7 +6,8 @@
     transactionState: transactionState$ | async,
     showSpindl: showSpindl$ | async,
     chartInfo: chartInfo$ | async,
-    mobile: mobile$ | async
+    mobile: mobile$ | async,
+    isTransferMode: isTransferMode$ | async
   };
 
 <div class="trade-view-container" [class.large-iframe-trade-view-container]="useLargeIframe">
@@ -57,9 +58,14 @@
       ></app-providers-list-general>
     }
 
-    <div class="chart-container" [style.display]="state.chartInfo.status.opened ? 'block' : 'none'">
-      <app-crypto-rate-chart></app-crypto-rate-chart>
-    </div>
+    @if (!state.isTransferMode) {
+      <div
+        class="chart-container"
+        [style.display]="state.chartInfo.status.opened ? 'block' : 'none'"
+      >
+        <app-crypto-rate-chart></app-crypto-rate-chart>
+      </div>
+    }
 
     <div
       class="banner-container"

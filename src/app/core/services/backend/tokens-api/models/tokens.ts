@@ -6,7 +6,8 @@ export enum ENDPOINTS {
   TOKENS = 'v2/tokens/',
   FAVORITE_TOKENS = 'v2/tokens/favorite/',
   TOKENS_SECURITY = 'v2/tokens_security/unknown_token',
-  NEW_TOKENS = 'v3/tmp/tokens/all'
+  NEW_TOKENS = 'v3/tmp/tokens/all',
+  TRANSFER_TOKENS = 'v3/internal/clearswap/available-transfer-tokens'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -74,6 +75,21 @@ export interface NewTokensBackendResponse {
 
 export interface TokenSecurityBackendResponse {
   readonly token_security: TokenSecurity;
+}
+
+export interface TransferBackendToken {
+  address: string;
+  network: BlockchainName;
+  blockchainNetwork: BackendBlockchain;
+  symbol: string;
+  name: string;
+  decimals: number;
+  min_amount_in_usd: string;
+  min_amount: string;
+}
+
+export interface TransferTokensBackendResponse {
+  tokens: TransferBackendToken[];
 }
 
 export interface TokensRequestQueryOptions {

@@ -8,6 +8,8 @@ import {
   NewTokensBackendResponse,
   RatedBackendToken,
   TokensBackendResponse,
+  TransferBackendToken,
+  TransferTokensBackendResponse,
   UtilityBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
@@ -28,6 +30,8 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import BigNumber from 'bignumber.js';
 
 export type QueryTokenParams =
   | {
@@ -343,5 +347,43 @@ export class NewTokensApiService {
           })
         )
       );
+  }
+
+  public fetchTransferTokens(): Observable<BalanceToken[]> {
+    return this.httpService
+      .get<TransferTokensBackendResponse>(ENDPOINTS.TRANSFER_TOKENS, {}, this.tokensApiUrl, {
+        retry: 2,
+        timeoutMs: 15_000,
+        external: true
+      })
+      .pipe(
+        map(response => this.prepareTransferTokens(response.tokens ?? [])),
+        catchError(() => of([]))
+      );
+  }
+
+  private prepareTransferTokens(tokens: TransferBackendToken[]): BalanceToken[] {
+    return tokens
+      .map(token => {
+        const blockchain = FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork as BackendBlockchain];
+        if (!blockchain || DISABLED_BLOCKCHAINS_MAP[blockchain]) {
+          return null;
+        }
+
+        return {
+          blockchain,
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: DEFAULT_TOKEN_IMAGE,
+          rank: 0,
+          price: 0,
+          networkRank: 1,
+          amount: new BigNumber(NaN),
+          favorite: false
+        } as BalanceToken;
+      })
+      .filter((token): token is BalanceToken => Boolean(token?.address && token.blockchain));
   }
 }

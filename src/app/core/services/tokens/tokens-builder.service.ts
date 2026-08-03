@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { map, tap } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import {
   sorterByBalance,
@@ -17,6 +17,8 @@ import {
 } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
 import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
 import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +27,10 @@ export class TokensBuilderService {
   private readonly tokensCollectionsFacade = inject(TokensCollectionsFacadeService);
 
   private readonly balanceService = inject(TokensBalanceService);
+
+  private readonly formsTogglerService = inject(FormsTogglerService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
 
   public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {
     if (BlockchainsInfo.isBlockchainName(type)) {
@@ -46,18 +52,22 @@ export class TokensBuilderService {
 
   /**
    * @param type
-   * @param _query
+   * @param query
    * @param direction
    * @param inputValue in PrivateMode inputValue is empty object or object with nullable fields
    * @returns
    */
   public getTokensList(
     type: AssetListType,
-    _query: string,
+    query: string,
     direction: 'from' | 'to',
     inputValue: Partial<SwapFormInput>,
     fetchBalances: boolean
   ): Observable<AvailableTokenAmount[]> {
+    if (this.formsTogglerService.isTransferMode) {
+      return this.getTransferTokensList(type, query, fetchBalances);
+    }
+
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
@@ -96,6 +106,49 @@ export class TokensBuilderService {
           return sortedByOpposite.sort(sorterByBalance);
         }
         return sortedByOpposite;
+      })
+    );
+  }
+
+  private getTransferTokensList(
+    type: AssetListType,
+    query: string,
+    fetchBalances: boolean
+  ): Observable<AvailableTokenAmount[]> {
+    return this.transferTokensService.transferTokens$.pipe(
+      distinctObjectUntilChanged(),
+      tap((tokens: BalanceToken[]) => {
+        if (fetchBalances) {
+          this.balanceService.fetchDifferentChainsBalances(tokens, false);
+        }
+      }),
+      map((tokens: BalanceToken[]) => {
+        let filteredTokens = tokens;
+
+        if (BlockchainsInfo.isBlockchainName(type)) {
+          filteredTokens = filteredTokens.filter(token => token.blockchain === type);
+        }
+
+        const normalizedQuery = query?.trim().toLowerCase();
+        if (normalizedQuery && normalizedQuery.length >= 2) {
+          filteredTokens = filteredTokens.filter(
+            token =>
+              token.name.toLowerCase().includes(normalizedQuery) ||
+              token.symbol.toLowerCase().includes(normalizedQuery) ||
+              compareAddresses(normalizedQuery, token.address)
+          );
+        }
+
+        const mappedTokens: AvailableTokenAmount[] = filteredTokens.map(token => ({
+          ...token,
+          available: true,
+          amount: token?.amount?.gt(0) ? token.amount : new BigNumber(NaN)
+        }));
+
+        if (BlockchainsInfo.isBlockchainName(type)) {
+          return mappedTokens.sort(sorterByChain);
+        }
+        return mappedTokens.sort(sorterByBalance);
       })
     );
   }

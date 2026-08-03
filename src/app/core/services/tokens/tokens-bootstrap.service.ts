@@ -5,6 +5,7 @@ import { BlockchainName } from '@cryptorubic/core';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
+import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class TokensBootstrapService {
   protected readonly apiService = inject(NewTokensApiService);
 
   protected readonly tokensCollectionsFacade = inject(TokensCollectionsFacadeService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
 
   protected readonly _tier1TokensLoaded$ = new BehaviorSubject<boolean>(false);
 
@@ -27,6 +30,12 @@ export class TokensBootstrapService {
         this.buildUtilityList();
       }
     );
+  }
+
+  public buildTransferTokenList(): void {
+    this.apiService.fetchTransferTokens().subscribe(tokens => {
+      this.transferTokensService.setTokens(tokens);
+    });
   }
 
   private buildUtilityList(): void {

@@ -6,6 +6,7 @@ import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-
 import { inject, Injectable } from '@angular/core';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,8 @@ export class TokensQueryService {
   private readonly tokensStore = inject(NewTokensStoreService);
 
   private readonly tokensCollections = inject(TokensCollectionsFacadeService);
+
+  private readonly formsTogglerService = inject(FormsTogglerService);
 
   private readonly _tokenQuery$ = new BehaviorSubject<{
     listType: AssetListType;
@@ -32,8 +35,13 @@ export class TokensQueryService {
         return;
       }
       const { listType, query } = object;
+
       if (BlockchainsInfo.isBlockchainName(listType)) {
-        this.tokensStore.setQueryAndFetch(listType, query);
+        if (this.formsTogglerService.isTransferMode) {
+          this.tokensStore.setQuery(listType, query);
+        } else {
+          this.tokensStore.setQueryAndFetch(listType, query);
+        }
       } else {
         const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
           allChains: this.tokensCollections.allTokens,
