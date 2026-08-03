@@ -1,18 +1,20 @@
-<app-window-container
-  *ngLet="{
+@let state =
+  {
     displayReceiver: displayTargetAddressInput$ | async,
     isMobile: isMobile$ | async,
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
     toAmount: toAmount$ | async,
-    toBlockchain: toBlockchain$ | async
-  } as state"
->
+    toBlockchain: toBlockchain$ | async,
+    isTransferMode: isTransferMode$ | async
+  };
+
+<app-window-container>
   <app-form-header></app-form-header>
   <div class="form__container">
     <app-input-output-container
-      [round]="!state.isMobile ? 'top' : 'none'"
+      [round]="state.isTransferMode || !state.isMobile ? 'top' : 'none'"
       [marginTop]="state.isMobile"
     >
       <app-asset-selector
@@ -35,39 +37,45 @@
         ></app-user-balance-container>
       </div>
     </app-input-output-container>
-    <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-    <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
-      <app-asset-selector
-        left
-        selectorType="to"
-        [asset]="state.toAsset"
-        (handleAssetSelection)="openSelector('to', state.isMobile)"
-      ></app-asset-selector>
-      <div right class="input-container">
-        <app-amount-transput
-          formType="to"
-          [selectedToken]="state.toAsset"
-          inputMode="output"
-          [amountValue]="state.toAmount"
-        ></app-amount-transput>
-        <app-tokens-rate></app-tokens-rate>
-      </div>
-    </app-input-output-container>
+
+    @if (!state.isTransferMode) {
+      <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+      <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
+        <app-asset-selector
+          left
+          selectorType="to"
+          [asset]="state.toAsset"
+          (handleAssetSelection)="openSelector('to', state.isMobile)"
+        ></app-asset-selector>
+        <div right class="input-container">
+          <app-amount-transput
+            formType="to"
+            [selectedToken]="state.toAsset"
+            inputMode="output"
+            [amountValue]="state.toAmount"
+          ></app-amount-transput>
+          <app-tokens-rate></app-tokens-rate>
+        </div>
+      </app-input-output-container>
+    }
   </div>
 
-  <app-target-network-address
-    *ngIf="state.displayReceiver"
-    [addressCtrl]="receiverCtrl"
-    @receiverAnimation
-  ></app-target-network-address>
+  @if (state.isTransferMode || state.displayReceiver) {
+    <app-target-network-address
+      [addressCtrl]="receiverCtrl"
+      @receiverAnimation
+    ></app-target-network-address>
+  }
 
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
-      <app-receiver-address-button
-        [toBlockchain]="state.toBlockchain ? state.toBlockchain : 'target network'"
-        (handleClick)="toggleReceiver()"
-      ></app-receiver-address-button>
+      @if (!state.isTransferMode && state.toBlockchain) {
+        <app-receiver-address-button
+          [toBlockchain]="state.toBlockchain || 'target network'"
+          (handleClick)="toggleReceiver()"
+        ></app-receiver-address-button>
+      }
     </div>
   </ng-container>
 </app-window-container>

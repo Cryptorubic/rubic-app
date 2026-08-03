@@ -68,7 +68,7 @@ export class SwapsFormService {
     shareReplay(shareReplayConfig)
   );
 
-  public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
+  public readonly toBlockchain$: Observable<BlockchainName | null> = this.inputValue$.pipe(
     map(inputValue => inputValue.toBlockchain),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)

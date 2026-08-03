@@ -1,13 +1,36 @@
-<div *ngLet="chartInfo$ | async as chartInfo" class="form-header">
+@let state =
+  {
+    chartInfo: chartInfo$ | async,
+    selectedForm: selectedForm$ | async
+  };
+
+<div class="form-header">
   <div class="form-header__links">
     <ng-container
-      *ngTemplateOutlet="formTypeSelector; context: { type: 'swapForm', text: 'Swap' }"
+      *ngTemplateOutlet="
+        formTypeSelector;
+        context: {
+          type: MAIN_FORM_TYPE.SWAP,
+          text: 'Swap',
+          active: state.selectedForm === MAIN_FORM_TYPE.SWAP
+        }
+      "
+    ></ng-container>
+    <ng-container
+      *ngTemplateOutlet="
+        formTypeSelector;
+        context: {
+          type: MAIN_FORM_TYPE.TRANSFER,
+          text: 'Private Transfer',
+          active: state.selectedForm === MAIN_FORM_TYPE.TRANSFER
+        }
+      "
     ></ng-container>
   </div>
 
   <div class="form-header__actions">
     <app-chart-toggler
-      [showChart]="chartInfo.status.opened"
+      [showChart]="state.chartInfo.status.opened"
       (handleClick)="toggleChart()"
     ></app-chart-toggler>
     <app-refresh-button
@@ -17,8 +40,12 @@
     <app-settings-container></app-settings-container>
   </div>
 
-  <ng-template #formTypeSelector let-type="type" let-text="text">
-    <div class="form-header__link">
+  <ng-template #formTypeSelector let-type="type" let-text="text" let-active="active">
+    <div
+      class="form-header__link"
+      [class.form-header__link_active]="active"
+      (click)="selectForm(type)"
+    >
       <span class="form-header__link-title">
         {{ text }}
       </span>

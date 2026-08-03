@@ -21,6 +21,14 @@
   &__link {
     position: relative;
 
+    cursor: pointer;
+
+    &_active {
+      color: var(--tui-text-primary);
+      text-decoration-line: underline;
+      text-decoration-color: #00e28d;
+    }
+
     &-new {
       position: absolute;
       top: -7px;
