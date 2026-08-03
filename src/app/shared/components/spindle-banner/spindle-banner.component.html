@@ -6,7 +6,7 @@
 >
   <div *ngIf="state.src" class="spindle-banner">
     <iframe
-      [src]="state.src | safeSanitizer : 'resourceUrl'"
+      [src]="state.src | safeSanitizer: 'resourceUrl'"
       [width]="state.size.width"
       [height]="state.size.height"
       title="SpindleAds"

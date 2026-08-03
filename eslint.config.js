@@ -48,8 +48,7 @@ export default defineConfig([
     },
 
     rules: {
-      // TODO enable later separately to fix linting
-      // 'prettier/prettier': 'error',
+      'prettier/prettier': 'error',
       'import/prefer-default-export': 'off',
       '@typescript-eslint/no-useless-constructor': 'off',
       'no-plusplus': 'off',
@@ -173,7 +172,6 @@ export default defineConfig([
       'rxjs-x/prefer-root-operators': 'off'
     }
   },
-  // TODO enable prettier later separately to fix linting
   {
     files: ['**/*.component.html'],
 
@@ -184,13 +182,13 @@ export default defineConfig([
     extends: [
       ...compat.extends(
         'plugin:@angular-eslint/template/recommended',
-        // 'plugin:prettier/recommended'
+        'plugin:prettier/recommended'
       ),
-      // prettierConfig
+      prettierConfig
     ],
 
     rules: {
-      // 'prettier/prettier': ['error', { parser: 'angular' }],
+      'prettier/prettier': ['error', { parser: 'angular' }],
 
       'max-len': [
         'warn',

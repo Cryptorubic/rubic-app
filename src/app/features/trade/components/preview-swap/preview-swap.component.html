@@ -45,7 +45,7 @@
             <div class="preview__amount-container">
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
               </div>
               <div
@@ -83,7 +83,7 @@
               </div>
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
               </div>
             </div>
@@ -144,7 +144,7 @@
             <div class="preview__amount-container">
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
               <div
@@ -179,7 +179,7 @@
               </div>
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
             </div>
@@ -221,7 +221,7 @@
           size="m"
           [safetyLink]="
             state.transaction.data.hash
-              | scannerLink : state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
+              | scannerLink: state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
           "
         >
           Explorer

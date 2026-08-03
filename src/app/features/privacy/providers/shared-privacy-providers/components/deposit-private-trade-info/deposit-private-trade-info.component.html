@@ -1,6 +1,6 @@
 <app-window-container
   *ngLet="{
-    wallet: walletAddress$ | async,
+    wallet: walletAddress$ | async
   } as state"
 >
   <ng-container header>Transaction details</ng-container>
@@ -21,11 +21,11 @@
       [description]="text.receiver.description"
     >
       <div class="receiver-container">
-        {{ state.wallet | shortAddress : 5 : 5 }}
+        {{ state.wallet | shortAddress: 5 : 5 }}
 
         <a
           [safetyLink]="
-            state.wallet | scannerLink : tradeInfo.trade.to.blockchain : ADDRESS_TYPE.WALLET
+            state.wallet | scannerLink: tradeInfo.trade.to.blockchain : ADDRESS_TYPE.WALLET
           "
         >
           <img
@@ -45,7 +45,7 @@
         <div class="row">
           {{
             tradeInfo.extraField.value.length > 25
-              ? (tradeInfo.extraField.value | shortAddress : 10 : 10)
+              ? (tradeInfo.extraField.value | shortAddress: 10 : 10)
               : tradeInfo.extraField.value
           }}
           <app-copy-container [text]="tradeInfo.extraField.value"></app-copy-container>

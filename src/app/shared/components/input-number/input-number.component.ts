@@ -57,7 +57,10 @@ export class InputNumberComponent implements OnInit {
 
   public readonly inputControl = new FormControl<number>(this._value, { validators: [] });
 
-  constructor(private readonly elRef: ElementRef, private readonly renderer: Renderer2) {}
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly renderer: Renderer2
+  ) {}
 
   ngOnInit(): void {
     this.inputControl.setValidators([Validators.min(this.min), Validators.max(this.max)]);

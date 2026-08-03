@@ -25,7 +25,5 @@ interface SolanaTradesApi {
 }
 
 export type InstantTradesPostApi = (
-  | InstantTradesUniswapAbstractApi
-  | InstantTradesOneInchApi
-  | SolanaTradesApi
+  InstantTradesUniswapAbstractApi | InstantTradesOneInchApi | SolanaTradesApi
 ) & { user: string; fee?: number; promocode?: string };

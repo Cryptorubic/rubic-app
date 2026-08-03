@@ -68,8 +68,8 @@ export class TradeInfoManager {
       const time95PercentsSwapsMins = betweenChainsInfo
         ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
         : Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
-        ? Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
-        : averageTimeMins;
+          ? Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
+          : averageTimeMins;
 
       return { averageTimeMins, time95PercentsSwapsMins };
     } else {

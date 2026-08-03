@@ -103,77 +103,83 @@ export class NewTokensStoreService {
   }
 
   private createBlockchainUtilityStore(): BlockchainUtilityState {
-    return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
-      const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
-      const loadingSubject$ = new BehaviorSubject(true);
-      const balanceLoadingSubject$ = new BehaviorSubject(false);
+    return Object.values(BLOCKCHAIN_NAME).reduce(
+      (acc, blockchain) => {
+        const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
+        const loadingSubject$ = new BehaviorSubject(true);
+        const balanceLoadingSubject$ = new BehaviorSubject(false);
 
-      acc[blockchain] = {
-        _pageLoading$: loadingSubject$,
-        pageLoading$: loadingSubject$.asObservable(),
+        acc[blockchain] = {
+          _pageLoading$: loadingSubject$,
+          pageLoading$: loadingSubject$.asObservable(),
 
-        _balanceLoading$: balanceLoadingSubject$,
-        balanceLoading$: balanceLoadingSubject$.asObservable(),
+          _balanceLoading$: balanceLoadingSubject$,
+          balanceLoading$: balanceLoadingSubject$.asObservable(),
 
-        blockchain,
+          blockchain,
 
-        _tokensObject$: tokensSubject$,
-        tokensObject$: tokensSubject$.asObservable(),
-        tokens$: tokensSubject$.asObservable().pipe(map(el => Object.values(el)))
-      };
-      return acc;
-    }, {} as unknown as BlockchainUtilityState);
+          _tokensObject$: tokensSubject$,
+          tokensObject$: tokensSubject$.asObservable(),
+          tokens$: tokensSubject$.asObservable().pipe(map(el => Object.values(el)))
+        };
+        return acc;
+      },
+      {} as unknown as BlockchainUtilityState
+    );
   }
 
   private createTokenStore(): TokensState {
-    return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
-      const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
-      const loadingSubject$ = new BehaviorSubject(true);
-      const balanceLoadingSubject$ = new BehaviorSubject(false);
-      const searchRefsSubject$ = new BehaviorSubject<TokenRef[]>([]);
-      const searchQuerySubject$ = new BehaviorSubject<string>('');
-      const searchQuery$ = searchQuerySubject$.asObservable();
+    return Object.values(BLOCKCHAIN_NAME).reduce(
+      (acc, blockchain) => {
+        const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
+        const loadingSubject$ = new BehaviorSubject(true);
+        const balanceLoadingSubject$ = new BehaviorSubject(false);
+        const searchRefsSubject$ = new BehaviorSubject<TokenRef[]>([]);
+        const searchQuerySubject$ = new BehaviorSubject<string>('');
+        const searchQuery$ = searchQuerySubject$.asObservable();
 
-      acc[blockchain] = {
-        _pageLoading$: loadingSubject$,
-        pageLoading$: loadingSubject$.asObservable().pipe(distinctUntilChanged()),
+        acc[blockchain] = {
+          _pageLoading$: loadingSubject$,
+          pageLoading$: loadingSubject$.asObservable().pipe(distinctUntilChanged()),
 
-        _balanceLoading$: balanceLoadingSubject$,
-        balanceLoading$: balanceLoadingSubject$.asObservable().pipe(distinctUntilChanged()),
+          _balanceLoading$: balanceLoadingSubject$,
+          balanceLoading$: balanceLoadingSubject$.asObservable().pipe(distinctUntilChanged()),
 
-        blockchain,
+          blockchain,
 
-        _tokensObject$: tokensSubject$,
-        tokensObject$: tokensSubject$.asObservable(),
-        tokens$: tokensSubject$.asObservable().pipe(
-          combineLatestWith(searchQuery$),
-          switchMap(([tokens, searchQuery]) => {
-            const allTokens = Object.values(tokens);
-            if (searchQuery && searchQuery.length >= 2) {
-              const filteredTokens = allTokens.filter(
-                token =>
-                  token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  token.address.toLowerCase().includes(searchQuery.toLowerCase())
-              );
-              return [filteredTokens];
-            }
-            return [allTokens];
-          })
-        ),
+          _tokensObject$: tokensSubject$,
+          tokensObject$: tokensSubject$.asObservable(),
+          tokens$: tokensSubject$.asObservable().pipe(
+            combineLatestWith(searchQuery$),
+            switchMap(([tokens, searchQuery]) => {
+              const allTokens = Object.values(tokens);
+              if (searchQuery && searchQuery.length >= 2) {
+                const filteredTokens = allTokens.filter(
+                  token =>
+                    token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    token.address.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+                return [filteredTokens];
+              }
+              return [allTokens];
+            })
+          ),
 
-        _searchRefs$: searchRefsSubject$,
-        searchRefs$: searchRefsSubject$.asObservable(),
-        _searchQuery$: searchQuerySubject$,
-        searchQuery$: searchQuery$,
+          _searchRefs$: searchRefsSubject$,
+          searchRefs$: searchRefsSubject$.asObservable(),
+          _searchQuery$: searchQuerySubject$,
+          searchQuery$: searchQuery$,
 
-        totalTokens: null,
-        page: 0,
-        allowFetching: true,
-        getTokens: () => tokensSubject$.getValue()
-      };
-      return acc;
-    }, {} as unknown as TokensState);
+          totalTokens: null,
+          page: 0,
+          allowFetching: true,
+          getTokens: () => tokensSubject$.getValue()
+        };
+        return acc;
+      },
+      {} as unknown as TokensState
+    );
   }
 
   public getAllTokens(): BalanceToken[] {

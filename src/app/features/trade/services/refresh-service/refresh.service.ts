@@ -52,7 +52,7 @@ export class RefreshService {
         this.isForcedRefresh = false;
       }
 
-      return isInitial /* || (isForcedRefresh && status !== REFRESH_STATUS.STOPPED) */;
+      return isInitial; /* || (isForcedRefresh && status !== REFRESH_STATUS.STOPPED) */
     })
   );
 

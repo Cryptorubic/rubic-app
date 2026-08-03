@@ -33,7 +33,7 @@
     [description]="text.minReceived.description"
   >
     <ng-container *ngIf="minAmount?.tokenAmount || minAmount as amount">{{
-      amount | bigNumberFormat | shortenAmount : 10 : 8
+      amount | bigNumberFormat | shortenAmount: 10 : 8
     }}</ng-container>
   </app-transaction-details-element>
 
@@ -43,11 +43,11 @@
     [description]="text.receiver.description"
   >
     <div class="receiver-container">
-      {{ state.wallet | shortAddress : 5 : 5 }}
+      {{ state.wallet | shortAddress: 5 : 5 }}
 
       <a
         *ngIf="state.trade?.to"
-        [safetyLink]="state.wallet | scannerLink : state.trade.to.blockchain : ADDRESS_TYPE.WALLET"
+        [safetyLink]="state.wallet | scannerLink: state.trade.to.blockchain : ADDRESS_TYPE.WALLET"
       >
         <img
           class="image"
