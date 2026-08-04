@@ -30,7 +30,6 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
-import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import BigNumber from 'bignumber.js';
 
 export type QueryTokenParams =
@@ -365,21 +364,18 @@ export class NewTokensApiService {
   private prepareTransferTokens(tokens: TransferBackendToken[]): BalanceToken[] {
     return tokens
       .map(token => {
-        const blockchain = FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork as BackendBlockchain];
-        if (!blockchain || DISABLED_BLOCKCHAINS_MAP[blockchain]) {
-          return null;
-        }
-
         return {
-          blockchain,
+          blockchain: token.network,
           address: token.address,
           name: token.name,
           symbol: token.symbol,
           decimals: token.decimals,
-          image: DEFAULT_TOKEN_IMAGE,
-          rank: 0,
-          price: 0,
-          networkRank: 1,
+          image: token.image,
+          rank: token.rank,
+          price: token.usdPrice,
+          networkRank: token.networkRank,
+          tokenSecurity: token.token_security,
+          type: token.type,
           amount: new BigNumber(NaN),
           favorite: false
         } as BalanceToken;

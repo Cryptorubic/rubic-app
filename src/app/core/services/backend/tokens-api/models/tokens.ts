@@ -77,15 +77,10 @@ export interface TokenSecurityBackendResponse {
   readonly token_security: TokenSecurity;
 }
 
-export interface TransferBackendToken {
-  address: string;
+export interface TransferBackendToken extends BackendToken {
   network: BlockchainName;
-  blockchainNetwork: BackendBlockchain;
-  symbol: string;
-  name: string;
-  decimals: number;
-  min_amount_in_usd: string;
-  min_amount: string;
+  minAmountInUsd: string;
+  minAmount: string;
 }
 
 export interface TransferTokensBackendResponse {
