@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/core';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
@@ -35,6 +36,27 @@ export class TokensBootstrapService {
   public buildTransferTokenList(): void {
     this.apiService.fetchTransferTokens().subscribe(tokens => {
       this.transferTokensService.setTokens(tokens);
+      this.addTransferTokensToStore(tokens);
+    });
+  }
+
+  private addTransferTokensToStore(tokens: BalanceToken[]): void {
+    const tokensByChain = tokens.reduce(
+      (acc, token) => {
+        if (!acc[token.blockchain]) {
+          acc[token.blockchain] = [];
+        }
+        acc[token.blockchain]!.push(token);
+        return acc;
+      },
+      {} as Partial<Record<BlockchainName, BalanceToken[]>>
+    );
+
+    Object.entries(tokensByChain).forEach(([blockchain, chainTokens]) => {
+      this.tokensStore.updateBlockchainTokens(
+        blockchain as BlockchainName,
+        chainTokens.map(({ amount: _amount, favorite: _favorite, ...token }) => token)
+      );
     });
   }
 

@@ -5,7 +5,7 @@ import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { map, tap } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -19,6 +19,7 @@ import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.s
 import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
+import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,8 @@ export class TokensBuilderService {
   private readonly formsTogglerService = inject(FormsTogglerService);
 
   private readonly transferTokensService = inject(TransferTokensService);
+
+  private readonly tokensStore = inject(NewTokensStoreService);
 
   public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {
     if (BlockchainsInfo.isBlockchainName(type)) {
@@ -115,7 +118,18 @@ export class TokensBuilderService {
     query: string,
     fetchBalances: boolean
   ): Observable<AvailableTokenAmount[]> {
-    return this.transferTokensService.transferTokens$.pipe(
+    return combineLatest([
+      this.transferTokensService.transferTokens$,
+      this.tokensStore.allTokens$
+    ]).pipe(
+      map(([transferTokens, allTokens]) =>
+        transferTokens.map(token => {
+          const fromStore = allTokens.find(storeToken => compareTokens(storeToken, token));
+          return fromStore?.amount && !fromStore.amount.isNaN()
+            ? { ...token, amount: fromStore.amount }
+            : token;
+        })
+      ),
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
         if (fetchBalances) {
