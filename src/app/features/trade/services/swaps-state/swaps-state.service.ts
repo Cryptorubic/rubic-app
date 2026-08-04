@@ -59,7 +59,7 @@ import { RubicSdkError } from '@cryptorubic/web3';
 export class SwapsStateService {
   private readonly defaultState: SelectedTrade = defaultTradeState;
 
-  private swapType: SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+  private swapType: SWAP_PROVIDER_TYPE | null = null;
 
   /**
    * Trade state
@@ -214,7 +214,7 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider?.trade?.type === wrappedTrade?.tradeType
+          provider => provider?.tradeType === wrappedTrade?.tradeType
         );
         // New or old
         if (providerIndex !== -1) {
@@ -232,9 +232,9 @@ export class SwapsStateService {
         } else if (trade) {
           currentTrades.push(defaultState);
         }
-      } else if (trade) {
-        // Make a new list with one element
-        currentTrades = [defaultState];
+      } else {
+        // Swap mode changed — discard previous providers
+        currentTrades = trade ? [defaultState] : [];
       }
     } else if (trade) {
       currentTrades.push(defaultState);
@@ -246,6 +246,7 @@ export class SwapsStateService {
   public clearProviders(isTradeError: boolean = false): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
+    this.swapType = null;
     this.tradePageService.setProvidersVisibility(false);
     if (isTradeError) {
       this.setCalculationProgress(1, 1);
@@ -269,6 +270,8 @@ export class SwapsStateService {
     let currentTrades = this._tradesStore$.getValue();
 
     if (currentTrades.length) {
+      currentTrades = this.filterTradesByCurrentSwapType(currentTrades);
+
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       const isThereTokenWithoutPrice = currentTrades
@@ -311,6 +314,36 @@ export class SwapsStateService {
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
     }
+  }
+
+  /**
+   * Safety net: keep only trades matching current form mode.
+   */
+  private filterTradesByCurrentSwapType(currentTrades: TradeState[]): TradeState[] {
+    const hasCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
+    const hasOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
+    if (!hasCrossChain || !hasOnChain) {
+      return currentTrades;
+    }
+
+    const { fromToken, toToken } = this.swapsFormService.inputValue;
+    if (!fromToken || !toToken) {
+      return currentTrades;
+    }
+
+    const expectOnChain = fromToken.blockchain === toToken.blockchain;
+    this.swapType = expectOnChain
+      ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+      : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+
+    return currentTrades.filter(tradeState => {
+      if (!tradeState?.trade) {
+        return false;
+      }
+      return expectOnChain
+        ? tradeState.trade instanceof OnChainTrade
+        : tradeState.trade instanceof CrossChainTrade;
+    });
   }
 
   /**
