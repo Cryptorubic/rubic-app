@@ -170,10 +170,10 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
           if (response.status === CLEARSWAP_STATUS.SUCCESS) {
             return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
           }
-          if (response.status === CLEARSWAP_STATUS.FAIL) {
-            return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+          if (response.status === CLEARSWAP_STATUS.PENDING) {
+            return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
           }
-          return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+          return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
         }),
         catchError(() => of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING))
       );
@@ -200,7 +200,8 @@ export class DepositTableService extends TableService<'date', DepositTrade, Depo
       failed: { appearance: 'error', label: 'Failed' },
       refunded: { appearance: 'success', label: 'Refunded' },
       verifying: { appearance: 'info', label: 'Verifying' },
-      expired: { appearance: 'info', label: 'Expired' }
+      expired: { appearance: 'info', label: 'Expired' },
+      hiding: { appearance: 'info', label: 'Hiding' }
     };
     return txStatusMapping[originalStatus];
   }

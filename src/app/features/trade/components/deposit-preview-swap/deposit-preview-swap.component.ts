@@ -209,6 +209,10 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     )
   );
 
+  public readonly isClearswap$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState!.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+  );
+
   public hintShown: boolean = false;
 
   constructor(

@@ -15,8 +15,10 @@ import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/feature
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
-import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
-import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
+import {
+  CLEARSWAP_STATUS,
+  CLEARSWAP_SUB_STATUS
+} from '@app/features/privacy/providers/clearswap/models/status';
 import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
 
 @Injectable()
@@ -108,18 +110,28 @@ export class DepositService {
     if (response.status === CLEARSWAP_STATUS.SUCCESS) {
       return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
     }
-    if (response.status === CLEARSWAP_STATUS.FAIL) {
-      return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+    if (response.status === CLEARSWAP_STATUS.PENDING) {
+      const subStatusValidValues: (keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS)[] = [
+        CLEARSWAP_SUB_STATUS.AWAITING_DEPOSIT,
+        CLEARSWAP_SUB_STATUS.CONFIRMING,
+        CLEARSWAP_SUB_STATUS.PENDING,
+        CLEARSWAP_SUB_STATUS.HIDING,
+        CLEARSWAP_SUB_STATUS.SENDING
+      ];
+      if (
+        subStatusValidValues.includes(
+          response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
+        )
+      ) {
+        return API_SUBSTATUS_TO_DEPOSIT_STATUS[
+          response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
+        ];
+      }
+
+      return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
     }
 
-    const stepsStatuses = response.stepsStatuses.split(':') as [
-      CrossChainTxStatusConfig['subStatus'],
-      CrossChainTxStatusConfig['subStatus']
-    ];
-    const secondProviderStatus = stepsStatuses[1]
-      ? API_SUBSTATUS_TO_DEPOSIT_STATUS[stepsStatuses[1]]
-      : CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
-    return secondProviderStatus;
+    return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
   }
 
   public setupUpdate(): void {
