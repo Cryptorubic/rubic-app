@@ -135,7 +135,7 @@ export class DepositService {
   }
 
   public setupUpdate(): void {
-    const sub = interval(30000)
+    const sub = interval(5_000)
       .pipe(
         startWith(-1),
         switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
