@@ -18,6 +18,7 @@ import { ProviderHintService } from '../../services/provider-hint/provider-hint.
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -55,6 +56,35 @@ export class ProvidersListComponent {
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
+  constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<
+      TradeProvider,
+      {
+        states: TradeState[];
+        selectedTradeType: TradeProvider;
+        calculationProgress: CalculationProgress;
+        isModal: boolean;
+        shortedInfo: boolean;
+        noRoutes: boolean;
+      }
+    >,
+    private readonly swapsFormService: SwapsFormService,
+    private readonly providerHintService: ProviderHintService,
+    private readonly tokensFacade: TokensFacadeService
+  ) {}
+
+  public isBestProvider(tradeState: TradeState): boolean {
+    const nonClearswap = this.states.filter(
+      state => state.tradeType !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
+    );
+    if (nonClearswap.length > 0) {
+      return tradeState.tradeType === nonClearswap[0].tradeType;
+    }
+    return false;
+  }
+
   public handleTradeSelection(
     event: MouseEvent,
     tradeType: TradeProvider,
@@ -74,23 +104,4 @@ export class ProvidersListComponent {
       this.selectTrade.emit(tradeType);
     }
   }
-
-  constructor(
-    @Optional()
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      TradeProvider,
-      {
-        states: TradeState[];
-        selectedTradeType: TradeProvider;
-        calculationProgress: CalculationProgress;
-        isModal: boolean;
-        shortedInfo: boolean;
-        noRoutes: boolean;
-      }
-    >,
-    private readonly swapsFormService: SwapsFormService,
-    private readonly providerHintService: ProviderHintService,
-    private readonly tokensFacade: TokensFacadeService
-  ) {}
 }

@@ -10,5 +10,13 @@
   "tabWidth": 2,
   "trailingComma": "none",
   "useTabs": false,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.component.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
 }

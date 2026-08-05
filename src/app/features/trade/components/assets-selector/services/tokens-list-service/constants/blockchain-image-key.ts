@@ -2,7 +2,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainImageKey: Record<BlockchainName, string> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: null } as Record<BlockchainName, string>),
+    (acc, blockchain) => ({ ...acc, [blockchain]: null }) as Record<BlockchainName, string>,
     {} as Record<BlockchainName, string>
   ),
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',

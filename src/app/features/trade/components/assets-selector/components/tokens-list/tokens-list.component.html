@@ -32,7 +32,7 @@
   <tui-loader [showLoader]="loading" [overlay]="true">
     <ng-container *ngIf="customToken === null; else customTokenTmpl">
       <!--standard mode -->
-      @if(!_tokensToShow?.length) {
+      @if (!_tokensToShow?.length) {
         <div class="tokens-container__empty-list">
           <app-empty-list
             [assetListType]="listType"

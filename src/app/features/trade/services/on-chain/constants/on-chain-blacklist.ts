@@ -81,7 +81,6 @@ export const onChainBlacklistProviders: OnChainTradeType[] = [
   ...new Set([
     ...Object.values(onChainBlacklist)
       .filter(providersPerChain => providersPerChain.length)
-      .flat(),
-    ON_CHAIN_TRADE_TYPE.CLEARSWAP
+      .flat()
   ])
 ];

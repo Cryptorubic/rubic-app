@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.6.7-rub-2831-0":
-  version "1.6.7-rub-2831-0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.6.7-rub-2831-0.tgz#c306153ebc7ad61807e3ac8f2d48dd5de490d9ab"
-  integrity sha512-Ne4hDa+8X0MZnPMtfxqooBGwyw87+6nuXJ2CfchjzDsUluF62lNglwZbyj5AIFu4VHsv5I2lqCPmrKBAffaEWg==
+"@cryptorubic/core@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.1.tgz#0ad2f30857c5a4ffb31b03c1cc7d738f5a2eba23"
+  integrity sha512-0NBtUVLK2EZ6moCr696zG3NNSLVHObgHPz4t8qlqrhB48jzNX5EwCrmt2/r1q0SShveZYmwckqEolwiHN7S0Nw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.6.7-rub-2831-0":
-  version "1.6.7-rub-2831-0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.6.7-rub-2831-0.tgz#d6c21b502a283f8b2caa8ad4f38bd62723a6ee49"
-  integrity sha512-cM1dBd31cbagepbRZRhu/RoPNJrk0FFk5CjS2dlDXRKlJ8aAAWoA1+Jv2p4Jdgqg1vJzOfj5zc9C4HGmUiJFTA==
+"@cryptorubic/web3@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.1.tgz#a50ec8dbfed8689648dc85beec162e48f78282cc"
+  integrity sha512-zbzabTEz6oqN9AH86uEVPuLR/YzJn0ZzAkEhfg/ARiKjBjfXM5TBTmp/C+zB2My2oMMnMF4tHY5TgOAELDGDQw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -21112,10 +21112,10 @@ prettier-linter-helpers@^1.0.1:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.4.1:
-  version "2.8.8"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
-  integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
+prettier@^3.6.2:
+  version "3.9.6"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.6.tgz#b3ea5146515d40fc53f18aa63f74dfab1e10dbf6"
+  integrity sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==
 
 prismjs@^1.30.0:
   version "1.30.0"
@@ -21123,9 +21123,9 @@ prismjs@^1.30.0:
   integrity sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==
 
 privacycash@^1.1.15:
-  version "1.1.23"
-  resolved "https://registry.yarnpkg.com/privacycash/-/privacycash-1.1.23.tgz#20d994caa677b5619fcdf97efa1ff251732dbf58"
-  integrity sha512-S9+hfcmbxf2IzFTw6eG8s9KWidDvO2nefdPWGrNcwJNocna9wfHy8xOtHQn/s50sjXkbXOAa1fZ+KilwWBVk6Q==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/privacycash/-/privacycash-1.2.2.tgz#c6df25bb04b780bd2e93a4c043336716a9c0f1a5"
+  integrity sha512-LxEE8x++DzeqQ8fzghpJYgxvaaYaLYvfgMEz+z4J2f+8yHAV60M0mhlgE7ygX9eQaxBOZqnaKDFq+yIWYfetBQ==
   dependencies:
     "@coral-xyz/anchor" "^0.31.1"
     "@ethersproject/keccak256" "^5.8.0"

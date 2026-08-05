@@ -79,7 +79,7 @@ export class PlatformConfigurationService {
     } as const;
     const blockchainStatuses = Object.entries(apiBlockchainsInfo).map(
       ([blockchain, info]) =>
-        ({ blockchain, tier: tierMap[info.tier], isActive: info.isActive } as BlockchainStatus)
+        ({ blockchain, tier: tierMap[info.tier], isActive: info.isActive }) as BlockchainStatus
     );
 
     this._availableBlockchains$.next(blockchainStatuses);

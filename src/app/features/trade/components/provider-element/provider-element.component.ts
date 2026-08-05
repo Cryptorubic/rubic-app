@@ -6,6 +6,10 @@ import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-m
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
+import { HeaderStore } from '@app/core/header/services/header.store';
+import BigNumber from 'bignumber.js';
 
 @Component({
   standalone: false,
@@ -15,19 +19,60 @@ import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderElementComponent {
-  @Input({ required: true }) tradeState: TradeState;
+  @Input({ required: true }) tradeState!: TradeState;
 
-  @Input({ required: true }) selectedTradeType: TradeProvider;
+  @Input({ required: true }) selectedTradeType!: TradeProvider;
 
   @Input({ required: true }) isBest: boolean = false;
 
   @Input({ required: true }) shortedInfo: boolean = false;
 
-  @Input({ required: true }) hideHint$: Observable<boolean>;
+  @Input({ required: true }) hideHint$!: Observable<boolean>;
 
   public expanded = false;
 
-  constructor(private readonly tradeInfoManager: TradeInfoManager) {}
+  public get isClearswap(): boolean {
+    return this.tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+  }
+
+  public get isShortedMobileClearswap(): boolean {
+    return this.shortedInfo && this.isMobile && this.isClearswap;
+  }
+
+  public get minMaxErrorAmount(): BigNumber | null {
+    const error = this.tradeState?.error;
+    if (!error) return null;
+
+    if (error instanceof MinAmountError) {
+      return error.minAmount;
+    }
+    if (error instanceof MaxAmountError) {
+      return error.maxAmount;
+    }
+
+    return null;
+  }
+
+  public get minMaxErrorLabel(): string | null {
+    const error = this.tradeState?.error;
+    if (!error) return null;
+
+    if (error instanceof MinAmountError) {
+      return `min ${error.minAmount} ${error.tokenSymbol}`;
+    }
+    if (error instanceof MaxAmountError) {
+      return `max ${error.maxAmount} ${error.tokenSymbol}`;
+    }
+
+    return null;
+  }
+
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly headerStore: HeaderStore
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -36,6 +81,7 @@ export class ProviderElementComponent {
   }
 
   public getAverageTimeString(): string {
+    if (this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP) return '3 mins';
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
@@ -55,7 +101,7 @@ export class ProviderElementComponent {
     return this.tradeInfoManager.getProviderInfo(this.tradeState.trade);
   }
 
-  public getFeeInfo(): AppFeeInfo {
+  public getFeeInfo(): AppFeeInfo | null {
     return this.tradeInfoManager.getFeeInfo(this.tradeState.trade);
   }
 

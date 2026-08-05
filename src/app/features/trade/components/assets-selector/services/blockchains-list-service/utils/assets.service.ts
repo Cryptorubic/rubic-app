@@ -124,8 +124,8 @@ export abstract class AssetsService {
       const walletNetwork = networkFromWallet ?? null;
       const currentSelectedNetwork =
         this.type === 'from'
-          ? input?.fromToken?.blockchain ?? null
-          : input?.toToken?.blockchain ?? null;
+          ? (input?.fromToken?.blockchain ?? null)
+          : (input?.toToken?.blockchain ?? null);
       const fromTokenChain = input?.fromToken?.blockchain ?? null;
       const toTokenChain = input?.toToken?.blockchain ?? null;
 

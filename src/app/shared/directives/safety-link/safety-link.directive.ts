@@ -26,7 +26,10 @@ export class SafetyLinkDirective {
 
   private _link: string;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string, private router: Router) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
+    private router: Router
+  ) {}
 
   @HostListener('click', ['$event'])
   private linkClick(event: MouseEvent): void {

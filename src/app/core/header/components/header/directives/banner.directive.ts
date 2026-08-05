@@ -17,7 +17,10 @@ export class BannerDirective {
     }
   }
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {
+  constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer2
+  ) {
     renderer.addClass(elementRef.nativeElement, 'banner');
   }
 }

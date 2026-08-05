@@ -144,9 +144,8 @@ export class OnChainService {
 
     const receiverAddress = this.receiverAddress;
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const referrer = this.sessionStorage.getItem('referral');
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
@@ -248,9 +247,8 @@ export class OnChainService {
       }
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
-        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
-          transactionHash
-        );
+        const txStatus =
+          await this.sdkService.onChainStatusManager.getStellarSwapStatus(transactionHash);
         if (txStatus.status !== TX_STATUS.SUCCESS) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
         }
@@ -279,9 +277,8 @@ export class OnChainService {
     }
     const { blockchain, fromAmount, fromDecimals } = TradeParser.getItSwapParams(trade);
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const transactionOptions = {
       onTransactionHash: callback,

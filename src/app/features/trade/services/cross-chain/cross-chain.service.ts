@@ -228,9 +228,8 @@ export class CrossChainService {
 
     const blockchain = trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const referrer = this.sessionStorage.getItem('referral');
 
@@ -279,9 +278,8 @@ export class CrossChainService {
 
     const blockchain = trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     let swapOptions: EvmBasicTransactionOptions = {};
 

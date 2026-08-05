@@ -4,7 +4,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
-import { CrossChainTransferTrade } from '../../models/cn-trade';
+import { DepositTrade, DepositTradeType } from '../../models/deposit-trade';
 import {
   API_STATUS_TO_DEPOSIT_STATUS,
   API_SUBSTATUS_TO_DEPOSIT_STATUS,
@@ -14,8 +14,10 @@ import {
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { TransferTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
+import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
+import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
 
 @Injectable()
 export class DepositService {
@@ -23,11 +25,11 @@ export class DepositService {
 
   private readonly maxLatestTrades = 10;
 
-  public get depositRecentTrades(): CrossChainTransferTrade[] {
+  public get depositRecentTrades(): DepositTrade[] {
     return this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
   }
 
-  private readonly _depositTrade$ = new BehaviorSubject<CrossChainTransferTrade | null>(null);
+  private readonly _depositTrade$ = new BehaviorSubject<DepositTrade | null>(null);
 
   public readonly depositTrade$ = this._depositTrade$.asObservable().pipe(skip(1));
 
@@ -42,7 +44,7 @@ export class DepositService {
     private readonly storeService: StoreService,
     private readonly previewSwapService: PreviewSwapService,
     private readonly rubicApiService: RubicApiService,
-    private readonly notificationsService: NotificationsService
+    private readonly tradeStatusService: TradeStatusService
   ) {}
 
   public async updateTrade(
@@ -65,7 +67,7 @@ export class DepositService {
       depositAddress: paymentInfo.depositAddress,
       receiverAddress,
       extraField: paymentInfo.extraField,
-      tradeType: selectedTrade.tradeType as TransferTradeType
+      tradeType: selectedTrade.tradeType as DepositTradeType
     };
     this._depositTrade$.next(trade);
 
@@ -76,6 +78,11 @@ export class DepositService {
     try {
       if (!rubicId) {
         throw new Error(`[DepositService_getSwapStatus] Deposid id can't be undefined.`);
+      }
+
+      const tradeType = this._depositTrade$.value?.tradeType;
+      if (tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+        return this.getClearswapDepositStatus(rubicId);
       }
 
       const response = await this.rubicApiService.fetchCrossChainTxStatusExtended(rubicId);
@@ -93,6 +100,26 @@ export class DepositService {
       console.log(err);
       return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
     }
+  }
+
+  private async getClearswapDepositStatus(rubicId: string): Promise<CrossChainDepositStatus> {
+    const response = await this.tradeStatusService.getClearswapStatus(rubicId);
+
+    if (response.status === CLEARSWAP_STATUS.SUCCESS) {
+      return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+    }
+    if (response.status === CLEARSWAP_STATUS.FAIL) {
+      return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+    }
+
+    const stepsStatuses = response.stepsStatuses.split(':') as [
+      CrossChainTxStatusConfig['subStatus'],
+      CrossChainTxStatusConfig['subStatus']
+    ];
+    const secondProviderStatus = stepsStatuses[1]
+      ? API_SUBSTATUS_TO_DEPOSIT_STATUS[stepsStatuses[1]]
+      : CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+    return secondProviderStatus;
   }
 
   public setupUpdate(): void {
@@ -113,7 +140,7 @@ export class DepositService {
     this._status$.next(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
   }
 
-  private saveTrade(tradeData: CrossChainTransferTrade): void {
+  private saveTrade(tradeData: DepositTrade): void {
     const currentUsersTrades = [...(this.depositRecentTrades || [])];
 
     if (currentUsersTrades?.length === this.maxLatestTrades) {
