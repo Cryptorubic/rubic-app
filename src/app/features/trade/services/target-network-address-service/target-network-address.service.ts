@@ -1,18 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, debounceTime, startWith, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  defer,
+  shareReplay,
+  startWith,
+  switchMap
+} from 'rxjs';
 import { BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 import { Web3Pure } from '@cryptorubic/web3';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()
 export class TargetNetworkAddressService {
   public readonly addressControl = new FormControl<string>('', { nonNullable: true });
 
-  public readonly address$ = this.addressControl.valueChanges.pipe(
-    startWith(this.addressControl.value)
-  );
+  public readonly address$ = defer(() =>
+    this.addressControl.valueChanges.pipe(startWith(this.addressControl.value))
+  ).pipe(shareReplay(shareReplayConfig));
 
   public get address(): string {
     return this.addressControl.value;
@@ -31,7 +40,8 @@ export class TargetNetworkAddressService {
       async ([address, toBlockchain]) =>
         address === '' ||
         (!!address && !!toBlockchain && (await Web3Pure.isAddressCorrect(toBlockchain, address)))
-    )
+    ),
+    shareReplay(shareReplayConfig)
   );
 
   constructor(
