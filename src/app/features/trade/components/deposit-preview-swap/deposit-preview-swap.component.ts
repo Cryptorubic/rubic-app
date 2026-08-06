@@ -161,7 +161,9 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     map(blockchain => `Receiver Address (${blockchain})`)
   );
 
-  public readonly isValidReceiverAddress$ = this.targetAddressService.isAddressValid$;
+  public readonly isValidReceiverAddress$ = this.targetAddressService.isAddressValid$.pipe(
+    map(isValid => isValid && !!this.targetAddressService.address)
+  );
 
   public readonly needTrustline$ = this.transactionState$.pipe(
     map(state => state.data.needTrustlineOptions?.needTrustlineBeforeSwap),
