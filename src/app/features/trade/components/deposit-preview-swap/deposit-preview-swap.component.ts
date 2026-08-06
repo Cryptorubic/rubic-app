@@ -235,6 +235,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.depositService.removePrevDeposit();
     this.depositService.subs.forEach(sub => sub.unsubscribe());
     this.previewSwapService.deactivatePage();
     this.targetAddressService.setFormControlDisabled(false);
