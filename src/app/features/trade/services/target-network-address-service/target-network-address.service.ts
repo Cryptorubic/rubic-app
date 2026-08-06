@@ -1,30 +1,17 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  skip,
-  startWith,
-  tap
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, startWith, switchMap } from 'rxjs';
 import { BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
-import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
 export class TargetNetworkAddressService {
   public readonly addressControl = new FormControl<string>('', { nonNullable: true });
 
   public readonly address$ = this.addressControl.valueChanges.pipe(
-    tap(() => this.addressControl.clearAsyncValidators()),
-    startWith(this.addressControl.value),
-    debounceTime(100),
-    distinctUntilChanged(),
-    tap(() => this.setCorrectAddressValidator())
+    startWith(this.addressControl.value)
   );
 
   public get address(): string {
@@ -35,19 +22,23 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
-  public readonly isAddressValid$ = this.addressControl.statusChanges.pipe(
+  public readonly isAddressValid$ = combineLatest([
+    this.address$,
+    this.swapFormService.toBlockchain$
+  ]).pipe(
     debounceTime(100),
-    distinctUntilChanged(),
-    map(status => status === 'VALID')
+    switchMap(
+      async ([address, toBlockchain]) =>
+        address === '' ||
+        (!!address && !!toBlockchain && (await Web3Pure.isAddressCorrect(toBlockchain, address)))
+    )
   );
 
   constructor(
     private readonly swapFormService: SwapsFormService,
     private readonly formsTogglerService: FormsTogglerService
   ) {
-    this.setCorrectAddressValidator();
     this.watchIsAddressRequired();
-    this.subscribeOnFormValueChanges();
   }
 
   private watchIsAddressRequired(): void {
@@ -65,33 +56,6 @@ export class TargetNetworkAddressService {
       const toChainType: ChainType | null = to ? BlockchainsInfo.getChainType(to) : null;
       const isAddressRequired = fromChainType && toChainType && fromChainType !== toChainType;
       this._isAddressRequired$.next(!!isAddressRequired);
-    });
-  }
-
-  private subscribeOnFormValueChanges(): void {
-    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(() => {
-      this.setCorrectAddressValidator();
-    });
-
-    this.formsTogglerService.isTransferMode$.pipe(skip(1)).subscribe(() => {
-      this.setCorrectAddressValidator();
-    });
-  }
-
-  private setCorrectAddressValidator(): void {
-    const input = this.swapFormService.inputValue;
-    const validatedChain = this.formsTogglerService.isTransferMode
-      ? input.fromBlockchain
-      : input.toBlockchain;
-
-    this.addressControl.setAsyncValidators(
-      getCorrectAddressValidator({
-        fromAssetType: input.fromBlockchain,
-        validatedChain
-      })
-    );
-    this.addressControl.updateValueAndValidity({
-      emitEvent: !this.addressControl.disabled
     });
   }
 

@@ -55,6 +55,7 @@ export class DepositService {
   ): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapsFormService.inputValue;
     const selectedTrade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
+    if (!selectedTrade) return;
 
     const trade = {
       rubicId: selectedTrade.trade.rubicId,

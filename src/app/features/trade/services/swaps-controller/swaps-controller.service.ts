@@ -408,15 +408,11 @@ export class SwapsControllerService {
   }
 
   private subscribeOnAddressChange(): void {
-    this.authService.currentUser$
-      .pipe(
-        distinctUntilChanged(),
-        switchMap(() => this.swapFormService.isFilled$),
-        filter(isFilled => isFilled)
-      )
-      .subscribe(() => {
+    this.authService.currentUser$.pipe(distinctUntilChanged()).subscribe(() => {
+      if (this.swapFormService.isFilled) {
         this.startRecalculation(true);
-      });
+      }
+    });
   }
 
   private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
@@ -572,13 +568,11 @@ export class SwapsControllerService {
   }
 
   private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.address$
-      .pipe(combineLatestWith(this.targetNetworkAddressService.isAddressValid$), debounceTime(50))
-      .subscribe(([address, isValid]) => {
-        if (address === '' || (address && isValid)) {
-          this.startRecalculation(true);
-        }
-      });
+    this.targetNetworkAddressService.isAddressValid$.pipe(debounceTime(50)).subscribe(isValid => {
+      if (isValid) {
+        this.startRecalculation(true);
+      }
+    });
   }
 
   public handleWs(): Subscription[] {
