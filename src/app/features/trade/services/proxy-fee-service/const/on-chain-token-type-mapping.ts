@@ -7,6 +7,7 @@ export const onChainTokenTypeMapping: Record<OnChainTokenTypes, OnChainTypes> = 
   native_eth_stable: 'nativeStableSwap',
   native_eth_token: 'tokenSwap',
   native_eth_wNative: 'tokenSwap',
+  native_eth_native_eth: 'tokenSwap',
   stable_native_eth: 'nativeStableSwap',
   token_native_eth: 'tokenSwap',
   wNative_native_eth: 'tokenSwap',
@@ -17,6 +18,7 @@ export const onChainTokenTypeMapping: Record<OnChainTokenTypes, OnChainTypes> = 
   native_stable: 'nativeStableSwap',
   native_token: 'tokenSwap',
   native_wNative: 'tokenSwap',
+  native_native: 'tokenSwap',
   stable_native: 'nativeStableSwap',
   stable_wNative: 'stableWnativeSwap',
   stable_stable: 'stableSwap',
@@ -33,6 +35,7 @@ export const onChainTokenTypeMapping: Record<OnChainTokenTypes, OnChainTypes> = 
   bridged_native_native: 'tokenSwap',
   bridged_native_native_eth: 'tokenSwap',
   bridged_native_stable: 'stableTokenSwap',
+  bridged_native_bridged_native: 'tokenSwap',
   native_bridged_native: 'tokenSwap',
   native_eth_bridged_native: 'tokenSwap',
   stable_bridged_native: 'stableTokenSwap'

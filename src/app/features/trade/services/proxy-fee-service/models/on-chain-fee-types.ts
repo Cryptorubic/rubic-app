@@ -7,11 +7,7 @@ export type OnChainTypes =
 
 export type OnChainTokenTypes = Exclude<
   `${TokenType}_${TokenType}`,
-  | 'native_native'
-  | 'native_eth_native_eth'
-  | 'native_eth_native'
-  | 'native_native_eth'
-  | 'bridged_native_bridged_native'
+  'native_eth_native' | 'native_native_eth'
 >;
 
 export type OnChainTierFeeType = `${OnChainTypes}_${BlockchainStatus['tier']}`;
