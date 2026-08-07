@@ -53,10 +53,7 @@ export class TokensBootstrapService {
     );
 
     Object.entries(tokensByChain).forEach(([blockchain, chainTokens]) => {
-      this.tokensStore.updateBlockchainTokens(
-        blockchain as BlockchainName,
-        chainTokens.map(({ amount: _amount, favorite: _favorite, ...token }) => token)
-      );
+      this.tokensStore.updateBlockchainTokens(blockchain as BlockchainName, chainTokens);
     });
   }
 
