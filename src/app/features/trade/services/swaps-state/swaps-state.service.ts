@@ -269,6 +269,17 @@ export class SwapsStateService {
   public pickProvider(isCalculationEnd: boolean): void {
     let currentTrades = this._tradesStore$.getValue();
 
+    const { fromToken, toToken } = this.swapsFormService.inputValue;
+    if (!fromToken || !toToken) {
+      this.swapType = null;
+      currentTrades = [];
+    } else {
+      const expectOnChain = fromToken.blockchain === toToken.blockchain;
+      this.swapType = expectOnChain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    }
+
     if (currentTrades.length) {
       currentTrades = this.filterTradesByCurrentSwapType(currentTrades);
 
@@ -320,27 +331,21 @@ export class SwapsStateService {
    * Safety net: keep only trades matching current form mode.
    */
   private filterTradesByCurrentSwapType(currentTrades: TradeState[]): TradeState[] {
+    if (!this.swapType) {
+      return [];
+    }
+
     const hasCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
     const hasOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
     if (!hasCrossChain || !hasOnChain) {
       return currentTrades;
     }
 
-    const { fromToken, toToken } = this.swapsFormService.inputValue;
-    if (!fromToken || !toToken) {
-      return currentTrades;
-    }
-
-    const expectOnChain = fromToken.blockchain === toToken.blockchain;
-    this.swapType = expectOnChain
-      ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
-      : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-
     return currentTrades.filter(tradeState => {
       if (!tradeState?.trade) {
         return false;
       }
-      return expectOnChain
+      return this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE
         ? tradeState.trade instanceof OnChainTrade
         : tradeState.trade instanceof CrossChainTrade;
     });

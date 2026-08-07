@@ -68,10 +68,7 @@ export class FormsTogglerService {
     }
 
     this.transferTokensService.loaded$
-      .pipe(
-        filter(loaded => loaded),
-        first()
-      )
+      .pipe(filter(Boolean), first())
       .subscribe(() => this.validateAndSyncTransferToken());
   }
 

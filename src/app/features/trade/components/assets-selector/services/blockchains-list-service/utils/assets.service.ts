@@ -120,7 +120,9 @@ export abstract class AssetsService {
       this.formsTogglerService.isTransferMode$,
       this.transferTokensService.transferBlockchains$
     ),
-    tap(([, , , , isTransferMode, transferBlockchains]) => {
+    tap(data => {
+      const isTransferMode = data[4];
+      const transferBlockchains = data[5];
       if (isTransferMode) {
         this.resetAssetListTypeIfUnavailable(new Set(transferBlockchains));
       }
