@@ -6,7 +6,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { BlockchainName, ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -17,11 +17,11 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
-import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { Asset } from '../../models/asset';
 import { FormType } from '../../models/form-type';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { DOCUMENT } from '@angular/common';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @Component({
   standalone: false,
@@ -76,6 +76,8 @@ export class TradeViewContainerComponent {
 
   public readonly chartInfo$ = this.chartService.chartInfo$;
 
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -89,7 +91,7 @@ export class TradeViewContainerComponent {
     private readonly spindlService: SpindlService,
     private readonly authService: AuthService,
     private readonly chartService: ChartService,
-    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly formsTogglerService: FormsTogglerService,
     renderer2: Renderer2,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
@@ -128,10 +130,20 @@ export class TradeViewContainerComponent {
       }
 
       if (formType === 'from') {
-        this.swapFormService.inputControl.patchValue({
+        const patch: {
+          fromBlockchain: BlockchainName;
+          fromToken: BalanceToken;
+          toBlockchain?: BlockchainName;
+          toToken?: BalanceToken;
+        } = {
           fromBlockchain: token.blockchain,
           fromToken: token
-        });
+        };
+        if (this.formsTogglerService.isTransferMode) {
+          patch.toToken = token;
+          patch.toBlockchain = token.blockchain;
+        }
+        this.swapFormService.inputControl.patchValue(patch);
       } else {
         this.swapFormService.inputControl.patchValue({
           toToken: token,
@@ -144,7 +156,7 @@ export class TradeViewContainerComponent {
 
   private setProvidersVisibility(providers: TradeState[]): void {
     if (this.swapFormService.isFilled) {
-      let timeout: ReturnType<typeof setTimeout>;
+      let timeout: ReturnType<typeof setTimeout> | undefined;
       if (providers.length === 0) {
         timeout = setTimeout(() => {
           this.tradePageService.setProvidersVisibility(true);

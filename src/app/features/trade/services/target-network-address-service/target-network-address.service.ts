@@ -3,30 +3,27 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
-  distinctUntilChanged,
-  map,
-  skip,
+  defer,
+  shareReplay,
   startWith,
-  tap
+  switchMap
 } from 'rxjs';
 import { BlockchainsInfo, ChainType } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
-import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { Web3Pure } from '@cryptorubic/web3';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()
 export class TargetNetworkAddressService {
-  public readonly addressControl = new FormControl<string>('');
+  public readonly addressControl = new FormControl<string>('', { nonNullable: true });
 
-  public readonly address$ = this.addressControl.valueChanges.pipe(
-    tap(() => this.addressControl.clearAsyncValidators()),
-    startWith(this.addressControl.value),
-    debounceTime(100),
-    distinctUntilChanged(),
-    tap(() => this.setCorrectAddressValidator())
-  );
+  public readonly address$ = defer(() =>
+    this.addressControl.valueChanges.pipe(startWith(this.addressControl.value))
+  ).pipe(shareReplay(shareReplayConfig));
 
-  public get address(): string | null {
+  public get address(): string {
     return this.addressControl.value;
   }
 
@@ -34,53 +31,41 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
-  public readonly isAddressValid$ = this.addressControl.statusChanges.pipe(
+  public readonly isAddressValid$ = combineLatest([
+    this.address$,
+    this.swapFormService.toBlockchain$
+  ]).pipe(
     debounceTime(100),
-    distinctUntilChanged(),
-    map(status => status === 'VALID')
+    switchMap(
+      async ([address, toBlockchain]) =>
+        address === '' ||
+        (!!address && !!toBlockchain && (await Web3Pure.isAddressCorrect(toBlockchain, address)))
+    ),
+    shareReplay(shareReplayConfig)
   );
 
-  constructor(private readonly swapFormService: SwapsFormService) {
-    this.setCorrectAddressValidator();
+  constructor(
+    private readonly swapFormService: SwapsFormService,
+    private readonly formsTogglerService: FormsTogglerService
+  ) {
     this.watchIsAddressRequired();
-    this.subscribeOnFormValueChanges();
   }
 
   private watchIsAddressRequired(): void {
     combineLatest([
       this.swapFormService.fromBlockchain$,
-      this.swapFormService.toBlockchain$
-    ]).subscribe(([from, to]) => {
-      let fromChainType: ChainType | undefined;
-      try {
-        fromChainType = BlockchainsInfo.getChainType(from);
-      } catch {}
-      let toChainType: ChainType | undefined;
-      try {
-        toChainType = BlockchainsInfo.getChainType(to);
-      } catch {}
-      const isAddressRequired =
-        from && to && from !== to && (!toChainType || fromChainType !== toChainType);
-      this._isAddressRequired$.next(isAddressRequired);
-    });
-  }
+      this.swapFormService.toBlockchain$,
+      this.formsTogglerService.isTransferMode$
+    ]).subscribe(([from, to, isTransferMode]) => {
+      if (isTransferMode) {
+        this._isAddressRequired$.next(!!from);
+        return;
+      }
 
-  private subscribeOnFormValueChanges(): void {
-    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(() => {
-      this.setCorrectAddressValidator();
-    });
-  }
-
-  private setCorrectAddressValidator(): void {
-    const input = this.swapFormService.inputValue;
-    this.addressControl.setAsyncValidators(
-      getCorrectAddressValidator({
-        fromAssetType: input.fromBlockchain,
-        validatedChain: input.toBlockchain
-      })
-    );
-    this.addressControl.updateValueAndValidity({
-      emitEvent: !this.addressControl.disabled
+      const fromChainType: ChainType | null = from ? BlockchainsInfo.getChainType(from) : null;
+      const toChainType: ChainType | null = to ? BlockchainsInfo.getChainType(to) : null;
+      const isAddressRequired = fromChainType && toChainType && fromChainType !== toChainType;
+      this._isAddressRequired$.next(!!isAddressRequired);
     });
   }
 

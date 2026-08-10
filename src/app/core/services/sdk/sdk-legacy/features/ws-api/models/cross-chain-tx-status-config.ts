@@ -15,5 +15,5 @@ export interface CrossChainTxStatusConfig {
 
   destinationNetworkChainId: number | null;
 
-  subStatus?: 'AWAITING_DEPOSIT' | 'CONFIRMING' | 'EXCHANGING' | 'SENDING';
+  subStatus?: 'AWAITING_DEPOSIT' | 'CONFIRMING' | 'EXCHANGING' | 'SENDING' | 'HIDING' | 'PENDING';
 }

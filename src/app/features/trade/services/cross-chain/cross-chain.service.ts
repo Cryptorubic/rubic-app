@@ -1,7 +1,5 @@
-import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-
-import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   EvmBasicTransactionOptions,
@@ -12,7 +10,6 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -28,7 +25,6 @@ import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chai
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
@@ -53,21 +49,21 @@ import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 
 @Injectable()
 export class CrossChainService {
-  private readonly defaultTimeout = CALCULATION_TIMEOUT_MS;
-
   private get receiverAddress(): string | null {
-    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-      return null;
+    if (
+      this.formsTogglerService.isTransferMode ||
+      this.settingsService.crossChainRoutingValue.showReceiverAddress
+    ) {
+      return this.targetNetworkAddressService.address;
     }
-    return this.targetNetworkAddressService.address;
+    return null;
   }
 
   constructor(
-    private readonly sdkService: SdkService,
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -77,7 +73,6 @@ export class CrossChainService {
     private readonly crossChainApiService: CrossChainApiService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly dialogService: ModalService,
-    @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
@@ -88,7 +83,7 @@ export class CrossChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {

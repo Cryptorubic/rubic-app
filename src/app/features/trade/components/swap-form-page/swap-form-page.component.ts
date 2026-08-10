@@ -2,7 +2,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { combineLatestWith, forkJoin, of } from 'rxjs';
+import { combineLatestWith, filter, forkJoin, of } from 'rxjs';
 import { distinctUntilChanged, first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
@@ -18,6 +18,8 @@ import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasle
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -84,6 +86,8 @@ export class SwapFormPageComponent {
 
   public readonly receiverCtrl = this.targetNetworkAddressService.addressControl;
 
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
@@ -96,7 +100,8 @@ export class SwapFormPageComponent {
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.swapFormService.inputValueDistinct$.pipe(takeUntilDestroyed()).subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
@@ -129,6 +134,20 @@ export class SwapFormPageComponent {
           toToken: { ...dstToken, amount: dstBalance }
         });
       });
+
+    this.formsTogglerService.isTransferMode$
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.swapFormService.fromToken$),
+        filter(Boolean),
+        takeUntilDestroyed()
+      )
+      .subscribe(fromToken => {
+        const { toToken } = this.swapFormService.inputValue;
+        if (!toToken || !compareTokens(fromToken, toToken)) {
+          this.formsTogglerService.syncToTokenWithFrom();
+        }
+      });
   }
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
@@ -137,10 +156,20 @@ export class SwapFormPageComponent {
         .openAssetsSelector(inputType, this.injector)
         .subscribe((selectedToken: AvailableTokenAmount) => {
           if (inputType === 'from') {
-            this.swapFormService.inputControl.patchValue({
+            const patch: {
+              fromBlockchain: BlockchainName;
+              fromToken: AvailableTokenAmount;
+              toBlockchain?: BlockchainName;
+              toToken?: AvailableTokenAmount;
+            } = {
               fromBlockchain: selectedToken.blockchain,
               fromToken: selectedToken
-            });
+            };
+            if (this.formsTogglerService.isTransferMode) {
+              patch.toToken = selectedToken;
+              patch.toBlockchain = selectedToken.blockchain;
+            }
+            this.swapFormService.inputControl.patchValue(patch);
           } else {
             this.swapFormService.inputControl.patchValue({
               toToken: selectedToken,

@@ -28,7 +28,7 @@ $mobile-width: 360px;
   }
 }
 
-.swap-container {
+.trade-view-container {
   display: flex;
   align-items: flex-start;
   margin: 0 auto;
@@ -86,7 +86,7 @@ $mobile-width: 360px;
   }
 }
 
-.large-iframe-swap-container {
+.large-iframe-trade-view-container {
   flex-direction: column;
   gap: 10px;
 
@@ -97,7 +97,7 @@ $mobile-width: 360px;
 }
 
 @include b($mobile-md) {
-  .swap-container {
+  .trade-view-container {
     display: flex;
     flex-direction: column;
     gap: var(--tui-padding-l);

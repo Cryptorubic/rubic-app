@@ -156,11 +156,7 @@ export class ClearswapSwapService {
           ),
           takeWhile(
             ([apiResponseVal, txStatusVal]) =>
-              !(
-                apiResponseVal.status === CLEARSWAP_STATUS.SUCCESS ||
-                apiResponseVal.status === CLEARSWAP_STATUS.FAIL ||
-                txStatusVal === TX_STATUS.FAIL
-              ),
+              apiResponseVal.status === CLEARSWAP_STATUS.PENDING && txStatusVal !== TX_STATUS.FAIL,
             true
           )
         )

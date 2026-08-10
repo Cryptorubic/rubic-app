@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { concatMap, firstValueFrom, of, timer } from 'rxjs';
-
 import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -48,16 +47,19 @@ import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/featur
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
-    if (!this.settingsService.instantTradeValue.showReceiverAddress) {
-      return null;
+    if (
+      this.formsTogglerService.isTransferMode ||
+      this.settingsService.instantTradeValue.showReceiverAddress
+    ) {
+      return this.targetNetworkAddressService.address;
     }
-    return this.targetNetworkAddressService.address;
+    return null;
   }
 
   constructor(
@@ -80,7 +82,7 @@ export class OnChainService {
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {

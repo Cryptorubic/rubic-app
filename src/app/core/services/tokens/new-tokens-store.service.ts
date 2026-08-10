@@ -198,6 +198,10 @@ export class NewTokensStoreService {
     });
   }
 
+  public setQuery(blockchain: BlockchainName, query: string): void {
+    this.tokens[blockchain]._searchQuery$.next(query);
+  }
+
   public setQueryAndFetch(blockchain: BlockchainName, query: string): void {
     this.tokens[blockchain]._searchQuery$.next(query);
     if (query.length >= 2) {

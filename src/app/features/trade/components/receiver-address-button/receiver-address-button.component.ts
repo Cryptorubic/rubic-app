@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -9,7 +8,7 @@ import { BlockchainName } from '@cryptorubic/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiverAddressButtonComponent {
-  @Input({ required: true }) toBlockchain: BlockchainName;
+  @Input({ required: true }) toBlockchain!: string;
 
   @Output() handleClick = new EventEmitter<void>();
 

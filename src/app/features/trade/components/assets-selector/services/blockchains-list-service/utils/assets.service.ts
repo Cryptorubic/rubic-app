@@ -25,10 +25,12 @@ import {
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, first, map, startWith } from 'rxjs/operators';
+import { debounceTime, first, map, startWith, tap } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainsInfo } from '@cryptorubic/core';
+import { BlockchainsInfo, BlockchainName } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -103,6 +105,10 @@ export abstract class AssetsService {
 
   private readonly formService = inject(SwapsFormService);
 
+  private readonly formsTogglerService = inject(FormsTogglerService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
+
   // Blockchains to show
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -110,65 +116,81 @@ export abstract class AssetsService {
     combineLatestWith(
       this.blockchainSearchQuery$,
       this.blockchainFilter$,
-      this.walletConnectorService.networkChange$.pipe(startWith(null))
+      this.walletConnectorService.networkChange$.pipe(startWith(null)),
+      this.formsTogglerService.isTransferMode$,
+      this.transferTokensService.transferBlockchains$
     ),
-    map(([sourceChains, query, filters, networkFromWallet]) => {
-      let chains = sourceChains.filter(
-        chain =>
-          this.filterQueryBlockchain(query, chain) &&
-          this.filterByType(filters, chain) &&
-          !DISABLED_BLOCKCHAINS_MAP[chain.name]
-      );
-
-      const input = this.formService.inputValue ?? null;
-      const walletNetwork = networkFromWallet ?? null;
-      const currentSelectedNetwork =
-        this.type === 'from'
-          ? (input?.fromToken?.blockchain ?? null)
-          : (input?.toToken?.blockchain ?? null);
-      const fromTokenChain = input?.fromToken?.blockchain ?? null;
-      const toTokenChain = input?.toToken?.blockchain ?? null;
-
-      let pullUpNetwork: string | null = null;
-
-      // pullUp only when current selector network is not selected
-      if (!currentSelectedNetwork) {
-        if (this.type === 'from') {
-          pullUpNetwork = fromTokenChain ?? toTokenChain;
-        } else {
-          pullUpNetwork = toTokenChain ?? fromTokenChain;
-        }
+    tap(data => {
+      const isTransferMode = data[4];
+      const transferBlockchains = data[5];
+      if (isTransferMode) {
+        this.resetAssetListTypeIfUnavailable(new Set(transferBlockchains));
       }
+    }),
+    map(
+      ([sourceChains, query, filters, networkFromWallet, isTransferMode, transferBlockchains]) => {
+        let chains = sourceChains.filter(
+          chain =>
+            this.filterQueryBlockchain(query, chain) &&
+            this.filterByType(filters, chain) &&
+            !DISABLED_BLOCKCHAINS_MAP[chain.name]
+        );
 
-      chains.sort((a, b) => {
-        // 1) current selector selected network goes first
-        if (currentSelectedNetwork) {
-          if (a.name === currentSelectedNetwork && b.name !== currentSelectedNetwork) return -1;
-          if (b.name === currentSelectedNetwork && a.name !== currentSelectedNetwork) return 1;
+        if (isTransferMode) {
+          const transferSet = new Set(transferBlockchains);
+          chains = chains.filter(chain => transferSet.has(chain.name));
         }
 
-        // 2) wallet network goes next
-        if (walletNetwork && walletNetwork !== currentSelectedNetwork) {
-          if (a.name === walletNetwork && b.name !== walletNetwork) return -1;
-          if (b.name === walletNetwork && a.name !== walletNetwork) return 1;
+        const input = this.formService.inputValue ?? null;
+        const walletNetwork = networkFromWallet ?? null;
+        const currentSelectedNetwork =
+          this.type === 'from'
+            ? (input?.fromToken?.blockchain ?? null)
+            : (input?.toToken?.blockchain ?? null);
+        const fromTokenChain = input?.fromToken?.blockchain ?? null;
+        const toTokenChain = input?.toToken?.blockchain ?? null;
+
+        let pullUpNetwork: string | null = null;
+
+        // pullUp only when current selector network is not selected
+        if (!currentSelectedNetwork) {
+          if (this.type === 'from') {
+            pullUpNetwork = fromTokenChain ?? toTokenChain;
+          } else {
+            pullUpNetwork = toTokenChain ?? fromTokenChain;
+          }
         }
 
-        // 3) pullUpNetwork goes after that (only when currentSelectedNetwork is null)
-        if (
-          pullUpNetwork &&
-          pullUpNetwork !== walletNetwork &&
-          pullUpNetwork !== currentSelectedNetwork
-        ) {
-          if (a.name === pullUpNetwork && b.name !== pullUpNetwork) return -1;
-          if (b.name === pullUpNetwork && a.name !== pullUpNetwork) return 1;
-        }
+        chains.sort((a, b) => {
+          // 1) current selector selected network goes first
+          if (currentSelectedNetwork) {
+            if (a.name === currentSelectedNetwork && b.name !== currentSelectedNetwork) return -1;
+            if (b.name === currentSelectedNetwork && a.name !== currentSelectedNetwork) return 1;
+          }
 
-        // 4) keep original order
-        return 0;
-      });
+          // 2) wallet network goes next
+          if (walletNetwork && walletNetwork !== currentSelectedNetwork) {
+            if (a.name === walletNetwork && b.name !== walletNetwork) return -1;
+            if (b.name === walletNetwork && a.name !== walletNetwork) return 1;
+          }
 
-      return chains;
-    })
+          // 3) pullUpNetwork goes after that (only when currentSelectedNetwork is null)
+          if (
+            pullUpNetwork &&
+            pullUpNetwork !== walletNetwork &&
+            pullUpNetwork !== currentSelectedNetwork
+          ) {
+            if (a.name === pullUpNetwork && b.name !== pullUpNetwork) return -1;
+            if (b.name === pullUpNetwork && a.name !== pullUpNetwork) return 1;
+          }
+
+          // 4) keep original order
+          return 0;
+        });
+
+        return chains;
+      }
+    )
   );
 
   public get blockchainsToShow(): AvailableBlockchain[] {
@@ -235,6 +257,13 @@ export abstract class AssetsService {
       return 'Cannot trade with fiats';
     }
     return null;
+  }
+
+  private resetAssetListTypeIfUnavailable(transferBlockchains: Set<BlockchainName>): void {
+    const currentType = this.assetListType;
+    if (BlockchainsInfo.isBlockchainName(currentType) && !transferBlockchains.has(currentType)) {
+      this.assetListType = 'allChains';
+    }
   }
 
   private filterQueryBlockchain(searchQuery: string, blockchain: BlockchainItem): boolean {

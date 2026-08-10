@@ -24,7 +24,7 @@ export class SettingsCcrComponent {
   );
 
   public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
-    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
+    map(form => form === MAIN_FORM_TYPE.SWAP)
   );
 
   constructor(

@@ -13,7 +13,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -43,7 +43,6 @@ import {
   OnChainTradeType
 } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { Web3Pure } from '@cryptorubic/web3';
 
 @Component({
   standalone: false,
@@ -151,7 +150,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => tradeState!.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+    map(tradeState => tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
   );
 
   public get receiverAddressCtrl() {
@@ -162,17 +161,8 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     map(blockchain => `Receiver Address (${blockchain})`)
   );
 
-  public readonly isValidReceiverAddress$ = combineLatest([
-    this.targetAddressService.address$,
-    this.previewSwapService.selectedTradeState$
-  ]).pipe(
-    switchMap(async ([address, tradeState]) => {
-      if (!tradeState?.trade?.to.blockchain) return false;
-      return (
-        Boolean(address) &&
-        (await Web3Pure.isAddressCorrect(tradeState.trade.to.blockchain, address!))
-      );
-    })
+  public readonly isValidReceiverAddress$ = this.targetAddressService.isAddressValid$.pipe(
+    map(isValid => isValid && !!this.targetAddressService.address)
   );
 
   public readonly needTrustline$ = this.transactionState$.pipe(
@@ -209,6 +199,10 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     )
   );
 
+  public readonly isClearswap$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+  );
+
   public hintShown: boolean = false;
 
   constructor(
@@ -231,6 +225,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.depositService.removePrevDeposit();
     this.depositService.subs.forEach(sub => sub.unsubscribe());
     this.previewSwapService.deactivatePage();
     this.targetAddressService.setFormControlDisabled(false);

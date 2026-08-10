@@ -13,13 +13,21 @@
 
   &__links {
     display: flex;
-    gap: var(--tui-padding-s);
+    gap: 12px;
 
     color: var(--tui-text-tertiary);
   }
 
   &__link {
     position: relative;
+
+    cursor: pointer;
+
+    &_active {
+      color: var(--tui-text-primary);
+      text-decoration-line: underline;
+      text-decoration-color: #00e28d;
+    }
 
     &-new {
       position: absolute;

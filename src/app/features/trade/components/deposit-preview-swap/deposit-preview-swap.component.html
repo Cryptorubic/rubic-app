@@ -14,7 +14,8 @@
     isToAmountCalculated: isToAmountCalculated$ | async,
     needTrustline: needTrustline$ | async,
     trustlineInfo: trustlineInfo$ | async,
-    receiverAddressLabel: receiverAddressLabel$ | async
+    receiverAddressLabel: receiverAddressLabel$ | async,
+    isClearswap: isClearswap$ | async
   } as state"
 >
   <ng-container header>
@@ -158,12 +159,7 @@
             <div class="status-item__circle"></div>
           } @else if (state.status === 'confirming') {
             <div class="status-item__spinner"></div>
-          } @else if (
-            state.status === 'exchanging' ||
-            state.status === 'sending' ||
-            state.status === 'finished' ||
-            state.status === 'failed'
-          ) {
+          } @else {
             <div class="status-item__circle_complete">
               <img
                 class="scheme__state.status-icon"
@@ -179,6 +175,7 @@
               'status-item__value_completed':
                 state.status === 'confirming' ||
                 state.status === 'exchanging' ||
+                state.status === 'hiding' ||
                 state.status === 'sending' ||
                 state.status === 'finished' ||
                 state.status === 'failed'
@@ -202,9 +199,9 @@
             state.status === 'expired'
           ) {
             <div class="status-item__circle"></div>
-          } @else if (state.status === 'exchanging') {
+          } @else if (state.status === 'exchanging' || state.status === 'hiding') {
             <div class="status-item__spinner"></div>
-          } @else if (state.status === 'sending' || state.status === 'finished') {
+          } @else {
             <div class="status-item__circle_complete">
               <img
                 class="scheme__state.status-icon"
@@ -219,11 +216,12 @@
             [ngClass]="{
               'status-item__value_completed':
                 state.status === 'exchanging' ||
+                state.status === 'hiding' ||
                 state.status === 'sending' ||
                 state.status === 'finished'
             }"
           >
-            Exchanging
+            {{ state.isClearswap ? 'Hiding' : 'Exchanging' }}
           </div>
         </div>
 
@@ -238,7 +236,8 @@
             state.status === 'waiting' ||
             state.status === 'confirming' ||
             state.status === 'exchanging' ||
-            state.status === 'expired'
+            state.status === 'expired' ||
+            state.status === 'hiding'
           ) {
             <div class="status-item__circle"></div>
           } @else if (state.status === 'sending') {

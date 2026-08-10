@@ -6,6 +6,7 @@ import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.servic
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { TokensBuilderService } from '@core/services/tokens/tokens-builder.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,10 @@ export class TokensPaginationService {
 
   private readonly tokensBuilder = inject(TokensBuilderService);
 
+  private readonly formsTogglerService = inject(FormsTogglerService);
+
   public fetchNewPage(tokenState: BlockchainTokenState, skipLoading: boolean): void {
-    if (!tokenState.allowFetching) {
+    if (this.formsTogglerService.isTransferMode || !tokenState.allowFetching) {
       return;
     }
     const blockchain = tokenState.blockchain;
@@ -44,6 +47,9 @@ export class TokensPaginationService {
   }
 
   public runFetchConditionally(listType: AssetListType, searchQuery: string | null): void {
+    if (this.formsTogglerService.isTransferMode) {
+      return;
+    }
     if (BlockchainsInfo.isBlockchainName(listType) && !searchQuery) {
       const tokensObject = this.tokensBuilder.getTokensBasedOnType(
         listType

@@ -29,6 +29,7 @@ import { TokensQueryService } from '@core/services/tokens/tokens-query.service';
 import { TokensBuilderService } from '@core/services/tokens/tokens-builder.service';
 import { TokensPaginationService } from '@core/services/tokens/tokens-pagination.service';
 import { QueryTokenParams } from './new-tokens-api.service';
+import { TransferTokensService } from './transfer-tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,8 @@ export class TokensFacadeService {
   protected readonly tokensBuilderService = inject(TokensBuilderService);
 
   private readonly tokensPaginationService = inject(TokensPaginationService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
 
   public get nativeToken$(): Observable<BalanceToken | null> {
     return this.tokensRegistryService.nativeToken$;
@@ -103,10 +106,15 @@ export class TokensFacadeService {
     return this.tokensBootstrapService.tier1TokensLoaded$;
   }
 
+  public get transferTokensLoaded$(): Observable<boolean> {
+    return this.transferTokensService.loaded$;
+  }
+
   constructor(private readonly tokensStore: NewTokensStoreService) {}
 
   public init(): void {
     this.tokensBootstrapService.buildTokenLists();
+    this.tokensBootstrapService.buildTransferTokenList();
     this.tokensBalanceService.initSubscribes();
     this.tokensQueryService.subscribeOnQuery();
   }
