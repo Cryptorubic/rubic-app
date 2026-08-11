@@ -29,7 +29,7 @@ import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-tim
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Component({
   standalone: false,
@@ -68,7 +68,7 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
   get mobileStates(): TradeState[] {
-    return this.states.some(state => state.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+    return this.states.some(state => isClearswap(state.tradeType))
       ? this.states.slice(0, 2)
       : this.states.slice(0, 1);
   }

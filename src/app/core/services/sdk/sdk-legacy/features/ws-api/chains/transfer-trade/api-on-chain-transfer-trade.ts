@@ -60,7 +60,7 @@ export class ApiOnChainTransferTrade extends OnChainTransferTrade {
     };
 
     const { estimate, transaction } =
-      await this.transferRubicApiService.fetchSwapPrivateTrade(swapRequestData);
+      await this.rubicApiService.fetchSwapPrivateTrade(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);

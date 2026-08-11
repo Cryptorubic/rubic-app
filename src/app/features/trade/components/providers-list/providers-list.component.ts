@@ -18,7 +18,7 @@ import { ProviderHintService } from '../../services/provider-hint/provider-hint.
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Component({
   standalone: false,
@@ -76,9 +76,7 @@ export class ProvidersListComponent {
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {
-    const nonClearswap = this.states.filter(
-      state => state.tradeType !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
-    );
+    const nonClearswap = this.states.filter(state => !isClearswap(state.tradeType));
     if (nonClearswap.length > 0) {
       return tradeState.tradeType === nonClearswap[0].tradeType;
     }

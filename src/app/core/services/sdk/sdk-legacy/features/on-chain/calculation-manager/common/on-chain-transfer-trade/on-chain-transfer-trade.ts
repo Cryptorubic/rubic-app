@@ -42,8 +42,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
 
   protected readonly apiResponse: QuoteResponseInterface;
 
-  protected readonly transferRubicApiService: RubicApiService;
-
   constructor(
     from: PriceTokenAmount,
     to: PriceTokenAmount,
@@ -64,7 +62,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     this.apiQuote = apiQuote;
     this.apiResponse = apiResponse;
     this.actualTokenAmount = to.tokenAmount;
-    this.transferRubicApiService = rubicApiService;
   }
 
   public override async needApprove(_fromAddress?: string): Promise<boolean> {

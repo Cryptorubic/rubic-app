@@ -1,4 +1,4 @@
-import { Token } from '@cryptorubic/core';
+import { CROSS_CHAIN_TRADE_TYPE, SwapPrivateRequestInterface, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainTradeType } from '../../../cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { CrossChainTransferTrade } from '../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
@@ -12,6 +12,7 @@ import { ApiCrossChainTransferConstructor } from './api-cross-chain-transfer-con
 import { TransferSwapRequestInterface } from './models/transfer-swap-request-interface';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
+import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
 
 export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
   public readonly type: CrossChainTradeType;
@@ -75,18 +76,34 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ...(refundAddress && { refundAddress })
     };
     const { estimate, transaction } =
-      await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
+      this.type === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP
+        ? await this.rubicApiService.fetchSwapPrivateTrade(
+            swapRequestData as SwapPrivateRequestInterface
+          )
+        : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
 
     this.actualTokenAmount = new BigNumber(amount);
 
+    const extraFields = this.parseExtraFields(transaction);
+
     return {
       toAmount: amount,
-      id: transaction.exchangeId,
+      id: this.apiResponse.id,
       depositAddress: transaction.depositAddress,
-      depositExtraId: transaction.extraFields?.value,
-      depositExtraIdName: transaction.extraFields?.name
+      depositExtraId: extraFields?.value,
+      depositExtraIdName: extraFields?.name
     };
+  }
+
+  private parseExtraFields(
+    transaction: TransactionInterface
+  ): { name: string; value: string } | undefined {
+    const extraFields = transaction.extraFields as { name?: string; value?: string } | undefined;
+    if (!extraFields?.name || !extraFields?.value) {
+      return undefined;
+    }
+    return { name: extraFields.name, value: extraFields.value };
   }
 }

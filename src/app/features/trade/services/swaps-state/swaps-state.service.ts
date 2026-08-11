@@ -54,6 +54,7 @@ import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Injectable()
 export class SwapsStateService {
@@ -361,16 +362,14 @@ export class SwapsStateService {
   ): TradeState | null {
     const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
     const nonClearswapTrades = tradesWithQuote.filter(
-      tradeState => tradeState.trade!.type !== ON_CHAIN_TRADE_TYPE.CLEARSWAP
+      tradeState => !isClearswap(tradeState.tradeType)
     );
 
     if (nonClearswapTrades.length > 0) {
       return nonClearswapTrades[0];
     }
 
-    const clearswapTrade = tradesWithQuote.find(
-      tradeState => tradeState.trade!.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP
-    );
+    const clearswapTrade = tradesWithQuote.find(tradeState => isClearswap(tradeState.tradeType));
 
     if (clearswapTrade && isCalculationEnd) {
       return clearswapTrade;
@@ -384,6 +383,12 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return (currentTrades as WrappedCrossChainTradeOrNull[]).sort((nextTrade, prevTrade) => {
+      const nextTradeIsClearswap = nextTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
+      const prevTradeIsClearswap = prevTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
+
+      if (nextTradeIsClearswap && !prevTradeIsClearswap) return -1;
+      if (prevTradeIsClearswap && !nextTradeIsClearswap) return 1;
+
       const nativePriceForNextTrade = nextTrade?.trade
         ? this.getNativeTokenPrice(nextTrade.trade.from.blockchain)
         : new BigNumber(0);
