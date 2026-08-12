@@ -124,7 +124,7 @@ export abstract class OnChainTrade<T = unknown> {
   protected constructor(
     apiResponse: QuoteResponseInterface,
     protected readonly sdkLegacyService: SdkLegacyService,
-    private readonly rubicApiService: RubicApiService
+    protected readonly rubicApiService: RubicApiService
   ) {
     this.rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;

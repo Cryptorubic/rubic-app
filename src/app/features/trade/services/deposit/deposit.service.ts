@@ -14,12 +14,12 @@ import {
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import {
   CLEARSWAP_STATUS,
   CLEARSWAP_SUB_STATUS
 } from '@app/features/privacy/providers/clearswap/models/status';
 import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Injectable()
 export class DepositService {
@@ -84,7 +84,7 @@ export class DepositService {
       }
 
       const tradeType = this._depositTrade$.value?.tradeType;
-      if (tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+      if (isClearswap(tradeType)) {
         return this.getClearswapDepositStatus(rubicId);
       }
 

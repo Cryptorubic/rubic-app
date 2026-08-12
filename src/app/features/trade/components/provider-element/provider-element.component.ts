@@ -6,10 +6,10 @@ import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-m
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Component({
   standalone: false,
@@ -32,7 +32,7 @@ export class ProviderElementComponent {
   public expanded = false;
 
   public get isClearswap(): boolean {
-    return this.tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
+    return isClearswap(this.tradeState?.tradeType);
   }
 
   public get isShortedMobileClearswap(): boolean {
@@ -81,7 +81,7 @@ export class ProviderElementComponent {
   }
 
   public getAverageTimeString(): string {
-    if (this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP) return '3 mins';
+    if (isClearswap(this.tradeState.trade.type)) return '3 mins';
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);

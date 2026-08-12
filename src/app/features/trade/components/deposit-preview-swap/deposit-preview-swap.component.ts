@@ -43,6 +43,7 @@ import {
   OnChainTradeType
 } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Component({
   standalone: false,
@@ -142,6 +143,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
     CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
     CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
+    CROSS_CHAIN_TRADE_TYPE.CLEARSWAP,
     ON_CHAIN_TRADE_TYPE.CLEARSWAP
   ];
 
@@ -150,7 +152,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+    map(tradeState => isClearswap(tradeState?.tradeType))
   );
 
   public get receiverAddressCtrl() {
@@ -200,7 +202,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   );
 
   public readonly isClearswap$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => tradeState?.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP)
+    map(tradeState => isClearswap(tradeState?.tradeType))
   );
 
   public hintShown: boolean = false;

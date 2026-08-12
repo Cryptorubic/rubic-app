@@ -11,6 +11,7 @@ import { isDepositTrade } from '@app/core/services/sdk/sdk-legacy/features/on-ch
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
+import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 type StateOptions = [
   SelectedTrade,
@@ -126,7 +127,7 @@ export class ActionButtonService {
       currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
       (currentTrade.trade && wrongBlockchain)
     ) {
-      if (isAddressRequired) {
+      if (isAddressRequired && !isClearswap(currentTrade.tradeType)) {
         const trulyAddress = Boolean(receiverAddress);
 
         if (isReceiverValid && trulyAddress) {
