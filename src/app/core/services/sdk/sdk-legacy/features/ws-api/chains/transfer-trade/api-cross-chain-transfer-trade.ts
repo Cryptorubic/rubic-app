@@ -75,12 +75,12 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ...(fromAddress && { fromAddress }),
       ...(refundAddress && { refundAddress })
     };
-    const { estimate, transaction } =
-      this.type === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP
-        ? await this.rubicApiService.fetchSwapPrivateTrade(
-            swapRequestData as SwapPrivateRequestInterface
-          )
-        : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
+    const isClearswap = this.type === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
+    const { estimate, transaction } = isClearswap
+      ? await this.rubicApiService.fetchSwapPrivateTrade(
+          swapRequestData as SwapPrivateRequestInterface
+        )
+      : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
 
@@ -90,7 +90,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
 
     return {
       toAmount: amount,
-      id: this.apiResponse.id,
+      id: isClearswap ? this.apiResponse.id : (transaction as CrossChainTransferConfig).exchangeId,
       depositAddress: transaction.depositAddress,
       depositExtraId: extraFields?.value,
       depositExtraIdName: extraFields?.name
