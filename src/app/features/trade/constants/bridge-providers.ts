@@ -69,8 +69,8 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
   cce_cash: {
     averageTime: 5,
-    color: '#008aff',
-    image: `${imageBasePath}cce_cash.svg`,
+    color: '#cfd8ee',
+    image: `${imageBasePath}cce_cash.png`,
     name: 'CCE Cash'
   },
   celer_bridge: {
