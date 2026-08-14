@@ -67,6 +67,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celer.svg`,
     name: 'cBridge'
   },
+  cce_cash: {
+    averageTime: 5,
+    color: '#008aff',
+    image: `${imageBasePath}cce_cash.svg`,
+    name: 'CCE Cash'
+  },
   celer_bridge: {
     averageTime: 5,
     color: '#008aff',
@@ -409,6 +415,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#78FF39',
     image: `${imageBasePath}teleswap.svg`,
     name: 'TeleSwap'
+  },
+  the_change: {
+    averageTime: 5,
+    color: '#2563EB',
+    image: `${imageBasePath}the_change.svg`,
+    name: 'The Change'
   },
   thorchain: {
     averageTime: 5,
