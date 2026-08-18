@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Renderer2 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { combineLatestWith, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -14,7 +14,6 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
 import { Asset } from '../../models/asset';
@@ -65,15 +64,6 @@ export class TradeViewContainerComponent {
   private readonly hideIframeBanner =
     this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
-  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
-    combineLatestWith(this.authService.currentUser$, this.spindlService.hasNoContent$),
-    map(
-      ([showSpindl, currUser, hasNoContent]) =>
-        showSpindl && !hasNoContent && Boolean(currUser?.address)
-    ),
-    map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
-  );
-
   public readonly chartInfo$ = this.chartService.chartInfo$;
 
   public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
@@ -88,7 +78,6 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly spindlService: SpindlService,
     private readonly authService: AuthService,
     private readonly chartService: ChartService,
     private readonly formsTogglerService: FormsTogglerService,
