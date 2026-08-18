@@ -1,10 +1,16 @@
 @if (
-  isSelectedTrade ||
+  isSelectable ||
   gasInfo?.amountInUsd?.gt(0) ||
   displayAmount ||
   (averageTimeMins && time95PercentSwapsMins)
 ) {
-  <div class="provider-info" [ngClass]="{ vertical: creationConfig?.direction === 'vertical' }">
+  <div
+    class="provider-info"
+    [ngClass]="{
+      vertical: creationConfig?.direction === 'vertical',
+      selectable: isSelectable
+    }"
+  >
     @if (isSelectedTrade) {
       <div class="provider-info__selected">
         <img src="assets/images/icons/selected-mark.svg" alt="Selected" />

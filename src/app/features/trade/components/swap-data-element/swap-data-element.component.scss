@@ -11,6 +11,10 @@
     padding-right: 4px !important;
   }
 
+  &.selectable {
+    min-height: 52px;
+  }
+
   &__selected {
     display: flex;
     gap: var(--tui-padding-s);
