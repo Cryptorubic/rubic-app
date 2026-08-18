@@ -1,137 +1,136 @@
-<ng-container *ngLet="getProviderInfo() as providerInfo">
-  <div
-    *ngLet="hideHint$ | async as hideHint"
-    class="element"
-    [ngClass]="{
-      element_shorted: shortedInfo,
-      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0),
-      element_clearswap: isClearswap
-    }"
-  >
-    <div
-      class="element__provider-container"
-      [ngClass]="{
-        'element__provider-container_selected': selectedTradeType === tradeState?.tradeType
-      }"
-      *ngLet="tradeState?.trade as trade"
-    >
-      <div class="element__amounts-container">
-        <div class="element__amount">
-          <div class="element__token">
-            <div
-              class="element__token-amount"
-              [ngClass]="{ 'element__token-amount_error': tradeState?.error && isClearswap }"
-            >
-              @if (trade && !(tradeState?.error && isClearswap)) {
-                {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount: 7 : 5 : true }}&nbsp;{{
-                  trade.to.symbol
-                }}
-              } @else if (tradeState?.error && isClearswap) {
-                {{ minMaxErrorLabel }}
-              } @else {
-                —
-              }
-            </div>
-            @if (!isShortedMobileClearswap) {
-              <div class="element__token-provider">Provider</div>
-            }
-            <div class="element__token-info">
-              <img
-                class="element__token-image"
-                [src]="providerInfo.image"
-                [alt]="providerInfo.name"
-              />
-              <div class="element__token-symbol">{{ providerInfo.name }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="element__right">
-          @if (trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)) {
-            <div class="element__amount-price">
-              @if (!minMaxErrorAmount || !trade.from?.price?.gt(0)) {
-                ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
-              } @else {
-                ~ {{ minMaxErrorAmount | getUsdPrice: trade.from.price : 2 : true }}&nbsp;$
-              }
-            </div>
-          }
-          <div class="element__row">
-            <div class="element__row-badges">
-              <tui-tag
-                *ngIf="isBest"
-                class="element__best-badge"
-                size="s"
-                status="custom"
-                value="Best"
-                [tuiHint]="'The most profitable trade according to our calculations'"
-                [tuiHintHideDelay]="hideHint ? 0 : 200"
-              ></tui-tag>
-              <span *ngIf="isClearswap" class="element__private-badge">
-                <img
-                  class="element__private-badge-icon"
-                  src="assets/images/icons/private-lock.svg"
-                  alt=""
-                  width="16"
-                  height="16"
-                />
-                <span class="element__private-badge-text">PRIVATE</span>
-              </span>
-              <app-promotion-badge
-                *ngFor="let badge of tradeState.badges"
-                [data]="badge"
-                [hideHint]="hideHint"
-              ></app-promotion-badge>
-              <tui-tag
-                *ngIf="tradeState?.error && !isClearswap"
-                class="element__warning-badge"
-                size="s"
-                status="custom"
-                value="Warn"
-                [tuiHint]="tradeState.error?.message"
-              ></tui-tag>
-            </div>
+@let providerInfo = getProviderInfo();
+@let hideHint = hideHint$ | async;
+@let isSelectedTrade = selectedTradeType === tradeState?.tradeType;
+@let trade = tradeState?.trade;
 
-            <div
-              *ngIf="trade"
-              (click)="toggleExpand($event)"
-              inlineSVG="assets/images/icons/arrow-down.svg"
-              class="element__expander"
-              [ngClass]="{ element__expander_active: expanded }"
-            ></div>
+<div
+  class="element"
+  [ngClass]="{
+    element_selected: isSelectedTrade,
+    element_shorted: shortedInfo,
+    element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0),
+    element_clearswap: isClearswap
+  }"
+>
+  <div class="element__provider-container">
+    <div class="element__amounts-container">
+      <div class="element__amount">
+        <div class="element__token">
+          <div
+            class="element__token-amount"
+            [ngClass]="{ 'element__token-amount_error': tradeState?.error && isClearswap }"
+          >
+            @if (trade && !(tradeState?.error && isClearswap)) {
+              {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount: 7 : 5 : true }}&nbsp;{{
+                trade.to.symbol
+              }}
+            } @else if (tradeState?.error && isClearswap) {
+              {{ minMaxErrorLabel }}
+            } @else {
+              —
+            }
+          </div>
+          @if (!isShortedMobileClearswap) {
+            <div class="element__token-provider">Provider</div>
+          }
+          <div class="element__token-info">
+            <img
+              class="element__token-image"
+              [src]="providerInfo.image"
+              [alt]="providerInfo.name"
+            />
+            <div class="element__token-symbol">{{ providerInfo.name }}</div>
           </div>
         </div>
       </div>
-
-      <tui-expand [expanded]="expanded">
-        <ng-template tuiExpandContent>
-          <div class="element__expandable">
-            <div *ngIf="tradeState.centralizationStatus" class="element__expandable-status">
+      <div class="element__right">
+        @if (trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)) {
+          <div class="element__amount-price">
+            @if (!minMaxErrorAmount || !trade.from?.price?.gt(0)) {
+              ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
+            } @else {
+              ~ {{ minMaxErrorAmount | getUsdPrice: trade.from.price : 2 : true }}&nbsp;$
+            }
+          </div>
+        }
+        <div class="element__row">
+          <div class="element__row-badges">
+            <tui-tag
+              *ngIf="isBest"
+              class="element__best-badge"
+              size="s"
+              status="custom"
+              value="Best"
+              [tuiHint]="'The most profitable trade according to our calculations'"
+              [tuiHintHideDelay]="hideHint ? 0 : 200"
+            ></tui-tag>
+            <span *ngIf="isClearswap" class="element__private-badge">
               <img
-                class="element__expan dable-status-icon"
-                [src]="'assets/images/icons/' + tradeState.centralizationStatus + '.png'"
+                class="element__private-badge-icon"
+                src="assets/images/icons/private-lock.svg"
+                alt=""
                 width="16"
                 height="16"
-                alt="centralization"
               />
-              <p class="element__expandable-status-text">{{ tradeState.centralizationStatus }}</p>
-            </div>
-
-            <app-route-element
-              [tradeType]="tradeState.tradeType"
-              [routes]="tradeState.routes"
-            ></app-route-element>
+              <span class="element__private-badge-text">PRIVATE</span>
+            </span>
+            <app-promotion-badge
+              *ngFor="let badge of tradeState.badges"
+              [data]="badge"
+              [hideHint]="hideHint"
+            ></app-promotion-badge>
+            <tui-tag
+              *ngIf="tradeState?.error && !isClearswap"
+              class="element__warning-badge"
+              size="s"
+              status="custom"
+              value="Warn"
+              [tuiHint]="tradeState.error?.message"
+            ></tui-tag>
           </div>
-        </ng-template>
-      </tui-expand>
+
+          <div
+            *ngIf="trade"
+            (click)="toggleExpand($event)"
+            inlineSVG="assets/images/icons/arrow-down.svg"
+            class="element__expander"
+            [ngClass]="{ element__expander_active: expanded }"
+          ></div>
+        </div>
+      </div>
     </div>
-    @if (!isShortedMobileClearswap) {
-      <app-swap-data-element
-        [gasInfo]="getGasData()"
-        [feeInfoChange]="getFeeInfo()"
-        [averageTimeMins]="getAverageTimeString()"
-        [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
-        [hideHint]="hideHint"
-      ></app-swap-data-element>
-    }
+
+    <tui-expand [expanded]="expanded">
+      <ng-template tuiExpandContent>
+        <div class="element__expandable">
+          <div *ngIf="tradeState.centralizationStatus" class="element__expandable-status">
+            <img
+              class="element__expan dable-status-icon"
+              [src]="'assets/images/icons/' + tradeState.centralizationStatus + '.png'"
+              width="16"
+              height="16"
+              alt="centralization"
+            />
+            <p class="element__expandable-status-text">{{ tradeState.centralizationStatus }}</p>
+          </div>
+
+          <app-route-element
+            [tradeType]="tradeState.tradeType"
+            [routes]="tradeState.routes"
+          ></app-route-element>
+        </div>
+      </ng-template>
+    </tui-expand>
   </div>
-</ng-container>
+
+  @if (!isShortedMobileClearswap) {
+    <app-swap-data-element
+      [gasInfo]="getGasData()"
+      [feeInfoChange]="getFeeInfo()"
+      [averageTimeMins]="getAverageTimeString()"
+      [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
+      [hideHint]="hideHint"
+      [isSelectedTrade]="isSelectedTrade"
+    ></app-swap-data-element>
+  }
+</div>
