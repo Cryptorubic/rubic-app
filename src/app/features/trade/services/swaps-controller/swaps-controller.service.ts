@@ -568,11 +568,13 @@ export class SwapsControllerService {
   }
 
   private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.isAddressValid$.pipe(debounceTime(50)).subscribe(isValid => {
-      if (isValid) {
-        this.startRecalculation(true);
-      }
-    });
+    this.targetNetworkAddressService.isAddressValid$
+      .pipe(debounceTime(50), filter(Boolean))
+      .subscribe(isValid => {
+        if (isValid) {
+          this.startRecalculation(true);
+        }
+      });
   }
 
   public handleWs(): Subscription[] {
