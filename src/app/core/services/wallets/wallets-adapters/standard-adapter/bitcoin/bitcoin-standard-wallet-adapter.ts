@@ -8,6 +8,7 @@ import { StoreService } from '@app/core/services/store/store.service';
 import { BitcoinStandardAdapter } from './bitcoin-standard-adapter';
 import { BitcoinFeatures } from './models/bitcoin-features';
 import { HttpService } from '@app/core/services/http/http.service';
+import { AddressChangedMsg } from '../../../models/events';
 
 export abstract class BitcoinStandardWalletAdapter extends StandardWalletAdapter<BitcoinFeatures> {
   public readonly chainType = CHAIN_TYPE.BITCOIN;
@@ -17,7 +18,7 @@ export abstract class BitcoinStandardWalletAdapter extends StandardWalletAdapter
   protected readonly chainName = 'bitcoin:mainnet';
 
   public constructor(
-    onAddressChanges$: BehaviorSubject<string>,
+    onAddressChanges$: BehaviorSubject<AddressChangedMsg>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,

@@ -539,7 +539,7 @@ export class SwapsStateService {
   }
 
   private shouldEmitToken(oldToken: BalanceToken, newToken: BalanceToken): boolean {
-    return Boolean(oldToken && newToken) ?? compareTokens(oldToken, newToken);
+    return Boolean(oldToken && newToken) || compareTokens(oldToken, newToken);
   }
 
   private getTimerObservable(): Observable<boolean> {

@@ -5,6 +5,7 @@ import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Component({
+  standalone: false,
   selector: 'app-wallets-list',
   templateUrl: './wallets-list.component.html',
   styleUrls: ['./wallets-list.component.scss'],

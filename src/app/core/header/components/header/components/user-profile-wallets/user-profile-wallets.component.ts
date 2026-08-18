@@ -28,6 +28,7 @@ import { TotalBalancesStoreService } from '@app/core/services/tokens/total-balan
 import BigNumber from 'bignumber.js';
 
 @Component({
+  standalone: false,
   selector: 'app-user-profile-wallets',
   templateUrl: './user-profile-wallets.component.html',
   styleUrls: ['./user-profile-wallets.component.scss'],

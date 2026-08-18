@@ -7,7 +7,7 @@ import { HistoryRoutingModule } from '@features/history/history-routing.module';
 import { SharedModule } from '@shared/shared.module';
 import { HistoryHeaderComponent } from './components/hisory-header/history-header.component';
 import { TuiPagination, TuiDataListWrapper, TuiBadge, TuiTabs } from '@taiga-ui/kit';
-import { TuiLoader, TuiIcon, TuiButton, TuiHint } from '@taiga-ui/core';
+import { TuiLoader, TuiIcon, TuiButton, TuiHint, TuiDropdown } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
 import { TuiTablePagination, TuiTable } from '@taiga-ui/addon-table';
@@ -43,7 +43,7 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     TuiBadge,
     TuiPagination,
     TuiSelectModule,
-    TuiDropdownModule,
+    ...TuiDropdown,
     TuiTextfieldControllerModule,
     ...TuiDataListWrapper,
     ReactiveFormsModule,

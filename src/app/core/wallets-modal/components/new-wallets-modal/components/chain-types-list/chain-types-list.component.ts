@@ -4,6 +4,7 @@ import { WalletFilterConfig } from '../../models/models';
 import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
 @Component({
+  standalone: false,
   selector: 'app-chain-types-list',
   templateUrl: './chain-types-list.component.html',
   styleUrls: ['./chain-types-list.component.scss'],

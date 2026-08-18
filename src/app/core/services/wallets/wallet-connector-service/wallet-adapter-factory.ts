@@ -8,7 +8,6 @@ import { CoinBaseWalletAdapter } from '../wallets-adapters/evm/coin-base-wallet-
 import { ArgentWalletAdapter } from '../wallets-adapters/evm/argent-wallet-adapter';
 import { TrustWalletAdapter } from '../wallets-adapters/evm/trust-wallet-adapter';
 import { TronLinkAdapter } from '../wallets-adapters/tron/tron-link-adapter';
-import { PhantomWalletAdapter } from '../wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '../wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '../wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '../wallets-adapters/evm/token-pocket-wallet-adapter';
@@ -34,6 +33,8 @@ import { HttpService } from '../../http/http.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/core';
 import { AddressChangedMsg } from '../models/events';
+import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
+import { PhantomSolanaWalletAdapter } from '../wallets-adapters/solana/phantom-solana-wallet-adapter';
 
 export class WalletAdapterFactory {
   private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
@@ -101,6 +102,10 @@ export class WalletAdapterFactory {
 
     if (walletName === WALLET_NAME.PHANTOM) {
       return new PhantomWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.PHANTOM_SOLANA) {
+      return new PhantomSolanaWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.SOLFLARE) {

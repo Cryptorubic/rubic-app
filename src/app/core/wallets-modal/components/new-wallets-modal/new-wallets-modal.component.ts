@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit
+} from '@angular/core';
 import { WALLET_NAME } from '../wallets-modal/models/wallet-name';
 import { FormControl } from '@angular/forms';
 import {
@@ -12,7 +18,6 @@ import {
   tap,
   timeout
 } from 'rxjs';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { WalletsModalOptions } from '../wallets-modal/models/wallets-modal-options';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
@@ -29,19 +34,19 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { WalletConfigUI, WalletFilterConfig } from './models/models';
 import { CHAIN_TYPES_FILTERS } from './constants/chain-type-filters';
 import { WALLETS_LIST } from './constants/wallets';
-import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
-import { AsyncPipe } from '@angular/common';
+import { tuiIsEdge, tuiIsFirefox } from '@taiga-ui/cdk';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 import { METAMASK_PROVIDERS } from '../wallets-modal/models/metamask-providers';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 
 @Component({
+  standalone: false,
   selector: 'app-new-wallets-modal',
   templateUrl: './new-wallets-modal.component.html',
   styleUrls: ['./new-wallets-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewWalletsModalComponent {
+export class NewWalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
 
   private readonly allWallets: ReadonlyArray<WalletConfigUI>;
@@ -53,7 +58,7 @@ export class NewWalletsModalComponent {
   private readonly supportedMetamaskProvider: WALLET_NAME;
 
   public get isChromium(): boolean {
-    if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
+    if (tuiIsEdge(this.userAgent)) {
       return false;
     }
     return !tuiIsFirefox(this.userAgent);
@@ -70,7 +75,7 @@ export class NewWalletsModalComponent {
   }
 
   public get isMobile(): boolean {
-    return new AsyncPipe(this.cdr).transform(this.isMobile$);
+    return this.headerStore.isMobile;
   }
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
@@ -206,14 +211,14 @@ export class NewWalletsModalComponent {
   }
 
   // @TODO_530 remove if not needed
-  public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
-    try {
-      if (!this.showMetamaskModal) return this.supportedMetamaskProvider;
-      return this.modalService.openMetamaskModal();
-    } catch {
-      return null;
-    }
-  }
+  // public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
+  //   try {
+  //     if (!this.showMetamaskModal) return this.supportedMetamaskProvider;
+  //     return this.modalService.openMetamaskModal();
+  //   } catch {
+  //     return null;
+  //   }
+  // }
 
   public selectFilter(filter: WalletFilterConfig): void {
     this._selectedFilter$.next(filter);

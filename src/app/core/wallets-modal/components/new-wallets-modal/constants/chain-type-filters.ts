@@ -4,6 +4,7 @@ import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/mo
 import { WALLET_ADAPTER_STATIC_CONFIGS } from '@app/core/services/wallets/constants/wallet-adapter-static-config';
 import { CommonWalletAdapter } from '@app/core/services/wallets/wallets-adapters/common-wallet-adapter';
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const WALLET_FILTER_KEYS = [
   'ALL',
   CHAIN_TYPE.EVM,
@@ -15,7 +16,7 @@ const WALLET_FILTER_KEYS = [
   CHAIN_TYPE.STELLAR
 ] as const;
 
-export type WalletFilterKey = (typeof WALLET_FILTER_KEYS)[number];
+type WalletFilterKey = (typeof WALLET_FILTER_KEYS)[number];
 
 const basePath = 'assets/images/wallets/chain-types';
 

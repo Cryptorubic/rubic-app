@@ -75,8 +75,17 @@ export const WALLETS_LIST: ReadonlyArray<WalletConfigUI> = [
     disabled: false
   },
   {
-    name: 'Phantom',
+    name: 'Phantom EVM',
     value: WALLET_NAME.PHANTOM,
+    img: 'assets/images/icons/wallets/phantom.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Phantom Solana',
+    value: WALLET_NAME.PHANTOM_SOLANA,
     img: 'assets/images/icons/wallets/phantom.svg',
     supportsDesktop: true,
     supportsMobile: true,
