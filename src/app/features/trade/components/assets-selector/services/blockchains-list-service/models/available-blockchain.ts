@@ -1,12 +1,12 @@
 import { BlockchainName } from '@cryptorubic/core';
-import { BlockchainTag } from '../../../components/blockchains-filter-list/models/BlockchainFilters';
+import { BLOCKCHAIN_TAG } from '../../../models/blockchain-tag';
 
 export interface AvailableBlockchain {
   rank: number;
   name: BlockchainName;
   icon: string;
   label: string;
-  tags: (string | BlockchainTag)[];
+  tags: (string | BLOCKCHAIN_TAG)[];
   disabledConfiguration: boolean;
   disabledFrom: boolean;
 }
