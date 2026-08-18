@@ -197,10 +197,6 @@ export class ChartService {
       this.script.remove();
       this.script = null;
       this.setChartLoaded(true);
-      // automatically show chart on first load if hidden
-      if (!this.chartInfo.status.lastOpened && !this.chartInfo.status.forceClosed) {
-        this.setChartOpened(true, { forceClosed: false, rewriteLastOpened: true });
-      }
     });
 
     // calls script and creates iframe with TradingView widget
