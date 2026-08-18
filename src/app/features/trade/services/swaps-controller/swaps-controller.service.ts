@@ -1,15 +1,6 @@
 import { WA_WINDOW } from '@ng-web-apis/common';
 import { inject, Inject, Injectable } from '@angular/core';
-import {
-  combineLatestWith,
-  concatMap,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject,
-  Subscription
-} from 'rxjs';
+import { concatMap, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -140,7 +131,8 @@ export class SwapsControllerService {
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
     this.subscribeOnAddressChange();
-    this.subscribeOnSettings();
+    this.subscribeOnCcrSettings();
+    this.subscribeOnOnchainSettings();
     this.subscribeOnReceiverChange();
     this.subscribeOnSwapFormFilled();
 
@@ -545,18 +537,29 @@ export class SwapsControllerService {
     return error.showAlert && !(error instanceof SimulationFailedError);
   }
 
-  private subscribeOnSettings(): void {
+  private subscribeOnCcrSettings(): void {
     this.settingsService.crossChainRoutingValueChanges$
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
-        distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
-        combineLatestWith(
-          this.settingsService.instantTradeValueChanges$.pipe(
-            startWith(this.settingsService.instantTradeValue),
-            distinctUntilChanged(
-              (prev, next) => prev.useMevBotProtection !== next.useMevBotProtection
-            )
-          )
+        distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance),
+        debounceTime(10),
+        pairwise(),
+        filter(([prev, next]) => !compareObjects(prev, next))
+      )
+      .subscribe(() => {
+        this.startRecalculation(true);
+      });
+  }
+
+  private subscribeOnOnchainSettings(): void {
+    this.settingsService.instantTradeValueChanges$
+      .pipe(
+        startWith(this.settingsService.instantTradeValue),
+        distinctUntilChanged(
+          (prev, next) =>
+            prev.deadline === next.deadline &&
+            prev.slippageTolerance === next.slippageTolerance &&
+            prev.disableMultihops === next.disableMultihops
         ),
         debounceTime(10),
         pairwise(),
@@ -568,7 +571,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.isAddressValid$
+    this.targetNetworkAddressService.isAddressSetAndValid$
       .pipe(debounceTime(50), filter(Boolean))
       .subscribe(isValid => {
         if (isValid) {

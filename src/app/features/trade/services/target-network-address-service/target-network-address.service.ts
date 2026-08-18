@@ -4,6 +4,7 @@ import {
   combineLatest,
   debounceTime,
   defer,
+  map,
   shareReplay,
   startWith,
   switchMap
@@ -42,6 +43,10 @@ export class TargetNetworkAddressService {
         (!!address && !!toBlockchain && (await Web3Pure.isAddressCorrect(toBlockchain, address)))
     ),
     shareReplay(shareReplayConfig)
+  );
+
+  public readonly isAddressSetAndValid$ = this.isAddressValid$.pipe(
+    map(valid => valid && !!this.address)
   );
 
   constructor(
