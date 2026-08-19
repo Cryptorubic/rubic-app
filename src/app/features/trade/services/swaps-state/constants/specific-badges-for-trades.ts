@@ -121,5 +121,13 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getUrl: () => 'https://www.orbiter.finance/quest/41',
       showLabel: showBerachainLabel
     }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.THE_CHANGE]: [
+    {
+      fromSdk: false,
+      getBgColor: () => '#00E28E',
+      getLabel: () => 'NEW',
+      showLabel: () => true
+    }
   ]
 };
