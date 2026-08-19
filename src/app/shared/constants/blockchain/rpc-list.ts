@@ -30,13 +30,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://x-api.rubic.exchange/drpc/polygon?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://1rpc.io/matic'
   ],
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://x-api.rubic.exchange/polygon_zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
-    'https://zkevm-rpc.com',
-    'https://1rpc.io/polygon/zkevm',
-    'https://polygon-zkevm-mainnet.public.blastapi.io',
-    'https://x-api.rubic.exchange/drpc/polygon-zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
   [BLOCKCHAIN_NAME.HARMONY]: [
     'https://rpc.ankr.com/harmony/a569c6f7d83a39592921667624975861dbc1764ce94dac1304793f5945fab681',
     'https://api.harmony.one',

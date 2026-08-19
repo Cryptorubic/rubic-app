@@ -410,6 +410,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}teleswap.svg`,
     name: 'TeleSwap'
   },
+  the_change: {
+    averageTime: 5,
+    color: '#78FF39',
+    image: `${imageBasePath}teleswap.svg`,
+    name: 'TheChange'
+  },
   thorchain: {
     averageTime: 5,
     color: '#33FF99',
