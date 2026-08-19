@@ -122,6 +122,14 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: showBerachainLabel
     }
   ],
+  [CROSS_CHAIN_TRADE_TYPE.THE_CHANGE]: [
+    {
+      fromSdk: false,
+      getBgColor: () => '#00E28E',
+      getLabel: () => 'NEW',
+      showLabel: () => true
+    }
+  ],
   [CROSS_CHAIN_TRADE_TYPE.CCE_CASH]: [
     {
       fromSdk: false,
