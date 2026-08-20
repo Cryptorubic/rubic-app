@@ -72,7 +72,6 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
-import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
@@ -131,7 +130,6 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     WcChangeNetworkModalComponent,
     TonSlippageWarnModalComponent,
     DepositRateChangedModalComponent,
-    ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,
@@ -214,7 +212,6 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     SlippageFormatPipe,
     SkipDefaultDirective,
     ProgressBarComponent,
-    ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,

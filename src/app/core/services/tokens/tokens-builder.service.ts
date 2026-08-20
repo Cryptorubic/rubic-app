@@ -42,13 +42,10 @@ export class TokensBuilderService {
 
     const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
       allChains: this.tokensCollectionsFacade.allTokens,
-      trending: this.tokensCollectionsFacade.trending,
-      gainers: this.tokensCollectionsFacade.gainers,
-      losers: this.tokensCollectionsFacade.losers,
       favorite: this.tokensCollectionsFacade.favorite
     };
 
-    const store = utilityMap[type];
+    const store = utilityMap[type as UtilityAssetType];
 
     return store;
   }
