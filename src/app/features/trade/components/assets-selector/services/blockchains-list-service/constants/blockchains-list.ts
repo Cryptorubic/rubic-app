@@ -229,7 +229,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ZCASH,
     rank: 0.73,
-    tags: [BLOCKCHAIN_TAG.NON_EVM]
+    tags: ['ZEC', BLOCKCHAIN_TAG.NON_EVM]
   },
   {
     name: BLOCKCHAIN_NAME.HYPER_EVM,
