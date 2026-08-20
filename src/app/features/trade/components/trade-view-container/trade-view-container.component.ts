@@ -8,6 +8,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { BlockchainName, ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { TradeState } from '@features/trade/models/trade-state';
+import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -88,7 +89,26 @@ export class TradeViewContainerComponent {
   }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
+    const isTradeAlreadySelected = this.swapsState.tradeState.tradeType === tradeType;
+    if (isTradeAlreadySelected) {
+      await this.getSwapPreview();
+      return;
+    }
+
     await this.swapsState.selectTrade(tradeType);
+  }
+
+  public async getSwapPreview(): Promise<void> {
+    const buttonStatus = await firstValueFrom(this.buttonState$);
+    if (buttonStatus.text === 'Preview swap') {
+      buttonStatus.action();
+    } else if (buttonStatus.type === 'error' || buttonStatus.text === 'Connect wallet') {
+      this.notificationsService.show(buttonStatus.text, {
+        appearance: 'warning',
+        autoClose: 5_000,
+        data: null
+      });
+    }
   }
 
   public handleTokenSelect(asset: Asset, formType: FormType): void {
