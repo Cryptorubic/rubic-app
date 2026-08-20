@@ -4,7 +4,6 @@ import {
   combineLatest,
   debounceTime,
   defer,
-  map,
   shareReplay,
   startWith,
   switchMap
@@ -18,6 +17,16 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 
 @Injectable()
 export class TargetNetworkAddressService {
+  private _lastReceiverAddress: string = '';
+
+  public get lastReceiverAddress(): string {
+    return this._lastReceiverAddress;
+  }
+
+  public savePrevReceiverAddress(prevReceiverAddr: string): void {
+    this._lastReceiverAddress = prevReceiverAddr;
+  }
+
   public readonly addressControl = new FormControl<string>('', { nonNullable: true });
 
   public readonly address$ = defer(() =>
@@ -43,10 +52,6 @@ export class TargetNetworkAddressService {
         (!!address && !!toBlockchain && (await Web3Pure.isAddressCorrect(toBlockchain, address)))
     ),
     shareReplay(shareReplayConfig)
-  );
-
-  public readonly isAddressSetAndValid$ = this.isAddressValid$.pipe(
-    map(valid => valid && !!this.address)
   );
 
   constructor(

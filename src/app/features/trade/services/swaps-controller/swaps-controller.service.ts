@@ -130,10 +130,8 @@ export class SwapsControllerService {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
-    this.subscribeOnAddressChange();
     this.subscribeOnCcrSettings();
     this.subscribeOnOnchainSettings();
-    this.subscribeOnReceiverChange();
     this.subscribeOnSwapFormFilled();
 
     this.addSentryEvent();
@@ -399,14 +397,6 @@ export class SwapsControllerService {
     }
   }
 
-  private subscribeOnAddressChange(): void {
-    this.authService.currentUser$.pipe(distinctUntilChanged()).subscribe(() => {
-      if (this.swapFormService.isFilled) {
-        this.startRecalculation(true);
-      }
-    });
-  }
-
   private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
       return new RubicError('Currently, Rubic does not support swaps between these tokens.');
@@ -567,16 +557,6 @@ export class SwapsControllerService {
       )
       .subscribe(() => {
         this.startRecalculation(true);
-      });
-  }
-
-  private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.isAddressSetAndValid$
-      .pipe(debounceTime(50), filter(Boolean))
-      .subscribe(isValid => {
-        if (isValid) {
-          this.startRecalculation(true);
-        }
       });
   }
 

@@ -201,9 +201,6 @@ export class SwapFormPageComponent {
 
     const oldValue = settings.controls.showReceiverAddress.value;
     const showReceiver = !oldValue;
-    if (!showReceiver) {
-      this.targetNetworkAddressService.addressControl.setValue('');
-    }
     settings.patchValue({ showReceiverAddress: showReceiver });
   }
 
