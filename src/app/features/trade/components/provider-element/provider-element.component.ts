@@ -29,6 +29,8 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) hideHint$!: Observable<boolean>;
 
+  @Input() hidePrivateBadge = false;
+
   public expanded = false;
 
   public get isClearswap(): boolean {

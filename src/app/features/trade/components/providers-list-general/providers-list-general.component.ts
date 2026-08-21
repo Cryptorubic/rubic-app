@@ -68,6 +68,10 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
   get mobileStates(): TradeState[] {
+    if (this.isPrivateOnly) {
+      return this.states.filter(state => isClearswap(state.tradeType));
+    }
+
     return this.states.some(state => isClearswap(state.tradeType))
       ? this.states.slice(0, 2)
       : this.states.slice(0, 1);
@@ -103,6 +107,8 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   );
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
+
+  public isPrivateOnly = false;
 
   public readonly isMobile = this.headerStore.isMobile;
 

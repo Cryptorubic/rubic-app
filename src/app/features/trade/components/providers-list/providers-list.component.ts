@@ -48,6 +48,10 @@ export class ProvidersListComponent {
   @Input({ required: true })
   calculationProgress: CalculationProgress = this.context?.data?.calculationProgress;
 
+  @PolymorpheusInput()
+  @Input()
+  public readonly isPrivateOnly: boolean = this.context?.data?.isPrivateOnly || false;
+
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
   public readonly toToken$ = this.swapsFormService.toToken$;
@@ -55,6 +59,23 @@ export class ProvidersListComponent {
   public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
+
+  public get visibleStates(): TradeState[] {
+    if (!this.isPrivateOnly) {
+      return this.states;
+    }
+
+    return this.states.filter(state => isClearswap(state.tradeType));
+  }
+
+  public get showEmptyPrivateList(): boolean {
+    return (
+      this.isPrivateOnly &&
+      this.visibleStates.length === 0 &&
+      this.calculationProgress?.total > 0 &&
+      this.calculationProgress.current === this.calculationProgress.total
+    );
+  }
 
   constructor(
     @Optional()
@@ -68,6 +89,7 @@ export class ProvidersListComponent {
         isModal: boolean;
         shortedInfo: boolean;
         noRoutes: boolean;
+        isPrivateOnly: boolean;
       }
     >,
     private readonly swapsFormService: SwapsFormService,
@@ -76,6 +98,10 @@ export class ProvidersListComponent {
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {
+    if (this.isPrivateOnly) {
+      return this.visibleStates[0]?.tradeType === tradeState.tradeType;
+    }
+
     const nonClearswap = this.states.filter(state => !isClearswap(state.tradeType));
     if (nonClearswap.length > 0) {
       return tradeState.tradeType === nonClearswap[0].tradeType;

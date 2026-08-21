@@ -1,14 +1,16 @@
 <app-window-container *ngIf="!isMobile; else mobileProviders">
   <ng-container header>Providers list</ng-container>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
+  <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
   <!-- Providers list -->
   <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
-      *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
+      *ngIf="!calculationStatus.noRoutes || isPrivateOnly; else alternativeRoutes"
       [states]="states"
       [selectedTradeType]="selectedTradeType"
       [calculationProgress]="calculationStatus.calculationProgress"
       [isModal]="false"
+      [isPrivateOnly]="isPrivateOnly"
       (selectTrade)="handleTradeSelection($event)"
     ></app-providers-list>
   </tui-scrollbar>
@@ -23,21 +25,34 @@
 
 <ng-template #mobileProviders>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
+  <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
 
   <app-providers-list
-    *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
+    *ngIf="!calculationStatus.noRoutes || isPrivateOnly; else alternativeRoutes"
     [states]="mobileStates"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"
     [shortedInfo]="true"
+    [isPrivateOnly]="isPrivateOnly"
     (selectTrade)="handleTradeSelection($event)"
   >
   </app-providers-list>
 
-  <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
+  <div
+    class="other-providers"
+    *ngIf="!isPrivateOnly && states?.length > 1"
+    (click)="openOtherProvidersList()"
+  >
     <span class="other-providers__text">Other Providers</span>
     <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
+  </div>
+</ng-template>
+
+<ng-template #privateSwitcher>
+  <div class="private-switcher">
+    Private routes only
+    <input tuiSwitch type="checkbox" size="s" [(ngModel)]="isPrivateOnly" />
   </div>
 </ng-template>
 
