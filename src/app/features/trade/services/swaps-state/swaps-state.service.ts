@@ -315,8 +315,11 @@ export class SwapsStateService {
   }
 
   private applySelectedTrade(currentTrades: TradeState[], isCalculationEnd: boolean): void {
-    const userSelectedTrade = this.tryGetUserSelectedTrade(currentTrades, isCalculationEnd);
-    if (userSelectedTrade === 'waiting') {
+    const { trade: userSelectedTrade, finished } = this.tryGetUserSelectedTrade(
+      currentTrades,
+      isCalculationEnd
+    );
+    if (!finished) {
       this.currentTrade = this.getClearedTradeState();
       return;
     }
@@ -331,15 +334,31 @@ export class SwapsStateService {
       return;
     }
 
-    this.currentTrade = this.toSelectedTrade(selectedTradeState, Boolean(userSelectedTrade));
+    const trade: SelectedTrade = {
+      ...selectedTradeState,
+      selectedByUser: !!userSelectedTrade,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.currentTrade = trade;
   }
 
   private tryGetUserSelectedTrade(
     currentTrades: TradeState[],
     isCalculationEnd: boolean
-  ): TradeState | 'waiting' | null {
+  ): {
+    finished: boolean;
+    trade?: TradeState;
+  } {
     if (!this.userSelectedTradeType) {
-      return null;
+      return {
+        finished: true
+      };
     }
 
     const userTrade = currentTrades.find(
@@ -347,7 +366,10 @@ export class SwapsStateService {
     );
 
     if (userTrade?.trade && !userTrade.error) {
-      return userTrade;
+      return {
+        finished: true,
+        trade: userTrade
+      };
     }
 
     const wasSeenThisCycle = this.seenTradeTypesThisCycle.has(this.userSelectedTradeType);
@@ -359,10 +381,14 @@ export class SwapsStateService {
 
     if (hasFailed) {
       this.userSelectedTradeType = null;
-      return null;
+      return {
+        finished: true
+      };
     }
 
-    return 'waiting';
+    return {
+      finished: false
+    };
   }
 
   private toSelectedTrade(tradeState: TradeState, selectedByUser: boolean): SelectedTrade {
