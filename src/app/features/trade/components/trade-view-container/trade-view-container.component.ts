@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { combineLatestWith, delay, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -16,7 +16,6 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
@@ -57,11 +56,6 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
-    combineLatestWith(this.authService.currentUser$),
-    map(([showSpindl, currUser]) => showSpindl && Boolean(currUser?.address))
-  );
-
   public readonly showHypelab$ = fromEvent<MessageEvent>(window, 'message').pipe(
     map(e => e.data?.type === 'bannerReady'),
     startWith(false)
@@ -84,7 +78,6 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly spindlService: SpindlService,
     private readonly authService: AuthService
   ) {}
 

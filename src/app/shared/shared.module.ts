@@ -73,7 +73,6 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
-import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
 import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 
 @NgModule({
@@ -123,7 +122,6 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     SkipDefaultDirective,
     MevBotModalComponent,
     ProgressBarComponent,
-    SpindleBannerComponent,
     HypelabBannerComponent
   ],
   imports: [
@@ -200,7 +198,6 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     SlippageFormatPipe,
     SkipDefaultDirective,
     ProgressBarComponent,
-    SpindleBannerComponent,
     HypelabBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]

@@ -13,7 +13,6 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { ThemeService } from './core/services/theme/theme.service';
-import { SpindlService } from './core/services/spindl-ads/spindl.service';
 
 @Component({
   selector: 'app-root',
@@ -34,14 +33,12 @@ export class AppComponent implements AfterViewInit {
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly themeService: ThemeService,
-    private readonly spindlService: SpindlService
+    private readonly themeService: ThemeService
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
-    this.spindlService.initSpindlAds();
   }
 
   ngAfterViewInit() {

@@ -6,7 +6,6 @@
     selectedForm: selectedForm$ | async,
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
-    showSpindl: showSpindl$ | async,
     resetCarouselIndex: resetCarouselIndex$ | async,
     resetCarouselDuration: resetCarouselDuration$ | async,
     showHypelab: showHypelab$ | async
@@ -37,9 +36,6 @@
         display: state.content === 'form' ? 'block' : 'none'
       }"
     >
-      <ng-container *ngIf="state.showSpindl">
-        <app-spindle-banner *tuiItem></app-spindle-banner>
-      </ng-container>
       <app-hypelab-banner *tuiItem></app-hypelab-banner>
     </tui-carousel>
   </div>

@@ -59,7 +59,6 @@ import { CrossChainSwapAdditionalParams } from './models/swap-controller-service
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
-import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -135,8 +134,7 @@ export class PreviewSwapService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
-    private readonly ccrApiService: CrossChainApiService,
-    private readonly spindlService: SpindlService
+    private readonly ccrApiService: CrossChainApiService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -397,7 +395,6 @@ export class PreviewSwapService {
                     });
                   }
 
-                  this.spindlService.sendSwapEvent(txHash);
                   this.recentTradesStoreService.updateUnreadTrades();
                 }
               },
