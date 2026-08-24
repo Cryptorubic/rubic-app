@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.7.3-alpha.zkevm.2":
-  version "1.7.3-alpha.zkevm.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.3-alpha.zkevm.2.tgz#538bc7b00a46103fa82cf4dedcabc6a100a5c2ff"
-  integrity sha512-ifHdvw/OfzZIdvQu4Pqc4X7jtDJesqyo12Zm7DvqDDqrwOi1xeCxsWSP2fNRsONzug2qxUVOGgItd/4RI9bRvA==
+"@cryptorubic/core@1.7.4-alpha.zkevm.1":
+  version "1.7.4-alpha.zkevm.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.4-alpha.zkevm.1.tgz#2808ce08bce02016aa93d12177cae23c2c8fa1e4"
+  integrity sha512-l09/3s5FrFRRVzA7AsI+hlDe/S54+7H2u7rhzsM2mE01t9clnixyf882KHaQL5osi147T8ZpyqrJ2LPKMdqtvA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.7.3-alpha.zkevm.2":
-  version "1.7.3-alpha.zkevm.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.3-alpha.zkevm.2.tgz#fb5b2c03366e7271aebab857b46c3ee3380b8fec"
-  integrity sha512-/BfZrrQ0Z+SS+XGJiTZHk2bzZIEfWrAjfiyC4PY8i9+As53pDvYvCOF0nMQhLaae/nHc0bP0p5PNguVTDa1E/Q==
+"@cryptorubic/web3@1.7.4-alpha.zkevm.1":
+  version "1.7.4-alpha.zkevm.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.4-alpha.zkevm.1.tgz#2b5ea18ce4fd53710c85ec0a310d417dcc16647d"
+  integrity sha512-wvw7t3BzVS6s40G8plEzytj9yUnyHucqSVqSS8bh4bLYlXEvKC0Z4jHdXhynqRSGZZXRj+HBcyZaOV2Ur8JnZw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -2448,7 +2448,7 @@
     "@suiet/wallet-sdk" "^0.3.3"
     "@ton/core" "^0.59.1"
     "@ton/ton" "^15.1.0"
-    "@tonconnect/ui" "^2.2.0"
+    "@tonconnect/ui" "^3.0.2"
     axios "*"
     bignumber.js "9.1.2"
     bitcoin-address-validation "^2.2.3"
@@ -8195,14 +8195,6 @@
   dependencies:
     node-fetch "^2.6.9"
 
-"@tonconnect/protocol@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@tonconnect/protocol/-/protocol-2.4.0.tgz#7e6575ce03c16242204fb53e799f4bfbb2e891a4"
-  integrity sha512-3xg6sMWIrSgW7/f7iPgOb2BI3LaMScjDMqfu20fcEMbOVvNFk3TGAUKK5cJ3pfvUINsyLgPoylcIbPap37jXiA==
-  dependencies:
-    tweetnacl "^1.0.3"
-    tweetnacl-util "^0.15.1"
-
 "@tonconnect/protocol@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/protocol/-/protocol-3.0.0.tgz#e1ed30361f602cd9eff873246d5f8feafa1f0fbf"
@@ -8210,15 +8202,6 @@
   dependencies:
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
-
-"@tonconnect/sdk@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.4.1.tgz#2b1087758737fae7e4cf85878e5e7cc40ae5ed5f"
-  integrity sha512-eVH8erAFout89gXYHXua/es+mmLPiW1r7ng9hgHKYQv85HLq8/zzQEkbJpbTlnIuQ6CJ/QKchjMsIgYz3BYCUQ==
-  dependencies:
-    "@tonconnect/isomorphic-eventsource" "0.0.2"
-    "@tonconnect/isomorphic-fetch" "0.0.3"
-    "@tonconnect/protocol" "2.4.0"
 
 "@tonconnect/sdk@4.0.2":
   version "4.0.2"
@@ -8229,23 +8212,12 @@
     "@tonconnect/isomorphic-fetch" "0.0.3"
     "@tonconnect/protocol" "3.0.0"
 
-"@tonconnect/ui@3.0.2":
+"@tonconnect/ui@3.0.2", "@tonconnect/ui@^3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-3.0.2.tgz#9885e55237c5fbecff4868275b8bdd6a069dc1e6"
   integrity sha512-bAOVfN3p/x40Bx7VcvAmH0DvGKwN9qNnkYUqkhUVckHOdwgfdtEMAQaE3w4Dabguse4VoXDzdmf/1rSl56wEgQ==
   dependencies:
     "@tonconnect/sdk" "4.0.2"
-    classnames "^2.5.1"
-    csstype "^3.1.3"
-    deepmerge "^4.3.1"
-    ua-parser-js "^1.0.35"
-
-"@tonconnect/ui@^2.2.0":
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.4.4.tgz#1ea180231d8704b1c462bd980b5bd4da647a91fc"
-  integrity sha512-XgIHAkdimDk+YeRDPsQp7eOz2lM4aScYL3hiTP1Z9YgWRVROjEqTbw5ZP9pt6rgmYTzL26QpqhI6uNTFdYNFIA==
-  dependencies:
-    "@tonconnect/sdk" "3.4.1"
     classnames "^2.5.1"
     csstype "^3.1.3"
     deepmerge "^4.3.1"

@@ -129,5 +129,13 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'NEW',
       showLabel: () => true
     }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.CCE_CASH]: [
+    {
+      fromSdk: false,
+      getBgColor: () => '#00E28E',
+      getLabel: () => 'NEW',
+      showLabel: () => true
+    }
   ]
 };
