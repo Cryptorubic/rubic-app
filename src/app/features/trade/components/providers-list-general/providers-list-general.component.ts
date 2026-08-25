@@ -32,6 +32,7 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   standalone: false,
@@ -72,12 +73,12 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   get mobileStates(): TradeState[] {
     const visible = getVisibleProviderStates(
       this.states,
-      this.isPrivateOnly,
+      this.privateOnly,
       this.calculationStatus?.calculationProgress,
       this.swapsStateService.lastBestPrivateTradeType
     );
 
-    if (this.isPrivateOnly) {
+    if (this.privateOnly) {
       return visible;
     }
 
@@ -115,7 +116,7 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
-  public isPrivateOnly = false;
+  public privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -128,8 +129,16 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
     private readonly alternativeRoutesService: AlternativeRoutesService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly swapsStateService: SwapsStateService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
+
+  public onPrivateOnlyChange(value: boolean): void {
+    this.privateOnly = value;
+    this.queryParamsService.patchQueryParams({
+      privateOnly: value.toString()
+    });
+  }
 
   public handleTradeSelection(tradeType: TradeProvider): void {
     this.selectTrade.emit(tradeType);

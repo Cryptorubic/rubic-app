@@ -15,7 +15,7 @@ export function isPrivateCalculationDone(
 
 export function getVisibleProviderStates(
   states: TradeState[],
-  isPrivateOnly: boolean,
+  privateOnly: boolean,
   progress: CalculationProgress | null | undefined,
   lastBestPrivateTradeType: TradeProvider | null | undefined
 ): TradeState[] {
@@ -24,7 +24,7 @@ export function getVisibleProviderStates(
     ? privateStates.find(state => state.tradeType === lastBestPrivateTradeType)
     : undefined;
 
-  if (isPrivateOnly) {
+  if (privateOnly) {
     if (privateStates.length) {
       return privateStates;
     }

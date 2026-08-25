@@ -16,7 +16,7 @@
       [tradeState]="state"
       [shortedInfo]="shortedInfo"
       [selectedTradeType]="selectedTradeType"
-      [hidePrivateBadge]="isPrivateOnly"
+      [hidePrivateBadge]="privateOnly"
       (click)="handleTradeSelection($event, state.tradeType, state.trade, state.error)"
       [hideHint$]="hideHint$"
     ></app-provider-element>

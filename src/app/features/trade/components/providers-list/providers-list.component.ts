@@ -52,7 +52,7 @@ export class ProvidersListComponent {
 
   @PolymorpheusInput()
   @Input()
-  public readonly isPrivateOnly: boolean = this.context?.data?.isPrivateOnly || false;
+  public readonly privateOnly: boolean = this.context?.data?.privateOnly || false;
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
@@ -65,7 +65,7 @@ export class ProvidersListComponent {
   public get visibleStates(): TradeState[] {
     return getVisibleProviderStates(
       this.states,
-      this.isPrivateOnly,
+      this.privateOnly,
       this.calculationProgress,
       this.swapsStateService.lastBestPrivateTradeType
     );
@@ -73,7 +73,7 @@ export class ProvidersListComponent {
 
   public get showEmptyPrivateList(): boolean {
     return (
-      this.isPrivateOnly &&
+      this.privateOnly &&
       this.visibleStates.length === 0 &&
       this.calculationProgress?.total > 0 &&
       this.calculationProgress.current === this.calculationProgress.total
@@ -92,7 +92,7 @@ export class ProvidersListComponent {
         isModal: boolean;
         shortedInfo: boolean;
         noRoutes: boolean;
-        isPrivateOnly: boolean;
+        privateOnly: boolean;
       }
     >,
     private readonly swapsFormService: SwapsFormService,
@@ -102,7 +102,7 @@ export class ProvidersListComponent {
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {
-    if (this.isPrivateOnly) {
+    if (this.privateOnly) {
       return this.visibleStates[0]?.tradeType === tradeState.tradeType;
     }
 

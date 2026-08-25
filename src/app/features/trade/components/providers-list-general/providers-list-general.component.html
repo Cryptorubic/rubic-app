@@ -5,12 +5,12 @@
   <!-- Providers list -->
   <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
-      *ngIf="!calculationStatus.noRoutes || isPrivateOnly; else alternativeRoutes"
+      *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
       [states]="states"
       [selectedTradeType]="selectedTradeType"
       [calculationProgress]="calculationStatus.calculationProgress"
       [isModal]="false"
-      [isPrivateOnly]="isPrivateOnly"
+      [privateOnly]="privateOnly"
       (selectTrade)="handleTradeSelection($event)"
     ></app-providers-list>
   </tui-scrollbar>
@@ -28,20 +28,20 @@
   <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
 
   <app-providers-list
-    *ngIf="!calculationStatus.noRoutes || isPrivateOnly; else alternativeRoutes"
+    *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
     [states]="mobileStates"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"
     [shortedInfo]="true"
-    [isPrivateOnly]="isPrivateOnly"
+    [privateOnly]="privateOnly"
     (selectTrade)="handleTradeSelection($event)"
   >
   </app-providers-list>
 
   <div
     class="other-providers"
-    *ngIf="!isPrivateOnly && states?.length > 1"
+    *ngIf="!privateOnly && states?.length > 1"
     (click)="openOtherProvidersList()"
   >
     <span class="other-providers__text">Other Providers</span>
@@ -52,7 +52,13 @@
 <ng-template #privateSwitcher>
   <div class="private-switcher">
     Private routes only
-    <input tuiSwitch type="checkbox" size="s" [(ngModel)]="isPrivateOnly" />
+    <input
+      tuiSwitch
+      type="checkbox"
+      size="s"
+      [ngModel]="privateOnly"
+      (ngModelChange)="onPrivateOnlyChange($event)"
+    />
   </div>
 </ng-template>
 
