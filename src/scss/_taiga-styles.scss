@@ -55,3 +55,11 @@ tui-notification {
     font-size: 14px !important;
   }
 }
+
+[tuiSwitch] {
+  background: #1b1a2e !important;
+
+  &[tuiAppearance][data-appearance=primary] {
+    background: var(--t-bg) !important;
+  }
+}

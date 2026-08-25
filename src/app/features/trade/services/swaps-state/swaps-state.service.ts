@@ -162,6 +162,8 @@ export class SwapsStateService {
 
   public readonly calculationProgress$ = this._calculationProgress$.asObservable();
 
+  public lastBestPrivateTradeType: TradeProvider | null = null;
+
   // @ts-ignore
   public readonly calculationStatus$ = this.initCalculationStatus();
 
@@ -609,6 +611,7 @@ export class SwapsStateService {
       )
       .subscribe(() => {
         this.userSelectedTradeType = null;
+        this.lastBestPrivateTradeType = null;
       });
   }
 
@@ -626,6 +629,13 @@ export class SwapsStateService {
     privateCurrent: number = 0
   ): void {
     this._calculationProgress$.next({ total, current, privateTotal, privateCurrent });
+
+    if (privateTotal > 0 && privateCurrent === privateTotal) {
+      const bestPrivate = this._tradesStore$
+        .getValue()
+        .find(tradeState => isPrivateTrade(tradeState));
+      this.lastBestPrivateTradeType = bestPrivate?.tradeType ?? null;
+    }
   }
 
   private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {

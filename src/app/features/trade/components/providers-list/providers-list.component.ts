@@ -20,6 +20,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Component({
   standalone: false,
@@ -62,7 +63,12 @@ export class ProvidersListComponent {
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
   public get visibleStates(): TradeState[] {
-    return getVisibleProviderStates(this.states, this.isPrivateOnly, this.calculationProgress);
+    return getVisibleProviderStates(
+      this.states,
+      this.isPrivateOnly,
+      this.calculationProgress,
+      this.swapsStateService.lastBestPrivateTradeType
+    );
   }
 
   public get showEmptyPrivateList(): boolean {
@@ -91,7 +97,8 @@ export class ProvidersListComponent {
     >,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly swapsStateService: SwapsStateService
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {

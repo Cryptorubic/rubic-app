@@ -31,6 +31,7 @@ import { AlternativeRoute } from '../../services/alternative-route-api-service/m
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Component({
   standalone: false,
@@ -72,7 +73,8 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     const visible = getVisibleProviderStates(
       this.states,
       this.isPrivateOnly,
-      this.calculationStatus?.calculationProgress
+      this.calculationStatus?.calculationProgress,
+      this.swapsStateService.lastBestPrivateTradeType
     );
 
     if (this.isPrivateOnly) {
@@ -125,7 +127,8 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
-    private readonly alternativeRoutesService: AlternativeRoutesService
+    private readonly alternativeRoutesService: AlternativeRoutesService,
+    private readonly swapsStateService: SwapsStateService
   ) {}
 
   public handleTradeSelection(tradeType: TradeProvider): void {

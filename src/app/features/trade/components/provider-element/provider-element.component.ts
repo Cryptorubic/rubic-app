@@ -9,7 +9,6 @@ import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 
@@ -85,7 +84,6 @@ export class ProviderElementComponent {
   }
 
   public getAverageTimeString(): string {
-    if (isClearswap(this.tradeState.trade.type)) return '3 mins';
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
     if (this.tradeState.trade instanceof OnChainTrade) {
