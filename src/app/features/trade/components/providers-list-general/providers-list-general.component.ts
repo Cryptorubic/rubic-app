@@ -138,6 +138,25 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     this.queryParamsService.patchQueryParams({
       privateOnly: value.toString()
     });
+
+    const tradeType = this.getTradeTypeForPrivateOnly(value);
+    if (tradeType) {
+      this.handleTradeSelection(tradeType);
+    }
+  }
+
+  private getTradeTypeForPrivateOnly(privateOnly: boolean): TradeProvider | null {
+    const tradesWithQuote = this.states.filter(state => state.trade);
+
+    if (privateOnly) {
+      return tradesWithQuote.find(isPrivateTrade)?.tradeType ?? null;
+    }
+
+    return (
+      tradesWithQuote.find(state => !isPrivateTrade(state))?.tradeType ??
+      tradesWithQuote.find(isPrivateTrade)?.tradeType ??
+      null
+    );
   }
 
   public handleTradeSelection(tradeType: TradeProvider): void {

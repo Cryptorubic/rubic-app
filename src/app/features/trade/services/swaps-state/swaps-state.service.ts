@@ -62,6 +62,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -175,7 +176,8 @@ export class SwapsStateService {
     private readonly alternativeRouteService: AlternativeRoutesService,
     private readonly refundService: RefundService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.subscribeOnTradeChange();
     this.subscribeOnFormChange();
@@ -438,24 +440,32 @@ export class SwapsStateService {
   }
 
   /**
-   * Private trades stay visible but default selection is the best among other providers.
-   * If a private quote is the only one: wait until calculation ends, then select it.
+   * Default selection is the best non-private provider.
+   * When privateOnly is on (query / switcher): pick the best private as soon as it has a quote.
    */
   private getDefaultSelectedTrade(
     currentTrades: TradeState[],
     isCalculationEnd: boolean
   ): TradeState | null {
     const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
+    const privateTrades = tradesWithQuote.filter(tradeState => isPrivateTrade(tradeState));
     const nonPrivateTrades = tradesWithQuote.filter(tradeState => !isPrivateTrade(tradeState));
+    const privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
+
+    if (privateOnly) {
+      if (privateTrades.length > 0) {
+        return privateTrades[0];
+      }
+
+      return isCalculationEnd ? (nonPrivateTrades[0] ?? null) : null;
+    }
 
     if (nonPrivateTrades.length > 0) {
       return nonPrivateTrades[0];
     }
 
-    const privateTrade = tradesWithQuote.find(tradeState => isPrivateTrade(tradeState));
-
-    if (privateTrade && isCalculationEnd) {
-      return privateTrade;
+    if (privateTrades[0] && isCalculationEnd) {
+      return privateTrades[0];
     }
 
     return null;
