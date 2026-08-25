@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  combineLatestWith,
-  Observable,
-  shareReplay,
-  timer
-} from 'rxjs';
+import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
 import { BadgeInfoForComponent, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
@@ -70,8 +63,6 @@ export class SwapsStateService {
   private swapType: SWAP_PROVIDER_TYPE | null = null;
 
   private userSelectedTradeType: TradeState['tradeType'] | null = null;
-
-  private readonly seenTradeTypesThisCycle = new Set<string>();
 
   /**
    * Trade state
@@ -174,7 +165,6 @@ export class SwapsStateService {
     private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnTradeChange();
-    this.subscribeOnFormChange();
   }
 
   public updateTrade(
@@ -185,9 +175,6 @@ export class SwapsStateService {
     needTrustlineOptions: NeedTrustlineOptions
   ): void {
     const trade = wrappedTrade?.trade;
-    if (wrappedTrade?.tradeType) {
-      this.seenTradeTypesThisCycle.add(wrappedTrade.tradeType);
-    }
     const defaultState: TradeState = !trade
       ? {
           error: wrappedTrade.error,
@@ -255,10 +242,10 @@ export class SwapsStateService {
   }
 
   public clearProviders(isTradeError: boolean = false): void {
-    this.seenTradeTypesThisCycle.clear();
-    this._tradeState$.next(this.getClearedTradeState());
+    this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
     this.swapType = null;
+    this.userSelectedTradeType = null;
     this.tradePageService.setProvidersVisibility(false);
     if (isTradeError) {
       this.setCalculationProgress(1, 1);
@@ -268,7 +255,6 @@ export class SwapsStateService {
   }
 
   public removeOldProvider(tradeType: CrossChainTradeType | OnChainTradeType): void {
-    this.seenTradeTypesThisCycle.add(tradeType);
     let currentTrades = this._tradesStore$.getValue();
 
     const providerIndex = currentTrades.findIndex(provider => provider?.trade?.type === tradeType);
@@ -315,15 +301,9 @@ export class SwapsStateService {
   }
 
   private applySelectedTrade(currentTrades: TradeState[], isCalculationEnd: boolean): void {
-    const { trade: userSelectedTrade, finished } = this.tryGetUserSelectedTrade(
-      currentTrades,
-      isCalculationEnd
-    );
-    if (!finished) {
-      this.currentTrade = this.getClearedTradeState();
-      return;
-    }
-
+    const userSelectedTrade =
+      this.userSelectedTradeType &&
+      currentTrades.find(tradeState => tradeState.tradeType === this.userSelectedTradeType);
     const selectedTradeState =
       userSelectedTrade ?? this.getDefaultSelectedTrade(currentTrades, isCalculationEnd);
     if (!selectedTradeState) {
@@ -346,63 +326,6 @@ export class SwapsStateService {
       trade.status = TRADE_STATUS.READY_TO_APPROVE;
     }
     this.currentTrade = trade;
-  }
-
-  private tryGetUserSelectedTrade(
-    currentTrades: TradeState[],
-    isCalculationEnd: boolean
-  ): {
-    finished: boolean;
-    trade?: TradeState;
-  } {
-    if (!this.userSelectedTradeType) {
-      return {
-        finished: true
-      };
-    }
-
-    const userTrade = currentTrades.find(
-      tradeState => tradeState.tradeType === this.userSelectedTradeType
-    );
-
-    if (userTrade?.trade && !userTrade.error) {
-      return {
-        finished: true,
-        trade: userTrade
-      };
-    }
-
-    const wasSeenThisCycle = this.seenTradeTypesThisCycle.has(this.userSelectedTradeType);
-    const hasFailed =
-      Boolean(userTrade?.error) ||
-      Boolean(userTrade && !userTrade.trade) ||
-      (wasSeenThisCycle && !userTrade) ||
-      (isCalculationEnd && !userTrade);
-
-    if (hasFailed) {
-      this.userSelectedTradeType = null;
-      return {
-        finished: true
-      };
-    }
-
-    return {
-      finished: false
-    };
-  }
-
-  private getClearedTradeState(): SelectedTrade {
-    const userTradeType = this.userSelectedTradeType;
-    if (!userTradeType) {
-      return this.defaultState;
-    }
-
-    return {
-      ...this.defaultState,
-      tradeType: userTradeType,
-      selectedByUser: true,
-      status: TRADE_STATUS.LOADING
-    };
   }
 
   /**
@@ -543,9 +466,7 @@ export class SwapsStateService {
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
-    if (!trade) {
-      return;
-    }
+    if (!trade) return;
 
     this.userSelectedTradeType = trade.tradeType;
     this.currentTrade = { ...trade, selectedByUser: true, status: this.currentTrade.status };
@@ -598,26 +519,6 @@ export class SwapsStateService {
         toAmount: trade?.to?.tokenAmount || null
       });
     });
-  }
-
-  private subscribeOnFormChange(): void {
-    combineLatest([
-      this.swapsFormService.fromToken$,
-      this.swapsFormService.toToken$,
-      this.swapsFormService.fromAmount$
-    ])
-      .pipe(
-        distinctUntilChanged(
-          ([prevFrom, prevTo, prevFromAmount], [nextFrom, nextTo, nextFromAmount]) =>
-            compareTokens(prevFrom, nextFrom) &&
-            compareTokens(prevTo, nextTo) &&
-            prevFromAmount?.visibleValue === nextFromAmount?.visibleValue
-        ),
-        pairwise()
-      )
-      .subscribe(() => {
-        this.userSelectedTradeType = null;
-      });
   }
 
   public patchCalculationState(): void {
