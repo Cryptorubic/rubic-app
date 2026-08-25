@@ -391,21 +391,6 @@ export class SwapsStateService {
     };
   }
 
-  private toSelectedTrade(tradeState: TradeState, selectedByUser: boolean): SelectedTrade {
-    const trade: SelectedTrade = {
-      ...tradeState,
-      selectedByUser,
-      status: TRADE_STATUS.READY_TO_SWAP
-    };
-    if (trade.error) {
-      trade.status = TRADE_STATUS.DISABLED;
-    }
-    if (trade.needApprove) {
-      trade.status = TRADE_STATUS.READY_TO_APPROVE;
-    }
-    return trade;
-  }
-
   private getClearedTradeState(): SelectedTrade {
     const userTradeType = this.userSelectedTradeType;
     if (!userTradeType) {
