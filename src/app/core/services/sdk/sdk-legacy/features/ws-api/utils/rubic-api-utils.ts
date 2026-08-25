@@ -224,7 +224,8 @@ export class RubicApiUtils {
           percent: 0,
           token: from
         }
-      }
+      },
+      private: false
     };
 
     return emptyResponse;

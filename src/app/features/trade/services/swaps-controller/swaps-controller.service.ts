@@ -637,7 +637,9 @@ export class SwapsControllerService {
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.total,
-                      container.calculated
+                      container.calculated,
+                      container.privateTotal,
+                      container.privateCalculated
                     );
                     this.setTradeAmount();
                     if (isCalculationEnd) {
@@ -663,7 +665,12 @@ export class SwapsControllerService {
             this.refreshService.setStopped();
             this.swapsStateService.clearProviders(true);
           } else {
-            this.swapsStateService.setCalculationProgress(container.total, container.calculated);
+            this.swapsStateService.setCalculationProgress(
+              container.total,
+              container.calculated,
+              container.privateTotal,
+              container.privateCalculated
+            );
           }
           if (container.tradeType) {
             this.swapsStateService.removeOldProvider(container.tradeType);

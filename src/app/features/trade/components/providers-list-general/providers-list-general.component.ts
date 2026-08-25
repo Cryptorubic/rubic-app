@@ -29,7 +29,8 @@ import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-tim
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
+import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
 
 @Component({
   standalone: false,
@@ -68,13 +69,17 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
   get mobileStates(): TradeState[] {
+    const visible = getVisibleProviderStates(
+      this.states,
+      this.isPrivateOnly,
+      this.calculationStatus?.calculationProgress
+    );
+
     if (this.isPrivateOnly) {
-      return this.states.filter(state => isClearswap(state.tradeType));
+      return visible;
     }
 
-    return this.states.some(state => isClearswap(state.tradeType))
-      ? this.states.slice(0, 2)
-      : this.states.slice(0, 1);
+    return visible.slice(0, visible.some(state => isPrivateTrade(state)) ? 2 : 1);
   }
 
   private _calculationStatus: CalculationStatus;

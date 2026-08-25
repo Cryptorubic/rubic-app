@@ -361,11 +361,14 @@ export class RubicApiService {
           }
         >(this.client, 'events').pipe(
           concatMap(wsResponse => {
-            const { trade, total, calculated, data } = wsResponse;
+            const { trade, total, calculated, data, privateCalculated, privateTotal } = wsResponse;
+
             if (!this.latestQuoteParams) {
               return of({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade: null,
                 ...(data && { tradeType: wsResponse.type })
               });
@@ -402,6 +405,8 @@ export class RubicApiService {
               map(wrappedTrade => ({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade,
                 ...(data && { tradeType: wsResponse.type })
               }))

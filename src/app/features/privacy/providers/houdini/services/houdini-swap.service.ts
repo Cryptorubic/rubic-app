@@ -151,7 +151,7 @@ export class HoudiniSwapService {
       srcTokenAmount: fromToken.tokenAmount.toString(),
       dstTokenBlockchain: toToken.blockchain,
       dstTokenAddress: toToken.address,
-      preferredProvider: 'houdini',
+      preferredProvider: 'houdini_bridge',
       receiver: receiverAddress,
       showDangerousRoutes: true,
       showFailedRoutes: true,

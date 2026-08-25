@@ -11,6 +11,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
 import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 
 @Component({
   standalone: false,
@@ -34,12 +35,12 @@ export class ProviderElementComponent {
 
   public expanded = false;
 
-  public get isClearswap(): boolean {
-    return isClearswap(this.tradeState?.tradeType);
+  public get isPrivate(): boolean {
+    return isPrivateTrade(this.tradeState);
   }
 
-  public get isShortedMobileClearswap(): boolean {
-    return this.shortedInfo && this.isMobile && this.isClearswap;
+  public get isShortedMobilePrivate(): boolean {
+    return this.shortedInfo && this.isMobile && this.isPrivate;
   }
 
   public get minMaxErrorAmount(): BigNumber | null {

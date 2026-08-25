@@ -169,6 +169,7 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
+      private: res.private,
       ...(error && { error })
     };
   }
@@ -254,6 +255,7 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
+      private: response.private,
       ...(error && { error })
     };
   }

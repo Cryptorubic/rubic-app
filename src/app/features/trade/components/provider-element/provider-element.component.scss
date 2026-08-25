@@ -19,7 +19,7 @@
     opacity: 0.75;
   }
 
-  &_clearswap {
+  &_private {
     background: linear-gradient(102.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
 
     &.element_shorted {
@@ -139,6 +139,7 @@
   &__best-badge {
     display: flex;
     align-items: center;
+    height: 24px;
 
     font-weight: 700 !important;
     text-transform: uppercase;
@@ -148,6 +149,8 @@
   }
 
   &__warning-badge {
+    height: 24px;
+
     font-weight: 700 !important;
     text-transform: uppercase;
 

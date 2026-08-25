@@ -61,7 +61,7 @@ import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 
 @Injectable()
 export class SwapsStateService {
@@ -155,7 +155,9 @@ export class SwapsStateService {
 
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
-    current: 0
+    current: 0,
+    privateTotal: 0,
+    privateCurrent: 0
   });
 
   public readonly calculationProgress$ = this._calculationProgress$.asObservable();
@@ -188,6 +190,7 @@ export class SwapsStateService {
     if (wrappedTrade?.tradeType) {
       this.seenTradeTypesThisCycle.add(wrappedTrade.tradeType);
     }
+    const isPrivate = Boolean(wrappedTrade?.private);
     const defaultState: TradeState = !trade
       ? {
           error: wrappedTrade.error,
@@ -202,7 +205,8 @@ export class SwapsStateService {
             needTrustlineAfterSwap: false,
             needTrustlineBeforeSwap: false
           },
-          warnings: []
+          warnings: [],
+          private: isPrivate
         }
       : {
           error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
@@ -215,7 +219,8 @@ export class SwapsStateService {
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade),
           centralizationStatus: this.setCentralizationStatus(trade),
-          warnings: trade.warnings
+          warnings: trade.warnings,
+          private: isPrivate
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -235,7 +240,8 @@ export class SwapsStateService {
               trade: defaultState.trade!,
               needApprove: defaultState.needApprove,
               error: defaultState.error,
-              routes: defaultState.routes
+              routes: defaultState.routes,
+              private: defaultState.private
             };
           } else {
             currentTrades.splice(providerIndex, 1);
@@ -430,26 +436,24 @@ export class SwapsStateService {
   }
 
   /**
-   * CLEARSWAP stays first in the list, but default selection is the best among other providers.
-   * If CLEARSWAP is the only quote: wait until calculation ends, then select it.
+   * Private trades stay visible but default selection is the best among other providers.
+   * If a private quote is the only one: wait until calculation ends, then select it.
    */
   private getDefaultSelectedTrade(
     currentTrades: TradeState[],
     isCalculationEnd: boolean
   ): TradeState | null {
     const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
-    const nonClearswapTrades = tradesWithQuote.filter(
-      tradeState => !isClearswap(tradeState.tradeType)
-    );
+    const nonPrivateTrades = tradesWithQuote.filter(tradeState => !isPrivateTrade(tradeState));
 
-    if (nonClearswapTrades.length > 0) {
-      return nonClearswapTrades[0];
+    if (nonPrivateTrades.length > 0) {
+      return nonPrivateTrades[0];
     }
 
-    const clearswapTrade = tradesWithQuote.find(tradeState => isClearswap(tradeState.tradeType));
+    const privateTrade = tradesWithQuote.find(tradeState => isPrivateTrade(tradeState));
 
-    if (clearswapTrade && isCalculationEnd) {
-      return clearswapTrade;
+    if (privateTrade && isCalculationEnd) {
+      return privateTrade;
     }
 
     return null;
@@ -460,12 +464,6 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return (currentTrades as WrappedCrossChainTradeOrNull[]).sort((nextTrade, prevTrade) => {
-      const nextTradeIsClearswap = nextTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
-      const prevTradeIsClearswap = prevTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
-
-      if (nextTradeIsClearswap && !prevTradeIsClearswap) return -1;
-      if (prevTradeIsClearswap && !nextTradeIsClearswap) return 1;
-
       const nativePriceForNextTrade = nextTrade?.trade
         ? this.getNativeTokenPrice(nextTrade.trade.from.blockchain)
         : new BigNumber(0);
@@ -510,12 +508,6 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return currentTrades.sort((a, b) => {
-      const aIsClearswap = a.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
-      const bIsClearswap = b.tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP;
-
-      if (aIsClearswap && !bIsClearswap) return -1;
-      if (bIsClearswap && !aIsClearswap) return 1;
-
       let aValue: BigNumber;
       let bValue: BigNumber;
 
@@ -627,8 +619,13 @@ export class SwapsStateService {
     });
   }
 
-  public setCalculationProgress(total: number, current: number): void {
-    this._calculationProgress$.next({ total, current });
+  public setCalculationProgress(
+    total: number,
+    current: number,
+    privateTotal: number = 0,
+    privateCurrent: number = 0
+  ): void {
+    this._calculationProgress$.next({ total, current, privateTotal, privateCurrent });
   }
 
   private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {

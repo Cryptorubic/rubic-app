@@ -18,7 +18,8 @@ import { ProviderHintService } from '../../services/provider-hint/provider-hint.
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
+import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
 
 @Component({
   standalone: false,
@@ -61,11 +62,7 @@ export class ProvidersListComponent {
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
   public get visibleStates(): TradeState[] {
-    if (!this.isPrivateOnly) {
-      return this.states;
-    }
-
-    return this.states.filter(state => isClearswap(state.tradeType));
+    return getVisibleProviderStates(this.states, this.isPrivateOnly, this.calculationProgress);
   }
 
   public get showEmptyPrivateList(): boolean {
@@ -102,9 +99,9 @@ export class ProvidersListComponent {
       return this.visibleStates[0]?.tradeType === tradeState.tradeType;
     }
 
-    const nonClearswap = this.states.filter(state => !isClearswap(state.tradeType));
-    if (nonClearswap.length > 0) {
-      return tradeState.tradeType === nonClearswap[0].tradeType;
+    const nonPrivate = this.visibleStates.filter(state => !isPrivateTrade(state));
+    if (nonPrivate.length > 0) {
+      return tradeState.tradeType === nonPrivate[0].tradeType;
     }
     return false;
   }

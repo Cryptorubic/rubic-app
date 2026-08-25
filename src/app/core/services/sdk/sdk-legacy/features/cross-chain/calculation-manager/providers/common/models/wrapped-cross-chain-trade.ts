@@ -19,4 +19,9 @@ export interface WrappedCrossChainTrade {
    * Error, thrown during calculation.
    */
   error?: RubicSdkError;
+
+  /**
+   * Whether the trade is private.
+   */
+  private?: boolean;
 }
