@@ -1,5 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
+import { combineLatestWith, debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -41,8 +42,8 @@ export class ActionButtonService {
     .pipe(
       debounceTime(10),
       startWith(this.getDefaultParams()),
-      share(),
-      map((params: StateOptions) => this.getState(...params))
+      map((params: StateOptions) => this.getState(...params)),
+      shareReplay(shareReplayConfig)
     );
 
   constructor(

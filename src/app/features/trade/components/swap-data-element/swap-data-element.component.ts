@@ -138,6 +138,10 @@ export class SwapDataElementComponent {
 
   @Input() hideHint: boolean = false;
 
+  @Input() isSelectable = false;
+
+  @Input() isSelectedTrade = false;
+
   @Output() onGasTokenSelect = new EventEmitter<GasToken>();
 
   public toPercent(amount: number): string {

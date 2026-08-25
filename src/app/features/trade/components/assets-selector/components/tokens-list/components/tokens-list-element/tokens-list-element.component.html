@@ -7,20 +7,15 @@
         [alt]="token.name"
         (error)="onImageError($event)"
       />
-      <img
-        *ngIf="
-          listType === 'allChains' ||
-          listType === 'gainers' ||
-          listType === 'losers' ||
-          listType === 'trending' ||
-          listType === 'favorite'
-        "
-        class="token-card__image-container-blockchain"
-        [src]="BLOCKCHAIN_ICON[token.blockchain] || DEFAULT_TOKEN_IMAGE"
-        [alt]="token.blockchain"
-        loading="lazy"
-        (error)="onImageError($event)"
-      />
+      @if (listType === 'allChains' || listType === 'favorite') {
+        <img
+          class="token-card__image-container-blockchain"
+          [src]="BLOCKCHAIN_ICON[token.blockchain] || DEFAULT_TOKEN_IMAGE"
+          [alt]="token.blockchain"
+          loading="lazy"
+          (error)="onImageError($event)"
+        />
+      }
     </div>
 
     <div class="token-card__symbol-name-container">
@@ -46,18 +41,6 @@
     </div>
 
     <div class="token-card__right">
-      <ng-container *ngLet="token | showPriceChange: listType as pcPercent">
-        <div
-          *ngIf="pcPercent !== null && listType !== 'allChains'"
-          class="token-card__price-change-container"
-          [class.green]="pcPercent >= 0"
-          [class.red]="pcPercent < 0"
-        >
-          <span class="arrow" [style.transform]="pcPercent > 0 && 'rotateZ(180deg)'">▾</span>
-          <span class="price-change">{{ pcPercent + '%' | mathAbs }}</span>
-        </div>
-      </ng-container>
-
       <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
         <div class="token-card__amount" *ngIf="token.amount.gt(0) || balanceLoading">
           <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left">{{

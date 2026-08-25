@@ -9,8 +9,7 @@ import {
   RatedBackendToken,
   TokensBackendResponse,
   TransferBackendToken,
-  TransferTokensBackendResponse,
-  UtilityBackendResponse
+  TransferTokensBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { Cache as Memo, Token as OldToken } from '@cryptorubic/core';
@@ -319,32 +318,6 @@ export class NewTokensApiService {
           return resultTokens;
         }),
         catchError(() => of([]))
-      );
-  }
-
-  public getUtilityTokenList(): Observable<{
-    gainers: Token[];
-    losers: Token[];
-    trending: Token[];
-  }> {
-    return this.httpService
-      .get<UtilityBackendResponse>('v3/tmp/tokens/utility', {}, '', {
-        retry: 2,
-        timeoutMs: 15_000
-      })
-      .pipe(
-        map(resp => ({
-          gainers: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.gainers),
-          losers: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.losers),
-          trending: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.trending)
-        })),
-        catchError(() =>
-          of({
-            gainers: [],
-            losers: [],
-            trending: []
-          })
-        )
       );
   }
 

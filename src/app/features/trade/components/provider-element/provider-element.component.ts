@@ -10,6 +10,7 @@ import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
 import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 @Component({
   standalone: false,
@@ -84,6 +85,9 @@ export class ProviderElementComponent {
     if (isClearswap(this.tradeState.trade.type)) return '3 mins';
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
+    if (this.tradeState.trade instanceof OnChainTrade) {
+      return '';
+    }
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
     return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
   }

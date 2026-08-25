@@ -62,6 +62,8 @@ export class SwapsStateService {
 
   private swapType: SWAP_PROVIDER_TYPE | null = null;
 
+  private userSelectedTradeType: TradeState['tradeType'] | null = null;
+
   /**
    * Trade state
    */
@@ -151,11 +153,6 @@ export class SwapsStateService {
 
   // @ts-ignore
   public readonly calculationStatus$ = this.initCalculationStatus();
-
-  /**
-   * Receiver address
-   */
-  private receiverAddress: string | null;
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
@@ -248,6 +245,7 @@ export class SwapsStateService {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
     this.swapType = null;
+    this.userSelectedTradeType = null;
     this.tradePageService.setProvidersVisibility(false);
     if (isTradeError) {
       this.setCalculationProgress(1, 1);
@@ -297,35 +295,37 @@ export class SwapsStateService {
       }
 
       this._tradesStore$.next(currentTrades);
+    }
 
-      const bestTrade = this.getDefaultSelectedTrade(currentTrades, isCalculationEnd);
-      if (!bestTrade) {
-        this.currentTrade = {
-          ...this.defaultState,
-          status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
-        };
-        return;
-      }
+    this.applySelectedTrade(currentTrades, isCalculationEnd);
+  }
 
-      const trade: SelectedTrade = {
-        ...bestTrade,
-        selectedByUser: false,
-        status: TRADE_STATUS.READY_TO_SWAP
-      };
-      if (trade.error) {
-        trade.status = TRADE_STATUS.DISABLED;
-      }
-      if (trade.needApprove) {
-        trade.status = TRADE_STATUS.READY_TO_APPROVE;
-      }
-
-      this.currentTrade = trade;
-    } else {
+  private applySelectedTrade(currentTrades: TradeState[], isCalculationEnd: boolean): void {
+    const userSelectedTrade =
+      this.userSelectedTradeType &&
+      currentTrades.find(tradeState => tradeState.tradeType === this.userSelectedTradeType);
+    const selectedTradeState =
+      userSelectedTrade ?? this.getDefaultSelectedTrade(currentTrades, isCalculationEnd);
+    if (!selectedTradeState) {
       this.currentTrade = {
         ...this.defaultState,
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
+      return;
     }
+
+    const trade: SelectedTrade = {
+      ...selectedTradeState,
+      selectedByUser: !!userSelectedTrade,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.currentTrade = trade;
   }
 
   /**
@@ -466,10 +466,13 @@ export class SwapsStateService {
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
-    this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    if (!trade) return;
+
+    this.userSelectedTradeType = trade.tradeType;
+    this.currentTrade = { ...trade, selectedByUser: true, status: this.currentTrade.status };
     this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
-      toAmount: trade?.trade?.to?.tokenAmount || null
+      toAmount: trade.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
   }

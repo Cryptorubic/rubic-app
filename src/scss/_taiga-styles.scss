@@ -49,3 +49,9 @@ tui-dialog-host .t-close {
 ._mobile {
   font: var(--tui-font-text-s) !important;
 }
+
+tui-notification {
+  * {
+    font-size: 14px !important;
+  }
+}

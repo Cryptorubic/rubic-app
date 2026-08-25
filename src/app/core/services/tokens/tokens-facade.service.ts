@@ -17,9 +17,6 @@ import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-
 import { BlockchainName, ChainType } from '@cryptorubic/core';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-utility-store';
-import { TrendingUtilityStore } from '@core/services/tokens/models/tranding-utility-store';
-import { GainersUtilityStore } from '@core/services/tokens/models/gainers-utility-store';
-import { LosersUtilityStore } from '@core/services/tokens/models/losers-utility-store';
 import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
@@ -84,18 +81,6 @@ export class TokensFacadeService {
 
   public get allTokens(): AllTokensUtilityStore {
     return this.tokensCollectionFacade.allTokens;
-  }
-
-  public get trending(): TrendingUtilityStore {
-    return this.tokensCollectionFacade.trending;
-  }
-
-  public get gainers(): GainersUtilityStore {
-    return this.tokensCollectionFacade.gainers;
-  }
-
-  public get losers(): LosersUtilityStore {
-    return this.tokensCollectionFacade.losers;
   }
 
   public get favorite(): FavoriteUtilityStore {

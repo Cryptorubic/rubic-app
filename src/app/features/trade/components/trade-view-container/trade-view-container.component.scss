@@ -55,7 +55,6 @@ $mobile-width: 360px;
     }
   }
 
-  app-spindle-banner,
   app-token-selector-page {
     width: 100%;
   }
@@ -127,14 +126,5 @@ $mobile-width: 360px;
         width: 100%;
       }
     }
-  }
-}
-
-.banner-container {
-  width: 100%;
-
-  ::ng-deep fieldset {
-    height: fit-content;
-    padding: 0;
   }
 }

@@ -52,7 +52,6 @@ import {
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
-import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
@@ -177,7 +176,6 @@ export class PreviewSwapService {
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
     private readonly ccrApiService: CrossChainApiService,
-    private readonly spindlService: SpindlService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
@@ -646,7 +644,6 @@ export class PreviewSwapService {
                   }
                 }
 
-                this.spindlService.sendSwapEvent(txHash);
                 this.recentTradesStoreService.updateUnreadTrades();
               },
               onError: (err: RubicError<ERROR_TYPE> | null) => {
