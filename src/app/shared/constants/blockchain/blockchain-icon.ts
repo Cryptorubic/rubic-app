@@ -94,7 +94,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.PIVX]: `${basePath}pivx.svg`,
   [BLOCKCHAIN_NAME.POLKADOT]: `${basePath}polkadot.svg`,
   [BLOCKCHAIN_NAME.POLYGON]: `${basePath}polygon.svg`,
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: `${basePath}polygon-zkevm.svg`,
   [BLOCKCHAIN_NAME.POLYX]: `${basePath}polyx.svg`,
   [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`,
   [BLOCKCHAIN_NAME.QTUM]: `${basePath}qtum.svg`,

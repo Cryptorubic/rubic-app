@@ -29,7 +29,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.LINEA,
   BLOCKCHAIN_NAME.BASE,
   BLOCKCHAIN_NAME.MANTLE,
-  BLOCKCHAIN_NAME.POLYGON_ZKEVM,
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
   BLOCKCHAIN_NAME.BLAST,
@@ -81,7 +80,6 @@ export class GasService {
     [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this),
     [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this),
     [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
-    [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
     [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
@@ -492,26 +490,6 @@ export class GasService {
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
-    );
-  }
-
-  /**
-   * Gets Polygon-zkEVM gas from blockchain.
-   * @return Observable<number> Average gas price in Gwei.
-   */
-  @Cacheable({
-    maxAge: GasService.requestInterval
-  })
-  private fetchPolygonZkEvmGas(): Observable<GasPrice> {
-    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.POLYGON_ZKEVM
-    );
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map((gasPriceInWei: string) => {
-        return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
-        };
-      })
     );
   }
 

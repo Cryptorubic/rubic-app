@@ -149,7 +149,6 @@ export abstract class TonOnChainTrade extends OnChainTrade {
     };
 
     const swapData = await this.fetchSwapData<TonTransactionConfig>(swapRequestParams);
-
     const toAmount = swapData.estimate.destinationWeiAmount;
 
     return { config: swapData.transaction, amount: toAmount };
