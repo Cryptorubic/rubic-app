@@ -200,7 +200,8 @@ export class SwapFormPageComponent {
         : this.settingsService.crossChainRouting;
 
     const oldValue = settings.controls.showReceiverAddress.value;
-    settings.patchValue({ showReceiverAddress: !oldValue });
+    const showReceiver = !oldValue;
+    settings.patchValue({ showReceiverAddress: showReceiver });
   }
 
   public async revert(): Promise<void> {

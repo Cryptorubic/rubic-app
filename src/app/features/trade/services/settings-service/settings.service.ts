@@ -21,6 +21,7 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class SettingsService {
@@ -164,6 +165,36 @@ export class SettingsService {
         }
       }
     });
+
+    this.crossChainRouting.controls.showReceiverAddress.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(showReceiver => {
+        const currReceiver = this.targetNetworkAddressService.address;
+        const prevReceiver = this.targetNetworkAddressService.lastReceiverAddress;
+        if (showReceiver) {
+          if (prevReceiver) {
+            this.targetNetworkAddressService.addressControl.setValue(prevReceiver);
+          }
+        } else {
+          this.targetNetworkAddressService.savePrevReceiverAddress(currReceiver);
+          this.targetNetworkAddressService.addressControl.setValue('');
+        }
+      });
+
+    this.instantTrade.controls.showReceiverAddress.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(showReceiver => {
+        const currReceiver = this.targetNetworkAddressService.address;
+        const prevReceiver = this.targetNetworkAddressService.lastReceiverAddress;
+        if (showReceiver) {
+          if (prevReceiver) {
+            this.targetNetworkAddressService.addressControl.setValue(prevReceiver);
+          }
+        } else {
+          this.targetNetworkAddressService.savePrevReceiverAddress(currReceiver);
+          this.targetNetworkAddressService.addressControl.setValue('');
+        }
+      });
   }
 
   public async checkSlippageAndPriceImpact(

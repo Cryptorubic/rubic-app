@@ -321,11 +321,6 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.FANTOM, rank: 0.5, tags: ['FTM', BLOCKCHAIN_TAG.EVM] },
   // { name: BLOCKCHAIN_NAME.CRONOS, rank: 0.5, tags: ['CRO', BLOCKCHAIN_TAG.EVM] },
   {
-    name: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
-    rank: 0.5,
-    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
-  },
-  {
     name: BLOCKCHAIN_NAME.PULSECHAIN,
     rank: 0.5,
     tags: ['PLS', BLOCKCHAIN_TAG.EVM]

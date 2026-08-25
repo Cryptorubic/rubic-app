@@ -2426,18 +2426,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.1.tgz#0ad2f30857c5a4ffb31b03c1cc7d738f5a2eba23"
-  integrity sha512-0NBtUVLK2EZ6moCr696zG3NNSLVHObgHPz4t8qlqrhB48jzNX5EwCrmt2/r1q0SShveZYmwckqEolwiHN7S0Nw==
+"@cryptorubic/core@1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.7.4.tgz#e5cc675eed07c8a249712caea77ea491e2a08b41"
+  integrity sha512-wtggirI7QJRtgyMXxUapZ6M/U+9+virK9427lsWXucmRjUw3NPhIOCZZhufn+7fBXGP++xmazUp58K0Luu7nVw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.1.tgz#a50ec8dbfed8689648dc85beec162e48f78282cc"
-  integrity sha512-zbzabTEz6oqN9AH86uEVPuLR/YzJn0ZzAkEhfg/ARiKjBjfXM5TBTmp/C+zB2My2oMMnMF4tHY5TgOAELDGDQw==
+"@cryptorubic/web3@1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.7.4.tgz#8c7dcbd1b39901ef6b7819b48ef1de8f3248e066"
+  integrity sha512-vwWUV3fsD9/gJQLYDrGQOfEbOf1XQb+qKvsccKNfc4BSpqcpx8BtxghTO04sznL8P7Llohi6zR5JXLmktfSYcg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -2448,7 +2448,7 @@
     "@suiet/wallet-sdk" "^0.3.3"
     "@ton/core" "^0.59.1"
     "@ton/ton" "^15.1.0"
-    "@tonconnect/ui" "^2.2.0"
+    "@tonconnect/ui" "^3.0.2"
     axios "*"
     bignumber.js "9.1.2"
     bitcoin-address-validation "^2.2.3"
@@ -8176,63 +8176,43 @@
     teslabot "^1.3.0"
     zod "^3.21.4"
 
-"@tonconnect/isomorphic-eventsource@0.0.2", "@tonconnect/isomorphic-eventsource@^0.0.2":
+"@tonconnect/isomorphic-eventsource@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@tonconnect/isomorphic-eventsource/-/isomorphic-eventsource-0.0.2.tgz#e58c44cf9953e090f2c35da9a638946ddb614be5"
   integrity sha512-B4UoIjPi0QkvIzZH5fV3BQLWrqSYABdrzZQSI9sJA9aA+iC0ohOzFwVVGXanlxeDAy1bcvPbb29f6sVUk0UnnQ==
   dependencies:
     eventsource "^2.0.2"
 
-"@tonconnect/isomorphic-fetch@0.0.3", "@tonconnect/isomorphic-fetch@^0.0.3":
+"@tonconnect/isomorphic-fetch@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@tonconnect/isomorphic-fetch/-/isomorphic-fetch-0.0.3.tgz#31978e04ddc4428eff532c23d20229ed5ddb6417"
   integrity sha512-jIg5nTrDwnite4fXao3dD83eCpTvInTjZon/rZZrIftIegh4XxyVb5G2mpMqXrVGk1e8SVXm3Kj5OtfMplQs0w==
   dependencies:
     node-fetch "^2.6.9"
 
-"@tonconnect/protocol@2.4.0", "@tonconnect/protocol@^2.3.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@tonconnect/protocol/-/protocol-2.4.0.tgz#7e6575ce03c16242204fb53e799f4bfbb2e891a4"
-  integrity sha512-3xg6sMWIrSgW7/f7iPgOb2BI3LaMScjDMqfu20fcEMbOVvNFk3TGAUKK5cJ3pfvUINsyLgPoylcIbPap37jXiA==
+"@tonconnect/protocol@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@tonconnect/protocol/-/protocol-3.0.0.tgz#e1ed30361f602cd9eff873246d5f8feafa1f0fbf"
+  integrity sha512-YqwllY12+rXsAZgKD5mlRBb6wXEbe9jKXMCFOV387yCKQDMnwXK1fbgKWrroPp9fPDtQHXhilZQNnuAKS/iR/w==
   dependencies:
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@tonconnect/sdk@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.2.0.tgz#e560e2c0aa663870f248dd513aa85b7196d1e9a1"
-  integrity sha512-lh4bKpSdWDNtlKy2mv7uhdLLqnIoKRgRKbANRa/liQoPb8nDftQo6TbU1BYEmOAF32GbFn+9Sw9azPup4vfzxg==
-  dependencies:
-    "@tonconnect/isomorphic-eventsource" "^0.0.2"
-    "@tonconnect/isomorphic-fetch" "^0.0.3"
-    "@tonconnect/protocol" "^2.3.0"
-
-"@tonconnect/sdk@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.4.1.tgz#2b1087758737fae7e4cf85878e5e7cc40ae5ed5f"
-  integrity sha512-eVH8erAFout89gXYHXua/es+mmLPiW1r7ng9hgHKYQv85HLq8/zzQEkbJpbTlnIuQ6CJ/QKchjMsIgYz3BYCUQ==
+"@tonconnect/sdk@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-4.0.2.tgz#901d5ad8632b8cf10c0e86ba96223595790c1b5d"
+  integrity sha512-BIoixBenjWLIYhJrdYw9IF20ukE/zvInxoj82McSN1IUmn2Q6fkUnrQwpnIRXW0SqTIDEJPK29btP7euFCIjTA==
   dependencies:
     "@tonconnect/isomorphic-eventsource" "0.0.2"
     "@tonconnect/isomorphic-fetch" "0.0.3"
-    "@tonconnect/protocol" "2.4.0"
+    "@tonconnect/protocol" "3.0.0"
 
-"@tonconnect/ui@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.2.0.tgz#4208223317399086dbae627dcbf4e1ee5dec914e"
-  integrity sha512-a6D1iOteOkHHbOfDNZDRrCT8cZOTImh1Qdloq57iUGdXiCCrxD9sLhZ5He1qksKSlvhEUJBS1UypYxcYr9/vdw==
+"@tonconnect/ui@3.0.2", "@tonconnect/ui@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-3.0.2.tgz#9885e55237c5fbecff4868275b8bdd6a069dc1e6"
+  integrity sha512-bAOVfN3p/x40Bx7VcvAmH0DvGKwN9qNnkYUqkhUVckHOdwgfdtEMAQaE3w4Dabguse4VoXDzdmf/1rSl56wEgQ==
   dependencies:
-    "@tonconnect/sdk" "3.2.0"
-    classnames "^2.3.2"
-    csstype "^3.1.1"
-    deepmerge "^4.2.2"
-    ua-parser-js "^1.0.35"
-
-"@tonconnect/ui@^2.2.0":
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.4.4.tgz#1ea180231d8704b1c462bd980b5bd4da647a91fc"
-  integrity sha512-XgIHAkdimDk+YeRDPsQp7eOz2lM4aScYL3hiTP1Z9YgWRVROjEqTbw5ZP9pt6rgmYTzL26QpqhI6uNTFdYNFIA==
-  dependencies:
-    "@tonconnect/sdk" "3.4.1"
+    "@tonconnect/sdk" "4.0.2"
     classnames "^2.5.1"
     csstype "^3.1.3"
     deepmerge "^4.3.1"
@@ -12242,7 +12222,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.3.2, classnames@^2.5.1:
+classnames@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
   integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
@@ -12884,7 +12864,7 @@ cssstyle@^2.2.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^3.1.1, csstype@^3.1.3:
+csstype@^3.1.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
@@ -13153,7 +13133,7 @@ deep-is@^0.1.3, deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
-deepmerge@^4.2.2, deepmerge@^4.3.1:
+deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
