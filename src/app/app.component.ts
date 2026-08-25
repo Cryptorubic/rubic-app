@@ -12,7 +12,6 @@ import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
-import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
@@ -47,7 +46,6 @@ export class AppComponent implements AfterViewInit {
     @Inject(WA_WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly sdkLoaderService: SdkLoaderService,
@@ -60,7 +58,6 @@ export class AppComponent implements AfterViewInit {
     this.setupLanguage();
     this.subscribeOnWalletChanges();
     this.initApp();
-    this.spindlService.initSpindlAds();
   }
 
   ngAfterViewInit() {

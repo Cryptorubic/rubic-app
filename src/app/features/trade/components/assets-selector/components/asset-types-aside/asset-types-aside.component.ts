@@ -2,10 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { BlockchainItem } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import {
-  BlockchainFilters,
-  BlockchainTags
-} from '../blockchains-filter-list/models/BlockchainFilters';
 import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetListType } from '@features/trade/models/asset';
 
@@ -25,8 +21,6 @@ export class AssetTypesAsideComponent {
 
   @Input({ required: true }) blockchainsToShow: BlockchainItem[];
 
-  @Input({ required: true }) blockchainFilter: BlockchainFilters;
-
   @Input({ required: true }) assetListType: AssetListType;
 
   @Input({ required: true }) showAllChains: boolean;
@@ -35,7 +29,7 @@ export class AssetTypesAsideComponent {
 
   @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
 
-  @Output() handleFilterSelect = new EventEmitter<BlockchainFilters>();
+  @Output() openMobileBlockchainsList = new EventEmitter<void>();
 
   @Output() onSearchQuery = new EventEmitter<string>();
 
@@ -49,10 +43,6 @@ export class AssetTypesAsideComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly headerStore: HeaderStore
   ) {}
-
-  public setBlockchainFilterAll(): void {
-    this.handleFilterSelect.emit(BlockchainTags.ALL);
-  }
 
   public onBlockchainItemClick(item: BlockchainItem): void {
     this.handleBlockchainSelect.emit(item);

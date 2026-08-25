@@ -89,20 +89,6 @@
     white-space: nowrap;
   }
 
-  &__price-change-container {
-    @include flex(row, center, space-around);
-    width: 63px;
-    max-height: 16px;
-    margin-right: 10px;
-    padding: 0 2px;
-
-    color: white;
-    font-weight: bold;
-    font-size: 10px;
-
-    border-radius: 5px;
-  }
-
   .green {
     background: #1aa773;
   }

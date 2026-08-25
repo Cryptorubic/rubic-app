@@ -1,5 +1,3 @@
-@let isTransferMode = isTransferMode$ | async;
-
 <div
   *ngIf="!isMobile"
   class="tokens-list__search-bar-container"
@@ -17,19 +15,10 @@
   ></app-switch-list-type-button>
 </div>
 
-<app-tokens-list-filters
-  *ngIf="isUtility && assetsSelectorConfig.withTokensFilter && !isTransferMode"
-  [assetListType]="listType"
-  (onSelect)="selectTokenFilter($event)"
->
-</app-tokens-list-filters>
-
 <tui-scrollbar
   class="tokens-container"
   [ngClass]="{
-    'large-iframe-token-container': useLargeIframe,
-    'tokens-container__all-chains':
-      isUtility && assetsSelectorConfig.withTokensFilter && !isTransferMode
+    'large-iframe-token-container': useLargeIframe
   }"
 >
   <tui-loader [showLoader]="loading" [overlay]="true">

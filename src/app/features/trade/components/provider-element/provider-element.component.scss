@@ -1,11 +1,18 @@
 @use 'src/scss/core' as *;
 
 .element {
+  box-sizing: border-box;
   overflow: hidden;
 
   background: var(--primary-background);
+  border: 1px solid var(--primary-background);
   border-radius: var(--tui-radius-m);
   cursor: pointer;
+
+  &_selected {
+    border-color: #00c6c0;
+    box-shadow: 0px 4px 12px 0px #00c6c026 inset;
+  }
 
   &_disabled {
     cursor: no-drop;
@@ -15,14 +22,10 @@
   &_clearswap {
     background: linear-gradient(102.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
 
-    .element__provider-container_selected {
-      background: transparent;
-    }
-
     &.element_shorted {
       .element__provider-container {
         padding: 9px 15px;
-  
+
         border: 1px solid #5632a2;
         border-radius: var(--tui-radius-m);
       }
@@ -33,10 +36,6 @@
     padding: var(--tui-padding-l);
 
     border-bottom: 1px solid var(--tui-background-neutral-1);
-
-    &_selected {
-      background: var(--io-background);
-    }
   }
 
   &__row {

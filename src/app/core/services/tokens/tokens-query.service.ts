@@ -45,13 +45,10 @@ export class TokensQueryService {
       } else {
         const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
           allChains: this.tokensCollections.allTokens,
-          trending: this.tokensCollections.trending,
-          gainers: this.tokensCollections.gainers,
-          losers: this.tokensCollections.losers,
           favorite: this.tokensCollections.favorite
         };
 
-        const store = utilityMap[listType];
+        const store = utilityMap[listType as UtilityAssetType];
         store.setQuery(query);
       }
     });

@@ -1,131 +1,163 @@
-<div
-  class="provider-info"
-  [ngClass]="{ vertical: creationConfig?.direction === 'vertical' }"
-  *ngIf="
-    gasInfo?.amountInUsd?.gt(0) || displayAmount || (averageTimeMins && time95PercentSwapsMins)
-  "
->
+@if (
+  isSelectable ||
+  gasInfo?.amountInUsd?.gt(0) ||
+  displayAmount ||
+  (averageTimeMins && time95PercentSwapsMins)
+) {
   <div
-    *ngIf="gasInfo?.amountInUsd?.gt(0)"
-    class="provider-info__element"
-    [tuiHint]="gasTooltip"
-    [tuiHintAppearance]="hintAppearance"
-    [tuiHintDirection]="hintDirection"
-    [tuiHintHideDelay]="hideHint ? 0 : 200"
+    class="provider-info"
+    [ngClass]="{
+      vertical: creationConfig?.direction === 'vertical',
+      selectable: isSelectable
+    }"
   >
-    <img src="assets/images/icons/gas.svg" alt="Gas Price" />
-    <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
-    <div *ngIf="gasInfo.amountInUsd.gt(0.01)">
-      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount: 6 : 2 }}
-      $
-    </div>
-  </div>
-
-  <ng-container *ngIf="displayAmount">
-    <div
-      *ngIf="feeMoreThanZero(); else withoutHint"
-      class="provider-info__element"
-      [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
-      [tuiHintAppearance]="hintAppearance"
-      [tuiHintDirection]="hintDirection"
-      [tuiHintHideDelay]="hideHint ? 0 : 200"
-    >
-      <img [src]="creationConfig.feeIcon" alt="Fee" />
-      {{ displayAmount }}
-    </div>
-
-    <ng-template #withoutHint>
-      <div class="provider-info__element">
-        <img [src]="creationConfig.feeIcon" alt="Fee" />
-        {{ displayAmount }}
+    @if (isSelectedTrade) {
+      <div class="provider-info__selected">
+        <img src="assets/images/icons/selected-mark.svg" alt="Selected" />
+        SELECTED
       </div>
-    </ng-template>
-  </ng-container>
+    }
 
-  <div *ngIf="gasTokenAssets?.length > 0" class="provider-info__element gas-tokens">
-    <div class="provider-info__selected-asset" (click)="toggleGasTokensDropdown()">
-      <img [src]="creationConfig.gasIcon" alt="Fee" />
-      Gas fee {{ selectedGasToken.gasFee }}&nbsp;{{ selectedGasToken.symbol }}&nbsp;(${{
-        selectedGasToken.gasFeeUsd
-      }})&nbsp;
-      <button
-        class="provider-info__dropdown-button"
-        [ngClass]="{ expanded: gasTokensShown }"
-      ></button>
-    </div>
-    <tui-scrollbar class="scrollbar" *ngIf="gasTokensShown" [hidden]="false">
-      <div class="provider-info__tokens">
+    @if (gasInfo?.amountInUsd?.gt(0)) {
+      <div
+        class="provider-info__element"
+        [tuiHint]="gasTooltip"
+        [tuiHintAppearance]="hintAppearance"
+        [tuiHintDirection]="hintDirection"
+        [tuiHintHideDelay]="hideHint ? 0 : 200"
+      >
+        <img src="assets/images/icons/gas.svg" alt="Gas Price" />\
+        @if (gasInfo.amountInUsd.lt(0.01)) {
+          <div>< 0.01 $</div>
+        } @else {
+          <div>
+            {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount: 6 : 2 }}
+            $
+          </div>
+        }
+      </div>
+    }
+
+    @if (displayAmount) {
+      @if (feeMoreThanZero()) {
         <div
-          *ngFor="let gasToken of gasTokenAssets; let i = index"
-          class="provider-info__asset"
-          (click)="selectGasToken(gasToken.token, i)"
-          [class.provider-info__asset-disabled]="
-            gasToken.value.tokenAmount.isNaN() || gasToken.value.tokenAmount.lte(0)
-          "
+          class="provider-info__element"
+          [tuiHint]="creationConfig.withVerboseFeeHint ? verboseFeeHint : shortFeeHint"
+          [tuiHintAppearance]="hintAppearance"
+          [tuiHintDirection]="hintDirection"
+          [tuiHintHideDelay]="hideHint ? 0 : 200"
         >
-          <div class="provider-info__token-container">
-            <div
-              class="provider-info__second-image-container"
-              [style]="{ background: gasToken.asset.secondColor }"
-            >
-              <img [src]="gasToken.asset.secondImage" [alt]="gasToken.asset.secondImage" />
-            </div>
-            <img
-              class="provider-info__main-image"
-              [src]="gasToken.asset.mainImage"
-              [alt]="gasToken.asset.mainLabel"
-              (error)="onImageError($event)"
-            />
-          </div>
-          <div class="provider-info__amount-container">
-            <div
-              class="provider-info__token-amount"
-              [ngClass]="{ selected: selectedGasTokenIndex === i }"
-            >
-              {{
-                gasToken.value.tokenAmount.gt(0)
-                  ? (gasToken.value.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6)
-                  : '0'
-              }}&nbsp;{{ gasToken.asset.mainLabel }}
-            </div>
-            <div *ngIf="gasToken.value.fiatAmount as amount" class="provider-info__fiat-amount">
-              ~ ${{ amount }}
-            </div>
-          </div>
+          <img [src]="creationConfig.feeIcon" alt="Fee" />
+          {{ displayAmount }}
         </div>
-      </div>
-    </tui-scrollbar>
-  </div>
+      } @else {
+        <div class="provider-info__element">
+          <img [src]="creationConfig.feeIcon" alt="Fee" />
+          {{ displayAmount }}
+        </div>
+      }
+    }
 
-  <div
-    *ngIf="averageTimeMins && time95PercentSwapsMins"
-    class="provider-info__element time"
-    [tuiHint]="timeTooltip"
-    [tuiHintAppearance]="hintAppearance"
-    [tuiHintDirection]="hintDirection"
-    [tuiHintHideDelay]="hideHint ? 0 : 200"
-  >
-    <img src="assets/images/icons/time.svg" alt="Time for transaction" />
-    <div class="">{{ averageTimeMins }}</div>
+    @if (gasTokenAssets?.length > 0) {
+      <div class="provider-info__element gas-tokens">
+        <div class="provider-info__selected-asset" (click)="toggleGasTokensDropdown()">
+          <img [src]="creationConfig.gasIcon" alt="Fee" />
+          Gas fee {{ selectedGasToken.gasFee }}&nbsp;{{ selectedGasToken.symbol }}&nbsp;(${{
+            selectedGasToken.gasFeeUsd
+          }})&nbsp;
+          <button
+            class="provider-info__dropdown-button"
+            [ngClass]="{ expanded: gasTokensShown }"
+          ></button>
+        </div>
+
+        @if (gasTokensShown) {
+          <tui-scrollbar class="scrollbar" [hidden]="false">
+            <div class="provider-info__tokens">
+              @for (gasToken of gasTokenAssets; track gasToken.token.address; let i = $index) {
+                <div
+                  class="provider-info__asset"
+                  (click)="selectGasToken(gasToken.token, i)"
+                  [class.provider-info__asset-disabled]="
+                    gasToken.value.tokenAmount.isNaN() || gasToken.value.tokenAmount.lte(0)
+                  "
+                >
+                  <div class="provider-info__token-container">
+                    <div
+                      class="provider-info__second-image-container"
+                      [style]="{ background: gasToken.asset.secondColor }"
+                    >
+                      <img [src]="gasToken.asset.secondImage" [alt]="gasToken.asset.secondImage" />
+                    </div>
+                    <img
+                      class="provider-info__main-image"
+                      [src]="gasToken.asset.mainImage"
+                      [alt]="gasToken.asset.mainLabel"
+                      (error)="onImageError($event)"
+                    />
+                  </div>
+                  <div class="provider-info__amount-container">
+                    <div
+                      class="provider-info__token-amount"
+                      [ngClass]="{ selected: selectedGasTokenIndex === i }"
+                    >
+                      {{
+                        gasToken.value.tokenAmount.gt(0)
+                          ? (gasToken.value.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6)
+                          : '0'
+                      }}&nbsp;{{ gasToken.asset.mainLabel }}
+                    </div>
+                    @if (gasToken.value.fiatAmount) {
+                      <div class="provider-info__fiat-amount">
+                        ~ ${{ gasToken.value.fiatAmount }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </tui-scrollbar>
+        }
+      </div>
+    }
+
+    @if (averageTimeMins && time95PercentSwapsMins) {
+      <div
+        class="provider-info__element time"
+        [tuiHint]="timeTooltip"
+        [tuiHintAppearance]="hintAppearance"
+        [tuiHintDirection]="hintDirection"
+        [tuiHintHideDelay]="hideHint ? 0 : 200"
+      >
+        <img src="assets/images/icons/time.svg" alt="Time for transaction" />
+        <div class="">{{ averageTimeMins }}</div>
+      </div>
+    }
   </div>
-</div>
+}
 
 <ng-template #verboseFeeHint>
-  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
-    Protocol Fee:
-    {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
-    {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
-  </div>
-  <div *ngIf="feeInfo?.provider?.cryptoFee?.amount.gt(0)">
-    Provider Fee:
-    {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
-    {{ feeInfo.provider.cryptoFee.token.symbol }}
-  </div>
-  <div *ngIf="feeInfo?.provider?.platformFee?.percent">
-    Provider Percent Fee:
-    {{ toPercent(feeInfo.provider.platformFee.percent) }}% of
-    {{ feeInfo.provider.platformFee.token.symbol }}
-  </div>
+  @if (feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)) {
+    <div>
+      Protocol Fee:
+      {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
+      {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
+    </div>
+  }
+  @if (feeInfo?.provider?.cryptoFee?.amount.gt(0)) {
+    <div>
+      Provider Fee:
+      {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
+      {{ feeInfo.provider.cryptoFee.token.symbol }}
+    </div>
+  }
+  @if (feeInfo?.provider?.platformFee?.percent) {
+    <div>
+      Provider Percent Fee:
+      {{ toPercent(feeInfo.provider.platformFee.percent) }}% of
+      {{ feeInfo.provider.platformFee.token.symbol }}
+    </div>
+  }
 </ng-template>
 <ng-template #shortFeeHint>
   <div>Provider Fee</div>
@@ -136,17 +168,21 @@
   <div>
     <span> Estimated Gas: </span>
     <br />
-    <span *ngIf="gasInfo.amountInUsd.lt(0.01)">
-      {{ gasInfo.amount | bigNumberFormat: 20 : false | shortenAmount: 20 : 10 : false }}
-      {{ gasInfo.symbol }} ~
-      {{ gasInfo.amountInUsd | bigNumberFormat: 20 : false | shortenAmount: 20 : 10 : false }}
-      $
-    </span>
-    <span *ngIf="gasInfo.amountInUsd.gt(0.01)">
-      {{ gasInfo.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
-      {{ gasInfo.symbol }} ~
-      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount: 8 : 8 }}
-      $
-    </span>
+    @if (gasInfo?.amountInUsd?.lt(0.01)) {
+      <span>
+        {{ gasInfo.amount | bigNumberFormat: 20 : false | shortenAmount: 20 : 10 : false }}
+        {{ gasInfo.symbol }} ~
+        {{ gasInfo.amountInUsd | bigNumberFormat: 20 : false | shortenAmount: 20 : 10 : false }}
+        $
+      </span>
+    }
+    @if (gasInfo?.amountInUsd?.gt(0.01)) {
+      <span>
+        {{ gasInfo.amount | bigNumberFormat | shortenAmount: 8 : 8 }}
+        {{ gasInfo.symbol }} ~
+        {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount: 8 : 8 }}
+        $
+      </span>
+    }
   </div>
 </ng-template>

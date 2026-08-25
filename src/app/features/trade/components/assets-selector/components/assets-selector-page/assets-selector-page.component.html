@@ -9,7 +9,6 @@
     pageLoading: pageLoading$ | async,
     balanceLoading: balanceLoading$ | async,
     customToken: customToken$ | async,
-    blockchainFilter: blockchainFilter$ | async,
     blockchainsToShow: blockchainsToShow$ | async,
     platformLoading: platformLoading$ | async
   } as state"
@@ -23,15 +22,6 @@
     </ng-container>
 
     <ng-container>
-      <app-blockchains-filter-list
-        *ngIf="
-          !isMobile &&
-          state.selectorListType !== 'blockchains' &&
-          assetsSelectorConfig.withChainsFilter
-        "
-        [selectedFilter]="state.blockchainFilter"
-        (selectFilter)="handleBlockchainFilterSelection($event)"
-      ></app-blockchains-filter-list>
       <ng-container
         *ngIf="!isMobile && state.selectorListType === 'blockchains'; then searchBar"
       ></ng-container>
@@ -41,13 +31,12 @@
             [type]="type"
             [blockchainsToShow]="state.blockchainsToShow"
             [searchQuery]="state.blockchainsSearchQuery"
-            [blockchainFilter]="state.blockchainFilter"
             [totalBlockchains]="totalBlockchains"
             [assetListType]="state.assetListType"
             [showAllChains]="assetsSelectorConfig.showAllChains"
             [hidePromoBadges]="assetsSelectorConfig.hidePromoBadges"
             (handleBlockchainSelect)="selectAssetList($event)"
-            (handleFilterSelect)="handleBlockchainFilterSelection($event)"
+            (openMobileBlockchainsList)="openMobileBlockchainsList()"
             (onSearchQuery)="onBlockchainsQuery($event)"
           ></app-asset-types-aside>
           <ng-container *ngIf="isMobile; then searchBar"></ng-container>

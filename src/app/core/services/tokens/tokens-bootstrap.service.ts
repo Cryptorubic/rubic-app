@@ -28,7 +28,6 @@ export class TokensBootstrapService {
     Promise.all([this.buildTier1List(), this.buildTier2List()]).then(
       ([tier1Tokens, tier2Tokens]) => {
         this.tokensCollectionsFacade.allTokens.updateTokenSync([...tier1Tokens, ...tier2Tokens]);
-        this.buildUtilityList();
       }
     );
   }
@@ -54,19 +53,6 @@ export class TokensBootstrapService {
 
     Object.entries(tokensByChain).forEach(([blockchain, chainTokens]) => {
       this.tokensStore.updateBlockchainTokens(blockchain as BlockchainName, chainTokens);
-    });
-  }
-
-  private buildUtilityList(): void {
-    this.apiService.getUtilityTokenList().subscribe(utilityTokens => {
-      this.tokensCollectionsFacade.allTokens.addMissedUtilityTokens([
-        ...utilityTokens.gainers,
-        ...utilityTokens.losers,
-        ...utilityTokens.trending
-      ]);
-      this.tokensCollectionsFacade.gainers.updateTokenSync(utilityTokens.gainers);
-      this.tokensCollectionsFacade.losers.updateTokenSync(utilityTokens.losers);
-      this.tokensCollectionsFacade.trending.updateTokenSync(utilityTokens.trending);
     });
   }
 
