@@ -16,6 +16,7 @@ import { TargetNetworkAddressService } from '../target-network-address-service/t
 import { TO_BACKEND_BLOCKCHAINS, TO_BACKEND_CROSS_CHAIN_PROVIDERS, Token } from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
+import { getUniqueProviderId } from '@app/core/services/sdk/sdk-legacy/features/common/utils/get-unique-provider-id';
 
 @Injectable()
 export class CrossChainApiService {
@@ -53,8 +54,7 @@ export class CrossChainApiService {
       TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const slippage = trade.getTradeInfo().slippage / 100;
-    const { additionalData: _, ...ids } = trade.uniqueInfo || {};
-    const providerIds = Object.values(ids);
+    const providerId = getUniqueProviderId(trade.uniqueInfo);
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
@@ -79,7 +79,7 @@ export class CrossChainApiService {
           ? this.window.document.referrer
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
-      ...(providerIds.length && { provider_trade_id: providerIds[0] }),
+      ...(providerId && { provider_trade_id: providerId }),
       ...(referral && { referrer: referral }),
       rubic_id: trade.rubicId
     };
