@@ -72,7 +72,6 @@
     width: 67px;
     height: 100%;
     overflow: hidden;
-
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
     img {
@@ -105,7 +104,6 @@
 
   &__token-amount {
     width: 100%;
-
     font-size: 21px;
   }
 
@@ -239,7 +237,6 @@ app-swap-data-element ::ng-deep {
       height: 25px;
       margin-top: -2px;
       margin-left: -15px;
-
       border-width: 2px;
     }
   }
