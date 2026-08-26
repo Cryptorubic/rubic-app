@@ -34,16 +34,10 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { OnChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/on-chain-transfer-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
-import {
-  CROSS_CHAIN_TRADE_TYPE,
-  ON_CHAIN_TRADE_TYPE,
-  nativeTokensList,
-  Token,
-  CrossChainTradeType,
-  OnChainTradeType
-} from '@cryptorubic/core';
+import { nativeTokensList, Token, CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { refundAddressRequiredTradeTypes } from '../../services/refund-service/constants/refund-address-required-trade-types';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 
 @Component({
   standalone: false,
@@ -138,21 +132,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
 
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
-  private readonly refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTradeType)[] = [
-    CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-    CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
-    CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
-    CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
-    CROSS_CHAIN_TRADE_TYPE.CLEARSWAP,
-    ON_CHAIN_TRADE_TYPE.CLEARSWAP
-  ];
-
   public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
     map(tradeState => tradeState && this.isRefundAddressRequired(tradeState.tradeType))
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => isClearswap(tradeState?.tradeType))
+    map(tradeState => isPrivateTrade(tradeState))
   );
 
   public get receiverAddressCtrl() {
@@ -201,8 +186,8 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     )
   );
 
-  public readonly isClearswap$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => isClearswap(tradeState?.tradeType))
+  public readonly isPrivate$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => isPrivateTrade(tradeState))
   );
 
   public hintShown: boolean = false;
@@ -351,7 +336,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   }
 
   private isRefundAddressRequired(tradeType: OnChainTradeType | CrossChainTradeType): boolean {
-    return this.refundAddressRequiredTradeTypes.includes(tradeType);
+    return refundAddressRequiredTradeTypes.includes(tradeType);
   }
 
   readonly destroyRef = inject(DestroyRef);

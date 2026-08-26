@@ -114,7 +114,10 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     })
   );
 
-  @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
+  @Output() readonly selectTrade = new EventEmitter<{
+    tradeType: TradeProvider;
+    automaticSelection: boolean;
+  }>();
 
   public privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
 
@@ -141,7 +144,7 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
 
     const tradeType = this.getTradeTypeForPrivateOnly(value);
     if (tradeType) {
-      this.handleTradeSelection(tradeType);
+      this.handleTradeSelection(tradeType, true);
     }
   }
 
@@ -159,8 +162,8 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     );
   }
 
-  public handleTradeSelection(tradeType: TradeProvider): void {
-    this.selectTrade.emit(tradeType);
+  public handleTradeSelection(tradeType: TradeProvider, automaticSelection = false): void {
+    this.selectTrade.emit({ tradeType, automaticSelection });
   }
 
   public handleRouteSelection(route: AlternativeRoute): void {

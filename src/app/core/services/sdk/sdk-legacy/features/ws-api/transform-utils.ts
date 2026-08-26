@@ -87,11 +87,12 @@ export class TransformUtils {
 
     let trade: CrossChainTrade | null = null;
 
+    const isPrivateTrade = res.private;
     const isTransferTrade =
       crossChainTransferTradeSupportedProviders.includes(
         tradeType as CrossChainTransferTradeType
       ) &&
-      (chainType !== CHAIN_TYPE.EVM || tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP);
+      (chainType !== CHAIN_TYPE.EVM || isPrivateTrade);
 
     const needProvidePubKey =
       BITCOIN_PK_REQUIRED_PROVIDERS.includes(tradeType as BtcTradeTypeRequiringPK) &&

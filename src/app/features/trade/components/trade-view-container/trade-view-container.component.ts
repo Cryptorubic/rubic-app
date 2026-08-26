@@ -88,9 +88,9 @@ export class TradeViewContainerComponent {
     this.chartService.initSubscriptions(swapFormService);
   }
 
-  public async selectTrade(tradeType: TradeProvider): Promise<void> {
+  public async selectTrade(tradeType: TradeProvider, automaticSelection: boolean): Promise<void> {
     const isTradeAlreadySelected = this.swapsState.tradeState.tradeType === tradeType;
-    if (isTradeAlreadySelected) {
+    if (isTradeAlreadySelected && !automaticSelection) {
       await this.getSwapPreview();
       return;
     }
