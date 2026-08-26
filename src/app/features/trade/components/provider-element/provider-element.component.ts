@@ -30,7 +30,7 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) hideHint$!: Observable<boolean>;
 
-  @Input() hidePrivateBadge = false;
+  @Input() privateOnly = false;
 
   public expanded = false;
 
@@ -39,7 +39,7 @@ export class ProviderElementComponent {
   }
 
   public get isShortedMobilePrivate(): boolean {
-    return this.shortedInfo && this.isMobile && this.isPrivate;
+    return this.shortedInfo && this.isMobile && this.isPrivate && !this.privateOnly;
   }
 
   public get minMaxErrorAmount(): BigNumber | null {

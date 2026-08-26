@@ -10,13 +10,13 @@
     </div>
   }
 
-  @for (state of visibleStates; track state.tradeType) {
+  @for (state of states; track state.tradeType) {
     <app-provider-element
       [isBest]="isBestProvider(state)"
       [tradeState]="state"
       [shortedInfo]="shortedInfo"
       [selectedTradeType]="selectedTradeType"
-      [hidePrivateBadge]="privateOnly"
+      [privateOnly]="privateOnly"
       (click)="handleTradeSelection($event, state.tradeType, state.trade, state.error)"
       [hideHint$]="hideHint$"
     ></app-provider-element>

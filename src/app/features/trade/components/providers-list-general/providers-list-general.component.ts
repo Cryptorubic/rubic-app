@@ -72,19 +72,13 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
-  get mobileStates(): TradeState[] {
-    const visible = getVisibleProviderStates(
+  get visibleStates(): TradeState[] {
+    return getVisibleProviderStates(
       this.states,
       this.privateOnly,
       this.calculationStatus?.calculationProgress,
       this.swapsStateService.lastBestPrivateTradeType
     );
-
-    if (this.privateOnly) {
-      return visible;
-    }
-
-    return visible.slice(0, visible.some(state => isPrivateTrade(state)) ? 2 : 1);
   }
 
   private _calculationStatus: CalculationStatus;
@@ -194,10 +188,18 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
     this.alternativeRoutesService.setCurrentAlternativeRoute(route);
   }
 
+  public getMobileStates(states: TradeState[]): TradeState[] {
+    if (this.privateOnly) {
+      return [states[0]];
+    }
+
+    return states.slice(0, states.some(state => isPrivateTrade(state)) ? 2 : 1);
+  }
+
   public openOtherProvidersList(): void {
     this.modalService
       .openOtherProvidersList(
-        this.states,
+        this.visibleStates,
         this.selectedTradeType,
         this.calculationStatus.calculationProgress,
         true,

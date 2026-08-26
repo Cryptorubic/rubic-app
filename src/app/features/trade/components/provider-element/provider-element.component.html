@@ -9,7 +9,8 @@
     element_selected: isSelectedTrade,
     element_shorted: shortedInfo,
     element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0),
-    element_private: isPrivate
+    element_private: isPrivate,
+    element_private_collapsed: isShortedMobilePrivate
   }"
 >
   <div class="element__provider-container">
@@ -64,7 +65,7 @@
               [tuiHint]="'The most profitable trade according to our calculations'"
               [tuiHintHideDelay]="hideHint ? 0 : 200"
             ></tui-tag>
-            <span *ngIf="isPrivate && !hidePrivateBadge" class="element__private-badge">
+            <span *ngIf="isPrivate && !privateOnly" class="element__private-badge">
               <img
                 class="element__private-badge-icon"
                 src="assets/images/icons/private-lock.svg"

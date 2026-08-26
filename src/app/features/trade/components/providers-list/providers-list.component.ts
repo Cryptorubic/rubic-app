@@ -19,8 +19,6 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
-import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
-import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Component({
   standalone: false,
@@ -62,19 +60,10 @@ export class ProvidersListComponent {
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
-  public get visibleStates(): TradeState[] {
-    return getVisibleProviderStates(
-      this.states,
-      this.privateOnly,
-      this.calculationProgress,
-      this.swapsStateService.lastBestPrivateTradeType
-    );
-  }
-
   public get showEmptyPrivateList(): boolean {
     return (
       this.privateOnly &&
-      this.visibleStates.length === 0 &&
+      this.states.length === 0 &&
       this.calculationProgress?.total > 0 &&
       this.calculationProgress.current === this.calculationProgress.total
     );
@@ -97,16 +86,15 @@ export class ProvidersListComponent {
     >,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
-    private readonly tokensFacade: TokensFacadeService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {
     if (this.privateOnly) {
-      return this.visibleStates[0]?.tradeType === tradeState.tradeType;
+      return this.states[0]?.tradeType === tradeState.tradeType;
     }
 
-    const nonPrivate = this.visibleStates.filter(state => !isPrivateTrade(state));
+    const nonPrivate = this.states.filter(state => !isPrivateTrade(state));
     if (nonPrivate.length > 0) {
       return tradeState.tradeType === nonPrivate[0].tradeType;
     }

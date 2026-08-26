@@ -9,7 +9,7 @@
   <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
       *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
-      [states]="states"
+      [states]="visibleStates"
       [selectedTradeType]="selectedTradeType"
       [calculationProgress]="calculationStatus.calculationProgress"
       [isModal]="false"
@@ -27,12 +27,12 @@
 </ng-template>
 
 <ng-template #mobileProviders>
-  <ng-container *ngTemplateOutlet="waiting"></ng-container>
   <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
+  <ng-container *ngTemplateOutlet="waiting"></ng-container>
 
   <app-providers-list
     *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
-    [states]="mobileStates"
+    [states]="getMobileStates(visibleStates)"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"
@@ -42,14 +42,15 @@
   >
   </app-providers-list>
 
-  <div
-    class="other-providers"
-    *ngIf="!privateOnly && states?.length > 1"
-    (click)="openOtherProvidersList()"
-  >
-    <span class="other-providers__text">Other Providers</span>
-    <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
-  </div>
+  @if (visibleStates.length > 1) {
+    <div class="other-providers" (click)="openOtherProvidersList()">
+      <span class="other-providers__text">Other Providers</span>
+      <span
+        class="other-providers__arrow"
+        [inlineSVG]="'assets/images/icons/arrow-down.svg'"
+      ></span>
+    </div>
+  }
 </ng-template>
 
 <ng-template #privateSwitcher>

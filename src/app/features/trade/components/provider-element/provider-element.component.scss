@@ -21,14 +21,14 @@
 
   &_private {
     background: linear-gradient(102.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
+  }
 
-    &.element_shorted {
-      .element__provider-container {
-        padding: 9px 15px;
+  &_private_collapsed {
+    .element__provider-container {
+      padding: 9px 15px;
 
-        border: 1px solid #5632a2;
-        border-radius: var(--tui-radius-m);
-      }
+      border: 1px solid #5632a2;
+      border-radius: var(--tui-radius-m);
     }
   }
 
