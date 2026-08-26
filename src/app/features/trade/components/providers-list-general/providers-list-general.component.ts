@@ -11,7 +11,8 @@ import {
   ViewChild,
   DestroyRef,
   inject,
-  AfterViewInit
+  AfterViewInit,
+  OnInit
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -33,6 +34,7 @@ import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/commo
 import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @Component({
   standalone: false,
@@ -54,7 +56,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
     ])
   ]
 })
-export class ProvidersListGeneralComponent implements AfterViewInit {
+export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) states: TradeState[] = [];
 
   @Input({ required: true }) selectedTradeType: TradeProvider;
@@ -125,6 +127,10 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
 
   public readonly alternativeRoutes$ = this.alternativeRoutesService.getAlternativeRoutes();
 
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     @Inject(Injector) private readonly injector: Injector,
     private readonly modalService: ModalService,
@@ -133,8 +139,15 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     private readonly providerHintService: ProviderHintService,
     private readonly alternativeRoutesService: AlternativeRoutesService,
     private readonly swapsStateService: SwapsStateService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
+
+  ngOnInit(): void {
+    this.isTransferMode$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isTransferMode => {
+      this.onPrivateOnlyChange(isTransferMode);
+    });
+  }
 
   public onPrivateOnlyChange(value: boolean): void {
     this.privateOnly = value;
@@ -233,6 +246,4 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   public hideProviderHintOnScroll(isScrollStart: boolean): void {
     this.providerHintService.setHintVisibility(isScrollStart);
   }
-
-  readonly destroyRef = inject(DestroyRef);
 }

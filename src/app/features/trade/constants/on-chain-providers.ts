@@ -305,7 +305,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#444391'
   },
   [ON_CHAIN_TRADE_TYPE.HOUDINI]: {
-    name: 'Houdini Bridge',
+    name: 'Houdini Swap',
     image: `${privateTradeImageBasePath}houdini.svg`,
     color: '#a919d1'
   },

@@ -160,7 +160,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: '#a919d1',
     image: `${privateTradeImageBasePath}houdini.svg`,
-    name: 'Houdini Bridge'
+    name: 'Houdini Swap'
   },
   hyphen: {
     averageTime: 5,

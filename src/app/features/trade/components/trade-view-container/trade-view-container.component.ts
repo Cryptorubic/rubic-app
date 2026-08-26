@@ -14,7 +14,6 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
 import { Asset } from '../../models/asset';
 import { FormType } from '../../models/form-type';
@@ -78,7 +77,6 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly authService: AuthService,
     private readonly chartService: ChartService,
     private readonly formsTogglerService: FormsTogglerService,
     renderer2: Renderer2,
@@ -95,7 +93,7 @@ export class TradeViewContainerComponent {
       return;
     }
 
-    await this.swapsState.selectTrade(tradeType);
+    await this.swapsState.selectTrade(tradeType, automaticSelection);
   }
 
   public async getSwapPreview(): Promise<void> {

@@ -1,3 +1,5 @@
+@let isTransferMode = isTransferMode$ | async;
+
 <app-window-container *ngIf="!isMobile; else mobileProviders">
   <header class="list-header">
     <h5>Providers list</h5>
@@ -52,16 +54,18 @@
 </ng-template>
 
 <ng-template #privateSwitcher>
-  <div class="private-switcher">
-    Private routes only
-    <input
-      tuiSwitch
-      type="checkbox"
-      size="s"
-      [ngModel]="privateOnly"
-      (ngModelChange)="onPrivateOnlyChange($event)"
-    />
-  </div>
+  @if (!isTransferMode) {
+    <div class="private-switcher">
+      Private routes only
+      <input
+        tuiSwitch
+        type="checkbox"
+        size="s"
+        [ngModel]="privateOnly"
+        (ngModelChange)="onPrivateOnlyChange($event)"
+      />
+    </div>
+  }
 </ng-template>
 
 <ng-template #waiting>

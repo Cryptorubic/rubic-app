@@ -469,12 +469,16 @@ export class SwapsStateService {
     });
   }
 
-  public async selectTrade(tradeType: TradeProvider): Promise<void> {
+  public async selectTrade(tradeType: TradeProvider, automaticSelection: boolean): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     if (!trade) return;
 
-    this.userSelectedTradeType = trade.tradeType;
-    this.currentTrade = { ...trade, selectedByUser: true, status: this.currentTrade.status };
+    this.userSelectedTradeType = !automaticSelection ? trade.tradeType : null;
+    this.currentTrade = {
+      ...trade,
+      selectedByUser: !automaticSelection,
+      status: this.currentTrade.status
+    };
     this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade.trade?.to?.tokenAmount || null
