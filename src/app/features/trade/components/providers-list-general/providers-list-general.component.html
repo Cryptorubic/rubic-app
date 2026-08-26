@@ -2,7 +2,6 @@
 
 <app-window-container *ngIf="!isMobile; else mobileProviders">
   <header class="list-header">
-    <h5>Providers list</h5>
     <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
   </header>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>

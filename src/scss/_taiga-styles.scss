@@ -59,7 +59,23 @@ tui-notification {
 [tuiSwitch] {
   background: #1b1a2e !important;
 
+  &:before {
+    display: none !important;
+  }
+
+  &:after {
+    box-shadow: -2.625rem 0 0 .5rem rgb(255, 255, 255, 0.85) !important;
+    background: #1b1a2e !important;
+    transition-property: box-shadow, background !important;
+    outline: none !important;
+  }
+
   &[tuiAppearance][data-appearance=primary] {
     background: var(--t-bg) !important;
+
+    &:after {
+      box-shadow: -2.625rem 0 0 .5rem white !important;
+      background: var(--t-bg) !important;
+    }
   }
 }

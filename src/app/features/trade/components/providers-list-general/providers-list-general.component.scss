@@ -18,28 +18,18 @@ h5 {
 
 .list-header {
   display: flex;
-  justify-content: space-between;
-  padding: 8px var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
-
-  h5 {
-    display: flex;
-    align-items: center;
-    height: 21px;
-    margin: 0;
-    font-size: 15px;
-  }
+  justify-content: end;
+  padding: 8px var(--tui-padding-m) var(--tui-padding-m);
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .private-switcher {
-  position: relative;
-  top: 1px;
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: flex-end;
   color: white;
-  font-weight: 500;
-  font-size: 12px;
 }
 
 .providers-list {
