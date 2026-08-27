@@ -31,9 +31,12 @@
   }
 }
 
-html {
-  --tui-font-text: #{$red-hat-display} !important;
+html,
+body {
+  font-family: $red-hat-display;
+}
 
+html {
   box-sizing: border-box;
   height: auto !important;
   overflow-x: hidden;
