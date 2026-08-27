@@ -85,7 +85,6 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
           resolve();
         }
       });
-
       unsubModal = this.tonConnect.onModalStateChange(state => {
         if (state.status === 'closed' && state.closeReason === 'action-cancelled') {
           unsubStatus();
