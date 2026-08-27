@@ -15,8 +15,14 @@ $secondary-color: #271e34;
 $transparent-black: rgba(0, 0, 0, 0.1);
 $transparent-white: rgba(255, 255, 255, 0.1);
 
+// ***** typography *****
+$red-hat-display: Red-Hat-Display, sans-serif;
+
 // ***** vars *****
 :root {
+  --tui-font-text: #{$red-hat-display} !important;
+  --tui-font-heading: #{$red-hat-display} !important;
+
   --app-background: #282935;
   --primary-background: var(--tui-background-base);
   --secondary-background: var(--tui-background-neutral-1);
@@ -114,9 +120,6 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-radius-m: 17px;
   --tui-radius-s: 12px;
 }
-
-// ***** typography *****
-$red-hat-display: Red-Hat-Display, sans-serif;
 
 // ***** colors *****
 $rubic-base-11: #808080;
