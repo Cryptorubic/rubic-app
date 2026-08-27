@@ -361,7 +361,15 @@ export class RubicApiService {
           }
         >(this.client, 'events').pipe(
           concatMap(wsResponse => {
-            const { trade, total, calculated, data, privateCalculated, privateTotal } = wsResponse;
+            const {
+              trade,
+              total,
+              calculated,
+              data,
+              privateCalculated,
+              privateTotal,
+              private: isPrivate
+            } = wsResponse;
 
             if (!this.latestQuoteParams) {
               return of({
@@ -385,19 +393,21 @@ export class RubicApiService {
               this.latestQuoteParams?.srcTokenBlockchain !==
               this.latestQuoteParams?.dstTokenBlockchain
                 ? TransformUtils.transformCrossChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   )
                 : TransformUtils.transformOnChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   );
             return from(promise).pipe(

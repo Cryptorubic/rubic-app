@@ -65,11 +65,12 @@ import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws
 
 export class TransformUtils {
   public static async transformCrossChain(
-    res: QuoteResponseInterface,
+    res: QuoteResponseInterface | null,
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    isPrivate: boolean,
     err?: RubicApiError
   ): Promise<WrappedCrossChainTrade> {
     if (!res && !err) {
@@ -87,12 +88,11 @@ export class TransformUtils {
 
     let trade: CrossChainTrade | null = null;
 
-    const isPrivateTrade = res.private;
     const isTransferTrade =
       crossChainTransferTradeSupportedProviders.includes(
         tradeType as CrossChainTransferTradeType
       ) &&
-      (chainType !== CHAIN_TYPE.EVM || isPrivateTrade);
+      (chainType !== CHAIN_TYPE.EVM || isPrivate);
 
     const needProvidePubKey =
       BITCOIN_PK_REQUIRED_PROVIDERS.includes(tradeType as BtcTradeTypeRequiringPK) &&
@@ -170,17 +170,18 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
-      private: res.private,
+      private: isPrivate,
       ...(error && { error })
     };
   }
 
   public static async transformOnChain(
-    response: QuoteResponseInterface,
+    response: QuoteResponseInterface | null,
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    isPrivate: boolean,
     err?: RubicApiError
   ): Promise<WrappedOnChainTradeOrNull> {
     if (!response && !err) {
@@ -256,7 +257,7 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
-      private: response.private,
+      private: isPrivate,
       ...(error && { error })
     };
   }

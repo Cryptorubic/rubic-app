@@ -11,7 +11,6 @@ import { OnChainTransferTrade } from '../../../on-chain/calculation-manager/comm
 import { ApiOnChainConstructor } from '../../models/api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
-import { getUniqueProviderId } from '../../../common/utils/get-unique-provider-id';
 
 export class ApiOnChainTransferTrade extends OnChainTransferTrade {
   public readonly type: OnChainTradeType;
@@ -60,18 +59,17 @@ export class ApiOnChainTransferTrade extends OnChainTransferTrade {
       enableChecks: !testMode
     };
 
-    const { estimate, transaction, uniqueInfo } =
+    const { estimate, transaction } =
       await this.rubicApiService.fetchSwapPrivateTrade(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);
 
-    const exchangeId = getUniqueProviderId(uniqueInfo)!;
     const extraFields = this.parsePrivateExtraFields(transaction);
 
     return {
       toAmount: amount,
-      id: exchangeId,
+      id: transaction.exchangeId!,
       depositAddress: transaction.depositAddress,
       depositExtraId: extraFields?.value,
       depositExtraIdName: extraFields?.name

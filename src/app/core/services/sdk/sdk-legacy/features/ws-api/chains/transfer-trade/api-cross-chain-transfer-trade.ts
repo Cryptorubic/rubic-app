@@ -13,7 +13,6 @@ import { TransferSwapRequestInterface } from './models/transfer-swap-request-int
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
-import { getUniqueProviderId } from '../../../common/utils/get-unique-provider-id';
 
 export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
   public readonly type: CrossChainTradeType;
@@ -77,7 +76,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ...(refundAddress && { refundAddress })
     };
     const isPrivateTrade = this.apiResponse.private;
-    const { estimate, transaction, uniqueInfo } = isPrivateTrade
+    const { estimate, transaction } = isPrivateTrade
       ? await this.rubicApiService.fetchSwapPrivateTrade(
           swapRequestData as SwapPrivateRequestInterface
         )
@@ -86,14 +85,11 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
     const amount = estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);
 
-    const exchangeId = isPrivateTrade
-      ? getUniqueProviderId(uniqueInfo)!
-      : (transaction as CrossChainTransferConfig).exchangeId;
     const extraFields = this.parseExtraFields(transaction);
 
     return {
       toAmount: amount,
-      id: exchangeId,
+      id: transaction.exchangeId!,
       depositAddress: transaction.depositAddress,
       depositExtraId: extraFields?.value,
       depositExtraIdName: extraFields?.name

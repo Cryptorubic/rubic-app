@@ -489,7 +489,8 @@ export class HoudiniSwapService {
       quoteRequest,
       quoteRequest.integratorAddress!,
       this.sdkLegacyService,
-      this.rubicApiService
+      this.rubicApiService,
+      quoteResponse.private
     );
 
     const tradeData: DepositTradeData = {
