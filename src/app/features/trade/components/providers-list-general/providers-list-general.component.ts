@@ -149,13 +149,13 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
       privateOnly: value.toString()
     });
 
-    const tradeType = this.getTradeTypeForPrivateOnly(value);
+    const tradeType = this.getBestTradeBasedOnPrivateMode(value);
     if (tradeType) {
       this.handleTradeSelection(tradeType, true);
     }
   }
 
-  private getTradeTypeForPrivateOnly(privateOnly: boolean): TradeProvider | null {
+  private getBestTradeBasedOnPrivateMode(privateOnly: boolean): TradeProvider | null {
     const tradesWithQuote = this.states.filter(state => state.trade);
 
     if (privateOnly) {
