@@ -47,12 +47,8 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       const isConnected = (await this.tonConnect.connectionRestored) && this.tonConnect.connected;
 
       if (!isConnected) {
-        // const payload = await RetroBridgeApiService.getMessageToAuthWallet(this.httpService);
-        // this.tonConnect.setConnectRequestParameters({
-        //   state: 'ready',
-        //   value: { tonProof: this.window.btoa(payload) }
-        // });
         await this.openWalletModal();
+        await this.waitForWalletConnection();
       }
 
       this.selectedChain = BLOCKCHAIN_NAME.TON;
@@ -75,6 +71,28 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
     await this.tonConnect?.disconnect();
     this.unsubEventListener();
     super.deactivate();
+  }
+
+  private waitForWalletConnection(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let unsubStatus: () => void = () => {};
+      let unsubModal: () => void = () => {};
+
+      unsubStatus = this.tonConnect.onStatusChange(walletAndWalletInfo => {
+        if (walletAndWalletInfo?.account) {
+          unsubStatus();
+          unsubModal();
+          resolve();
+        }
+      });
+      unsubModal = this.tonConnect.onModalStateChange(state => {
+        if (state.status === 'closed' && state.closeReason === 'action-cancelled') {
+          unsubStatus();
+          unsubModal();
+          reject(new Error('[TonConnectAbstractAdapter] Wallet connection was cancelled'));
+        }
+      });
+    });
   }
 
   private listenStatusChangeEvent(): void {
