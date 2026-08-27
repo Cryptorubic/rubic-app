@@ -11,6 +11,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -86,7 +87,14 @@ export class ProviderElementComponent {
   public getAverageTimeString(): string {
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
-    if (this.tradeState.trade instanceof OnChainTrade) {
+    if (
+      this.tradeState.trade instanceof OnChainTrade &&
+      // TODO: remove after private on-chain providers will be updated in python-api config
+      !(
+        this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP ||
+        this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.HOUDINI
+      )
+    ) {
       return '';
     }
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
