@@ -12,7 +12,9 @@ export class RailgunTokensBootstrapService extends TokensBootstrapService {
   }
 
   protected override async buildTier1List(): Promise<Token[]> {
-    const tokens = await firstValueFrom(this.apiService.getTopTokens(RAILGUN_SUPPORTED_CHAINS));
+    const tokens = await firstValueFrom(
+      this.apiService.getTokensByChains(RAILGUN_SUPPORTED_CHAINS)
+    );
     Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
       this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
     });
