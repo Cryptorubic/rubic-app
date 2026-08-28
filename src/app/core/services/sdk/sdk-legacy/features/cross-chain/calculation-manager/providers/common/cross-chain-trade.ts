@@ -107,6 +107,8 @@ export abstract class CrossChainTrade<T = unknown> {
 
   public readonly contractSpender: string;
 
+  public readonly exchangeId: string | undefined;
+
   protected get httpClient(): HttpClient {
     return this.sdkLegacyService.httpClient;
   }
@@ -165,6 +167,7 @@ export abstract class CrossChainTrade<T = unknown> {
   ) {
     this.useProxy = apiResponse.useRubicContract;
     this.contractSpender = apiResponse.transaction.approvalAddress!;
+    this.exchangeId = apiResponse.transaction.exchangeId;
     this.rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
   }
