@@ -37,7 +37,6 @@ import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/
 import { nativeTokensList, Token, CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
 import { refundAddressRequiredTradeTypes } from '../../services/refund-service/constants/refund-address-required-trade-types';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 
 @Component({
   standalone: false,
@@ -137,7 +136,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   );
 
   public readonly isReceiverAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => isPrivateTrade(tradeState))
+    map(tradeState => tradeState?.private)
   );
 
   public get receiverAddressCtrl() {
@@ -187,7 +186,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   );
 
   public readonly isPrivate$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => isPrivateTrade(tradeState))
+    map(tradeState => tradeState?.private)
   );
 
   public hintShown: boolean = false;

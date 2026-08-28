@@ -30,7 +30,6 @@ import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-tim
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -159,12 +158,12 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
     const tradesWithQuote = this.states.filter(state => state.trade);
 
     if (privateOnly) {
-      return tradesWithQuote.find(isPrivateTrade)?.tradeType ?? null;
+      return tradesWithQuote.find(trade => trade.private)?.tradeType ?? null;
     }
 
     return (
-      tradesWithQuote.find(state => !isPrivateTrade(state))?.tradeType ??
-      tradesWithQuote.find(isPrivateTrade)?.tradeType ??
+      tradesWithQuote.find(trade => !trade.private)?.tradeType ??
+      tradesWithQuote.find(trade => trade.private)?.tradeType ??
       null
     );
   }
@@ -193,7 +192,7 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
       return [states[0]];
     }
 
-    return states.slice(0, states.some(state => isPrivateTrade(state)) ? 2 : 1);
+    return states.slice(0, states.some(trade => trade.private) ? 2 : 1);
   }
 
   public openOtherProvidersList(): void {

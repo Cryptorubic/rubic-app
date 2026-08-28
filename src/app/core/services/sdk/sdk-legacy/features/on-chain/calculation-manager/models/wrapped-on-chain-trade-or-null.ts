@@ -23,5 +23,5 @@ export type WrappedOnChainTradeOrNull = {
   /**
    * Whether the trade is private.
    */
-  private?: boolean;
+  private: boolean;
 } | null;

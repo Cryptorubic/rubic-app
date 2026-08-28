@@ -54,7 +54,6 @@ import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
-import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable()
@@ -372,8 +371,8 @@ export class SwapsStateService {
     isCalculationEnd: boolean
   ): TradeState | null {
     const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
-    const privateTrades = tradesWithQuote.filter(tradeState => isPrivateTrade(tradeState));
-    const nonPrivateTrades = tradesWithQuote.filter(tradeState => !isPrivateTrade(tradeState));
+    const privateTrades = tradesWithQuote.filter(tradeState => tradeState.private);
+    const nonPrivateTrades = tradesWithQuote.filter(tradeState => !tradeState.private);
     const privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
 
     if (privateOnly) {
@@ -546,9 +545,7 @@ export class SwapsStateService {
     this._calculationProgress$.next({ total, current, privateTotal, privateCurrent });
 
     if (privateTotal > 0 && privateCurrent === privateTotal) {
-      const bestPrivate = this._tradesStore$
-        .getValue()
-        .find(tradeState => isPrivateTrade(tradeState));
+      const bestPrivate = this._tradesStore$.getValue().find(tradeState => tradeState.private);
       this.lastBestPrivateTradeType = bestPrivate?.tradeType ?? null;
     }
   }

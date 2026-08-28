@@ -23,5 +23,5 @@ export interface WrappedCrossChainTrade {
   /**
    * Whether the trade is private.
    */
-  private?: boolean;
+  private: boolean;
 }

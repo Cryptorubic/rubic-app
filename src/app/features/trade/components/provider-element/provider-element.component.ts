@@ -10,8 +10,7 @@ import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
-import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { onChainTransferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/constants/on-chain-transfer-trade-supported-providers';
 
 @Component({
   standalone: false,
@@ -36,7 +35,7 @@ export class ProviderElementComponent {
   public expanded = false;
 
   public get isPrivate(): boolean {
-    return isPrivateTrade(this.tradeState);
+    return this.tradeState.private;
   }
 
   public get isShortedMobilePrivate(): boolean {
@@ -90,9 +89,8 @@ export class ProviderElementComponent {
     if (
       this.tradeState.trade instanceof OnChainTrade &&
       // TODO: remove after private on-chain providers will be updated in python-api config
-      !(
-        this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.CLEARSWAP ||
-        this.tradeState.trade.type === ON_CHAIN_TRADE_TYPE.HOUDINI
+      !onChainTransferTradeSupportedProviders.some(
+        transferTradeType => transferTradeType === this.tradeState.trade.type
       )
     ) {
       return '';

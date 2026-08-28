@@ -504,7 +504,8 @@ export class SwapsControllerService {
         {
           trade: null,
           error: parsedError,
-          tradeType: tradeState.tradeType
+          tradeType: tradeState.tradeType,
+          private: tradeState.private
         } as WrappedSdkTrade,
         tradeState.trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING

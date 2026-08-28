@@ -1,4 +1,3 @@
-import { isPrivateTrade } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-private-trade';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { TradeState } from '@features/trade/models/trade-state';
@@ -19,7 +18,7 @@ export function getVisibleProviderStates(
   progress: CalculationProgress | null | undefined,
   lastBestPrivateTradeType: TradeProvider | null | undefined
 ): TradeState[] {
-  const privateStates = states.filter(state => isPrivateTrade(state));
+  const privateStates = states.filter(state => state.private);
   const lastBestPrivate = lastBestPrivateTradeType
     ? privateStates.find(state => state.tradeType === lastBestPrivateTradeType)
     : undefined;
@@ -31,7 +30,7 @@ export function getVisibleProviderStates(
     return lastBestPrivate ? [lastBestPrivate] : [];
   }
 
-  const nonPrivateStates = states.filter(state => !isPrivateTrade(state));
+  const nonPrivateStates = states.filter(state => !state.private);
   if (!isPrivateCalculationDone(progress)) {
     return lastBestPrivate ? [lastBestPrivate, ...nonPrivateStates] : nonPrivateStates;
   }
