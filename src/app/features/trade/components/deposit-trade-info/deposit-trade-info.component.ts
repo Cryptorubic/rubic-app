@@ -47,7 +47,8 @@ export class DepositTradeInfoComponent {
     private readonly depositService: DepositService
   ) {}
 
-  public formatTradeId(tradeId: string): string {
+  public formatTradeId(tradeId?: string): string {
+    if (!tradeId) return '';
     return tradeId.length <= 18 ? tradeId : tradeId.slice(0, 7) + '...' + tradeId.slice(-7);
   }
 }

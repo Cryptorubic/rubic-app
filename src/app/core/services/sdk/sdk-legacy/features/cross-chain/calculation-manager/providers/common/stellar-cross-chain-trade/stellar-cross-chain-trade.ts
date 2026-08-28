@@ -121,9 +121,11 @@ export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTran
       enableChecks: !testMode
     };
 
-    const swapData = await this.fetchSwapData<StellarTransactionConfig>(swapRequestData);
+    const swapData = await this.fetchSwapData<StellarTransactionConfig & { exchangeId: string }>(
+      swapRequestData
+    );
 
-    this._uniqueInfo = swapData.uniqueInfo ?? {};
+    this._exchangeId = swapData.transaction.exchangeId;
     const amount = swapData.estimate.destinationWeiAmount;
 
     return { config: swapData.transaction, amount };

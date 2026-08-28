@@ -16,6 +16,22 @@ h5 {
   margin-bottom: var(--tui-padding-m);
 }
 
+.list-header {
+  display: flex;
+  justify-content: end;
+  padding: 8px var(--tui-padding-m) var(--tui-padding-m);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.private-switcher {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  color: white;
+}
+
 .providers-list {
   max-height: 455px;
   margin-right: -10px;
@@ -39,6 +55,11 @@ h5 {
 @include b($mobile-md) {
   .waiting {
     padding: var(--tui-padding-m);
+  }
+
+  .private-switcher {
+    margin-bottom: var(--tui-padding-m);
+    padding: 0 var(--tui-padding-m);
   }
 
   .providers-list {

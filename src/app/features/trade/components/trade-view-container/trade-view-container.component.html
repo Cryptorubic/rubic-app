@@ -51,7 +51,7 @@
         @inOutAnimation
         [states]="state.providers"
         [selectedTradeType]="selectedTradeType$ | async"
-        (selectTrade)="selectTrade($event)"
+        (selectTrade)="selectTrade($event.tradeType, $event.automaticSelection)"
         [calculationStatus]="state.calculationStatus"
         [showCalculation]="true"
       ></app-providers-list-general>
@@ -77,7 +77,7 @@
       @inOutAnimation
       [states]="state.providers"
       [selectedTradeType]="selectedTradeType$ | async"
-      (selectTrade)="selectTrade($event)"
+      (selectTrade)="selectTrade($event.tradeType, $event.automaticSelection)"
       [calculationStatus]="state.calculationStatus"
       [showCalculation]="true"
     ></app-providers-list-general>

@@ -9,7 +9,8 @@
     element_selected: isSelectedTrade,
     element_shorted: shortedInfo,
     element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0),
-    element_clearswap: isClearswap
+    element_private: isPrivate,
+    element_private_collapsed: isShortedMobilePrivate
   }"
 >
   <div class="element__provider-container">
@@ -18,19 +19,19 @@
         <div class="element__token">
           <div
             class="element__token-amount"
-            [ngClass]="{ 'element__token-amount_error': tradeState?.error && isClearswap }"
+            [ngClass]="{ 'element__token-amount_error': tradeState?.error && isPrivate }"
           >
-            @if (trade && !(tradeState?.error && isClearswap)) {
+            @if (trade && !(tradeState?.error && isPrivate)) {
               {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount: 7 : 5 : true }}&nbsp;{{
                 trade.to.symbol
               }}
-            } @else if (tradeState?.error && isClearswap) {
+            } @else if (tradeState?.error && isPrivate) {
               {{ minMaxErrorLabel }}
             } @else {
               —
             }
           </div>
-          @if (!isShortedMobileClearswap) {
+          @if (!isShortedMobilePrivate) {
             <div class="element__token-provider">Provider</div>
           }
           <div class="element__token-info">
@@ -64,7 +65,7 @@
               [tuiHint]="'The most profitable trade according to our calculations'"
               [tuiHintHideDelay]="hideHint ? 0 : 200"
             ></tui-tag>
-            <span *ngIf="isClearswap" class="element__private-badge">
+            <span *ngIf="isPrivate && !privateOnly" class="element__private-badge">
               <img
                 class="element__private-badge-icon"
                 src="assets/images/icons/private-lock.svg"
@@ -80,7 +81,7 @@
               [hideHint]="hideHint"
             ></app-promotion-badge>
             <tui-tag
-              *ngIf="tradeState?.error && !isClearswap"
+              *ngIf="tradeState?.error && !isPrivate"
               class="element__warning-badge"
               size="s"
               status="custom"
@@ -123,7 +124,7 @@
     </tui-expand>
   </div>
 
-  @if (!isShortedMobileClearswap) {
+  @if (!isShortedMobilePrivate) {
     <app-swap-data-element
       [gasInfo]="getGasData()"
       [feeInfoChange]="getFeeInfo()"

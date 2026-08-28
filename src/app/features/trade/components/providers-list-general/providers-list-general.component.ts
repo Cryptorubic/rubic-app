@@ -11,7 +11,8 @@ import {
   ViewChild,
   DestroyRef,
   inject,
-  AfterViewInit
+  AfterViewInit,
+  OnInit
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -29,7 +30,10 @@ import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-tim
 import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import { getVisibleProviderStates } from '@features/trade/utils/get-visible-provider-states';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @Component({
   standalone: false,
@@ -51,7 +55,7 @@ import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/u
     ])
   ]
 })
-export class ProvidersListGeneralComponent implements AfterViewInit {
+export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) states: TradeState[] = [];
 
   @Input({ required: true }) selectedTradeType: TradeProvider;
@@ -67,10 +71,13 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
 
   @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbar;
 
-  get mobileStates(): TradeState[] {
-    return this.states.some(state => isClearswap(state.tradeType))
-      ? this.states.slice(0, 2)
-      : this.states.slice(0, 1);
+  get visibleStates(): TradeState[] {
+    return getVisibleProviderStates(
+      this.states,
+      this.privateOnly,
+      this.calculationStatus?.calculationProgress,
+      this.swapsStateService.lastBestPrivateTradeType
+    );
   }
 
   private _calculationStatus: CalculationStatus;
@@ -102,11 +109,20 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     })
   );
 
-  @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
+  @Output() readonly selectTrade = new EventEmitter<{
+    tradeType: TradeProvider;
+    automaticSelection: boolean;
+  }>();
+
+  public privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
 
   public readonly isMobile = this.headerStore.isMobile;
 
   public readonly alternativeRoutes$ = this.alternativeRoutesService.getAlternativeRoutes();
+
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     @Inject(Injector) private readonly injector: Injector,
@@ -114,11 +130,46 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
-    private readonly alternativeRoutesService: AlternativeRoutesService
+    private readonly alternativeRoutesService: AlternativeRoutesService,
+    private readonly swapsStateService: SwapsStateService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
-  public handleTradeSelection(tradeType: TradeProvider): void {
-    this.selectTrade.emit(tradeType);
+  ngOnInit(): void {
+    this.isTransferMode$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isTransferMode => {
+      this.onPrivateOnlyChange(isTransferMode);
+    });
+  }
+
+  public onPrivateOnlyChange(value: boolean): void {
+    this.privateOnly = value;
+    this.queryParamsService.patchQueryParams({
+      privateOnly: value.toString()
+    });
+
+    const tradeType = this.getBestTradeBasedOnPrivateMode(value);
+    if (tradeType) {
+      this.handleTradeSelection(tradeType, true);
+    }
+  }
+
+  private getBestTradeBasedOnPrivateMode(privateOnly: boolean): TradeProvider | null {
+    const tradesWithQuote = this.states.filter(state => state.trade);
+
+    if (privateOnly) {
+      return tradesWithQuote.find(trade => trade.private)?.tradeType ?? null;
+    }
+
+    return (
+      tradesWithQuote.find(trade => !trade.private)?.tradeType ??
+      tradesWithQuote.find(trade => trade.private)?.tradeType ??
+      null
+    );
+  }
+
+  public handleTradeSelection(tradeType: TradeProvider, automaticSelection = false): void {
+    this.selectTrade.emit({ tradeType, automaticSelection });
   }
 
   public handleRouteSelection(route: AlternativeRoute): void {
@@ -136,10 +187,18 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
     this.alternativeRoutesService.setCurrentAlternativeRoute(route);
   }
 
+  public getMobileStates(states: TradeState[]): TradeState[] {
+    if (this.privateOnly) {
+      return [states[0]];
+    }
+
+    return states.slice(0, states.some(trade => trade.private) ? 2 : 1);
+  }
+
   public openOtherProvidersList(): void {
     this.modalService
       .openOtherProvidersList(
-        this.states,
+        this.visibleStates,
         this.selectedTradeType,
         this.calculationStatus.calculationProgress,
         true,
@@ -188,6 +247,4 @@ export class ProvidersListGeneralComponent implements AfterViewInit {
   public hideProviderHintOnScroll(isScrollStart: boolean): void {
     this.providerHintService.setHintVisibility(isScrollStart);
   }
-
-  readonly destroyRef = inject(DestroyRef);
 }

@@ -5,12 +5,8 @@ import { BehaviorSubject, map } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
-import {
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType
-} from '@cryptorubic/core';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { refundAddressRequiredTradeTypes } from './constants/refund-address-required-trade-types';
 
 @Injectable()
 export class RefundService {
@@ -22,15 +18,6 @@ export class RefundService {
   private readonly _isValidRefundAddress$ = new BehaviorSubject<boolean>(false);
 
   public readonly isValidRefundAddress$ = this._isValidRefundAddress$.asObservable();
-
-  private readonly refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTradeType)[] = [
-    CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-    CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
-    CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
-    CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
-    CROSS_CHAIN_TRADE_TYPE.CLEARSWAP,
-    ON_CHAIN_TRADE_TYPE.CLEARSWAP
-  ];
 
   public get refundAddress(): string {
     return this.refundAddressCtrl.value;
@@ -75,6 +62,6 @@ export class RefundService {
   }
 
   private isRefundAddressRequired(tradeType: OnChainTradeType | CrossChainTradeType): boolean {
-    return this.refundAddressRequiredTradeTypes.includes(tradeType);
+    return refundAddressRequiredTradeTypes.includes(tradeType);
   }
 }

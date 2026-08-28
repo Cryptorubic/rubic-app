@@ -398,10 +398,7 @@ export class CrossChainService {
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
     ).includes(fromBlockchain);
 
-    let disabledProviders: CrossChainTradeType[] = [
-      ...disabledTradesTypes,
-      CROSS_CHAIN_TRADE_TYPE.HOUDINI
-    ];
+    let disabledProviders: CrossChainTradeType[] = [...disabledTradesTypes];
 
     if (isNonEvmCNChain && this.iframeService.isIframe) {
       disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];

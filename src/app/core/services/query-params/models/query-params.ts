@@ -46,6 +46,7 @@ interface AllQueryParams {
   hideBranding: string;
   provider: string; // Preferred provider
   formType: 'swap' | 'transfer';
+  privateOnly: string;
 }
 
 export type QueryParams = {

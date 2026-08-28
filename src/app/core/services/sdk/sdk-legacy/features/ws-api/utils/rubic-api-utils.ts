@@ -23,7 +23,7 @@ import { RubicApiError, Web3Pure } from '@cryptorubic/web3';
 export class RubicApiUtils {
   public static getTradeParams(
     quote: QuoteRequestInterface,
-    response: QuoteResponseInterface,
+    response: QuoteResponseInterface | null,
     providerType: string,
     err?: RubicApiError
   ): Promise<ApiCrossChainConstructor<BlockchainName>> {
@@ -224,7 +224,8 @@ export class RubicApiUtils {
           percent: 0,
           token: from
         }
-      }
+      },
+      private: false
     };
 
     return emptyResponse;
