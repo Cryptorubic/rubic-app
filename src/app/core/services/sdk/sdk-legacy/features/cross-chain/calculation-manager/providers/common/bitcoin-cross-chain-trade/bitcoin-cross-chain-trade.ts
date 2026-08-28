@@ -134,11 +134,11 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
       ...(publicKey && { publicKey })
     };
 
-    const swapData = await this.fetchSwapData<BitcoinTransferTxApiResp | BitcoinPsbtEncodedConfig>(
-      swapRequestData
-    );
+    const swapData = await this.fetchSwapData<
+      (BitcoinTransferTxApiResp | BitcoinPsbtEncodedConfig) & { exchangeId: string }
+    >(swapRequestData);
 
-    this._uniqueInfo = swapData.uniqueInfo ?? {};
+    this._exchangeId = swapData.transaction.exchangeId;
     const amount = swapData.estimate.destinationWeiAmount;
 
     const config = this.isPsbtConfig(swapData.transaction)
