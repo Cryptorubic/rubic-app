@@ -234,4 +234,8 @@ export class TokensFacadeService {
   public fetchNewPage(tokenState: BlockchainTokenState, skipLoading: boolean): void {
     this.tokensPaginationService.fetchNewPage(tokenState, skipLoading);
   }
+
+  public loadChainTokens(blockchain: BlockchainName): void {
+    this.tokensBootstrapService.loadChainTokens(blockchain);
+  }
 }

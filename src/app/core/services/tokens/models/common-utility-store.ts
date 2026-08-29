@@ -117,11 +117,15 @@ export abstract class CommonUtilityStore {
     });
   }
 
-  public updateTokenSync(tokens: Token[]): void {
-    this._pageLoading$.next(true);
+  public updateTokenSync(tokens: Token[], options?: { silent?: boolean }): void {
+    if (!options?.silent) {
+      this._pageLoading$.next(true);
+    }
     const refs = this.getTokenRefs(tokens);
     this._storedRefs$.next(refs);
-    this._pageLoading$.next(false);
+    if (!options?.silent) {
+      this._pageLoading$.next(false);
+    }
   }
 
   public setQuery(value: string): void {
