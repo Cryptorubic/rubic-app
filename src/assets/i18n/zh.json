@@ -58,6 +58,7 @@
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
+    "genericInsufficientGasFundsError": "Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}。",
     "insufficientFunds1inch": "您沒有足夠的 {{ nativeToken }} 用於轉賬和 gas 費用。 對於交易，輸入較少的金額或充值您的 {{ nativeToken }}餘額。",
     "noQrCode": "請確保您有掃描二維碼",
