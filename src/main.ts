@@ -1,6 +1,5 @@
-import '@angular/compiler';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { platformBrowser } from '@angular/platform-browser';
 
 import { AppModule } from '@app/app.module';
 import { ENVIRONMENT } from './environments/environment';
@@ -11,9 +10,10 @@ if (ENVIRONMENT.production) {
   enableProdMode();
 }
 
-initSentry();
-initGoogleAnalytics();
-
-platformBrowserDynamic()
+platformBrowser()
   .bootstrapModule(AppModule)
+  .then(() => {
+    initSentry();
+    initGoogleAnalytics();
+  })
   .catch(err => console.error(err));
