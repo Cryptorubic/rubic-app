@@ -445,7 +445,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   voyager: {
     averageTime: 5,
     color: 'white',
-    image: `${imageBasePath}voyager.svg`,
+    image: `assets/images/icons/unknown.svg`,
     name: 'Voyager'
   },
   //WWWWWWWWWWWWWWWWWWWW
