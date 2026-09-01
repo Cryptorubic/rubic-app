@@ -361,11 +361,22 @@ export class RubicApiService {
           }
         >(this.client, 'events').pipe(
           concatMap(wsResponse => {
-            const { trade, total, calculated, data } = wsResponse;
+            const {
+              trade,
+              total,
+              calculated,
+              data,
+              privateCalculated,
+              privateTotal,
+              private: isPrivate
+            } = wsResponse;
+
             if (!this.latestQuoteParams) {
               return of({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade: null,
                 ...(data && { tradeType: wsResponse.type })
               });
@@ -382,19 +393,21 @@ export class RubicApiService {
               this.latestQuoteParams?.srcTokenBlockchain !==
               this.latestQuoteParams?.dstTokenBlockchain
                 ? TransformUtils.transformCrossChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   )
                 : TransformUtils.transformOnChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   );
             return from(promise).pipe(
@@ -402,6 +415,8 @@ export class RubicApiService {
               map(wrappedTrade => ({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade,
                 ...(data && { tradeType: wsResponse.type })
               }))

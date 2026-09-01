@@ -69,7 +69,7 @@ export class ApiOnChainTransferTrade extends OnChainTransferTrade {
 
     return {
       toAmount: amount,
-      id: this.apiResponse.id,
+      id: transaction.exchangeId!,
       depositAddress: transaction.depositAddress,
       depositExtraId: extraFields?.value,
       depositExtraIdName: extraFields?.name

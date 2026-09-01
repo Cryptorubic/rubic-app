@@ -6,6 +6,8 @@ export const defaultCalculationStatus: CalculationStatus = {
   activeCalculation: false,
   calculationProgress: {
     total: 0,
-    current: 0
+    current: 0,
+    privateTotal: 0,
+    privateCurrent: 0
   }
 };

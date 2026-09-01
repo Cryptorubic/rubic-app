@@ -2,6 +2,7 @@ import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-cha
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
+const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   //AAAAAAAAAAAAAAAAAAAA
@@ -112,7 +113,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   clearswap_bridge: {
     averageTime: 5,
     color: '#8e28fe',
-    image: `${imageBasePath}clearswap.svg`,
+    image: `${privateTradeImageBasePath}clearswap.svg`,
     name: 'Clearswap'
   },
   connext: {
@@ -155,11 +156,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}hop.svg`,
     name: 'Hop'
   },
-  houdini: {
+  houdini_bridge: {
     averageTime: 5,
     color: '#a919d1',
-    image: `${imageBasePath}houdini.svg`,
-    name: 'Privacy Routing'
+    image: `${privateTradeImageBasePath}houdini.svg`,
+    name: 'Houdini Swap'
   },
   hyphen: {
     averageTime: 5,

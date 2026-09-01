@@ -244,9 +244,11 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
       enableChecks: !testMode,
       ...(this.signature && { signature: this.signature })
     };
-    const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
+    const swapData = await this.fetchSwapData<EvmTransactionConfig & { exchangeId: string }>(
+      swapRequestData
+    );
 
-    this._uniqueInfo = swapData.uniqueInfo ?? {};
+    this._exchangeId = swapData.transaction.exchangeId;
     const amount = swapData.estimate.destinationWeiAmount;
 
     const config = {

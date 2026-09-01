@@ -15,7 +15,7 @@
     needTrustline: needTrustline$ | async,
     trustlineInfo: trustlineInfo$ | async,
     receiverAddressLabel: receiverAddressLabel$ | async,
-    isClearswap: isClearswap$ | async
+    isPrivate: isPrivate$ | async
   } as state"
 >
   <ng-container header>
@@ -221,7 +221,7 @@
                 state.status === 'finished'
             }"
           >
-            {{ state.isClearswap ? 'Hiding' : 'Exchanging' }}
+            {{ state.isPrivate ? 'Hiding' : 'Exchanging' }}
           </div>
         </div>
 
