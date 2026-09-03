@@ -41,7 +41,6 @@ import {
   Token
 } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -237,11 +236,7 @@ export class CrossChainService {
       ...(referrer && { referrer }),
       refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck,
-      solanaSponsorParams: {
-        feePayer: SOLANA_SPONSOR,
-        tradeId: trade.rubicId
-      }
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {
