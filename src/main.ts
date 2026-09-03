@@ -4,7 +4,6 @@ import { platformBrowser } from '@angular/platform-browser';
 import { AppModule } from '@app/app.module';
 import { ENVIRONMENT } from './environments/environment';
 import { initGoogleAnalytics } from './google-analytics-init';
-import { initSentry } from './sentry-init-config';
 
 if (ENVIRONMENT.production) {
   enableProdMode();
@@ -13,7 +12,10 @@ if (ENVIRONMENT.production) {
 platformBrowser()
   .bootstrapModule(AppModule)
   .then(() => {
-    initSentry();
-    initGoogleAnalytics();
+    requestIdleCallback(async () => {
+      const { initSentry } = await import('./sentry-init-config');
+      initSentry();
+      initGoogleAnalytics();
+    });
   })
   .catch(err => console.error(err));
