@@ -37,9 +37,6 @@ import {
   Token
 } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
-import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -78,7 +75,6 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly sdkLegacyService: SdkLegacyService,
@@ -189,11 +185,6 @@ export class OnChainService {
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),
-      solanaSponsorParams: {
-        feePayer: SOLANA_SPONSOR,
-        // @ts-ignore trade api type
-        tradeId: trade.apiResponse.id
-      },
       ...(gasLimitRatio && { gasLimitRatio })
     };
 
@@ -256,9 +247,9 @@ export class OnChainService {
         }
       }
 
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
-      }
+      // if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+      //   this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+      // }
 
       return transactionHash;
     } catch (err) {

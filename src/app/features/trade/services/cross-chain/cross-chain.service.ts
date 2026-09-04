@@ -41,9 +41,6 @@ import {
   Token
 } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
-import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -80,7 +77,7 @@ export class CrossChainService {
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService,
+    // private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly formsTogglerService: FormsTogglerService
@@ -239,20 +236,16 @@ export class CrossChainService {
       ...(referrer && { referrer }),
       refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck,
-      solanaSponsorParams: {
-        feePayer: SOLANA_SPONSOR,
-        tradeId: trade.rubicId
-      }
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {
       await trade.swap(swapOptions);
       setTimeout(() => this.updateBalancesAfterSwap(fromToken, toToken), 5_000);
 
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
-      }
+      // if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+      //   this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+      // }
 
       return transactionHash;
     } catch (error) {
