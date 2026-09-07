@@ -1,14 +1,10 @@
-import { BadgeInfo, BadgeInfoServices } from '@app/features/trade/models/trade-state';
+import { BadgeInfo } from '@app/features/trade/models/trade-state';
 import {
   showScrollMarksPromoLabel,
-  showSolanaGaslessLabel,
   showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
-import { checkAmountGte100Usd } from '../../solana-gasless/utils/solana-utils';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
-import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
-import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInfo[]>> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [
@@ -43,20 +39,20 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
         'You will recieve Marks from Scroll for completing this swap and holding this token!',
       showLabel: showScrollMarksPromoLabel
     }
-  ],
-  [BLOCKCHAIN_NAME.SOLANA]: [
-    {
-      fromSdk: false,
-      getBgColor: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => {
-        const madeLessThan5GaslessSwaps = services.solanaGaslessStateService.madeLessThan5Txs;
-        return checkAmountGte100Usd(trade) && madeLessThan5GaslessSwaps
-          ? 'linear-gradient(0deg, rgba(193,9,255,1) 6%, rgba(4,200,133,1) 100%)'
-          : '#3B3D4E';
-      },
-      getLabel: () => 'GASLESS',
-      getHint: () =>
-        'Gasless? Yep. On Solana, Rubic pays your gas fees for 5 swaps over $100 every day!',
-      showLabel: showSolanaGaslessLabel
-    }
   ]
+  // [BLOCKCHAIN_NAME.SOLANA]: [
+  //   {
+  //     fromSdk: false,
+  //     getBgColor: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => {
+  //       const madeLessThan5GaslessSwaps = services.solanaGaslessStateService.madeLessThan5Txs;
+  //       return checkAmountGte100Usd(trade) && madeLessThan5GaslessSwaps
+  //         ? 'linear-gradient(0deg, rgba(193,9,255,1) 6%, rgba(4,200,133,1) 100%)'
+  //         : '#3B3D4E';
+  //     },
+  //     getLabel: () => 'GASLESS',
+  //     getHint: () =>
+  //       'Gasless? Yep. On Solana, Rubic pays your gas fees for 5 swaps over $100 every day!',
+  //     showLabel: showSolanaGaslessLabel
+  //   }
+  // ]
 };

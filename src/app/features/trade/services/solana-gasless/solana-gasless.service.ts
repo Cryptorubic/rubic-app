@@ -16,7 +16,7 @@ export class SolanaGaslessService {
     private readonly httpService: HttpService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.subscribeOnUserAddressChange();
+    // this.subscribeOnUserAddressChange();
   }
 
   public onSwapFormInputChanged(inputValue: SwapFormInput): void {

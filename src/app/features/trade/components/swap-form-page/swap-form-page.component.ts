@@ -14,7 +14,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
-import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
@@ -98,14 +97,13 @@ export class SwapFormPageComponent {
     @Inject(Injector) private readonly injector: Injector,
     private readonly swapsStateService: SwapsStateService,
     private readonly refundService: RefundService,
-    private readonly solanaGaslessService: SolanaGaslessService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly formsTogglerService: FormsTogglerService
   ) {
     this.swapFormService.inputValueDistinct$.pipe(takeUntilDestroyed()).subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
-      this.solanaGaslessService.onSwapFormInputChanged(inputValue);
+      // this.solanaGaslessService.onSwapFormInputChanged(inputValue);
     });
 
     this.authService.currentUser$

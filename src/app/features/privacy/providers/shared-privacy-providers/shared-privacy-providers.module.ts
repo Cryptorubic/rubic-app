@@ -37,8 +37,6 @@ import { FormsTogglerService } from '@features/trade/services/forms-toggler/form
 import { TradeInfoManager } from '@features/trade/services/trade-info-manager/trade-info-manager.service';
 import { AlternativeRoutesService } from '@features/trade/services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from '@features/trade/services/refund-service/refund.service';
-import { SolanaGaslessService } from '@features/trade/services/solana-gasless/solana-gasless.service';
-import { SolanaGaslessStateService } from '@features/trade/services/solana-gasless/solana-gasless-state.service';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { SwapWindowComponent } from './components/swap-window/swap-window.component';
 import { RevealWindowComponent } from './components/reveal-window/reveal-window.component';
@@ -159,8 +157,6 @@ import { PresetAmountListComponent } from './components/preset-amount-list/prese
     FormsTogglerService,
     AlternativeRoutesService,
     RefundService,
-    SolanaGaslessService,
-    SolanaGaslessStateService,
     PrivateModalsService,
     PrivateActionButtonService,
     PrivatePageTypeService,

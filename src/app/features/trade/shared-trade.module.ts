@@ -64,7 +64,6 @@ import { TargetNetworkAddressService } from './services/target-network-address-s
 import { SwapsStateService } from './services/swaps-state/swaps-state.service';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from './services/refund-service/refund.service';
-import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 import { SwapsControllerService } from './services/swaps-controller/swaps-controller.service';
 import { SwapFormQueryService } from './services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from './services/cross-chain/cross-chain.service';
@@ -75,7 +74,6 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 
 @NgModule({
   declarations: [
@@ -192,9 +190,7 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     DepositService,
     ActionButtonService,
     AlternativeRoutesService,
-    RefundService,
-    SolanaGaslessService,
-    SolanaGaslessStateService
+    RefundService
   ]
 })
 export class SharedTradeModule {}

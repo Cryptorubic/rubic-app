@@ -46,7 +46,6 @@ import {
 import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
-import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
@@ -165,7 +164,6 @@ export class SwapsStateService {
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
     private readonly refundService: RefundService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly queryParamsService: QueryParamsService
   ) {
@@ -674,9 +672,7 @@ export class SwapsStateService {
       })
       .map(info => ({
         label: info.getLabel(trade),
-        bgColor: info?.getBgColor(trade, {
-          solanaGaslessStateService: this.solanaGaslessStateService
-        }),
+        bgColor: info?.getBgColor(trade, { solanaGaslessStateService: undefined }),
         hint: info?.getHint?.(trade),
         href: info?.getUrl?.(trade)
       }));
