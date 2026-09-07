@@ -9,11 +9,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },
   {
-    path: ROUTE_PATH.TESTNET_PROMO,
-    loadChildren: () =>
-      import('./features/testnet-promo/testnet-promo.module').then(m => m.TestnetPromoModule)
-  },
-  {
     path: ROUTE_PATH.PRIVACY,
     canActivateChild: [privacyDisclaimerGuard$],
     loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
