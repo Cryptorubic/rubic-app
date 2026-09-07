@@ -1,19 +1,21 @@
-import '@angular/compiler';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { platformBrowser } from '@angular/platform-browser';
 
 import { AppModule } from '@app/app.module';
 import { ENVIRONMENT } from './environments/environment';
 import { initGoogleAnalytics } from './google-analytics-init';
-import { initSentry } from './sentry-init-config';
 
 if (ENVIRONMENT.production) {
   enableProdMode();
 }
 
-initSentry();
-initGoogleAnalytics();
-
-platformBrowserDynamic()
+platformBrowser()
   .bootstrapModule(AppModule)
+  .then(() => {
+    requestIdleCallback(async () => {
+      const { initSentry } = await import('./sentry-init-config');
+      initSentry();
+      initGoogleAnalytics();
+    });
+  })
   .catch(err => console.error(err));
