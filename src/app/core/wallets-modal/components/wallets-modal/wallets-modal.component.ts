@@ -28,6 +28,8 @@ import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-
 import { MULTICHAIN_OPTIONS_MAPPING } from './models/multichain-options-mapping';
 import { METAMASK_PROVIDERS } from './models/metamask-providers';
 import { Router } from '@angular/router';
+import { PrivateProviderUrl } from '@app/features/privacy/models/routes';
+import { WALLETS_TO_HIDE } from './models/wallets-to-hide-map';
 
 @Component({
   standalone: false,
@@ -190,10 +192,15 @@ export class WalletsModalComponent implements OnInit {
     walletName: WALLET_NAME
   ): Promise<WALLET_NAME | null> {
     try {
-      if (walletName === WALLET_NAME.METAMASK && !this.showMetamaskModal)
+      if (walletName === WALLET_NAME.METAMASK && !this.showMetamaskModal) {
         return this.supportedMetamaskProvider;
-
-      return this.modalService.openMultichainWalletModal(walletName);
+      }
+      const splitted = this.window.location.pathname.split('/');
+      const privateWalletName = splitted[splitted.length - 1] as PrivateProviderUrl;
+      const walletsToHide: WALLET_NAME[] = WALLETS_TO_HIDE[privateWalletName]
+        ? WALLETS_TO_HIDE[privateWalletName]
+        : [];
+      return this.modalService.openMultichainWalletModal(walletName, walletsToHide);
     } catch {
       return null;
     }
