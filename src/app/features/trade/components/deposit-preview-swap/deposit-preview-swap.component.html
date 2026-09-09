@@ -85,12 +85,12 @@
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
-    <div class="required-step" *ngIf="state.needTrustline && state.trustlineInfo">
+    <!--<div class="required-step" *ngIf="state.needTrustline && state.trustlineInfo">
       <app-trustline
         [options]="state.trustlineInfo"
         (onTrustlineAdd)="onTrustlineAdd()"
       ></app-trustline>
-    </div>
+    </div>-->
     <div
       *ngIf="state.canShowDepositAddress"
       @showDepositAddressAnimation

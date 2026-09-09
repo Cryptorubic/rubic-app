@@ -19,8 +19,6 @@ import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/to
 import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-ccr/unsupported-token-ccr.component';
 import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
 import { TransactionFailedErrorComponent } from '@core/errors/components/transaction-failed-error/transaction-failed-error.component';
-import { BitKeepErrorComponent } from '@core/errors/components/bitkeep-error/bitkeep-error.component';
-import { TokenPocketErrorComponent } from './components/token-pocket-error/token-pocket-error.component';
 import { NoLinkedAccountErrorComponent } from './components/no-linked-account-error/no-linked-account-error.component';
 import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-error.component';
 import { SimulationFailedErrorComponent } from './components/simulation-failed-error/simulation-failed-error.component';
@@ -32,7 +30,6 @@ import { WrongReceiverErrorComponent } from './components/wrong-receiver-error/w
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
-    BitKeepErrorComponent,
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,
@@ -44,7 +41,6 @@ import { WrongReceiverErrorComponent } from './components/wrong-receiver-error/w
     UnsupportedTokenCCRComponent,
     RpcErrorComponent,
     TransactionFailedErrorComponent,
-    TokenPocketErrorComponent,
     NoLinkedAccountErrorComponent,
     CoinbaseErrorComponent,
     SimulationFailedErrorComponent,

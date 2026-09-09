@@ -5,7 +5,7 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { WA_WINDOW, WA_USER_AGENT } from '@ng-web-apis/common';
+import { WA_WINDOW } from '@ng-web-apis/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
@@ -18,7 +18,6 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
-import { tuiIsEdge, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
@@ -49,22 +48,10 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly supportedMetamaskProvider: WALLET_NAME;
 
-  public get isChromium(): boolean {
-    if (tuiIsEdge(this.userAgent)) {
-      return false;
-    }
-
-    return !tuiIsFirefox(this.userAgent);
-  }
-
   public get providers(): ReadonlyArray<WalletProvider> {
-    const isChromiumProviders = this.isChromium
-      ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
-
     return this.isMobile
-      ? isChromiumProviders.filter(provider => provider.supportsMobile)
-      : isChromiumProviders.filter(provider => provider.supportsDesktop);
+      ? this.allProviders.filter(provider => provider.supportsMobile)
+      : this.allProviders.filter(provider => provider.supportsDesktop);
   }
 
   public get isMobile(): boolean {
@@ -91,7 +78,6 @@ export class WalletsModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, WalletsModalOptions>,
     @Inject(WA_WINDOW) private readonly window: RubicWindow,
-    @Inject(WA_USER_AGENT) private readonly userAgent: string,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,

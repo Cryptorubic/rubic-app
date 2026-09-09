@@ -55,8 +55,6 @@ import { TurnstileCheckComponent } from '@features/trade/components/turnstile-ch
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
-import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
-import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
@@ -479,18 +477,18 @@ export class ModalService {
     );
   }
 
-  public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
-    this.setOpenedModalName('trustline-modal');
-    return firstValueFrom(
-      this.showDialog(TrustlineModalComponent, {
-        size: 's',
-        closeable: false,
-        dismissible: false,
-        fitContent: true,
-        data: options
-      }).pipe(catchError(() => of(false))) as Observable<boolean>
-    );
-  }
+  // public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
+  //   this.setOpenedModalName('trustline-modal');
+  //   return firstValueFrom(
+  //     this.showDialog(TrustlineModalComponent, {
+  //       size: 's',
+  //       closeable: false,
+  //       dismissible: false,
+  //       fitContent: true,
+  //       data: options
+  //     }).pipe(catchError(() => of(false))) as Observable<boolean>
+  //   );
+  // }
 
   public openRateChangedModal(rateChangeInfo: RateChangeInfo): Observable<boolean> {
     this.setOpenedModalName('rate-change');

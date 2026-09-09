@@ -50,8 +50,6 @@
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
     "noMetamaskInstalled": "Lütfen metamask eklentisinin kurulu ve kilidinin açık olduğundan emin olun.\n İndirebilirsiniz",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
-    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
-    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase tarayıcı uzantısı MetaMask uzantısıyla çakışıyor. Devam etmek için lütfen Coinbase uzantısını devre dışı bırakın veya kaldırın veya bağlanmak için başka bir cüzdan seçin.",
     "wrongNetwork": "Yanlış ağı seçtiniz. Lütfen MetaMask'tan {{ networkToChoose }} öğesini seçin..",
     "OverQueryLimit": "Kısa bir süre içinde çok fazla işlem gerçekleştirmeye çalıştınız ve 30 dakika içinde maksimum 3 işlem olan Binance köprü kısıtlamalarını aştınız.\nLütfen bekleyin ve tekrar deneyin, hala sorun yaşıyorsanız lütfen bizimle iletişime geçin.",
@@ -100,9 +98,7 @@
     "walletNotInstalled": "Cüzdan yüklü değil.",
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token Seç",
-    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

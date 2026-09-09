@@ -67,7 +67,6 @@ import { SimulationFailedError } from '@app/core/errors/models/common/simulation
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
-import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -123,7 +122,7 @@ export class SwapsControllerService {
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
-    private readonly trustlineService: TrustlineService,
+    // private readonly trustlineService: TrustlineService,
     @Inject(WA_WINDOW) private readonly window: Window
   ) {
     this.subscribeOnSocketStatusChanges();
@@ -606,15 +605,15 @@ export class SwapsControllerService {
               wrappedTrade?.error
             );
 
-            const needAddTrustline = this.trustlineService.checkTrustline(
-              wrappedTrade.trade,
-              this.authService.userAddress,
-              this.targetNetworkAddressService.address
-            );
+            // const needAddTrustline = this.trustlineService.checkTrustline(
+            //   wrappedTrade.trade,
+            //   this.authService.userAddress,
+            //   this.targetNetworkAddressService.address
+            // );
 
-            return forkJoin([of(wrappedTrade), needApprove$, isNotLinkedAccount$, needAddTrustline])
+            return forkJoin([of(wrappedTrade), needApprove$, isNotLinkedAccount$])
               .pipe(
-                tap(([trade, needApprove, isNotLinkedAccount, needTrustline]) => {
+                tap(([trade, needApprove, isNotLinkedAccount]) => {
                   try {
                     if (trade.trade && !this.isTradeRelevantToCurrentForm(trade.trade)) {
                       return;
@@ -628,13 +627,10 @@ export class SwapsControllerService {
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     const type = this.getSwapProviderType(trade.trade);
-                    this.swapsStateService.updateTrade(
-                      trade,
-                      type,
-                      needApprove,
-                      needAuthWallet,
-                      needTrustline
-                    );
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet, {
+                      needTrustlineAfterSwap: false,
+                      needTrustlineBeforeSwap: false
+                    });
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.total,
