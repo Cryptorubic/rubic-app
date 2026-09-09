@@ -1,0 +1,41 @@
+diff --git a/node_modules/eciesjs/index.mjs b/node_modules/eciesjs/index.mjs
+new file mode 100644
+index 0000000..a4c275e
+--- /dev/null
++++ b/node_modules/eciesjs/index.mjs
+@@ -0,0 +1,12 @@
++import cjsModule from './dist/index.js';
++
++export const {
++  ECIES_CONFIG,
++  PrivateKey,
++  PublicKey,
++  utils,
++  encrypt,
++  decrypt
++} = cjsModule;
++
++export default cjsModule;
+diff --git a/node_modules/eciesjs/package.json b/node_modules/eciesjs/package.json
+index 1111111..2222222 100644
+--- a/node_modules/eciesjs/package.json
++++ b/node_modules/eciesjs/package.json
+@@ -28,13 +28,17 @@
+     "cryptocurrency"
+   ],
+   "main": "dist/index.js",
++  "module": "index.mjs",
+   "types": "dist/index.d.ts",
+   "files": [
+-    "dist"
++    "dist",
++    "index.mjs"
+   ],
+   "exports": {
+     ".": {
+       "types": "./dist/index.d.ts",
++      "import": "./index.mjs",
++      "require": "./dist/index.js",
+       "default": "./dist/index.js"
+     },
+     "./config": {

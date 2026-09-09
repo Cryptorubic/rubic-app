@@ -172,9 +172,7 @@ export class WalletsModalComponent implements OnInit {
 
       if (this.browserService.currentBrowser === BROWSER.MOBILE) {
         const redirected = await this.deepLinkRedirectIfSupported(provider);
-        if (redirected) {
-          return;
-        }
+        if (redirected) return;
       }
 
       this.headerStore.setWalletsLoadingStatus(true);
