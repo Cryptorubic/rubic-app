@@ -74,6 +74,11 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
+import { DepositForm } from './components/deposit-form/deposit-form';
+import { DepositDetailsStep } from './components/deposit-form/components/deposit-details-step/deposit-details-step';
+import { DepositInputAddressesStep } from './components/deposit-form/components/deposit-input-addresses-step/deposit-input-addresses-step';
+import { DepositTradeInfoStep } from './components/deposit-form/components/deposit-trade-info-step/deposit-trade-info-step';
+import { DepositTradeStatusStep } from './components/deposit-form/components/deposit-trade-status-step/deposit-trade-status-step';
 
 @NgModule({
   declarations: [
@@ -111,7 +116,12 @@ import { ActionButtonService } from './services/action-button-service/action-but
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositForm,
+    DepositDetailsStep,
+    DepositInputAddressesStep,
+    DepositTradeInfoStep,
+    DepositTradeStatusStep
   ],
   exports: [
     TradeViewContainerComponent,
@@ -148,7 +158,12 @@ import { ActionButtonService } from './services/action-button-service/action-but
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositForm,
+    DepositDetailsStep,
+    DepositInputAddressesStep,
+    DepositTradeInfoStep,
+    DepositTradeStatusStep
   ],
   imports: [
     CommonModule,
