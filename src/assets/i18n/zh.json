@@ -51,8 +51,6 @@
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
     "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
-    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
-    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase 浏览器扩展与 MetaMask 扩展冲突。 请禁用或删除 Conibase 扩展以继续，或选择另一个钱包进行连接。",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
@@ -101,9 +99,7 @@
     "walletNotInstalled": "未安装钱包",
     "crossChainSwapUnavailable": "不幸的是，使用計算出的提供者的這種交換目前不可用。 Rubic 將重新計算您的交換路線。",
     "noSelectedToken": "选择令牌",
-    "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
   },
   "navigation": {
     "retrodrop": "Retrodrop",

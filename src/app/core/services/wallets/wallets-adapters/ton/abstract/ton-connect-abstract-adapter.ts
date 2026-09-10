@@ -8,10 +8,6 @@ import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { HttpService } from '@app/core/services/http/http.service';
 import { AddressBookResponse } from '../models/ton-utils-types';
 import { StoreService } from '@app/core/services/store/store.service';
-import {
-  PopularTonConnectWallets,
-  TON_CONNECT_WALLETS_MAP
-} from '../models/ton-connect-wallets-map';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { TonConnectInstance } from '../utils/ton-connect-instance';
 import { RetroBridgeApiService } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/retro-bridge/services/retro-bridge-api-service';
@@ -98,7 +94,6 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
   private listenStatusChangeEvent(): void {
     this.unsubEventListener = this.tonConnect.onStatusChange(walletAndWalletInfo => {
       if (walletAndWalletInfo?.account) {
-        const tonConnectWalletName = walletAndWalletInfo.appName;
         const rawAddress = walletAndWalletInfo.account.address;
 
         this.fetchFriendlyAddress(rawAddress)
@@ -109,15 +104,7 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
           .catch(err => console.log('fetchFriendlyAddress_CATCH ==> ', err));
 
         this.handleRetroBridgeSignature();
-
-        if (walletAndWalletInfo.appName in TON_CONNECT_WALLETS_MAP) {
-          this.storeService.setItem(
-            'RUBIC_PROVIDER',
-            TON_CONNECT_WALLETS_MAP[tonConnectWalletName as PopularTonConnectWallets]
-          );
-        } else {
-          this.storeService.setItem('RUBIC_PROVIDER', WALLET_NAME.TON_CONNECT);
-        }
+        this.storeService.setItem('RUBIC_PROVIDER', WALLET_NAME.TON_CONNECT);
       }
     });
   }

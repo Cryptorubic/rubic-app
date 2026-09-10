@@ -15,7 +15,6 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
 
 export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
@@ -88,11 +87,6 @@ export class PhantomSolanaWalletAdapter extends CommonSolanaWalletAdapter<Phanto
   private async checkErrors(wallet: PhantomWallet): Promise<void> {
     if (!wallet || !wallet?.isPhantom) {
       throw new WalletNotInstalledError();
-    }
-
-    // Hotfix if Ctrl-wallet connected, it catches requests to phantom wallet and returns solana wallets from itself
-    if (wallet.isXDEFI) {
-      throw new NeedDisableCtrlWalletError(this.walletName.toUpperCase());
     }
 
     if (!wallet.isConnected) {

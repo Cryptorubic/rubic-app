@@ -50,8 +50,6 @@
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
     "noMetamaskInstalled": "Veuillez vous assurer que le plugin MetaMask est installé et connecté. Vous pouvez le télécharger sur",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
-    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
-    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "L'extension de navigateur Coinbase est en conflit avec l'extension Metamask. Veuillez désactiver ou supprimer l'extension Coinbase pour continuer, ou choisir un autre portefeuille pour vous connecter.",
     "wrongNetwork": "Vous avez sélectionné le mauvais réseau. Veuillez choisir {{ networkToChoose }} dans MetaMask.",
     "OverQueryLimit": "Vous avez tenté d'exécuter trop de transactions  et avez dépassé les restrictions du bridge Binance de 3 transactions maximum en 30 minutes. Veuillez réessayer plus tard. Si le problème persiste, veuillez contacter notre",
@@ -100,9 +98,7 @@
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
     "crossChainSwapUnavailable": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
     "noSelectedToken": "Sélectionnez le Token",
-    "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

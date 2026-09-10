@@ -1,6 +1,6 @@
 import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
@@ -21,25 +21,15 @@ import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-s
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
-import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { PhantomSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-solana-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
-import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
 import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
-import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
-import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
-import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
-import { ModalService } from '@core/modals/services/modal.service';
-import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/bitcoin/ctrl-wallet-adapter';
-import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
-import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/binance-wallet-adapter';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -51,9 +41,6 @@ import {
   nativeTokensList
 } from '@cryptorubic/core';
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
-import { LobstrWalletAdapter } from '../wallets-adapters/stellar/lobstr-wallet-adapter';
-import { FreighterWalletAdapter } from '../wallets-adapters/stellar/freighter-wallet-addapter';
-import { StellarWalletConnectAdapter } from '../wallets-adapters/stellar/stellar-wallet-connect-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
 
@@ -102,8 +89,7 @@ export class WalletConnectorService {
     private readonly httpService: HttpService,
     @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
-    private readonly zone: NgZone,
-    private readonly modalsService: ModalService
+    private readonly zone: NgZone
   ) {}
 
   public checkIfSafeEnv(): boolean {
@@ -129,7 +115,7 @@ export class WalletConnectorService {
     this.privateProvider = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
   }
 
-  private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
+  private createWalletAdapter(walletName: WALLET_NAME, _chainId?: number): CommonWalletAdapter {
     const defaultConstructorParameters = [
       this.addressChangeSubject$,
       this.networkChangeSubject$,
@@ -150,16 +136,8 @@ export class WalletConnectorService {
       return new WalletConnectAdapter(...defaultConstructorParameters);
     }
 
-    if (walletName === WALLET_NAME.BITGET) {
-      return new BitgetWalletAdapter(...defaultConstructorParameters);
-    }
-
     if (walletName === WALLET_NAME.COIN_BASE) {
       return new CoinBaseWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.ARGENT) {
-      return new ArgentWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.TRUST_WALLET) {
@@ -186,44 +164,12 @@ export class WalletConnectorService {
       return new SafeWalletAdapter(...defaultConstructorParameters);
     }
 
-    if (walletName === WALLET_NAME.TOKEN_POCKET) {
-      return new TokenPocketWalletAdapter(...defaultConstructorParameters);
-    }
-
     if (walletName === WALLET_NAME.TON_CONNECT) {
       return new TonConnectAdapter(
         ...defaultConstructorParameters,
         this.httpService,
         this.storeService
       );
-    }
-
-    if (walletName === WALLET_NAME.MY_TON_WALLET) {
-      return new MyTonWalletAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.TONKEEPER) {
-      return new TonkeeperAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.TELEGRAM_WALLET) {
-      return new TelegramWalletAdapter(
-        ...defaultConstructorParameters,
-        this.httpService,
-        this.storeService
-      );
-    }
-
-    if (walletName === WALLET_NAME.CTRL) {
-      return new CtrlWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.SLUSH) {
@@ -233,27 +179,8 @@ export class WalletConnectorService {
       return new SuietWalletAdapter(...defaultConstructorParameters);
     }
 
-    if (walletName === WALLET_NAME.HOLD_STATION) {
-      return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
-    }
-
-    if (walletName === WALLET_NAME.BINANCE_WALLET) {
-      return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
-    }
-
     if (walletName === WALLET_NAME.BACKPACK) {
       return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
-    }
-
-    if (walletName === WALLET_NAME.LOBSTR) {
-      return new LobstrWalletAdapter(...defaultConstructorParameters, this.storeService);
-    }
-
-    if (walletName === WALLET_NAME.FREIGHTER) {
-      return new FreighterWalletAdapter(...defaultConstructorParameters);
-    }
-    if (walletName === WALLET_NAME.STELLAR_WALLET_CONNECT) {
-      return new StellarWalletConnectAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
@@ -327,27 +254,6 @@ export class WalletConnectorService {
         }
       } else if (switchError.code === 4001) {
         this.errorService.catch(new UserRejectNetworkSwitchError());
-      } else if (
-        switchError.message.includes(
-          'Missing or invalid. request() method: wallet_switchEthereumChain'
-        ) &&
-        this.provider instanceof HoldstationWalletAdapter
-      ) {
-        const reconnect = await firstValueFrom(
-          this.modalsService.openWcChangeNetworkModal(this.network, evmBlockchainName)
-        );
-
-        if (reconnect) {
-          try {
-            await this.provider.deactivate();
-            const decimalId = parseInt(chainId, 16);
-            await this.provider.updateDefaultChain(decimalId);
-            await this.provider.activate();
-          } catch (err) {
-            await this.provider.deactivate();
-            this.errorService.catch(err);
-          }
-        }
       } else if (
         switchError.message.includes('The Provider is not connected to the requested chain') &&
         this.provider instanceof PhantomWalletAdapter
