@@ -9,7 +9,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, timer } from 'rxjs';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -36,6 +36,8 @@ export class AppComponent implements AfterViewInit {
   public useLargeIframe = false;
 
   public readonly chartVisibile$ = this.chartService.chartVisibile$;
+
+  public readonly expiresAtMs$ = timer(0, 100_000).pipe(map(() => 10_000));
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

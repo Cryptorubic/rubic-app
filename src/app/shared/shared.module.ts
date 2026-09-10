@@ -81,6 +81,7 @@ import { InputNumberComponent } from './components/input-number/input-number.com
 import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
 import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { TimerComponent } from './components/timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -138,7 +139,8 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     InputNumberComponent,
     TrustlineModalComponent,
     TrustlineComponent,
-    PrivacyDisclaimerModalComponent
+    PrivacyDisclaimerModalComponent,
+    TimerComponent
   ],
   imports: [
     CommonModule,
@@ -218,7 +220,8 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TrustlineComponent
+    TrustlineComponent,
+    TimerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
