@@ -1,0 +1,20 @@
+@use 'src/scss/core' as *;
+
+@mixin accordion-counter {
+  @include flex(row, center, center);
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+
+  font-size: 12px;
+
+  background: var(--tui-background-base);
+}
+
+@mixin accordion-title {
+  @include flex(row, center, space-between);
+  color: var(--tui-text-primary);
+  font-size: 12px;
+
+  border-radius: 50%;
+}

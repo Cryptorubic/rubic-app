@@ -1,0 +1,20 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .deposit-form {
+    @include flex(column, normal, center);
+
+    &__header {
+      @include flex(row, center, space-between);
+      width: 100%;
+    }
+
+    &__timer {
+      width: fit-content;
+    }
+
+    &__body {
+      width: 100%;
+    }
+  }
+}

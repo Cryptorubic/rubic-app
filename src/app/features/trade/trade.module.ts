@@ -39,6 +39,7 @@ import { RefundService } from './services/refund-service/refund.service';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { DepositFormManager } from './components/deposit-form/services/deposit-form-manager';
 import { DepositStatusService } from './components/deposit-form/services/deposit-status-service';
+import { DepositFormValidatorService } from './components/deposit-form/services/deposit-form-validator-service';
 
 @NgModule({
   declarations: [],
@@ -83,7 +84,8 @@ import { DepositStatusService } from './components/deposit-form/services/deposit
     AlternativeRoutesService,
     RefundService,
     DepositFormManager,
-    DepositStatusService
+    DepositStatusService,
+    DepositFormValidatorService
   ]
 })
 export class TradeModule {}

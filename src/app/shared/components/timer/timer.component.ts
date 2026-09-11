@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BehaviorSubject, finalize, interval, map, share, switchMap, takeWhile } from 'rxjs';
+import { BehaviorSubject, finalize, map, share, switchMap, takeWhile, timer } from 'rxjs';
 
 @Component({
   selector: 'app-timer',
@@ -9,6 +9,8 @@ import { BehaviorSubject, finalize, interval, map, share, switchMap, takeWhile }
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerComponent {
+  @Input() text: string = '';
+
   @Input() set expiresAfterMs(value: number) {
     this._expiresAfterMs$.next(value);
   }
@@ -19,11 +21,11 @@ export class TimerComponent {
 
   private readonly reverseTimerMs$ = this._expiresAfterMs$.pipe(
     switchMap(expiresAfterMs => {
-      const deadlineTimestampMs = expiresAfterMs + Date.now();
+      const deadlineTimestampMs = expiresAfterMs + 1_000 + Date.now();
       const intervalDelayMs = 1_000;
-      return interval(intervalDelayMs).pipe(
-        takeWhile(() => Date.now() <= deadlineTimestampMs),
+      return timer(0, intervalDelayMs).pipe(
         map(count => expiresAfterMs - count * intervalDelayMs),
+        takeWhile(() => Date.now() <= deadlineTimestampMs),
         finalize(() => this.timerCompleted.emit())
       );
     }),

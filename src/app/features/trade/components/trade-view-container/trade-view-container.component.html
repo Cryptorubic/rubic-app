@@ -9,7 +9,9 @@
     isTransferMode: isTransferMode$ | async
   };
 
-<div class="trade-view-container" [class.large-iframe-trade-view-container]="useLargeIframe">
+<app-deposit-form></app-deposit-form>
+
+<!--<div class="trade-view-container" [class.large-iframe-trade-view-container]="useLargeIframe">
   <div
     class="form"
     [ngClass]="{
@@ -86,4 +88,4 @@
   @if (state.content === 'depositPreview') {
     <app-deposit-trade-info></app-deposit-trade-info>
   }
-</div>
+</div>-->

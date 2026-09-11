@@ -1,0 +1,40 @@
+<app-window-container
+  *ngLet="{ depositFormState: depositFormState$ | async, tradeId: tradeId$ | async } as state"
+  class="deposit-form"
+>
+  <ng-container header>
+    <div class="deposit-form__header">
+      <app-back-button
+        class="deposit-form__back-btn"
+        [isMobile]="false"
+        (onClick)="backToForm()"
+      ></app-back-button>
+
+      <span class="deposit-form__title">{{ formTitle$ | async }}</span>
+
+      <app-field-with-copy-btn
+        [visibleText]="$any(state.tradeId | shortAddress: 6 : 6)"
+        [textToCopy]="state.tradeId"
+        [bgColor]="'var(--tui-background-base)'"
+      ></app-field-with-copy-btn>
+    </div>
+  </ng-container>
+
+  @if (state.depositFormState !== 'COMPLETED' && state.depositFormState !== 'EXPIRED') {
+    <div class="deposit-form__timer">
+      <app-timer
+        [expiresAfterMs]="1_800_000"
+        text="remaining"
+        (timerCompleted)="handleTradeExpired()"
+      ></app-timer>
+    </div>
+  }
+
+  <div class="deposit-form__body">
+    @if (state.depositFormState === 'COMPLETED') {
+      <app-deposit-form-body-success></app-deposit-form-body-success>
+    } @else {
+      <app-deposit-form-body-active></app-deposit-form-body-active>
+    }
+  </div>
+</app-window-container>

@@ -1,0 +1,10 @@
+<tui-accordion class="step">
+  <tui-accordion-item [disabled]="locked" [size]="'s'">
+    <span class="step__counter">1</span>
+    <span class="step__title">EXCHANGE STATUS</span>
+    @if (locked) {
+      <app-step-locked-label></app-step-locked-label>
+    }
+    <ng-template tuiAccordionItemContent>I'm EXCHANGE STATUS content</ng-template>
+  </tui-accordion-item>
+</tui-accordion>

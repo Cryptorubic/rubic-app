@@ -22,7 +22,7 @@ import {
   TuiAppearance,
   TuiNumberFormat
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { TuiAccordion, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -74,11 +74,15 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { DepositForm } from './components/deposit-form/deposit-form';
-import { DepositDetailsStep } from './components/deposit-form/components/deposit-details-step/deposit-details-step';
-import { DepositInputAddressesStep } from './components/deposit-form/components/deposit-input-addresses-step/deposit-input-addresses-step';
-import { DepositTradeInfoStep } from './components/deposit-form/components/deposit-trade-info-step/deposit-trade-info-step';
-import { DepositTradeStatusStep } from './components/deposit-form/components/deposit-trade-status-step/deposit-trade-status-step';
+import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
+import { DepositDetailsStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-details-step/deposit-details-step.component';
+import { DepositInputAddressesStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-input-addresses-step/deposit-input-addresses-step.component';
+import { DepositTradeInfoStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/deposit-trade-info-step.component';
+import { DepositTradeStatusStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/deposit-trade-status-step.component';
+import { DepositFormBodySuccessComponent } from './components/deposit-form/components/deposit-form-body-success/deposit-form-body-success.component';
+import { DepositFormBodyActiveComponent } from './components/deposit-form/components/deposit-form-body-active/deposit-form-body-active.component';
+import { FieldWithCopyBtnComponent } from './components/deposit-form/components/field-with-copy-btn/field-with-copy-btn.component';
+import { StepLockedLabelComponent } from './components/deposit-form/components/deposit-form-body-active/components/step-locked-label/step-locked-label.component';
 
 @NgModule({
   declarations: [
@@ -117,11 +121,15 @@ import { DepositTradeStatusStep } from './components/deposit-form/components/dep
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
     AllSwapBackupsFailedModalComponent,
-    DepositForm,
-    DepositDetailsStep,
-    DepositInputAddressesStep,
-    DepositTradeInfoStep,
-    DepositTradeStatusStep
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -159,11 +167,15 @@ import { DepositTradeStatusStep } from './components/deposit-form/components/dep
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
     AllSwapBackupsFailedModalComponent,
-    DepositForm,
-    DepositDetailsStep,
-    DepositInputAddressesStep,
-    DepositTradeInfoStep,
-    DepositTradeStatusStep
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent
   ],
   imports: [
     CommonModule,
@@ -188,7 +200,8 @@ import { DepositTradeStatusStep } from './components/deposit-form/components/dep
     TuiNotification,
     ...TuiCarousel,
     TuiAppearance,
-    TuiNumberFormat
+    TuiNumberFormat,
+    ...TuiAccordion
   ],
   providers: [
     SettingsService,

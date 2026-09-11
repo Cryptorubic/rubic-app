@@ -1,0 +1,22 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .timer {
+    @include flex(row, center, center);
+    gap: 6px;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px 12px;
+
+    color: var(--tui-background-accent-1);
+    font-family: $red-hat-mono;
+
+    background-color: rgba(0, 226, 141, 0.09);
+    border: 1px solid var(--tui-background-accent-1);
+    border-radius: 20px;
+
+    .time-counter {
+      min-width: 37px;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+@use 'src/scss/core' as *;
+@use 'src/app/features/trade/components/deposit-form/styles/common' as *;
+
+:host {
+  .step {
+    width: 100%;
+
+    ::ng-deep .t-header {
+      @include flex(row, center, space-between);
+      width: 100%;
+    }
+
+    &__title {
+      @include accordion-title();
+    }
+
+    &__counter {
+      @include accordion-counter();
+    }
+  }
+}
