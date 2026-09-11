@@ -22,8 +22,10 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
     return of([]);
   }
 
-  public override updateTokenSync(tokens: Token[]): void {
-    this._pageLoading$.next(true);
+  public override updateTokenSync(tokens: Token[], options?: { silent?: boolean }): void {
+    if (!options?.silent) {
+      this._pageLoading$.next(true);
+    }
 
     const refs: TokenRef[] = [];
     const sorter = new TokensSorter();
@@ -37,7 +39,9 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
     });
 
     this._storedRefs$.next(refs);
-    this._pageLoading$.next(false);
+    if (!options?.silent) {
+      this._pageLoading$.next(false);
+    }
   }
 
   public fetchQueryTokens(query: string, blockchain: BlockchainName | null): void {

@@ -26,6 +26,7 @@ import { BlockchainsInfo, BlockchainName } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -54,6 +55,9 @@ export abstract class AssetsService {
 
   public set assetListType(value: AssetListType) {
     this._assetListType$.next(value);
+    if (BlockchainsInfo.isBlockchainName(value)) {
+      this.tokensFacade.loadChainTokens(value);
+    }
   }
 
   public get assetListType(): AssetListType {
@@ -98,6 +102,8 @@ export abstract class AssetsService {
   private readonly formsTogglerService = inject(FormsTogglerService);
 
   private readonly transferTokensService = inject(TransferTokensService);
+
+  private readonly tokensFacade = inject(TokensFacadeService);
 
   // Blockchains to show
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
