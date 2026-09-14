@@ -31,10 +31,6 @@ export class TokensBootstrapService {
 
   private loadedTokens: Token[] = [];
 
-  private tier2Scheduled = false;
-
-  private tier2Started = false;
-
   /**
    * Chains, which tokens are being loaded.
    */
@@ -62,13 +58,8 @@ export class TokensBootstrapService {
   }
 
   private scheduleTier2Load(): void {
-    if (this.tier2Scheduled) {
-      return;
-    }
-    this.tier2Scheduled = true;
-
     const start = (): void => {
-      void this.buildTier2List();
+      this.buildTier2List();
     };
 
     if (typeof requestIdleCallback === 'function') {
@@ -79,26 +70,18 @@ export class TokensBootstrapService {
   }
 
   private async buildTier2List(): Promise<void> {
-    if (this.tier2Started) {
-      return;
-    }
-    this.tier2Started = true;
-
     const pendingChains = TIER_2_BLOCKCHAINS.filter(
       chain => this.tokensStore.tokens[chain]?.page === 0 && !this.chainsInFlight.has(chain)
     );
-    if (!pendingChains.length) {
-      return;
-    }
+    if (!pendingChains.length) return;
 
     pendingChains.forEach(chain => this.chainsInFlight.add(chain));
     try {
       const tokens = await firstValueFrom(this.apiService.getTokensByChains(pendingChains));
       const tokensArray = Object.values(tokens).flatMap(el => el.list);
       Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
-        if (this.tokensStore.tokens[blockchain as BlockchainName]?.page > 0) {
-          return;
-        }
+        if (this.tokensStore.tokens[blockchain as BlockchainName]?.page > 0) return;
+
         this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
       });
       this.publishAllChainsTokens(tokensArray, { silent: true });
@@ -133,25 +116,17 @@ export class TokensBootstrapService {
 
   public async loadChainTokens(blockchain: BlockchainName): Promise<void> {
     const alreadyLoaded = () => {
-      if (this.tokensStore.tokens[blockchain]?.page > 0) {
-        return true;
-      }
-      if (this.chainsInFlight.has(blockchain)) {
-        return true;
-      }
+      if (this.tokensStore.tokens[blockchain]?.page > 0) return true;
+      if (this.chainsInFlight.has(blockchain)) return true;
       return false;
     };
 
-    if (alreadyLoaded()) {
-      return;
-    }
+    if (alreadyLoaded()) return;
 
     if (!this._tier1TokensLoaded$.value) {
       await firstValueFrom(this.tier1TokensLoaded$.pipe(first(Boolean)));
 
-      if (alreadyLoaded()) {
-        return;
-      }
+      if (alreadyLoaded()) return;
     }
 
     this.chainsInFlight.add(blockchain);
@@ -165,9 +140,7 @@ export class TokensBootstrapService {
   private async fetchChainTokens(blockchain: BlockchainName): Promise<void> {
     const tokens = await firstValueFrom(this.apiService.getTokensByChains([blockchain]));
     const chainTokens = tokens[blockchain];
-    if (!chainTokens) {
-      return;
-    }
+    if (!chainTokens) return;
 
     if (this.tokensStore.tokens[blockchain]?.page === 0) {
       this.tokensStore.addInitialBlockchainTokens(blockchain, chainTokens);
@@ -176,19 +149,18 @@ export class TokensBootstrapService {
   }
 
   private publishAllChainsTokens(tokens: Token[], options?: { silent?: boolean }): void {
-    this.loadedTokens = this.dedupeTokens([...this.loadedTokens, ...tokens]);
+    this.loadedTokens = this.filterDuplicateTokens([...this.loadedTokens, ...tokens]);
     this.tokensCollectionsFacade.allTokens.updateTokenSync(this.loadedTokens, options);
   }
 
-  private dedupeTokens(tokens: Token[]): Token[] {
+  private filterDuplicateTokens(tokens: Token[]): Token[] {
     const seen = new Set<string>();
     const result: Token[] = [];
 
     for (const token of tokens) {
       const key = `${token.blockchain}_${token.address.toLowerCase()}`;
-      if (seen.has(key)) {
-        continue;
-      }
+      if (seen.has(key)) continue;
+
       seen.add(key);
       result.push(token);
     }
