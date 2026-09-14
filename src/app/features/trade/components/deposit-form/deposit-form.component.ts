@@ -4,6 +4,7 @@ import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/deposit-form-manager';
 import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
+import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
 
 @Component({
   selector: 'app-deposit-form',
@@ -17,7 +18,7 @@ export class DepositFormComponent {
 
   public readonly formTitle$ = of('Deposit Funds');
 
-  public readonly depositFormState$ = this.depositFormManager.depositFormState$;
+  public readonly depositFormInfo$ = this.depositFormManager.depositFormInfo$;
 
   constructor(
     private readonly tradePageService: TradePageService,
@@ -33,6 +34,9 @@ export class DepositFormComponent {
   }
 
   public handleTradeExpired(): void {
-    this.depositFormManager.setDepositFormState(DEPOSIT_FORM_STATE.EXPIRED);
+    this.depositFormManager.patchDepositFormState({
+      state: DEPOSIT_FORM_STATE.EXPIRED,
+      title: DEPOSIT_FORM_TITLE[DEPOSIT_FORM_STATE.EXPIRED]
+    });
   }
 }

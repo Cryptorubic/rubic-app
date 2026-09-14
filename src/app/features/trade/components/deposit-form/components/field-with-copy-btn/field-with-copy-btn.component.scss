@@ -23,7 +23,7 @@
 
       &-copied {
         ::ng-deep svg path {
-          stroke: var(--tui-background-accent-1-pressed);
+          fill: var(--tui-background-accent-1-pressed);
         }
       }
     }

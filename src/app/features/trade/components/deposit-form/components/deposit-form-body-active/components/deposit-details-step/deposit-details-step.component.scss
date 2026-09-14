@@ -5,9 +5,12 @@
   .step {
     width: 100%;
 
-    ::ng-deep .t-header {
-      @include flex(row, center, space-between);
-      width: 100%;
+    tui-accordion-item {
+      @include tui-accordion-item();
+    }
+
+    .tui-accordion-item__disabled {
+      @include tui-accordion-item-disabled();
     }
 
     &__title {
@@ -16,6 +19,10 @@
 
     &__counter {
       @include accordion-counter();
+    }
+
+    &__content {
+      @include accordion-content();
     }
   }
 }

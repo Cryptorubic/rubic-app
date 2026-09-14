@@ -1,0 +1,11 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .step-locked {
+    @include flex(row, center, center);
+    gap: 8px;
+
+    color: var(--tui-text-secondary);
+    font-size: 14px;
+  }
+}

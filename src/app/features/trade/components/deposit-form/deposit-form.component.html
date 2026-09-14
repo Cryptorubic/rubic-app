@@ -1,5 +1,5 @@
 <app-window-container
-  *ngLet="{ depositFormState: depositFormState$ | async, tradeId: tradeId$ | async } as state"
+  *ngLet="{ depositFormInfo: depositFormInfo$ | async, tradeId: tradeId$ | async } as state"
   class="deposit-form"
 >
   <ng-container header>
@@ -20,21 +20,23 @@
     </div>
   </ng-container>
 
-  @if (state.depositFormState !== 'COMPLETED' && state.depositFormState !== 'EXPIRED') {
-    <div class="deposit-form__timer">
-      <app-timer
-        [expiresAfterMs]="1_800_000"
-        text="remaining"
-        (timerCompleted)="handleTradeExpired()"
-      ></app-timer>
-    </div>
-  }
-
-  <div class="deposit-form__body">
-    @if (state.depositFormState === 'COMPLETED') {
-      <app-deposit-form-body-success></app-deposit-form-body-success>
-    } @else {
-      <app-deposit-form-body-active></app-deposit-form-body-active>
+  <div class="deposit-form__main">
+    @if (state.depositFormInfo === 'WAITING_FOR_SENDING_DEPOSIT') {
+      <div class="deposit-form__timer">
+        <app-timer
+          [expiresAfterMs]="1_800_000"
+          text="remaining"
+          (timerCompleted)="handleTradeExpired()"
+        ></app-timer>
+      </div>
     }
+
+    <div class="deposit-form__body">
+      @if (state.depositFormInfo === 'COMPLETED') {
+        <app-deposit-form-body-success></app-deposit-form-body-success>
+      } @else {
+        <app-deposit-form-body-active></app-deposit-form-body-active>
+      }
+    </div>
   </div>
 </app-window-container>

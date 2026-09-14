@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DepositFormDetails } from '../../../../models/deposit-form-step-types';
+import { DepositFormDetails } from '../../../../models/step-types';
 
 @Component({
   selector: 'app-deposit-details-step',

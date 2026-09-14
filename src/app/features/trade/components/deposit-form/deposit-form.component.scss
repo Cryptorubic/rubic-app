@@ -3,10 +3,32 @@
 :host {
   .deposit-form {
     @include flex(column, normal, center);
+    width: 600px;
+
+    &__main {
+      @include flex(column, center, stretch);
+      gap: 16px;
+      margin-top: 16px;
+    }
 
     &__header {
       @include flex(row, center, space-between);
+      position: relative;
+
       width: 100%;
+
+      font-size: 1rem;
+
+      app-field-with-copy-btn {
+        font-size: 12px;
+      }
+
+      .deposit-form__title {
+        position: absolute;
+        left: 50%;
+
+        transform: translateX(-50%);
+      }
     }
 
     &__timer {
