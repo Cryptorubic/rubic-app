@@ -93,7 +93,7 @@
   }
 
   &__token-amount {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 18px;
 
     &_error {
@@ -141,7 +141,7 @@
     align-items: center;
     height: 24px;
 
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     text-transform: uppercase;
 
     background: #05cc05;
@@ -151,7 +151,7 @@
   &__warning-badge {
     height: 24px;
 
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     text-transform: uppercase;
 
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
@@ -165,7 +165,7 @@
     height: 24px;
     padding: 0 7px;
 
-    font-weight: 700;
+    font-weight: 600;
     font-size: 11px;
     line-height: 1;
     text-transform: uppercase;
