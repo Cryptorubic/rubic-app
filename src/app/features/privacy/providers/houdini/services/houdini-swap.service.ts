@@ -151,7 +151,7 @@ export class HoudiniSwapService {
       srcTokenAmount: fromToken.tokenAmount.toString(),
       dstTokenBlockchain: toToken.blockchain,
       dstTokenAddress: toToken.address,
-      preferredProvider: 'houdini',
+      preferredProvider: 'houdini_bridge',
       receiver: receiverAddress,
       showDangerousRoutes: true,
       showFailedRoutes: true,
@@ -489,7 +489,8 @@ export class HoudiniSwapService {
       quoteRequest,
       quoteRequest.integratorAddress!,
       this.sdkLegacyService,
-      this.rubicApiService
+      this.rubicApiService,
+      quoteResponse.private
     );
 
     const tradeData: DepositTradeData = {

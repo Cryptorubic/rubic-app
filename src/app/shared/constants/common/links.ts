@@ -5,7 +5,6 @@ export enum ROUTE_PATH {
   BYT_CRYPTO = 'buy-crypto',
   ABOUT = 'about',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
-  TESTNET_PROMO = 'enter-the-chain',
   PRIVACY = 'privacy',
   REST = '**'
 }

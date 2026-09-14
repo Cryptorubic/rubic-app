@@ -2,6 +2,7 @@ import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
+const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
@@ -302,6 +303,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'HorizonDEX',
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
+  },
+  [ON_CHAIN_TRADE_TYPE.HOUDINI]: {
+    name: 'Houdini Swap',
+    image: `${privateTradeImageBasePath}houdini.svg`,
+    color: '#a919d1'
   },
   [ON_CHAIN_TRADE_TYPE.HYPERCAT]: {
     name: 'HyperCat',
@@ -882,7 +888,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.CLEARSWAP]: {
     name: 'Clearswap',
-    image: `${imageBasePath}clearswap.svg`,
+    image: `${privateTradeImageBasePath}clearswap.svg`,
     color: '#ffffff'
   }
 };

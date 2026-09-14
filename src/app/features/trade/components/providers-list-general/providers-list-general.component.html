@@ -1,14 +1,19 @@
+@let isTransferMode = isTransferMode$ | async;
+
 <app-window-container *ngIf="!isMobile; else mobileProviders">
-  <ng-container header>Providers list</ng-container>
+  <header class="list-header">
+    <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
+  </header>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
   <!-- Providers list -->
   <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
-      *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
-      [states]="states"
+      *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
+      [states]="visibleStates"
       [selectedTradeType]="selectedTradeType"
       [calculationProgress]="calculationStatus.calculationProgress"
       [isModal]="false"
+      [privateOnly]="privateOnly"
       (selectTrade)="handleTradeSelection($event)"
     ></app-providers-list>
   </tui-scrollbar>
@@ -22,23 +27,45 @@
 </ng-template>
 
 <ng-template #mobileProviders>
+  <ng-container *ngTemplateOutlet="privateSwitcher"></ng-container>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
 
   <app-providers-list
-    *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
-    [states]="mobileStates"
+    *ngIf="!calculationStatus.noRoutes || privateOnly; else alternativeRoutes"
+    [states]="getMobileStates(visibleStates)"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"
     [shortedInfo]="true"
+    [privateOnly]="privateOnly"
     (selectTrade)="handleTradeSelection($event)"
   >
   </app-providers-list>
 
-  <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
-    <span class="other-providers__text">Other Providers</span>
-    <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
-  </div>
+  @if (visibleStates.length > 1) {
+    <div class="other-providers" (click)="openOtherProvidersList()">
+      <span class="other-providers__text">Other Providers</span>
+      <span
+        class="other-providers__arrow"
+        [inlineSVG]="'assets/images/icons/arrow-down.svg'"
+      ></span>
+    </div>
+  }
+</ng-template>
+
+<ng-template #privateSwitcher>
+  @if (!isTransferMode) {
+    <div class="private-switcher">
+      Private routes only
+      <input
+        tuiSwitch
+        type="checkbox"
+        size="s"
+        [ngModel]="privateOnly"
+        (ngModelChange)="onPrivateOnlyChange($event)"
+      />
+    </div>
+  }
 </ng-template>
 
 <ng-template #waiting>

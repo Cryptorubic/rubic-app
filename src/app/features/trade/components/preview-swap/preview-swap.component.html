@@ -247,7 +247,7 @@
     ></app-mev-bot>
 
     <ng-container *ngLet="buttonState$ | async as buttonState">
-      <div class="preview__action-container" *ngIf="!buttonState.needTrustline; else trustline">
+      <div class="preview__action-container">
         <button
           class="preview__action-button"
           tuiButton
@@ -271,12 +271,12 @@
         </button>
       </div>
     </ng-container>
-    <ng-template #trustline>
+    <!--<ng-template #trustline>
       <app-trustline
         *ngIf="state.trustlineInfo"
         [options]="state.trustlineInfo"
         (onTrustlineAdd)="onTrustlineAdd()"
       ></app-trustline>
-    </ng-template>
+    </ng-template>-->
   </ng-container>
 </app-window-container>

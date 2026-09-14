@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_TRADE_TYPE, SwapPrivateRequestInterface, Token } from '@cryptorubic/core';
+import { SwapPrivateRequestInterface, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainTradeType } from '../../../cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { CrossChainTransferTrade } from '../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
@@ -75,22 +75,21 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ...(fromAddress && { fromAddress }),
       ...(refundAddress && { refundAddress })
     };
-    const isClearswap = this.type === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
-    const { estimate, transaction } = isClearswap
+    const isPrivateTrade = this.apiResponse.private;
+    const { estimate, transaction } = isPrivateTrade
       ? await this.rubicApiService.fetchSwapPrivateTrade(
           swapRequestData as SwapPrivateRequestInterface
         )
       : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
-
     this.actualTokenAmount = new BigNumber(amount);
 
     const extraFields = this.parseExtraFields(transaction);
 
     return {
       toAmount: amount,
-      id: isClearswap ? this.apiResponse.id : (transaction as CrossChainTransferConfig).exchangeId,
+      id: transaction.exchangeId!,
       depositAddress: transaction.depositAddress,
       depositExtraId: extraFields?.value,
       depositExtraIdName: extraFields?.name

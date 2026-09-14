@@ -33,7 +33,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 
 /**
  * Abstract class for all cross-chain providers' trades.
@@ -41,10 +40,10 @@ import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/
 export abstract class CrossChainTrade<T = unknown> {
   protected lastTransactionConfig: T | null = null;
 
-  protected _uniqueInfo: UniqueProviderInfoInterface = {};
+  protected _exchangeId: string | undefined;
 
-  public get uniqueInfo(): UniqueProviderInfoInterface {
-    return this._uniqueInfo;
+  public get exchangeId(): string | undefined {
+    return this._exchangeId;
   }
 
   protected _lastTo: PriceTokenAmount | null = null;

@@ -18,7 +18,6 @@ import { ProviderHintService } from '../../services/provider-hint/provider-hint.
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
 
 @Component({
   standalone: false,
@@ -48,6 +47,10 @@ export class ProvidersListComponent {
   @Input({ required: true })
   calculationProgress: CalculationProgress = this.context?.data?.calculationProgress;
 
+  @PolymorpheusInput()
+  @Input()
+  public readonly privateOnly: boolean = this.context?.data?.privateOnly || false;
+
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
   public readonly toToken$ = this.swapsFormService.toToken$;
@@ -55,6 +58,15 @@ export class ProvidersListComponent {
   public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
+
+  public get showEmptyPrivateList(): boolean {
+    return (
+      this.privateOnly &&
+      this.states.length === 0 &&
+      this.calculationProgress?.total > 0 &&
+      this.calculationProgress.current === this.calculationProgress.total
+    );
+  }
 
   constructor(
     @Optional()
@@ -68,6 +80,7 @@ export class ProvidersListComponent {
         isModal: boolean;
         shortedInfo: boolean;
         noRoutes: boolean;
+        privateOnly: boolean;
       }
     >,
     private readonly swapsFormService: SwapsFormService,
@@ -76,9 +89,13 @@ export class ProvidersListComponent {
   ) {}
 
   public isBestProvider(tradeState: TradeState): boolean {
-    const nonClearswap = this.states.filter(state => !isClearswap(state.tradeType));
-    if (nonClearswap.length > 0) {
-      return tradeState.tradeType === nonClearswap[0].tradeType;
+    if (this.privateOnly) {
+      return this.states[0]?.tradeType === tradeState.tradeType;
+    }
+
+    const nonPrivate = this.states.filter(state => !state.private);
+    if (nonPrivate.length > 0) {
+      return tradeState.tradeType === nonPrivate[0].tradeType;
     }
     return false;
   }
