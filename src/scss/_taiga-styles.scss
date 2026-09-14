@@ -55,3 +55,28 @@ tui-notification {
     font-size: 14px !important;
   }
 }
+
+[tuiSwitch] {
+  background: #1b1a2e !important;
+
+  &::before {
+    display: none !important;
+  }
+
+  &::after {
+    background: #1b1a2e !important;
+    outline: none !important;
+    box-shadow: -2.625rem 0 0 0.5rem rgb(255, 255, 255, 0.85) !important;
+
+    transition-property: box-shadow, background !important;
+  }
+
+  &[tuiAppearance][data-appearance=primary] {
+    background: var(--t-bg) !important;
+
+    &::after {
+      background: var(--t-bg) !important;
+      box-shadow: -2.625rem 0 0 0.5rem white !important;
+    }
+  }
+}

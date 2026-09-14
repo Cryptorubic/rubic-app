@@ -196,11 +196,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: options?.receiverAddress || this.walletAddress,
-      id: this.apiResponse.id,
-      // @ts-ignore
-      sponsorGas: true,
-      // @ts-ignore
-      makeLogs: true
+      id: this.apiResponse.id
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
 

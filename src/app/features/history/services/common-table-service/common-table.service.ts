@@ -11,7 +11,6 @@ import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
@@ -36,9 +35,9 @@ export class CommonTableService {
     private readonly modalService: ModalService
   ) {}
 
-  public async openTrustline(options: TrustlineComponentOptions): Promise<void> {
-    await this.modalService.openTrustlineModal(options);
-  }
+  // public async openTrustline(options: TrustlineComponentOptions): Promise<void> {
+  //   await this.modalService.openTrustlineModal(options);
+  // }
 
   public async claimArbitrumBridgeTokens(
     srcTxHash: string,

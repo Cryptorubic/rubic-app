@@ -33,6 +33,7 @@ export type TradeState = (TradefullState | TradelessState) & {
   badges?: BadgeInfoForComponent[];
   warnings: ErrorInterface[];
   centralizationStatus: CentralizationStatus;
+  private: boolean;
 };
 
 export interface BadgeInfo {

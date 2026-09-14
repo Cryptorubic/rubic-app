@@ -106,20 +106,20 @@ export class CrossChainDesktopTableComponent {
       }
     }
 
-    if (
-      provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API] &&
-      item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR
-    ) {
-      await this.commonTableService.openTrustline({
-        toBlockchain: BLOCKCHAIN_NAME.STELLAR,
-        receiver: item.receiver,
-        trustlineToken: {
-          address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-          symbol: 'USDC'
-        },
-        trustlineType: 'refund'
-      });
-    }
+    // if (
+    //   provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API] &&
+    //   item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR
+    // ) {
+    //   await this.commonTableService.openTrustline({
+    //     toBlockchain: BLOCKCHAIN_NAME.STELLAR,
+    //     receiver: item.receiver,
+    //     trustlineToken: {
+    //       address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    //       symbol: 'USDC'
+    //     },
+    //     trustlineType: 'refund'
+    //   });
+    // }
     status.isLoading = false;
     this.cdr.markForCheck();
   }

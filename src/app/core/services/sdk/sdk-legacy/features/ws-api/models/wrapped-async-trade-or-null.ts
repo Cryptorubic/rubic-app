@@ -5,6 +5,8 @@ import { WrappedOnChainTradeOrNull } from '../../on-chain/calculation-manager/mo
 export interface WrappedAsyncTradeOrNull {
   total: number;
   calculated: number;
+  privateCalculated: number;
+  privateTotal: number;
   wrappedTrade: WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull;
   tradeType?: CrossChainTradeType | OnChainTradeType;
 }

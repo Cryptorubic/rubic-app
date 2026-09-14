@@ -15,7 +15,7 @@
     needTrustline: needTrustline$ | async,
     trustlineInfo: trustlineInfo$ | async,
     receiverAddressLabel: receiverAddressLabel$ | async,
-    isClearswap: isClearswap$ | async
+    isPrivate: isPrivate$ | async
   } as state"
 >
   <ng-container header>
@@ -85,12 +85,12 @@
     <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
-    <div class="required-step" *ngIf="state.needTrustline && state.trustlineInfo">
+    <!--<div class="required-step" *ngIf="state.needTrustline && state.trustlineInfo">
       <app-trustline
         [options]="state.trustlineInfo"
         (onTrustlineAdd)="onTrustlineAdd()"
       ></app-trustline>
-    </div>
+    </div>-->
     <div
       *ngIf="state.canShowDepositAddress"
       @showDepositAddressAnimation
@@ -221,7 +221,7 @@
                 state.status === 'finished'
             }"
           >
-            {{ state.isClearswap ? 'Hiding' : 'Exchanging' }}
+            {{ state.isPrivate ? 'Hiding' : 'Exchanging' }}
           </div>
         </div>
 
