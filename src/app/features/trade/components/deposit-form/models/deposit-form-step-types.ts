@@ -1,7 +1,7 @@
-import { ExchangeDetailsStep } from '../entities/steps/step-exchange-details';
-import { InputAddressesStep } from '../entities/steps/step-input-addresses';
-import { TradeInfoStep } from '../entities/steps/step-trade-info';
-import { TradeStatusStep } from '../entities/steps/step-trade-status';
+import { ExchangeDetailsStep } from './entities/steps/step-exchange-details';
+import { InputAddressesStep } from './entities/steps/step-input-addresses';
+import { TradeInfoStep } from './entities/steps/step-trade-info';
+import { TradeStatusStep } from './entities/steps/step-trade-status';
 
 const DEPOSIT_STEP_WITH_ACTION_NAME = {
   INPUT_ADDRESSES: 'INPUT_ADDRESSES',

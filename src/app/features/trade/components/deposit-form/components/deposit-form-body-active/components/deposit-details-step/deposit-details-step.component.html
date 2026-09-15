@@ -1,17 +1,39 @@
-<tui-accordion class="step">
-  <tui-accordion-item
-    [class.tui-accordion-item__disabled]="locked"
-    [disabled]="locked"
-    [showArrow]="!locked"
-    [size]="'s'"
-  >
-    <span class="step__counter">1</span>
-    <span class="step__title">EXCHANGE DETAILS</span>
-    @if (locked) {
-      <app-step-locked-label></app-step-locked-label>
-    }
-    <ng-template tuiAccordionItemContent>
-      <div class="step__content">I'm EXCHANGE DETAILS content</div>
-    </ng-template>
-  </tui-accordion-item>
-</tui-accordion>
+<ng-container
+  *ngLet="{
+    step: step$ | async,
+    fromAsset: fromAsset$ | async,
+    toAsset: toAsset$ | async
+  } as state"
+>
+  <tui-accordion class="step">
+    <tui-accordion-item
+      [class.tui-accordion-item__disabled]="state.step.locked"
+      [disabled]="state.step.locked"
+      [showArrow]="!state.step.locked"
+      [size]="'s'"
+      [(open)]="state.step.opened"
+    >
+      <span class="step__counter">1</span>
+      <span class="step__title">EXCHANGE DETAILS</span>
+      @if (state.step.locked) {
+        <app-step-locked-label></app-step-locked-label>
+      }
+
+      <ng-template tuiAccordionItemContent>
+        <div class="step__content">
+          <app-asset-details
+            [asset]="state.fromAsset"
+            [tokenAmount]="state.step.depositDetails.srcToken.stringTokenAmount"
+          ></app-asset-details>
+
+          <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
+
+          <app-asset-details
+            [asset]="state.toAsset"
+            [tokenAmount]="state.step.depositDetails.dstToken.stringTokenAmount"
+          ></app-asset-details>
+        </div>
+      </ng-template>
+    </tui-accordion-item>
+  </tui-accordion>
+</ng-container>

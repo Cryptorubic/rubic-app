@@ -44,7 +44,7 @@ import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MultichainWalletModalComponent } from '@shared/components/multichain-wallet-modal/multichain-wallet-modal.component';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, CrossChainTradeType } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
 import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
@@ -467,14 +467,14 @@ export class ModalService {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's', closeable: false });
   }
 
-  public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
+  public openDepositTradeRateChangedModal(tradeType: CrossChainTradeType): Promise<boolean> {
     this.setOpenedModalName('deposit-trade-rate-change');
     return firstValueFrom(
       this.showDialog(DepositRateChangedModalComponent, {
         size: 's',
         closeable: false,
         required: true,
-        data: { trade }
+        data: { tradeType: tradeType }
       }).pipe(catchError(() => of(false))) as Observable<boolean>
     );
   }

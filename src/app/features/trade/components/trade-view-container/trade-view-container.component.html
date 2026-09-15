@@ -9,9 +9,7 @@
     isTransferMode: isTransferMode$ | async
   };
 
-<app-deposit-form></app-deposit-form>
-
-<!--<div class="trade-view-container" [class.large-iframe-trade-view-container]="useLargeIframe">
+<div class="trade-view-container" [class.large-iframe-trade-view-container]="useLargeIframe">
   <div
     class="form"
     [ngClass]="{
@@ -39,7 +37,7 @@
         <app-preview-swap></app-preview-swap>
       }
       @case ('depositPreview') {
-        <app-deposit-preview-swap></app-deposit-preview-swap>
+        <app-deposit-form></app-deposit-form>
       }
     }
 
@@ -84,8 +82,4 @@
       [showCalculation]="true"
     ></app-providers-list-general>
   }
-
-  @if (state.content === 'depositPreview') {
-    <app-deposit-trade-info></app-deposit-trade-info>
-  }
-</div>-->
+</div>

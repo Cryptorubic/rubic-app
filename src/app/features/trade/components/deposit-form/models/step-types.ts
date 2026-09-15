@@ -19,4 +19,5 @@ export interface ActionBtnState {
 export interface DepositStepParams {
   active: boolean;
   loading: boolean;
+  opened: boolean;
 }

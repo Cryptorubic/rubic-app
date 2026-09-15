@@ -77,7 +77,25 @@ export class DepositService {
     this.saveTrade(trade);
   }
 
-  public async getSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {
+  public setupUpdate(): void {
+    const sub = interval(5_000)
+      .pipe(
+        startWith(-1),
+        switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
+        tap(status => this._status$.next(status)),
+        takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
+      )
+      .subscribe();
+
+    this.subs.push(sub);
+  }
+
+  public removePrevDeposit(): void {
+    this._depositTrade$.next(null);
+    this._status$.next(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
+  }
+
+  private async getSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {
     try {
       if (!rubicId) {
         throw new Error(`[DepositService_getSwapStatus] Deposid id can't be undefined.`);
@@ -133,24 +151,6 @@ export class DepositService {
     }
 
     return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
-  }
-
-  public setupUpdate(): void {
-    const sub = interval(5_000)
-      .pipe(
-        startWith(-1),
-        switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
-        tap(status => this._status$.next(status)),
-        takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
-      )
-      .subscribe();
-
-    this.subs.push(sub);
-  }
-
-  public removePrevDeposit(): void {
-    this._depositTrade$.next(null);
-    this._status$.next(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
   }
 
   private saveTrade(tradeData: DepositTrade): void {

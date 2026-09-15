@@ -82,7 +82,8 @@ import { DepositTradeStatusStepComponent } from './components/deposit-form/compo
 import { DepositFormBodySuccessComponent } from './components/deposit-form/components/deposit-form-body-success/deposit-form-body-success.component';
 import { DepositFormBodyActiveComponent } from './components/deposit-form/components/deposit-form-body-active/deposit-form-body-active.component';
 import { FieldWithCopyBtnComponent } from './components/deposit-form/components/field-with-copy-btn/field-with-copy-btn.component';
-import { StepLockedLabelComponent } from './components/deposit-form/components/deposit-form-body-active/components/step-locked-label/step-locked-label.component';
+import { AssetDetailsComponent } from './components/deposit-form/components/deposit-form-body-active/components/shared/asset-details/asset-details.component';
+import { StepLockedLabelComponent } from './components/deposit-form/components/deposit-form-body-active/components/shared/step-locked-label/step-locked-label.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,8 @@ import { StepLockedLabelComponent } from './components/deposit-form/components/d
     DepositFormBodySuccessComponent,
     DepositFormBodyActiveComponent,
     FieldWithCopyBtnComponent,
-    StepLockedLabelComponent
+    StepLockedLabelComponent,
+    AssetDetailsComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -175,7 +177,8 @@ import { StepLockedLabelComponent } from './components/deposit-form/components/d
     DepositFormBodySuccessComponent,
     DepositFormBodyActiveComponent,
     FieldWithCopyBtnComponent,
-    StepLockedLabelComponent
+    StepLockedLabelComponent,
+    AssetDetailsComponent
   ],
   imports: [
     CommonModule,

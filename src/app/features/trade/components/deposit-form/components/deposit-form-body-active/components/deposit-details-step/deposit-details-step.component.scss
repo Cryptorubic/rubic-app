@@ -23,6 +23,7 @@
 
     &__content {
       @include accordion-content();
+      @include flex(row, center, space-between);
     }
   }
 }

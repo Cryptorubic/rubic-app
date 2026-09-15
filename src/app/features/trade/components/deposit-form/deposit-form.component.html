@@ -1,5 +1,9 @@
 <app-window-container
-  *ngLet="{ depositFormInfo: depositFormInfo$ | async, tradeId: tradeId$ | async } as state"
+  *ngLet="{
+    depositFormInfo: depositFormInfo$ | async,
+    tradeId: tradeId$ | async,
+    formTitle: formTitle$ | async
+  } as state"
   class="deposit-form"
 >
   <ng-container header>
@@ -10,13 +14,15 @@
         (onClick)="backToForm()"
       ></app-back-button>
 
-      <span class="deposit-form__title">{{ formTitle$ | async }}</span>
+      <span class="deposit-form__title">{{ state.formTitle }}</span>
 
-      <app-field-with-copy-btn
-        [visibleText]="$any(state.tradeId | shortAddress: 6 : 6)"
-        [textToCopy]="state.tradeId"
-        [bgColor]="'var(--tui-background-base)'"
-      ></app-field-with-copy-btn>
+      @if (state.tradeId) {
+        <app-field-with-copy-btn
+          [visibleText]="$any(state.tradeId | shortAddress: 6 : 6)"
+          [textToCopy]="state.tradeId"
+          [bgColor]="'var(--tui-background-base)'"
+        ></app-field-with-copy-btn>
+      }
     </div>
   </ng-container>
 

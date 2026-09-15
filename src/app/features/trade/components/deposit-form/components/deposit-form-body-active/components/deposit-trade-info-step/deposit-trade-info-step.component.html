@@ -1,17 +1,20 @@
-<tui-accordion class="step">
-  <tui-accordion-item
-    [class.tui-accordion-item__disabled]="locked"
-    [disabled]="locked"
-    [showArrow]="!locked"
-    [size]="'s'"
-  >
-    <span class="step__counter">3</span>
-    <span class="step__title">SEND DEPOSIT</span>
-    @if (locked) {
-      <app-step-locked-label></app-step-locked-label>
-    }
-    <ng-template tuiAccordionItemContent>
-      <div class="step__content">I'm TRADE INFO</div>
-    </ng-template>
-  </tui-accordion-item>
-</tui-accordion>
+<ng-container *ngLet="{ step: step$ | async } as state">
+  <tui-accordion class="step">
+    <tui-accordion-item
+      [class.tui-accordion-item__disabled]="state.step.locked"
+      [disabled]="state.step.locked"
+      [showArrow]="!state.step.locked"
+      [size]="'s'"
+      [(open)]="state.step.opened"
+    >
+      <span class="step__counter">3</span>
+      <span class="step__title">SEND DEPOSIT</span>
+      @if (state.step.locked) {
+        <app-step-locked-label></app-step-locked-label>
+      }
+      <ng-template tuiAccordionItemContent>
+        <div class="step__content">I'm TRADE INFO</div>
+      </ng-template>
+    </tui-accordion-item>
+  </tui-accordion>
+</ng-container>

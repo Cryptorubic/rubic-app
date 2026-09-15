@@ -39,7 +39,11 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     throw new Error('Method not implemented.');
   }
 
-  protected paymentInfo: CrossChainTransferData | null = null;
+  protected _paymentInfo: CrossChainTransferData | null = null;
+
+  public get paymentInfo(): CrossChainTransferData | null {
+    return this._paymentInfo;
+  }
 
   public readonly onChainTrade: EvmOnChainTrade | null;
 
@@ -140,7 +144,7 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     );
 
     const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
-    this.paymentInfo = res;
+    this._paymentInfo = res;
 
     return {
       config: {

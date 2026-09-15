@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DepositFormManager } from '../../../../services/deposit-form-manager';
+import { map, share } from 'rxjs';
+import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 
 @Component({
   selector: 'app-deposit-trade-info-step',
@@ -8,5 +11,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositTradeInfoStepComponent {
-  @Input() locked: boolean = false;
+  public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
+    map(steps => steps[DEPOSIT_STEP_ORDER.TRADE_INFO]),
+    share()
+  );
+
+  constructor(private readonly depositFormManager: DepositFormManager) {}
 }

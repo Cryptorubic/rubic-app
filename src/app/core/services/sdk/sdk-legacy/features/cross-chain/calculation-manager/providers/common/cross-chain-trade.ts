@@ -384,4 +384,8 @@ export abstract class CrossChainTrade<T = unknown> {
     this.lastSwapResponse = res as RubicAny;
     return res;
   }
+
+  public clone(): CrossChainTrade {
+    return { ...this };
+  }
 }

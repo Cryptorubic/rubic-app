@@ -22,7 +22,11 @@ import { OnChainTransferConfig } from './models/on-chain-transfer-config';
 export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferConfig> {
   protected lastTransactionConfig: OnChainTransferConfig | null = null;
 
-  protected paymentInfo: CrossChainTransferData | null = null;
+  protected _paymentInfo: CrossChainTransferData | null = null;
+
+  public get paymentInfo(): CrossChainTransferData | null {
+    return this._paymentInfo;
+  }
 
   public readonly from: PriceTokenAmount;
 
@@ -122,7 +126,7 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     const res = await this.getPaymentInfo(receiverAddress || '', testMode, '', refundAddress);
 
     const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
-    this.paymentInfo = res;
+    this._paymentInfo = res;
 
     return {
       config: {
@@ -173,5 +177,9 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       this.checkAmountChange(amount, this.to.stringWeiAmount);
     }
     return config;
+  }
+
+  public clone(): OnChainTrade {
+    return { ...this };
   }
 }

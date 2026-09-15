@@ -1,0 +1,15 @@
+<div class="asset-details">
+  <div class="asset-details__images">
+    <div class="asset-details__images-chain" [style.background]="asset.secondColor">
+      <img [src]="asset.secondImage" width="24" height="24" />
+    </div>
+    <img class="asset-details__images-token" [src]="asset.mainImage" width="28" height="28" />
+  </div>
+
+  <div class="asset-details__info">
+    <b class="asset-details__info-token"
+      >{{ tokenAmount ? tokenAmount + ' ' : '' }}{{ asset.mainLabel }}</b
+    >
+    <span class="asset-details__info-chain">{{ asset.secondLabel }}</span>
+  </div>
+</div>

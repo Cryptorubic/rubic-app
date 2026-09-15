@@ -1,0 +1,46 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .asset-details {
+    @include flex(row, center, start);
+    gap: 8px;
+
+    &__images {
+      @include flex(row, center, start);
+      // height: 30px;
+
+      &-chain {
+        @include flex(row, center, start);
+        width: 46px;
+        height: 28px;
+        padding: 5px;
+
+        border-radius: 10px;
+      }
+
+      &-token {
+        height: 30px;
+        margin-left: -20px;
+        padding: 2px;
+
+        background: var(--tui-background-base);
+        border-radius: 50%;
+      }
+    }
+
+    &__info {
+      @include flex(column, stretch, start);
+      gap: 1px;
+
+      &-token {
+        color: var(--tui-text-primary);
+        font-weight: 400;
+      }
+
+      &-chain {
+        color: var(--tui-text-secondary);
+        font-weight: 500;
+      }
+    }
+  }
+}

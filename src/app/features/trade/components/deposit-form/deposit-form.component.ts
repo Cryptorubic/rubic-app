@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/deposit-form-manager';
 import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
@@ -13,12 +13,18 @@ import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
   styleUrl: './deposit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DepositFormComponent {
-  public readonly tradeId$: Observable<string> = of('HCEv8CCq5i6ob7iXpHuGpv1L89pZStycPBeXSi37b7nH');
-
-  public readonly formTitle$ = of('Deposit Funds');
-
+export class DepositFormComponent implements OnDestroy {
   public readonly depositFormInfo$ = this.depositFormManager.depositFormInfo$;
+
+  public readonly tradeId$ = this.depositFormInfo$.pipe(
+    map(depositFormInfo => depositFormInfo.trade.paymentInfo?.id || null),
+    startWith(null)
+  );
+
+  public readonly formTitle$ = this.depositFormInfo$.pipe(
+    map(depositFormInfo => DEPOSIT_FORM_TITLE[depositFormInfo.state]),
+    startWith(DEPOSIT_FORM_TITLE.IDLE)
+  );
 
   constructor(
     private readonly tradePageService: TradePageService,
@@ -29,14 +35,15 @@ export class DepositFormComponent {
     this.previewSwapService.activateDepositPage();
   }
 
+  ngOnDestroy(): void {
+    this.depositFormManager.cleanup();
+  }
+
   public backToForm(): void {
     this.tradePageService.setState('form');
   }
 
   public handleTradeExpired(): void {
-    this.depositFormManager.patchDepositFormState({
-      state: DEPOSIT_FORM_STATE.EXPIRED,
-      title: DEPOSIT_FORM_TITLE[DEPOSIT_FORM_STATE.EXPIRED]
-    });
+    this.depositFormManager.patchDepositFormInfo({ state: DEPOSIT_FORM_STATE.EXPIRED });
   }
 }
