@@ -21,7 +21,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
-import { debounceTime, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { debounceTime, skip, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
@@ -137,9 +137,14 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.isTransferMode$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isTransferMode => {
-      this.onPrivateOnlyChange(isTransferMode);
-    });
+    if (this.formsTogglerService.isTransferMode) {
+      this.onPrivateOnlyChange(true);
+    }
+    this.isTransferMode$
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe(isTransferMode => {
+        this.onPrivateOnlyChange(isTransferMode);
+      });
   }
 
   public onPrivateOnlyChange(value: boolean): void {
