@@ -6,7 +6,7 @@ import {
 import { DepositStep } from '../abstracts/deposit-step';
 import { DepositFormDetails, DepositStepParams } from '../../step-types';
 import { BehaviorSubject } from 'rxjs';
-import { DepositFormInfo } from '../../deposit-form-info';
+import { DepositFormState } from '../../deposit-form-states';
 
 export class ExchangeDetailsStep extends DepositStep {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.EXCHANGE_DETAILS;
@@ -18,12 +18,12 @@ export class ExchangeDetailsStep extends DepositStep {
   }
 
   constructor(
-    _depositFormInfo$: BehaviorSubject<DepositFormInfo>,
+    _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
     depositDetails: DepositFormDetails
   ) {
     const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
-    super(depositStepParams, _depositFormInfo$, _depositFormSteps$);
+    super(depositStepParams, _depositFormState$, _depositFormSteps$);
     this._depositDetails = depositDetails;
   }
 

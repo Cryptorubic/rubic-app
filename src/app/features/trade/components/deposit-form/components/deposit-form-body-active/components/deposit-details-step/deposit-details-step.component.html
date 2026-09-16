@@ -7,20 +7,22 @@
 >
   <tui-accordion class="step">
     <tui-accordion-item
-      [class.tui-accordion-item__disabled]="state.step.locked"
-      [disabled]="state.step.locked"
-      [showArrow]="!state.step.locked"
+      [class.tui-accordion-item__disabled]="!state.step.active"
+      [disabled]="!state.step.active"
+      [showArrow]="state.step.active"
       [size]="'s'"
       [(open)]="state.step.opened"
     >
-      <span class="step__counter">1</span>
-      <span class="step__title">EXCHANGE DETAILS</span>
-      @if (state.step.locked) {
+      <span class="step-counter">1</span>
+      <span class="step-title">EXCHANGE DETAILS</span>
+      @if (state.step.loading) {
+        <app-step-loading-label></app-step-loading-label>
+      } @else if (!state.step.active) {
         <app-step-locked-label></app-step-locked-label>
       }
 
       <ng-template tuiAccordionItemContent>
-        <div class="step__content">
+        <div class="step-content">
           <app-asset-details
             [asset]="state.fromAsset"
             [tokenAmount]="state.step.depositDetails.srcToken.stringTokenAmount"

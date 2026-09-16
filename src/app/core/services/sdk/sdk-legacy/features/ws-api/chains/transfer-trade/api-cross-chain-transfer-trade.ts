@@ -80,7 +80,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       ? await this.rubicApiService.fetchSwapPrivateTrade(
           swapRequestData as SwapPrivateRequestInterface
         )
-      : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
+      : await this.fetchSwapDepositData<CrossChainTransferConfig>(swapRequestData);
 
     const amount = estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);

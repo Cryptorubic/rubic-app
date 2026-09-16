@@ -1,8 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
 import { ActionBtnState, DepositStepParams } from '../../step-types';
 import { DepositStep } from './deposit-step';
-import { DepositFormInfo } from '../../deposit-form-info';
 import { DepositFormSteps } from '../../deposit-form-step-types';
+import { DepositFormState } from '../../deposit-form-states';
 
 export abstract class DepositStepWithAction<T = string> extends DepositStep {
   private _actionBtnState: ActionBtnState;
@@ -13,11 +13,11 @@ export abstract class DepositStepWithAction<T = string> extends DepositStep {
 
   constructor(
     params: DepositStepParams,
-    _depositFormInfo$: BehaviorSubject<DepositFormInfo>,
+    _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
     actionBtnState: ActionBtnState
   ) {
-    super(params, _depositFormInfo$, _depositFormSteps$);
+    super(params, _depositFormState$, _depositFormSteps$);
     this._actionBtnState = actionBtnState;
   }
 

@@ -1,5 +1,9 @@
-<div class="field-with-copy-btn" [style.background-color]="bgColor">
-  <b class="field-with-copy-btn__text">{{ visibleText }}</b>
+<div
+  class="field-with-copy-btn"
+  [style.background-color]="bgColor"
+  [style.border-color]="borderColor"
+>
+  <b class="field-with-copy-btn__text" [style.color]="textColor">{{ visibleText }}</b>
   <span
     class="field-with-copy-btn__copy-btn"
     [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"

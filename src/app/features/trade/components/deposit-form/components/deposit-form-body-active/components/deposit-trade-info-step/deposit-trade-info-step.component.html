@@ -1,19 +1,90 @@
-<ng-container *ngLet="{ step: step$ | async } as state">
+<ng-container
+  *ngLet="{
+    step: step$ | async,
+    depositTrade: depositTrade$ | async,
+    fromAsset: fromAsset$ | async
+  } as state"
+>
   <tui-accordion class="step">
     <tui-accordion-item
-      [class.tui-accordion-item__disabled]="state.step.locked"
-      [disabled]="state.step.locked"
-      [showArrow]="!state.step.locked"
+      [class.tui-accordion-item__disabled]="!state.step.active"
+      [disabled]="!state.step.active"
+      [showArrow]="state.step.active"
       [size]="'s'"
       [(open)]="state.step.opened"
     >
-      <span class="step__counter">3</span>
-      <span class="step__title">SEND DEPOSIT</span>
-      @if (state.step.locked) {
+      <span class="step-counter">3</span>
+      <span class="step-title">SEND DEPOSIT</span>
+      @if (state.step.loading) {
+        <app-step-loading-label></app-step-loading-label>
+      } @else if (!state.step.active) {
         <app-step-locked-label></app-step-locked-label>
       }
+
       <ng-template tuiAccordionItemContent>
-        <div class="step__content">I'm TRADE INFO</div>
+        <div class="step-content">
+          <div class="spep-content__main">
+            <div class="step-content__info">
+              <app-deposit-info-readonly-detail [labelTop]="'Asset'">
+                <div class="detail-wrapper">
+                  <app-asset-details [asset]="state.fromAsset"></app-asset-details>
+                  <app-field-with-copy-btn
+                    [visibleText]="$any(state.depositTrade.fromToken.address | shortAddress: 4 : 4)"
+                    [textToCopy]="state.depositTrade.fromToken.address"
+                    [bgColor]="'var(--tui-background-base)'"
+                    [borderColor]="'var(--tui-background-base)'"
+                  ></app-field-with-copy-btn>
+                </div>
+              </app-deposit-info-readonly-detail>
+
+              <app-deposit-info-readonly-detail [labelTop]="'Amount to Send'">
+                <app-field-with-copy-btn
+                  [visibleText]="state.depositTrade.fromAmount"
+                  [textToCopy]="state.depositTrade.fromToken.address"
+                ></app-field-with-copy-btn>
+              </app-deposit-info-readonly-detail>
+
+              <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
+                <app-field-with-copy-btn
+                  [visibleText]="$any(state.depositTrade.fromToken.address | shortAddress: 6 : 6)"
+                  [textToCopy]="state.depositTrade.depositAddress"
+                ></app-field-with-copy-btn>
+              </app-deposit-info-readonly-detail>
+
+              @if (state.depositTrade.extraField?.value) {
+                <app-deposit-info-readonly-detail
+                  [labelTop]="'Deposit Tag (MEMO)'"
+                  [labelBottom]="'Required — funds may be lost without this tag'"
+                >
+                  <app-field-with-copy-btn
+                    [visibleText]="$any(state.depositTrade.extraField.value | shortAddress: 4 : 4)"
+                    [textToCopy]="state.depositTrade.extraField.value"
+                    [bgColor]="'rgba(255, 159, 41, 0.08)'"
+                    [borderColor]="'#FF9F29'"
+                    [textColor]="'#FF9F29'"
+                  ></app-field-with-copy-btn>
+                </app-deposit-info-readonly-detail>
+              }
+            </div>
+
+            <div class="step-content__qrcode">Scan QR to pay</div>
+          </div>
+
+          <div class="step-content__footer">
+            <button
+              *ngLet="getActionBtnState() as actionBtnState"
+              tuiButton
+              class="step-content__btn"
+              appearance="primary"
+              type="button"
+              size="m"
+              [disabled]="!actionBtnState.active"
+              (click)="confirmDeposit()"
+            >
+              {{ actionBtnState.text }}
+            </button>
+          </div>
+        </div>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>

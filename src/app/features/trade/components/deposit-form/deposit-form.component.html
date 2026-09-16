@@ -1,6 +1,6 @@
 <app-window-container
   *ngLet="{
-    depositFormInfo: depositFormInfo$ | async,
+    depositFormState: depositFormState$ | async,
     tradeId: tradeId$ | async,
     formTitle: formTitle$ | async
   } as state"
@@ -21,13 +21,14 @@
           [visibleText]="$any(state.tradeId | shortAddress: 6 : 6)"
           [textToCopy]="state.tradeId"
           [bgColor]="'var(--tui-background-base)'"
+          [borderColor]="'var(--tui-background-base)'"
         ></app-field-with-copy-btn>
       }
     </div>
   </ng-container>
 
   <div class="deposit-form__main">
-    @if (state.depositFormInfo === 'WAITING_FOR_SENDING_DEPOSIT') {
+    @if (state.depositFormState === 'WAITING_FOR_SENDING_DEPOSIT') {
       <div class="deposit-form__timer">
         <app-timer
           [expiresAfterMs]="1_800_000"
@@ -38,7 +39,7 @@
     }
 
     <div class="deposit-form__body">
-      @if (state.depositFormInfo === 'COMPLETED') {
+      @if (state.depositFormState === 'COMPLETED') {
         <app-deposit-form-body-success></app-deposit-form-body-success>
       } @else {
         <app-deposit-form-body-active></app-deposit-form-body-active>

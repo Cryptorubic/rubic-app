@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/deposit-form-manager';
@@ -11,18 +11,19 @@ import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
   standalone: false,
   templateUrl: './deposit-form.component.html',
   styleUrl: './deposit-form.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DepositFormManager]
 })
-export class DepositFormComponent implements OnDestroy {
-  public readonly depositFormInfo$ = this.depositFormManager.depositFormInfo$;
+export class DepositFormComponent implements OnInit, OnDestroy {
+  public readonly depositFormState$ = this.depositFormManager.depositFormState$;
 
-  public readonly tradeId$ = this.depositFormInfo$.pipe(
-    map(depositFormInfo => depositFormInfo.trade.paymentInfo?.id || null),
+  public readonly tradeId$ = this.depositFormManager.depositTrade$.pipe(
+    map(depositTrade => depositTrade?.id || null),
     startWith(null)
   );
 
-  public readonly formTitle$ = this.depositFormInfo$.pipe(
-    map(depositFormInfo => DEPOSIT_FORM_TITLE[depositFormInfo.state]),
+  public readonly formTitle$ = this.depositFormState$.pipe(
+    map(depositFormState => DEPOSIT_FORM_TITLE[depositFormState]),
     startWith(DEPOSIT_FORM_TITLE.IDLE)
   );
 
@@ -35,6 +36,10 @@ export class DepositFormComponent implements OnDestroy {
     this.previewSwapService.activateDepositPage();
   }
 
+  ngOnInit(): void {
+    this.depositFormManager.init();
+  }
+
   ngOnDestroy(): void {
     this.depositFormManager.cleanup();
   }
@@ -44,6 +49,6 @@ export class DepositFormComponent implements OnDestroy {
   }
 
   public handleTradeExpired(): void {
-    this.depositFormManager.patchDepositFormInfo({ state: DEPOSIT_FORM_STATE.EXPIRED });
+    this.depositFormManager.setDepositFormState(DEPOSIT_FORM_STATE.EXPIRED);
   }
 }

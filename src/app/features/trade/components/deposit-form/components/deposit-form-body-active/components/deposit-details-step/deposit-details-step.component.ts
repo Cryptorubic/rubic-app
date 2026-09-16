@@ -2,11 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { first, map, startWith, switchMap } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { AssetSelector } from '@app/shared/models/asset-selector';
-import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
-import { blockchainColor } from '@app/shared/constants/blockchain/blockchain-color';
 import { DepositFormManager } from '../../../../services/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
+import { getTokenAsset } from '../../../../utils/get-token-asset';
 
 @Component({
   selector: 'app-deposit-details-step',
@@ -38,7 +36,7 @@ export class DepositDetailsStepComponent {
         )
       )
     ),
-    map(balanceToken => this.getTokenAsset(balanceToken))
+    map(balanceToken => getTokenAsset(balanceToken))
   );
 
   public readonly toAsset$ = this.details$.pipe(
@@ -54,24 +52,11 @@ export class DepositDetailsStepComponent {
         )
       )
     ),
-    map(balanceToken => this.getTokenAsset(balanceToken))
+    map(balanceToken => getTokenAsset(balanceToken))
   );
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly depositFormManager: DepositFormManager
   ) {}
-
-  private getTokenAsset(token: BalanceToken): Required<AssetSelector> {
-    const blockchain = BLOCKCHAINS[token.blockchain];
-    const color = blockchainColor[token.blockchain];
-
-    return {
-      secondImage: blockchain.img,
-      secondLabel: blockchain.name,
-      mainImage: token.image,
-      mainLabel: token.symbol,
-      secondColor: color
-    };
-  }
 }

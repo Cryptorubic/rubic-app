@@ -13,15 +13,15 @@
       @include tui-accordion-item-disabled();
     }
 
-    &__title {
+    &-title {
       @include accordion-title();
     }
 
-    &__counter {
+    &-counter {
       @include accordion-counter();
     }
 
-    &__content {
+    &-content {
       @include accordion-content();
       @include flex(row, center, space-between);
     }

@@ -374,6 +374,22 @@ export abstract class CrossChainTrade<T = unknown> {
     }
   }
 
+  protected async fetchSwapDepositData<Data>(
+    body: TransferSwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    try {
+      const res = await this.rubicApiService.fetchSwapDepositData<Data>(body);
+      this.lastSwapResponse = res as RubicAny;
+      return res;
+    } catch (err) {
+      if (err instanceof TradeExpiredError) {
+        return this.refetchTrade<Data>(body);
+      }
+
+      throw err;
+    }
+  }
+
   private refetchTrade<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {

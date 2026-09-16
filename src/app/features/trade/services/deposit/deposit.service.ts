@@ -49,6 +49,10 @@ export class DepositService {
     private readonly tradeStatusService: TradeStatusService
   ) {}
 
+  public cleanup(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
+  }
+
   public async updateTrade(
     paymentInfo: CrossChainPaymentInfo,
     receiverAddress: string
@@ -98,7 +102,7 @@ export class DepositService {
   private async getSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {
     try {
       if (!rubicId) {
-        throw new Error(`[DepositService_getSwapStatus] Deposid id can't be undefined.`);
+        throw new Error(`[DepositService_getSwapStatus] Deposit id can't be undefined.`);
       }
 
       const tradeType = this._depositTrade$.value?.tradeType;

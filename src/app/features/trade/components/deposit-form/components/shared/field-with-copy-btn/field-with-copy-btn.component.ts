@@ -22,6 +22,10 @@ export class FieldWithCopyBtnComponent {
 
   @Input() bgColor: string = '#1B1B22';
 
+  @Input() borderColor: string = '#1B1B22';
+
+  @Input() textColor: string = '#FFFFFF';
+
   public copied: boolean = false;
 
   constructor(

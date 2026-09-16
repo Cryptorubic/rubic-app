@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 :host {
-  .step-locked {
+  .label {
     @include flex(row, center, center);
     gap: 8px;
 

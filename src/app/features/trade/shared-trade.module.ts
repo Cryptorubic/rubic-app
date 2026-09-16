@@ -20,7 +20,8 @@ import {
   TuiButton,
   TuiHint,
   TuiAppearance,
-  TuiNumberFormat
+  TuiNumberFormat,
+  TuiTextfield
 } from '@taiga-ui/core';
 import { TuiAccordion, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -81,9 +82,11 @@ import { DepositTradeInfoStepComponent } from './components/deposit-form/compone
 import { DepositTradeStatusStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/deposit-trade-status-step.component';
 import { DepositFormBodySuccessComponent } from './components/deposit-form/components/deposit-form-body-success/deposit-form-body-success.component';
 import { DepositFormBodyActiveComponent } from './components/deposit-form/components/deposit-form-body-active/deposit-form-body-active.component';
-import { FieldWithCopyBtnComponent } from './components/deposit-form/components/field-with-copy-btn/field-with-copy-btn.component';
-import { AssetDetailsComponent } from './components/deposit-form/components/deposit-form-body-active/components/shared/asset-details/asset-details.component';
-import { StepLockedLabelComponent } from './components/deposit-form/components/deposit-form-body-active/components/shared/step-locked-label/step-locked-label.component';
+import { FieldWithCopyBtnComponent } from './components/deposit-form/components/shared/field-with-copy-btn/field-with-copy-btn.component';
+import { AssetDetailsComponent } from './components/deposit-form/components/shared/asset-details/asset-details.component';
+import { StepLockedLabelComponent } from './components/deposit-form/components/shared/step-locked-label/step-locked-label.component';
+import { DepositInfoReadonlyDetailComponent } from './components/deposit-form/components/shared/deposit-info-readonly-detail/deposit-info-readonly-detail.component';
+import { StepLoadingLabelComponent } from './components/deposit-form/components/shared/step-loading-label/step-loading-label.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +134,9 @@ import { StepLockedLabelComponent } from './components/deposit-form/components/d
     DepositFormBodyActiveComponent,
     FieldWithCopyBtnComponent,
     StepLockedLabelComponent,
-    AssetDetailsComponent
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -178,7 +183,9 @@ import { StepLockedLabelComponent } from './components/deposit-form/components/d
     DepositFormBodyActiveComponent,
     FieldWithCopyBtnComponent,
     StepLockedLabelComponent,
-    AssetDetailsComponent
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent
   ],
   imports: [
     CommonModule,
@@ -204,7 +211,8 @@ import { StepLockedLabelComponent } from './components/deposit-form/components/d
     ...TuiCarousel,
     TuiAppearance,
     TuiNumberFormat,
-    ...TuiAccordion
+    ...TuiAccordion,
+    ...TuiTextfield
   ],
   providers: [
     SettingsService,

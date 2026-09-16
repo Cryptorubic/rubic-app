@@ -8,18 +8,20 @@ import {
 } from '../../deposit-form-step-types';
 import { ActionBtnState, DepositStepParams, InputAddressesStepForm } from '../../step-types';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
-import { DepositFormInfo } from '../../deposit-form-info';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { CrossChainTradeType } from '@cryptorubic/core';
+import { CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { InputAddressesStepAction } from '../../deposit-form-step-actions';
-import { IWithOnDestroy } from '../abstracts/interfaces';
+import { IWithHooks } from '../abstracts/interfaces';
+import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states';
+import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
+import { TransferTrade } from '../../deposit-form-info';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
-  implements IWithOnDestroy
+  implements IWithHooks
 {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.INPUT_ADDRESSES;
 
@@ -28,9 +30,12 @@ export class InputAddressesStep
     refundAddr: new FormControl('', [Validators.required])
   });
 
+  private _formStatusSub: Subscription | null = null;
+
   constructor(
-    _depositFormInfo$: BehaviorSubject<DepositFormInfo>,
+    _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
+    private readonly swapsStateService: SwapsStateService,
     private readonly depositService: DepositService,
     private readonly modalService: ModalService,
     private readonly tradePageService: TradePageService
@@ -40,8 +45,7 @@ export class InputAddressesStep
       active: false,
       text: 'Confirm Addresses'
     };
-    super(depositStepParams, _depositFormInfo$, _depositFormSteps$, actionBtnState);
-    this.initValidators();
+    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionBtnState);
   }
 
   public async doAction(action: InputAddressesStepAction): Promise<void> {
@@ -52,31 +56,62 @@ export class InputAddressesStep
     }
   }
 
+  public onInit(): void {
+    this.initValidators();
+    this._formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
+      this.updateActionBtnState({ active: status === 'VALID' });
+    });
+  }
+
   public onDestroy(): void {
-    throw new Error('Method not implemented.');
+    this._formStatusSub.unsubscribe();
   }
 
   private async confirmAddresses(): Promise<void> {
     const receiverAddr = this.inputsForm.controls.receiverAddr.value;
-    const nextStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
-    nextStep.setActive(true);
-    nextStep.setLoading(true);
+    const refundAddr = this.inputsForm.controls.refundAddr.value;
+    const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
+    const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
+    tradeInfoStep.setLoading(true);
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).disable();
     }
+    this.triggerStepsUpdate();
 
     try {
-      const paymentInfo = await this.depositFormInfo.trade.getTransferTrade(receiverAddr);
-      this.depositService.updateTrade(paymentInfo, receiverAddr);
+      const selectedTrade = this.swapsStateService.tradeState.trade as TransferTrade;
+      const paymentInfo = await selectedTrade.getTransferTrade(receiverAddr, refundAddr);
+
+      await this.depositService.updateTrade(paymentInfo, receiverAddr);
       this.depositService.setupUpdate();
-      this.updateActionBtnState({ text: 'Change Addresses' });
-    } catch (err) {
-      console.error(`[InputAddressesStep_doAction] err: ${err}`);
+
+      const dstTokenUpdated = new TokenAmount({
+        ...detailsStep.depositDetails.srcToken.asStruct,
+        tokenAmount: paymentInfo.toAmount
+      });
+      detailsStep.updateDepositDetails({ dstToken: dstTokenUpdated });
+
+      this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
+      this.updateActionBtnState({ text: 'Change Addresses', active: true });
+      this.setOpened(false);
+      tradeInfoStep.setActive(true);
+      tradeInfoStep.setLoading(false);
+      tradeInfoStep.setOpened(true);
+    } catch {
       const backToForm = await this.modalService.openDepositTradeRateChangedModal(
-        this.depositFormInfo.trade.type as CrossChainTradeType
+        this.swapsStateService.tradeState.tradeType as CrossChainTradeType
       );
-      if (backToForm) this.tradePageService.setState('form');
+      if (backToForm) {
+        this.tradePageService.setState('form');
+      } else {
+        this._depositFormState$.next(DEPOSIT_FORM_STATE.EXPIRED);
+        this.depositFormSteps.forEach(step => {
+          step.setActive(false);
+          step.setOpened(false);
+          step.setLoading(false);
+        });
+      }
     }
   }
 
@@ -86,21 +121,22 @@ export class InputAddressesStep
     tradeInfoStep.setLoading(false);
     tradeInfoStep.setOpened(false);
 
-    this.setActive(true);
-
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).enable();
     }
 
+    this.depositService.cleanup();
     this.updateActionBtnState({ text: 'Confirm Addresses' });
+    this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
   }
 
   private initValidators(): void {
+    const detailsStep = this._depositFormSteps$.value[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
     this.inputsForm.controls.receiverAddr.setAsyncValidators([
-      isWalletAddressCorrect(this.depositFormInfo.trade.to.blockchain)
+      isWalletAddressCorrect(detailsStep.depositDetails.dstToken.blockchain)
     ]);
     this.inputsForm.controls.refundAddr.setAsyncValidators([
-      isWalletAddressCorrect(this.depositFormInfo.trade.from.blockchain)
+      isWalletAddressCorrect(detailsStep.depositDetails.srcToken.blockchain)
     ]);
   }
 }
