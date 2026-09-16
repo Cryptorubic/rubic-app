@@ -207,8 +207,13 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['TRX', BLOCKCHAIN_TAG.NON_EVM]
   },
   {
+    name: BLOCKCHAIN_NAME.ROBINHOOD,
+    rank: 0.73,
+    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
+  },
+  {
     name: BLOCKCHAIN_NAME.POLYGON,
-    rank: 0.74,
+    rank: 0.73,
     tags: ['POL', BLOCKCHAIN_TAG.EVM]
   },
   {
@@ -243,11 +248,6 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   {
     name: BLOCKCHAIN_NAME.BERACHAIN,
-    rank: 0.73,
-    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
-  },
-  {
-    name: BLOCKCHAIN_NAME.ROBINHOOD,
     rank: 0.73,
     tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
   },

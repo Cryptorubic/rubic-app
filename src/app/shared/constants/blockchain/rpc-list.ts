@@ -365,6 +365,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MEGAETH]: ['https://mainnet.megaeth.com/rpc'],
   [BLOCKCHAIN_NAME.ROBINHOOD]: [
+    'https://rpc.mainnet.chain.robinhood.com/',
     'https://x-api.rubic.exchange/drpc/robinhood?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ]
 };
