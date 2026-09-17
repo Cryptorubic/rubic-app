@@ -50,9 +50,9 @@ export class InputAddressesStep
 
   public async doAction(action: InputAddressesStepAction): Promise<void> {
     if (action === 'confirm_addresses') {
-      this.confirmAddresses();
+      await this.confirmAddresses();
     } else {
-      this.changeAddresses();
+      await this.changeAddresses();
     }
   }
 

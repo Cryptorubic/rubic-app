@@ -52,7 +52,6 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
 import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
-import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
@@ -87,6 +86,8 @@ import { AssetDetailsComponent } from './components/deposit-form/components/shar
 import { StepLockedLabelComponent } from './components/deposit-form/components/shared/step-locked-label/step-locked-label.component';
 import { DepositInfoReadonlyDetailComponent } from './components/deposit-form/components/shared/deposit-info-readonly-detail/deposit-info-readonly-detail.component';
 import { StepLoadingLabelComponent } from './components/deposit-form/components/shared/step-loading-label/step-loading-label.component';
+import { DepositStatusBarComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/components/deposit-status-bar/deposit-status-bar.component';
+import { QrCodeContainerComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/components/qr-code-container/qr-code-container.component';
 
 @NgModule({
   declarations: [
@@ -114,7 +115,6 @@ import { StepLoadingLabelComponent } from './components/deposit-form/components/
     SettingsWarningModalComponent,
     ProvidersListComponent,
     DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -136,7 +136,9 @@ import { StepLoadingLabelComponent } from './components/deposit-form/components/
     StepLockedLabelComponent,
     AssetDetailsComponent,
     DepositInfoReadonlyDetailComponent,
-    StepLoadingLabelComponent
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -163,7 +165,6 @@ import { StepLoadingLabelComponent } from './components/deposit-form/components/
     SettingsWarningModalComponent,
     ProvidersListComponent,
     DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -185,7 +186,9 @@ import { StepLoadingLabelComponent } from './components/deposit-form/components/
     StepLockedLabelComponent,
     AssetDetailsComponent,
     DepositInfoReadonlyDetailComponent,
-    StepLoadingLabelComponent
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   imports: [
     CommonModule,

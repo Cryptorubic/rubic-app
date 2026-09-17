@@ -1,65 +1,65 @@
 @use 'src/scss/core' as *;
 @use 'src/app/features/trade/components/deposit-form/styles/common' as *;
 
-.step {
-  width: 100%;
+:host {
+  .step {
+    width: 100%;
 
-  tui-accordion-item {
-    @include tui-accordion-item();
-  }
+    tui-accordion-item {
+      @include tui-accordion-item();
+    }
 
-  .tui-accordion-item__disabled {
-    @include tui-accordion-item-disabled();
-  }
+    .tui-accordion-item__disabled {
+      @include tui-accordion-item-disabled();
+    }
 
-  &-title {
-    @include accordion-title();
-  }
+    &-title {
+      @include accordion-title();
+    }
 
-  &-counter {
-    @include accordion-counter();
-  }
+    &-counter {
+      @include accordion-counter();
+    }
 
-  &-content {
-    @include accordion-content();
-    @include flex(column, stretch, stretch);
-    gap: 16px;
-
-    &__main {
-      @include flex(row, stretch, stretch);
+    &-content {
+      @include accordion-content();
+      @include flex(column, stretch, stretch);
       gap: 16px;
 
-      .step-content__info {
-        @include flex(column, stretch, space-between);
-        gap: 8px;
+      &__main {
+        @include flex(row, stretch, stretch);
+        gap: 16px;
 
-        .detail-wrapper {
-          @include flex(row, center, space-between);
-          gap: 30px;
-          width: 100%;
-          padding: 8px 12px;
+        .step-content__info {
+          @include flex(column, stretch, space-between);
+          gap: 8px;
 
-          background: #1b1b22;
-          background: var(--tui-background-base);
+          .detail-wrapper {
+            @include flex(row, center, space-between);
+            gap: 30px;
+            width: 100%;
+            padding: 8px 12px;
+
+            background: #1b1b22;
+            border-radius: 12px;
+          }
 
           app-field-with-copy-btn {
             width: 100%;
           }
         }
+
+        .step-content__qrcode {
+          width: 100%;
+        }
       }
 
-      .step-content__qrcode {
+      &__footer {
         width: 100%;
 
-        background: white;
-      }
-    }
-
-    &__footer {
-      width: 100%;
-
-      button {
-        width: 100%;
+        button {
+          width: 100%;
+        }
       }
     }
   }

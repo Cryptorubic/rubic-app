@@ -3,8 +3,11 @@
 :host {
   .field-with-copy-btn {
     @include flex(row, center, space-between);
-    width: fit-content;
+    gap: 5px;
+    width: 100%;
     padding: 8px 12px;
+
+    font-size: 14px;
 
     border-style: solid;
     border-width: 1px;
@@ -16,6 +19,7 @@
       height: 28px;
 
       background-color: var(--tui-background-base);
+      border-radius: 6px;
       cursor: pointer;
 
       ::ng-deep svg {

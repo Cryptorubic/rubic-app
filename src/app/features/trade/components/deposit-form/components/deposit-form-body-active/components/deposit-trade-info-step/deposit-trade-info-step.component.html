@@ -23,7 +23,7 @@
 
       <ng-template tuiAccordionItemContent>
         <div class="step-content">
-          <div class="spep-content__main">
+          <div class="step-content__main">
             <div class="step-content__info">
               <app-deposit-info-readonly-detail [labelTop]="'Asset'">
                 <div class="detail-wrapper">
@@ -33,20 +33,23 @@
                     [textToCopy]="state.depositTrade.fromToken.address"
                     [bgColor]="'var(--tui-background-base)'"
                     [borderColor]="'var(--tui-background-base)'"
+                    [padding]="'4px'"
                   ></app-field-with-copy-btn>
                 </div>
               </app-deposit-info-readonly-detail>
 
               <app-deposit-info-readonly-detail [labelTop]="'Amount to Send'">
                 <app-field-with-copy-btn
-                  [visibleText]="state.depositTrade.fromAmount"
-                  [textToCopy]="state.depositTrade.fromToken.address"
+                  [visibleText]="
+                    state.depositTrade.fromAmount + ' ' + state.depositTrade.fromToken.symbol
+                  "
+                  [textToCopy]="state.depositTrade.fromAmount"
                 ></app-field-with-copy-btn>
               </app-deposit-info-readonly-detail>
 
               <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
                 <app-field-with-copy-btn
-                  [visibleText]="$any(state.depositTrade.fromToken.address | shortAddress: 6 : 6)"
+                  [visibleText]="$any(state.depositTrade.depositAddress | shortAddress: 6 : 6)"
                   [textToCopy]="state.depositTrade.depositAddress"
                 ></app-field-with-copy-btn>
               </app-deposit-info-readonly-detail>
@@ -67,7 +70,9 @@
               }
             </div>
 
-            <div class="step-content__qrcode">Scan QR to pay</div>
+            <div class="step-content__qrcode">
+              <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
+            </div>
           </div>
 
           <div class="step-content__footer">

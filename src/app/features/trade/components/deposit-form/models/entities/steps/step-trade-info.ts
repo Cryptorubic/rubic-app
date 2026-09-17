@@ -8,7 +8,7 @@ import { ActionBtnState, DepositStepParams } from '../../step-types';
 import { DepositStepWithAction } from '../abstracts/deposit-step-with-action';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { TradeInfoStepAction } from '../../deposit-form-step-actions';
-import { DepositFormState } from '../../deposit-form-states';
+import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states';
 
 export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.TRADE_INFO;
@@ -32,8 +32,9 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
       tradeStatusStep.setActive(true);
       tradeStatusStep.setOpened(true);
 
-      this.setActive(false);
       this.setOpened(false);
+      this.updateActionBtnState({ active: false });
+      this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
     } else {
       // @TODO_3003 ENCODE TRANSFER DATA AND HANDLE WALLET SIGANTURE
     }

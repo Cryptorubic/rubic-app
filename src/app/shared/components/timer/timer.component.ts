@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BehaviorSubject, finalize, map, share, switchMap, takeWhile, timer } from 'rxjs';
+import { BehaviorSubject, map, share, switchMap, takeWhile, tap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-timer',
@@ -26,10 +26,10 @@ export class TimerComponent {
       return timer(0, intervalDelayMs).pipe(
         map(count => expiresAfterMs - count * intervalDelayMs),
         takeWhile(() => Date.now() <= deadlineTimestampMs),
-        finalize(() => this.timerCompleted.emit())
+        tap({ complete: () => this.timerCompleted.emit() })
       );
     }),
-    share({ resetOnRefCountZero: true, resetOnComplete: true })
+    share()
   );
 
   public readonly reverseTimerFriendly$ = this.reverseTimerMs$.pipe(

@@ -1,0 +1,18 @@
+<div class="qr-container">
+  <b class="qr-container__label">Scan QR to pay</b>
+
+  <div class="qr-container__main">
+    <div class="qr-code"></div>
+
+    <button
+      tuiButton
+      class="step-content__btn"
+      appearance="secondary"
+      type="button"
+      size="m"
+      (click)="btnClicked.emit()"
+    >
+      Connect Wallet & Send
+    </button>
+  </div>
+</div>

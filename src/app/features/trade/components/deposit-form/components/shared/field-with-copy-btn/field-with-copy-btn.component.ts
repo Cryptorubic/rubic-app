@@ -26,6 +26,8 @@ export class FieldWithCopyBtnComponent {
 
   @Input() textColor: string = '#FFFFFF';
 
+  @Input() padding: string;
+
   public copied: boolean = false;
 
   constructor(
