@@ -14,9 +14,7 @@
     &__header {
       @include flex(row, center, space-between);
       position: relative;
-
       width: 100%;
-
       font-size: 1rem;
 
       app-field-with-copy-btn {
@@ -26,7 +24,6 @@
       .deposit-form__title {
         position: absolute;
         left: 50%;
-
         transform: translateX(-50%);
       }
     }

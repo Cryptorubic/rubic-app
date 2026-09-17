@@ -13,12 +13,10 @@ $mobile-width: 360px;
   .form-and-activity {
     @include flex(column, center, center);
     position: relative;
-
     gap: 12px;
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
-
     transition: 0.2s ease-in-out;
 
     &_small {
@@ -44,7 +42,6 @@ $mobile-width: 360px;
     display: block;
     width: $mobile-width;
     height: 510px;
-
     background: var(--secondary-background);
     border-radius: 17px;
   }
@@ -67,7 +64,6 @@ $mobile-width: 360px;
       height: auto;
       margin-bottom: 10px;
       overflow: hidden;
-
       background: none;
     }
   }

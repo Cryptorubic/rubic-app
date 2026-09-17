@@ -2,13 +2,11 @@
 
 .deposit-swap-info {
   margin-top: var(--tui-padding-l);
-
   background: var(--primary-background);
   border-radius: var(--tui-radius-m);
 
   &__target-address {
     padding: var(--tui-padding-l);
-
     border-bottom: 2px solid var(--secondary-background);
   }
 
@@ -22,7 +20,6 @@
     display: flex;
     gap: var(--tui-padding-s);
     align-items: center;
-
     color: var(--tui-text-primary);
     font-weight: 700;
     font-size: 18px;
@@ -30,14 +27,12 @@
 
   &__disabled {
     opacity: 0.8;
-
     user-select: none;
   }
 
   &__copy-icon {
     width: 18px;
     height: 18px;
-
     cursor: pointer;
 
     ::ng-deep svg {
@@ -69,7 +64,6 @@
   &__circle {
     width: 16px;
     height: 16px;
-
     border: 1px solid var(--tui-text-secondary);
     border-radius: 50%;
 
@@ -79,7 +73,6 @@
       justify-content: center;
       width: 16px;
       height: 16px;
-
       background-color: var(--tui-background-accent-1);
       border-color: var(--tui-background-accent-1);
       border-radius: 50%;
@@ -96,7 +89,6 @@
       justify-content: center;
       width: 16px;
       height: 16px;
-
       background-color: #ba0303;
       border-color: #ba0303;
       border-radius: 50%;
@@ -111,11 +103,9 @@
   &__spinner {
     width: 15px;
     height: 15px;
-
     background-image: url('/assets/images/icons/spinner.svg');
     background-repeat: no-repeat;
     background-size: cover;
-
     animation: 1s spin linear infinite;
   }
 

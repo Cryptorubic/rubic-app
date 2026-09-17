@@ -5,7 +5,6 @@
   gap: var(--tui-padding-s);
 
   padding: var(--tui-padding-m);
-
   background: var(--secondary-background);
   border-radius: var(--tui-radius-m);
 
@@ -27,7 +26,6 @@
 
     &-active {
       color: var(--tui-text-primary-on-accent-1) !important;
-
       background: var(--tui-background-accent-1) !important;
 
       &:hover {
@@ -42,7 +40,6 @@
   bottom: 88px;
   left: 50%;
   z-index: 1;
-
   display: flex;
 
   flex-direction: row;
@@ -53,15 +50,14 @@
   width: 100%;
   max-width: calc(100% - 32px);
   overflow-x: auto;
-
   border-radius: 20px;
 
   -webkit-box-shadow: 0px 2px 17px 5px rgba(0, 0, 0, 0.16);
   box-shadow: 0px 2px 17px 5px rgba(0, 0, 0, 0.16);
   transform: translateX(-50%);
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
   -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -75,12 +71,9 @@
     justify-content: center;
     min-width: 80px;
     padding: var(--tui-padding-xs) 0;
-
     color: white;
-
     background: var(--secondary-background);
     cursor: pointer;
-
     transition: all 0.2s ease;
 
     &:first-child {

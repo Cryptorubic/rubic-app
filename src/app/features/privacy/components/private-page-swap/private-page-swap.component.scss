@@ -8,14 +8,12 @@
     display: flex;
     justify-content: end;
     padding: 18px 28px 17px 0;
-
     background: var(--tui-background-neutral-1);
     border-radius: 20px 20px 0 0;
 
     @include b($mobile-sm-middle) {
       order: 2;
       padding: 16px;
-
       border-radius: 0 0 20px 20px;
     }
   }
@@ -23,7 +21,6 @@
   .providers-switcher-container {
     display: flex;
     gap: 8px;
-
     color: var(--tui-text-secondary);
     font-weight: 500;
     font-size: 12px;
@@ -50,20 +47,17 @@
 
   .selectors-wrapper {
     padding: 0 12px;
-
     background: var(--tui-background-neutral-1);
 
     @include b($mobile-sm-middle) {
       order: 1;
       padding: 0 !important;
-
       background: transparent;
     }
   }
 
   .selectors-container {
     position: relative;
-
     display: flex;
     gap: 2px;
 
@@ -84,12 +78,10 @@
 
     app-asset-selector {
       flex: 1;
-
       background: var(--io-background);
 
       &:first-child {
         padding: 12px 10px;
-
         border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
       }
 
@@ -97,7 +89,6 @@
         display: flex;
         justify-content: end;
         padding: 12px 20px 12px 0;
-
         border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
       }
     }
@@ -120,7 +111,6 @@
       position: absolute;
       top: 50%;
       left: 50%;
-
       background: var(--io-background);
 
       transform: translate(-50%, -50%) rotate(90deg);
@@ -169,14 +159,12 @@
 
   .instruction-wrapper {
     padding: 12px;
-
     background: var(--tui-background-neutral-1);
     border-radius: 0 0 20px 20px;
 
     @include b($mobile-sm-middle) {
       order: 3;
       padding: 16px 0 0;
-
       background: transparent;
     }
   }
@@ -188,10 +176,8 @@
     width: 100%;
     height: 100%;
     padding: 11px 0;
-
     font-weight: 500;
     font-size: 15px;
-
     border: 1px solid var(--io-background);
     border-radius: 17px;
 
@@ -203,7 +189,6 @@
 
 .transfer-selector {
   padding: 0 12px 12px !important;
-
   border-radius: 0 0 20px 20px;
 }
 
@@ -212,14 +197,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-
   color: $text-gray-2;
   font-weight: 500;
   font-size: 15px;
 
   @include b($mobile-sm-middle) {
     justify-content: start;
-
     font-size: 12px;
   }
 }

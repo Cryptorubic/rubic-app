@@ -2,13 +2,11 @@
 
 .notification {
   margin-bottom: var(--tui-padding-m);
-
   font-size: 15px;
 
   &__link {
     display: block;
     margin-top: 8px;
-
     text-decoration: underline;
   }
 }
@@ -25,7 +23,6 @@
 
     > * {
       flex: 1;
-
       text-decoration: none;
     }
   }
@@ -41,7 +38,6 @@
     flex-direction: column;
     gap: var(--tui-padding-l);
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
 
@@ -87,7 +83,6 @@
     height: 50px;
     margin-top: -5px;
     margin-left: -25px;
-
     background: var(--primary-background);
     border: 5px solid var(--primary-background);
     border-radius: 100%;
@@ -122,7 +117,6 @@
   &__action-button {
     flex: 1 1 100%;
     width: 100%;
-
     text-decoration: none;
 
     ::ng-deep .t-wrapper {
@@ -132,7 +126,6 @@
 
   &__success-info {
     overflow: hidden;
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -141,7 +134,6 @@
 app-swap-data-element ::ng-deep {
   .provider-info {
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -167,7 +159,6 @@ app-swap-data-element ::ng-deep {
   .preview {
     &__data-container {
       position: relative;
-
       gap: 0;
       margin-top: 2px;
 
@@ -179,12 +170,9 @@ app-swap-data-element ::ng-deep {
           top: 16px;
           left: 27px;
           z-index: 0;
-
           width: 2px;
           height: calc(100% - 70px);
-
           background: var(--tui-border-normal);
-
           content: '';
         }
       }
@@ -206,7 +194,6 @@ app-swap-data-element ::ng-deep {
 
     &__io-container {
       z-index: 1;
-
       display: flex;
       flex-direction: column;
       gap: var(--tui-padding-xs);
@@ -245,14 +232,12 @@ app-swap-data-element ::ng-deep {
 .back-button {
   &__text {
     flex-grow: 1;
-
     text-align: center;
   }
 }
 
 .loader {
   position: relative;
-
   display: inline-block;
   padding: 10px 0;
   overflow: hidden;
@@ -268,15 +253,11 @@ app-swap-data-element ::ng-deep {
 
     left: 0;
     z-index: 1;
-
     width: 45px;
     height: 20px;
-
     background-color: var(--tui-primary);
     transform: translateY(-50%);
-
     animation: pulse 0.8s ease-in-out infinite alternate;
-
     will-change: transform;
   }
 }

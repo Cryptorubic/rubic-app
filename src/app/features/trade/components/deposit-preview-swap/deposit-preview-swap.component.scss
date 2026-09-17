@@ -17,7 +17,6 @@ app-form-switcher {
 .target-address {
   margin-top: var(--tui-padding-l);
   padding: var(--tui-padding-l);
-
   background: var(--primary-background);
   border-bottom: 2px solid var(--secondary-background);
   border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
@@ -32,7 +31,6 @@ app-form-switcher {
     display: flex;
     gap: var(--tui-padding-s);
     align-items: center;
-
     color: var(--tui-text-primary);
     font-weight: 700;
     font-size: 18px;
@@ -40,22 +38,18 @@ app-form-switcher {
 
   &__disabled {
     opacity: 0.8;
-
     user-select: none;
   }
 }
 
 .status-wrapper {
   padding: var(--tui-padding-l);
-
   background: var(--primary-background);
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
-
   transition: all 100ms;
 
   &__inactive {
     margin-top: var(--tui-padding-l);
-
     border-radius: var(--tui-radius-m);
   }
 }
@@ -78,7 +72,6 @@ app-form-switcher {
 .row-item {
   &__header {
     margin-bottom: 2px;
-
     color: var(--primary-color);
   }
 
@@ -89,7 +82,6 @@ app-form-switcher {
     height: fit-content;
 
     min-height: 16px;
-
     color: var(--primary-text);
     font-weight: 600;
     font-size: 16px;
@@ -102,7 +94,6 @@ app-form-switcher {
 
 .status-item {
   position: relative;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,10 +101,8 @@ app-form-switcher {
 
   &__circle {
     position: relative;
-
     width: 16px;
     height: 16px;
-
     border: 1px solid var(--tui-text-secondary);
     border-radius: 50%;
 
@@ -123,7 +112,6 @@ app-form-switcher {
       justify-content: center;
       width: 16px;
       height: 16px;
-
       background-color: var(--tui-background-accent-1);
       border-color: var(--tui-background-accent-1);
       border-radius: 50%;
@@ -139,7 +127,6 @@ app-form-switcher {
       justify-content: center;
       width: 16px;
       height: 16px;
-
       background-color: #ba0303;
       border-color: #ba0303;
       border-radius: 50%;
@@ -158,9 +145,7 @@ app-form-switcher {
   &__spinner {
     width: 16px;
     height: 16px;
-
     color: #fff;
-
     border-radius: 50%;
     transform: rotateZ(45deg);
     perspective: 1000px;
@@ -170,29 +155,23 @@ app-form-switcher {
       position: absolute;
       top: 0;
       left: 0;
-
       display: block;
       width: inherit;
       height: inherit;
-
       border-radius: 50%;
       transform: rotateX(70deg);
-
       animation: 1s spin linear infinite;
-
       content: '';
     }
 
     &::after {
       color: var(--tui-background-accent-1);
-
       transform: rotateY(70deg) rotateZ(180deg);
     }
   }
 
   &__value {
     margin-top: var(--tui-padding-xs);
-
     color: var(--tui-text-primary);
     font-weight: 400;
     font-size: 12px;
@@ -222,7 +201,6 @@ app-form-switcher {
 .copy-icon {
   width: 18px;
   height: 18px;
-
   cursor: pointer;
 
   &_green {
@@ -311,7 +289,6 @@ app-form-switcher {
   @include flex(column, normal, normal);
   gap: 2px;
   width: 100%;
-
   font-size: 15px;
 
   .receiver-address__title {
@@ -319,10 +296,8 @@ app-form-switcher {
     gap: 7px;
 
     padding: var(--tui-padding-l);
-
     color: var(--tui-warn);
     font-weight: bold;
-
     background: var(--primary-background);
 
     border-top-left-radius: var(--tui-radius-m);

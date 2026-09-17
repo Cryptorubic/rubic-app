@@ -6,9 +6,7 @@
     gap: 5px;
     width: 100%;
     padding: 8px 12px;
-
     font-size: 14px;
-
     border-style: solid;
     border-width: 1px;
     border-radius: 8px;
@@ -17,7 +15,6 @@
       @include flex(row, center, center);
       width: 28px;
       height: 28px;
-
       background-color: var(--tui-background-base);
       border-radius: 6px;
       cursor: pointer;

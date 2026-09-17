@@ -5,10 +5,13 @@
     font-weight: $weight;
     font-family: $font-family;
     font-style: $style;
-    font-display: block;
 
-    src: url('#{$file-path}.woff2') format('woff2'), url('#{$file-path}.woff') format('woff'),
-      url('#{$file-path}.eot'), url('#{$file-path}.ttf') format('truetype');
+    src:
+      url('#{$file-path}.woff2') format('woff2'),
+      url('#{$file-path}.woff') format('woff'),
+      url('#{$file-path}.eot'),
+      url('#{$file-path}.ttf') format('truetype');
+    font-display: block;
   }
 }
 
@@ -23,7 +26,6 @@
   &::after {
     display: block;
     clear: both;
-
     content: ' ';
   }
 }
@@ -88,7 +90,6 @@
 
     width: $width;
     height: $height;
-
     content: '';
 
     @if $position==a {
@@ -108,7 +109,6 @@
 
     width: $width;
     height: $height;
-
     content: '';
 
     @if $position==a {
@@ -132,13 +132,10 @@
 
 @mixin clearbtn() {
   padding: 0;
-
   font-size: inherit;
   line-height: inherit;
-
   background: none;
   border: 0;
-
   appearance: none;
 }
 

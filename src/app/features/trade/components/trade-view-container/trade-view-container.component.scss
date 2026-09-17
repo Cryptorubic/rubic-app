@@ -15,7 +15,6 @@ app-deposit-form {
       gap: var(--tui-padding-s);
       align-items: center;
       padding: 0 5px;
-
       cursor: pointer;
 
       &__text {
@@ -41,13 +40,11 @@ app-deposit-form {
     @include flex(column, center, center);
 
     position: relative;
-
     gap: 10px;
 
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
-
     transition: 0.2s ease-in-out;
 
     &_tokens {
@@ -83,7 +80,6 @@ app-deposit-form {
     display: block;
     width: $mobile-width;
     height: 510px;
-
     background: var(--secondary-background);
     border-radius: 17px;
   }
@@ -118,7 +114,6 @@ app-deposit-form {
       height: auto;
       margin-bottom: 10px;
       overflow: hidden;
-
       background: none;
       border-radius: 0;
     }

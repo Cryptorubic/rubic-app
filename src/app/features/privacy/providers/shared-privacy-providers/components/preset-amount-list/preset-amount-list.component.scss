@@ -17,9 +17,7 @@
   button {
     flex: 1;
     height: 50px;
-
     font-size: clamp(12px, 1.2vw + 8px, 15px);
-
     background-color: var(--io-background);
 
     border-radius: 0;

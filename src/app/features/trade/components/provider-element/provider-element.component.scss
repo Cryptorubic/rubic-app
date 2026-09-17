@@ -3,7 +3,6 @@
 .element {
   box-sizing: border-box;
   overflow: hidden;
-
   background: var(--primary-background);
   border: 1px solid var(--primary-background);
   border-radius: var(--tui-radius-m);
@@ -26,7 +25,6 @@
   &_private_collapsed {
     .element__provider-container {
       padding: 9px 15px;
-
       border: 1px solid #5632a2;
       border-radius: var(--tui-radius-m);
     }
@@ -34,7 +32,6 @@
 
   &__provider-container {
     padding: var(--tui-padding-l);
-
     border-bottom: 1px solid var(--tui-background-neutral-1);
   }
 
@@ -49,7 +46,6 @@
     flex-wrap: wrap;
     gap: var(--tui-padding-s);
     justify-content: flex-end;
-
     opacity: 1;
   }
 
@@ -88,7 +84,6 @@
   &__token-image {
     width: 18px;
     height: 18px;
-
     border-radius: 100%;
   }
 
@@ -128,7 +123,6 @@
     width: 40px;
     height: 40px;
     margin-right: var(--tui-padding-m);
-
     border-radius: 100%;
   }
 
@@ -140,20 +134,16 @@
     display: flex;
     align-items: center;
     height: 24px;
-
     font-weight: 700 !important;
     text-transform: uppercase;
-
     background: #05cc05;
     cursor: pointer;
   }
 
   &__warning-badge {
     height: 24px;
-
     font-weight: 700 !important;
     text-transform: uppercase;
-
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
     cursor: pointer;
   }
@@ -164,12 +154,10 @@
     align-items: center;
     height: 24px;
     padding: 0 7px;
-
     font-weight: 700;
     font-size: 11px;
     line-height: 1;
     text-transform: uppercase;
-
     background: linear-gradient(90deg, #2c2969 0%, #1b1a2e 50%, #2c2969 100%);
     border: 1px solid #615eaa;
     border-radius: 4px;
@@ -264,7 +252,6 @@ app-route-element {
       .element__token-image {
         width: 25px;
         height: 25px;
-
         border-radius: 100%;
       }
 

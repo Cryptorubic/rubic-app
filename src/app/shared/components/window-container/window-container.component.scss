@@ -2,7 +2,6 @@
 
 .window-container {
   padding: var(--tui-padding-m);
-
   background: var(--secondary-background);
   border-radius: var(--tui-radius-m);
 
@@ -24,7 +23,6 @@ header {
     align-items: center;
     height: 21px;
     margin: 0;
-
     font-size: 15px;
 
     &:empty {

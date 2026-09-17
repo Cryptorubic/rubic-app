@@ -20,7 +20,6 @@ app-gas-form-hint {
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
-
   color: var(--tui-text-tertiary);
 
   &_selected {
@@ -49,7 +48,6 @@ app-form-switcher {
   display: flex;
   justify-content: center;
   height: 2px;
-
   background: linear-gradient(
     90deg,
     var(--io-background) 0%,
@@ -62,13 +60,11 @@ app-form-switcher {
   :host ::ng-deep {
     .window-container {
       padding: 0 !important;
-
       background: none !important;
       border-radius: 0 !important;
 
       header {
         padding: var(--tui-padding-l) !important;
-
         background: var(--io-background);
         border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
       }

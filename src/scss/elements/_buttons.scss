@@ -2,20 +2,16 @@
 
 .button-error {
   padding: 5px 10px;
-
   color: white;
   text-decoration: none;
-
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
-
   transition: opacity 0.3s ease-in-out;
 
   &:hover,
   &:focus {
     color: white;
     text-decoration: none;
-
     background-color: rgba(0, 0, 0, 0.5);
   }
 }

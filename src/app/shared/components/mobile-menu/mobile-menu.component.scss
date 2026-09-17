@@ -3,7 +3,6 @@
 :host {
   position: fixed;
   z-index: 100000000000000000;
-
   width: 100vw;
 }
 
@@ -13,14 +12,12 @@
   justify-content: space-between;
   width: 100%;
   padding: 1rem 1.5rem;
-
   background-color: var(--secondary-background);
   border-radius: 12px 12px 0 0;
 
   &__item {
     width: 42px;
     height: 42px;
-
     border-radius: 50%;
   }
 }
@@ -32,9 +29,7 @@
     bottom: 0;
     left: 0;
     z-index: 99999;
-
     display: flex;
-
     background: var(--secondary-background);
     border-radius: 12px 12px 0 0;
   }

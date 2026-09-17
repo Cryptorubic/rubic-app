@@ -3,7 +3,6 @@
 
   &__card {
     padding: 1rem;
-
     background-color: var(--io-background);
 
     background-image: url('/assets/images/rubic-account-card.png');
@@ -27,7 +26,6 @@
 
       &-address {
         margin-left: 0.5rem;
-
         color: #aaa;
         font-weight: 600;
         font-size: 16px;
@@ -55,7 +53,6 @@
     &-body {
       &-title {
         margin-bottom: 8px;
-
         color: var(--tui-text-tertiary);
         font-weight: 600;
         font-size: 14px;
@@ -63,7 +60,6 @@
 
       &-balance {
         min-height: 20px;
-
         font-size: 24px;
 
         &.tui-skeleton {
@@ -82,7 +78,6 @@
 
         path {
           opacity: 0.7;
-
           fill: var(--tui-text-primary);
         }
 
@@ -90,7 +85,6 @@
         &:hover {
           path {
             opacity: 1;
-
             fill: #00e28e;
           }
         }

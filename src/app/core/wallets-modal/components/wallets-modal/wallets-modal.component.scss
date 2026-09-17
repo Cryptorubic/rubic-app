@@ -49,7 +49,6 @@
       justify-content: start;
       padding-bottom: 16px;
       overflow-x: auto;
-
       column-gap: 6px;
 
       &::-webkit-scrollbar {
@@ -75,14 +74,11 @@
     gap: var(--tui-padding-xs);
     align-items: center;
     width: 135px;
-    
-
     text-align: center;
 
     &.disabled {
       cursor: not-allowed;
       opacity: 0.4;
-
       user-select: none;
       pointer-events: none;
     }
@@ -108,14 +104,11 @@
     justify-content: center;
     width: 56px;
     height: 56px;
-
     white-space: nowrap;
 
     text-decoration: none;
-
     background-color: var(--primary-background);
     border-radius: var(--tui-radius-s);
-
     transition: 0.2s ease-in-out;
 
     &:hover {

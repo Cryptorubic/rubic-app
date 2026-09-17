@@ -9,7 +9,6 @@
 
     margin: 0 var(--tui-padding-m) var(--tui-padding-xs) var(--tui-padding-m);
     padding: var(--tui-padding-s) var(--tui-padding-m);
-
     background: var(--io-background);
 
     border-radius: 20px;
@@ -67,7 +66,6 @@
     justify-content: center;
     width: 30px;
     height: 30px;
-
     background: var(--primary-background);
 
     border-radius: 8px;
@@ -92,7 +90,6 @@
 
   &__title {
     margin: 0;
-
     font-weight: 500;
     font-size: 18px;
     line-height: 21px;

@@ -7,12 +7,13 @@ module.exports = {
       true,
       {
         'border-in-box-model': false,
-        'empty-line-between-groups': true
+        'empty-line-between-groups': false
       }
     ],
     /* css rules */
     'selector-type-no-unknown': null,
     'at-rule-no-unknown': null,
+    'order/properties-order': null,
     'order/properties-alphabetical-order': null,
     'max-nesting-depth': 8, // Better if <= 4. Now it's 8 because of current css state of project.
     'selector-no-vendor-prefix': null,

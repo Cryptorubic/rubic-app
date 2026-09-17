@@ -4,7 +4,6 @@
   .label {
     @include flex(row, center, center);
     gap: 8px;
-
     color: var(--tui-text-secondary);
     font-size: 14px;
   }

@@ -5,18 +5,15 @@
   bottom: 0;
 
   z-index: 1 !important;
-
   visibility: initial !important;
   opacity: initial !important;
 
   @include b($mobile-md) {
     bottom: 76px !important;
-
     width: 0 !important;
     height: 0 !important;
 
     max-height: 84vh !important;
-
     transition-duration: 0s !important;
 
     #chat-widget-minimized {
@@ -32,9 +29,7 @@
   * {
     @include b($mobile-md) {
       bottom: 0;
-
       max-height: 85vh !important;
-
       transition-duration: 0s !important;
     }
   }
