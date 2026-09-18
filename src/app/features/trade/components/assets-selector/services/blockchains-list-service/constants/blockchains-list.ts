@@ -209,7 +209,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ROBINHOOD,
     rank: 0.73,
-    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
+    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2, BLOCKCHAIN_TAG.NEW]
   },
   {
     name: BLOCKCHAIN_NAME.POLYGON,
