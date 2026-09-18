@@ -5,7 +5,6 @@ import {
   QuoteRequestInterface,
   QuoteResponseInterface,
   SwapPrivateRequestInterface,
-  SwapPrivateResponseInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -218,13 +217,13 @@ export class RubicApiService {
     }
   }
 
-  public async fetchSwapPrivateTrade(
+  public async fetchSwapPrivateTrade<T>(
     body: SwapPrivateRequestInterface
-  ): Promise<SwapPrivateResponseInterface> {
+  ): Promise<SwapResponseInterface<T>> {
     try {
       const result = await firstValueFrom(
         this.sdkLegacyService.httpClient.post<
-          SwapPrivateResponseInterface | SwapErrorResponseInterface
+          SwapResponseInterface<T> | SwapErrorResponseInterface
         >(`${this.apiUrl}/api/routes/swapPrivateTrade`, body)
       );
       if ('error' in result) {

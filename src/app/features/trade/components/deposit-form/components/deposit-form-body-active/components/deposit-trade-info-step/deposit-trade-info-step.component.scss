@@ -51,6 +51,10 @@
         .step-content__qrcode {
           width: 100%;
         }
+
+        @include b($tablet) {
+          @include flex(column, stretch, stretch);
+        }
       }
 
       &__footer {

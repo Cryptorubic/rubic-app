@@ -2,17 +2,21 @@
   <b class="qr-container__label">Scan QR to pay</b>
 
   <div class="qr-container__main">
-    <div class="qr-code"></div>
+    <div class="qr-code">
+      <canvas [id]="QR_CODE_ID" width="142" height="142"></canvas>
+    </div>
 
-    <button
-      tuiButton
-      class="step-content__btn"
-      appearance="secondary"
-      type="button"
-      size="m"
-      (click)="btnClicked.emit()"
-    >
-      Connect Wallet & Send
-    </button>
+    @if (showWalletBtn$ | async) {
+      <button
+        tuiButton
+        class="step-content__btn"
+        appearance="secondary"
+        type="button"
+        size="m"
+        (click)="btnClicked.emit()"
+      >
+        Connect Wallet & Send
+      </button>
+    }
   </div>
 </div>

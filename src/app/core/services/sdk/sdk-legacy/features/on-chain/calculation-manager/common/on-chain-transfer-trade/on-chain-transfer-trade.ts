@@ -2,7 +2,7 @@ import {
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
-  Token
+  SwapPrivateRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../common/models/encode-transaction-options';
@@ -18,6 +18,8 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { BasicSendTransactionOptions, RubicSdkError } from '@cryptorubic/web3';
 import { OnChainTrade } from '../on-chain-trade/on-chain-trade';
 import { OnChainTransferConfig } from './models/on-chain-transfer-config';
+import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
+import { parseExtraFields } from '../../../../ws-api/chains/transfer-trade/utils/parse-extra-fields';
 
 export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferConfig> {
   protected lastTransactionConfig: OnChainTransferConfig | null = null;
@@ -123,34 +125,37 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     receiverAddress?: string,
     refundAddress?: string
   ): Promise<{ config: OnChainTransferConfig; amount: string }> {
-    const res = await this.getPaymentInfo(receiverAddress || '', testMode, '', refundAddress);
+    const swapRequestData: SwapPrivateRequestInterface = {
+      ...this.apiQuote,
+      id: this.apiResponse.id,
+      receiver: receiverAddress || '',
+      refundAddress: refundAddress || '',
+      enableChecks: !testMode
+    };
 
-    const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
-    this._paymentInfo = res;
+    const res =
+      await this.rubicApiService.fetchSwapPrivateTrade<TransactionInterface>(swapRequestData);
+
+    const amount = res.estimate.destinationTokenAmount;
+    this.actualTokenAmount = new BigNumber(amount);
+
+    const extraFields = parseExtraFields(res.transaction);
+
+    this._paymentInfo = {
+      depositAddress: res.transaction.depositAddress,
+      id: res.transaction.exchangeId,
+      toAmount: res.estimate.destinationTokenAmount,
+      ...(extraFields && {
+        depositExtraId: extraFields.value,
+        depositExtraIdName: extraFields.name
+      })
+    };
 
     return {
-      config: {
-        amountToSend: res.toAmount,
-        depositAddress: res.depositAddress,
-        exchangeId: res.id,
-        ...(res.depositExtraId &&
-          res.depositExtraIdName && {
-            extraFields: {
-              name: res.depositExtraIdName,
-              value: res.depositExtraId
-            }
-          })
-      },
-      amount: toAmountWei
+      config: res as OnChainTransferConfig,
+      amount: res.estimate.destinationWeiAmount
     };
   }
-
-  protected abstract getPaymentInfo(
-    receiverAddress: string,
-    testMode?: boolean,
-    fromAddress?: string,
-    refundAddress?: string
-  ): Promise<CrossChainTransferData>;
 
   protected async setTransactionConfig(
     skipAmountChangeCheck: boolean,

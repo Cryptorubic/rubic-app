@@ -73,6 +73,7 @@ export class InputAddressesStep
     const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
+    this.setOpened(false);
     tradeInfoStep.setLoading(true);
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).disable();
@@ -94,7 +95,6 @@ export class InputAddressesStep
 
       this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
       this.updateActionBtnState({ text: 'Change Addresses', active: true });
-      this.setOpened(false);
       tradeInfoStep.setActive(true);
       tradeInfoStep.setLoading(false);
       tradeInfoStep.setOpened(true);
