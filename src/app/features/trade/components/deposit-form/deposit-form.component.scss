@@ -35,5 +35,9 @@
     &__body {
       width: 100%;
     }
+
+    @include b($tablet) {
+      width: 100%;
+    }
   }
 }

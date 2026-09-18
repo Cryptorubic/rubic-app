@@ -66,6 +66,7 @@
     "wrongToken": "Rubik köprüsü yalnızca rubik belirtecini destekler.",
     "oneInchQuote": "1inch alıntı hatası",
     "notSupportedNetwork": "{{networkToChoose}}, seçilen cüzdan sağlayıcısı tarafından desteklenmiyor.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Cüzdanınızla oturum açmayı reddettiniz. Uygulamamızı tam olarak kullanabilmek için lütfen cüzdanınızla oturum açtığınızı onaylayın.",
     "lowGas": "İşlem gazı çok düşük. İşlemin minimum maliyetini karşılayacak kadar gaz yok. Verilen gazı artırmayı deneyin.",
     "noSelectedProvider": "Takas sağlayıcı seçin",

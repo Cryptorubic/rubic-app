@@ -18,6 +18,7 @@ import { IWithHooks } from '../abstracts/interfaces';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states';
 import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
 import { TransferTrade } from '../../deposit-form-info';
+import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -30,7 +31,7 @@ export class InputAddressesStep
     refundAddr: new FormControl('', [Validators.required])
   });
 
-  private _formStatusSub: Subscription | null = null;
+  private readonly _subs: Subscription[] = [];
 
   constructor(
     _depositFormState$: BehaviorSubject<DepositFormState>,
@@ -58,13 +59,33 @@ export class InputAddressesStep
 
   public onInit(): void {
     this.initValidators();
-    this._formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
+
+    const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
       this.updateActionBtnState({ active: status === 'VALID' });
     });
+    const tradeStatusSub = this.depositService.status$.subscribe(status => {
+      if (status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
+
+      const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
+
+      tradeStatusStep.setActive(true);
+      tradeStatusStep.setOpened(true);
+      this.setOpened(false);
+      this.setActive(false);
+
+      this._depositFormState$.next(
+        status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED
+          ? DEPOSIT_FORM_STATE.COMPLETED
+          : DEPOSIT_FORM_STATE.STATUS_TRACKING
+      );
+      this.triggerStepsUpdate();
+    });
+
+    this._subs.push(formStatusSub, tradeStatusSub);
   }
 
   public onDestroy(): void {
-    this._formStatusSub.unsubscribe();
+    this._subs.forEach(sub => sub.unsubscribe());
   }
 
   private async confirmAddresses(): Promise<void> {
@@ -105,6 +126,7 @@ export class InputAddressesStep
       if (backToForm) {
         this.tradePageService.setState('form');
       } else {
+        // @TODO_3003 use DEPOSIT_FORM_STATE.ERROR
         this._depositFormState$.next(DEPOSIT_FORM_STATE.EXPIRED);
         this.depositFormSteps.forEach(step => {
           step.setActive(false);

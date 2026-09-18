@@ -66,6 +66,7 @@
     "wrongToken": "Le bridge Rubic ne prend en charge que le jeton Rubic.",
     "oneInchQuote": "Erreur de cotation de 1inch",
     "notSupportedNetwork": "{{networkToChoose}} n'est pas supporté par le portefeuille sélectionné.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Vous avez refusé la connexion avec votre portefeuille. Veuillez confirmer la connexion avec votre portefeuille afin d'utiliser pleinement notre application.",
     "lowGas": "Le gaz alloué à la transaction est insuffisant. Il n'y a pas assez de gaz pour couvrir les frais de la transaction. Veuillez augmenter le gaz",
     "noSelectedProvider": "Veuillez sélectionner un DEX",

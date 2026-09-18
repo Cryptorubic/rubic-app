@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../models/deposit-form-states';
 import { DepositFormSteps } from '../models/deposit-form-step-types';
@@ -17,6 +17,9 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
 import { STEP_ACTION } from '../models/deposit-form-step-actions';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { withHooks } from '../models/entities/abstracts/interfaces';
+import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { ErrorsService } from '@app/core/errors/errors.service';
 
 @Injectable()
 export class DepositFormManager {
@@ -48,14 +51,18 @@ export class DepositFormManager {
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
   constructor(
-    private readonly swapsStateService: SwapsStateService,
     private readonly depositService: DepositService,
+    swapsStateService: SwapsStateService,
     modalService: ModalService,
-    tradePageService: TradePageService
+    tradePageService: TradePageService,
+    swapsControllerService: SwapsControllerService,
+    walletConnectorService: WalletConnectorService,
+    errorsService: ErrorsService,
+    @Inject(Injector) injector: Injector
   ) {
     const depositDetails: DepositFormDetails = {
-      srcToken: new TokenAmount(this.swapsStateService.tradeState.trade.from),
-      dstToken: new TokenAmount(this.swapsStateService.tradeState.trade.to)
+      srcToken: new TokenAmount(swapsStateService.tradeState.trade.from),
+      dstToken: new TokenAmount(swapsStateService.tradeState.trade.to)
     };
     const steps: DepositFormSteps = [
       new ExchangeDetailsStep(this._depositFormState$, this._depositFormSteps$, depositDetails),
@@ -67,7 +74,16 @@ export class DepositFormManager {
         modalService,
         tradePageService
       ),
-      new TradeInfoStep(this._depositFormState$, this._depositFormSteps$),
+      new TradeInfoStep(
+        this._depositFormState$,
+        this._depositFormSteps$,
+        injector,
+        swapsStateService,
+        swapsControllerService,
+        walletConnectorService,
+        modalService,
+        errorsService
+      ),
       new TradeStatusStep(this._depositFormState$, this._depositFormSteps$)
     ];
     this._depositFormSteps$.next(steps);
@@ -83,6 +99,7 @@ export class DepositFormManager {
     this.depositFormSteps.forEach(step => {
       if (withHooks(step)) step.onDestroy();
     });
+    this.setDepositFormState(DEPOSIT_FORM_STATE.IDLE);
     this.depositService.cleanup();
   }
 
@@ -93,6 +110,7 @@ export class DepositFormManager {
     const depositStep = this.depositFormSteps[stepOrder];
     if (!isDepositStepWithAction(depositStep)) return;
 
+    // @ts-ignore
     await depositStep.doAction(stepAction as RubicAny);
     this._depositFormSteps$.next(this.depositFormSteps);
   }

@@ -41,6 +41,10 @@
             padding: 8px 12px;
             background: #1b1b22;
             border-radius: 12px;
+
+            app-field-with-copy-btn {
+              width: fit-content;
+            }
           }
 
           app-field-with-copy-btn {

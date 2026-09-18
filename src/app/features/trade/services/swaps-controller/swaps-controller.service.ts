@@ -487,7 +487,7 @@ export class SwapsControllerService {
     return false;
   }
 
-  private catchSwapError(
+  public catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
     onError?: (err: RubicError<ERROR_TYPE> | null) => void

@@ -1,4 +1,5 @@
 import {
+  BlockchainsInfo,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
@@ -15,7 +16,11 @@ import { FeeInfo } from '../../../../cross-chain/calculation-manager/providers/c
 import { RubicStep } from '../../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { BasicSendTransactionOptions, RubicSdkError } from '@cryptorubic/web3';
+import {
+  BasicSendTransactionOptions,
+  FailedToCheckForTransactionReceiptError,
+  RubicSdkError
+} from '@cryptorubic/web3';
 import { OnChainTrade } from '../on-chain-trade/on-chain-trade';
 import { OnChainTransferConfig } from './models/on-chain-transfer-config';
 import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
@@ -79,10 +84,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     _checkNeedApprove: boolean,
     _weiAmount: BigNumber
   ): Promise<unknown> {
-    throw new RubicSdkError("For deposit trades use 'getTransferTrade' method");
-  }
-
-  public async swap(_options?: SwapTransactionOptions): Promise<string | never> {
     throw new RubicSdkError("For deposit trades use 'getTransferTrade' method");
   }
 
@@ -155,6 +156,83 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       config: res as OnChainTransferConfig,
       amount: res.estimate.destinationWeiAmount
     };
+  }
+
+  public swap(options: SwapTransactionOptions = {}): Promise<string | never> {
+    return this.swapDirect(options);
+  }
+
+  private async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
+    if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
+      throw new RubicSdkError("For non-evm chains use 'getTransferTrade' method");
+    }
+
+    await this.checkWalletState(options?.testMode);
+    await this.checkReceiverAddress(
+      options.receiverAddress,
+      !BlockchainsInfo.isEvmBlockchainName(this.to.blockchain),
+      this.type
+    );
+
+    const { onConfirm, gasPriceOptions } = options;
+    let transactionHash: string;
+    const onTransactionHash = (hash: string) => {
+      if (onConfirm) onConfirm(hash);
+      transactionHash = hash;
+    };
+
+    try {
+      await this.setTransactionConfig(
+        false,
+        options.useCacheData || false,
+        options.testMode || false,
+        options?.receiverAddress || this.walletAddress
+      );
+      if (!this.paymentInfo) {
+        throw new Error('Deposit address is not set');
+      }
+
+      const evmAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        this.from.blockchain
+      );
+      if (this.from.isNative) {
+        await evmAdapter.signer.trySendTransaction({
+          txOptions: {
+            to: this.paymentInfo.depositAddress,
+            value: this.from.weiAmount,
+            onTransactionHash,
+            gasPriceOptions
+          }
+        });
+      } else {
+        await evmAdapter.signer.trySendTransaction({
+          txOptions: {
+            to: this.from.address,
+            data: this.lastSwapResponse.transaction.data,
+            value: '0',
+            onTransactionHash,
+            gasPriceOptions
+          }
+        });
+        // await evmAdapter.signer.tryExecuteContractMethod(
+        //   this.from.address,
+        //   erc20TokenAbi,
+        //   'transfer',
+        //   [this.paymentInfo.depositAddress, this.from.stringWeiAmount],
+        //   {
+        //     onTransactionHash,
+        //     gasPriceOptions
+        //   }
+        // );
+      }
+
+      return transactionHash!;
+    } catch (err) {
+      if (err instanceof FailedToCheckForTransactionReceiptError) {
+        return transactionHash!;
+      }
+      throw err;
+    }
   }
 
   protected async setTransactionConfig(

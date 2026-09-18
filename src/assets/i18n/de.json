@@ -66,6 +66,7 @@
     "wrongToken": "Die Rubic-Bridge unterstützt ausschließlich Rubic Token.",
     "oneInchQuote": "Preisermittlung über 1inch fehlgeschlagen",
     "notSupportedNetwork": "{{networkToChoose}} wird von Deinem Wallet nicht unterstützt.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Du scheinst Deinem Wallet bisher noch keine Freigabe erteilt zu haben, damit es sich mit Rubic verbinden kann. Um sämtliche Funktionen unserer Plattform nutzen zu können, erteile bitte die entsprechende Freigabe. Dies erfolgt in der Regel über den Unterschreiben-Button.",
     "lowGas": "Für die Transaktion steht nicht ausreichend Gas zur Verfügung. Bitte erhöhe Dein Gas-Limit",
     "noSelectedProvider": "Swap-Anbieter wählen",

@@ -1,3 +1,5 @@
+@let showWalletBtn = showWalletBtn$ | async;
+
 <div class="qr-container">
   <b class="qr-container__label">Scan QR to pay</b>
 
@@ -6,7 +8,7 @@
       <canvas [id]="QR_CODE_ID" width="142" height="142"></canvas>
     </div>
 
-    @if (showWalletBtn$ | async) {
+    @if (showWalletBtn) {
       <button
         tuiButton
         class="step-content__btn"

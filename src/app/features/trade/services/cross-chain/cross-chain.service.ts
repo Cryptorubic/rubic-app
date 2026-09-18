@@ -178,7 +178,12 @@ export class CrossChainService {
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean; receiverAddress?: string } = {
+    params: {
+      useCacheData: boolean;
+      skipAmountCheck: boolean;
+      receiverAddress?: string;
+      refundAddress?: string;
+    } = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -225,7 +230,9 @@ export class CrossChainService {
 
     const referrer = this.sessionStorage.getItem('referral');
 
-    const receiverAddress = this.receiverAddress || params?.receiverAddress;
+    const receiverAddress = params?.receiverAddress || this.receiverAddress;
+    const refundAddress = params?.refundAddress || this.refundService.refundAddress;
+
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
@@ -234,7 +241,7 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
-      refundAddress: this.refundService.refundAddress,
+      ...(refundAddress && { refundAddress }),
       useCacheData: params.useCacheData,
       skipAmountCheck: params.skipAmountCheck
     };

@@ -67,6 +67,7 @@
     "wrongToken": "루빅 브릿지는 루빅 토큰 만 지원합니다.",
     "oneInchQuote": "1inch 견적 오류",
     "notSupportedNetwork": "{{networkToChoose}} 선택한 지갑 제공 업체에서 지원하지 않습니다.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "지갑으로 로그인을 거부했습니다. 앱을 최대한 활용하려면 지갑으로 로그인을 확인하십시오.",
     "lowGas": "거래 가스가 너무 낮습니다. 최소한의 거래 비용을 충당하기에는 가스가 충분하지 않습니다. 공급 가스를 늘리십시오",
     "noSelectedProvider": "스왑 제공 업체를 선택하지 않았습니다.",

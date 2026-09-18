@@ -25,10 +25,6 @@ import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/mod
 import { parseExtraFields } from '../../../../../ws-api/chains/transfer-trade/utils/parse-extra-fields';
 //
 export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChainTransferConfig> {
-  public swap(): Promise<string | never> {
-    throw new Error('Method not implemented.');
-  }
-
   public encode(): Promise<unknown> {
     throw new Error('Method not implemented.');
   }
@@ -170,7 +166,11 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     };
   }
 
-  public async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
+  public swap(options: SwapTransactionOptions = {}): Promise<string | never> {
+    return this.swapDirect(options);
+  }
+
+  private async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
     if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
       throw new RubicSdkError("For non-evm chains use 'getTransferTrade' method");
     }
@@ -185,9 +185,7 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     const { onConfirm, gasPriceOptions } = options;
     let transactionHash: string;
     const onTransactionHash = (hash: string) => {
-      if (onConfirm) {
-        onConfirm(hash);
-      }
+      if (onConfirm) onConfirm(hash);
       transactionHash = hash;
     };
 
