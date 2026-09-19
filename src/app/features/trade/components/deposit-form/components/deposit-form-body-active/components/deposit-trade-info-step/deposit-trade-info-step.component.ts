@@ -53,6 +53,9 @@ export class DepositTradeInfoStepComponent {
   }
 
   public getActionBtnState(): ActionBtnState {
-    return this.depositFormManager.getActionBtnState(DEPOSIT_STEP_ORDER.TRADE_INFO);
+    return this.depositFormManager.getActionBtnState(
+      DEPOSIT_STEP_ORDER.TRADE_INFO,
+      'confirm_deposit'
+    );
   }
 }

@@ -42,11 +42,17 @@ export class InputAddressesStep
     private readonly tradePageService: TradePageService
   ) {
     const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
-    const actionBtnState: ActionBtnState = {
-      active: false,
-      text: 'Confirm Addresses'
+    const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
+      confirm_addresses: {
+        active: false,
+        text: 'Confirm Addresses'
+      },
+      change_addresses: {
+        active: false,
+        text: 'Change Addresses'
+      }
     };
-    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionBtnState);
+    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
   }
 
   public async doAction(action: InputAddressesStepAction): Promise<void> {
@@ -61,7 +67,7 @@ export class InputAddressesStep
     this.initValidators();
 
     const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
-      this.updateActionBtnState({ active: status === 'VALID' });
+      this.updateActionBtnState('confirm_addresses', { active: status === 'VALID' });
     });
     const tradeStatusSub = this.depositService.status$.subscribe(status => {
       if (status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
@@ -114,8 +120,10 @@ export class InputAddressesStep
       });
       detailsStep.updateDepositDetails({ dstToken: dstTokenUpdated });
 
+      this.updateActionBtnState('confirm_addresses', { active: false });
+      this.updateActionBtnState('change_addresses', { active: true });
+
       this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
-      this.updateActionBtnState({ text: 'Change Addresses', active: true });
       tradeInfoStep.setActive(true);
       tradeInfoStep.setLoading(false);
       tradeInfoStep.setOpened(true);
@@ -147,8 +155,9 @@ export class InputAddressesStep
       this.inputsForm.get(ctrl).enable();
     }
 
+    this.updateActionBtnState('change_addresses', { active: false });
+    this.updateActionBtnState('confirm_addresses', { active: true });
     this.depositService.cleanup();
-    this.updateActionBtnState({ text: 'Confirm Addresses' });
     this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
   }
 

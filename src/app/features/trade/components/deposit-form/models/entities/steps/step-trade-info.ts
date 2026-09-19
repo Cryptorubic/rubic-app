@@ -34,8 +34,11 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     private readonly errorsService: ErrorsService
   ) {
     const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
-    const actionBtnState: ActionBtnState = { active: true, text: 'Translated funds is done' };
-    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionBtnState);
+    const actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState> = {
+      confirm_deposit: { active: true, text: 'Translated funds is done' },
+      send_via_wallet: { active: true, text: 'Connect Wallet & Send' }
+    };
+    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
   }
 
   public async doAction(action: TradeInfoStepAction): Promise<void> {
@@ -53,11 +56,12 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
 
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
+
     tradeStatusStep.setActive(true);
     tradeStatusStep.setOpened(true);
 
     this.setOpened(false);
-    this.updateActionBtnState({ active: false });
+    this.updateActionBtnState('confirm_deposit', { active: false });
     this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
   }
 
@@ -66,6 +70,9 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     const srcChainType = BlockchainsInfo.getChainType(srcChain);
     const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
     const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
+
+    this.updateActionBtnState('confirm_deposit', { active: false });
+    this.updateActionBtnState('send_via_wallet', { active: false });
 
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
@@ -83,13 +90,19 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
       );
     }
     if (!this.walletConnectorService.address) {
+      this.updateActionBtnState('confirm_deposit', { active: true });
+      this.updateActionBtnState('send_via_wallet', { active: true });
       this.errorsService.catch(new WalletError());
       return;
     }
 
     if (this.walletConnectorService.network !== BlockchainsInfo.getChainType(srcChain)) {
       const switched = await this.walletConnectorService.switchChain(srcChain);
-      if (!switched) return;
+      if (!switched) {
+        this.updateActionBtnState('confirm_deposit', { active: true });
+        this.updateActionBtnState('send_via_wallet', { active: true });
+        return;
+      }
     }
 
     await this.swapsControllerService.swap(this.swapsStateService.tradeState, true, {
@@ -98,7 +111,6 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
         tradeStatusStep.setOpened(true);
 
         this.setOpened(false);
-        this.updateActionBtnState({ active: false });
         this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
       },
       onError: err => {

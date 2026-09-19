@@ -41,6 +41,21 @@ export class DepositInputAddressesStepComponent {
   }
 
   public getActionBtnState(): ActionBtnState {
-    return this.depositFormManager.getActionBtnState(DEPOSIT_STEP_ORDER.INPUT_ADDRESSES);
+    switch (this.depositFormManager.depositFormState) {
+      case DEPOSIT_FORM_STATE.IDLE:
+        return this.depositFormManager.getActionBtnState(
+          DEPOSIT_STEP_ORDER.INPUT_ADDRESSES,
+          'confirm_addresses'
+        );
+      case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
+        return this.depositFormManager.getActionBtnState(
+          DEPOSIT_STEP_ORDER.INPUT_ADDRESSES,
+          'change_addresses'
+        );
+      default:
+        throw new Error(
+          `Unsupported depositFormState ${this.depositFormManager.depositFormState}.`
+        );
+    }
   }
 }

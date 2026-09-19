@@ -10,14 +10,16 @@
 
     @if (showWalletBtn) {
       <button
+        *ngLet="getActionBtnState() as actionBtnState"
         tuiButton
         class="step-content__btn"
         appearance="secondary"
         type="button"
         size="m"
+        [disabled]="!actionBtnState.active"
         (click)="btnClicked.emit()"
       >
-        Connect Wallet & Send
+        {{ actionBtnState.text }}
       </button>
     }
   </div>

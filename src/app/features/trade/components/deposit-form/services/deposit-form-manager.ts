@@ -115,11 +115,19 @@ export class DepositFormManager {
     this._depositFormSteps$.next(this.depositFormSteps);
   }
 
-  public getActionBtnState(stepOrder: DEPOSIT_STEP_ORDER): ActionBtnState {
+  public getActionBtnState<K extends DEPOSIT_STEP_ORDER>(
+    stepOrder: K,
+    stepAction: (typeof STEP_ACTION)[K][number]
+  ): ActionBtnState {
     const depositStep = this.depositFormSteps[stepOrder];
     if (!isDepositStepWithAction(depositStep)) {
       throw new Error(`${depositStep.name} doesn't have action button!`);
     }
-    return depositStep.actionBtnState;
+
+    const actionBtuttonsMap = depositStep.actionButtonsMap as Record<
+      (typeof STEP_ACTION)[K][number],
+      ActionBtnState
+    >;
+    return actionBtuttonsMap[stepAction];
   }
 }
