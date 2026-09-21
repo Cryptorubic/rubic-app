@@ -106,8 +106,9 @@ export class DepositFormManager {
         case DEPOSIT_FORM_STATE.IDLE:
           inputAddressesStep.setActive(true);
           inputAddressesStep.setOpened(true);
-          inputAddressesStep.updateActionBtnState('confirm_addresses', { active: false });
-          inputAddressesStep.updateActionBtnState('change_addresses', { active: false });
+          inputAddressesStep.updateActionBtnState('confirm_addresses', {
+            active: inputAddressesStep.inputsForm.valid
+          });
 
           tradeInfoStep.setActive(false);
           tradeInfoStep.setOpened(false);

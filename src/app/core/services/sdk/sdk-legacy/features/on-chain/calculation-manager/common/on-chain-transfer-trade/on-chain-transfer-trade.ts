@@ -186,7 +186,8 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
         false,
         options.useCacheData || false,
         options.testMode || false,
-        options?.receiverAddress || this.walletAddress
+        options.receiverAddress,
+        options.refundAddress
       );
       if (!this.paymentInfo) {
         throw new Error('Deposit address is not set');

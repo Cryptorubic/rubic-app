@@ -47,6 +47,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { SwapMethodOptions } from '../swaps-controller/models/swap-options';
 
 @Injectable()
 export class CrossChainService {
@@ -178,12 +179,7 @@ export class CrossChainService {
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: {
-      useCacheData: boolean;
-      skipAmountCheck: boolean;
-      receiverAddress?: string;
-      refundAddress?: string;
-    } = {
+    params: SwapMethodOptions = {
       useCacheData: false,
       skipAmountCheck: false
     }

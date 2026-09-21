@@ -72,6 +72,7 @@ import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
+import { SwapMethodOptions } from './models/swap-options';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -272,9 +273,9 @@ export class SwapsControllerService {
       onSimulationSuccess?: () => Promise<boolean>;
       onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
     },
-    options?: {
-      receiverAddress?: string;
-      refundAddress?: string;
+    options: SwapMethodOptions = {
+      useCacheData: false,
+      skipAmountCheck: false
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -304,24 +305,14 @@ export class SwapsControllerService {
           trade,
           callback.onHash,
           callback.onSimulationSuccess,
-          {
-            useCacheData: false,
-            skipAmountCheck: false,
-            receiverAddress: options.receiverAddress,
-            refundAddress: options.refundAddress
-          }
+          options
         );
       } else {
         txHash = await this.onChainService.swapTrade(
           trade,
           callback.onHash,
           callback.onSimulationSuccess,
-          {
-            useCacheData: false,
-            skipAmountCheck: false,
-            receiverAddress: options.receiverAddress,
-            refundAddress: options.refundAddress
-          }
+          options
         );
       }
     } catch (err) {

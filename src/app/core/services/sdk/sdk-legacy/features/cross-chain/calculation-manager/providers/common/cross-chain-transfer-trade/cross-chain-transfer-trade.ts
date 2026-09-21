@@ -124,21 +124,15 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     receiverAddress?: string,
     refundAddress?: string
   ): Promise<{ config: CrossChainTransferConfig; amount: string }> {
-    const isPrivateTrade = this.apiResponse.private;
-    const isFromEvm = BlockchainsInfo.isEvmBlockchainName(this.from.blockchain);
-    const fromAddress = isFromEvm ? this.walletAddress : '';
-    receiverAddress = receiverAddress || this.walletAddress;
-    refundAddress = isFromEvm ? refundAddress || this.walletAddress : refundAddress;
-
     const swapRequestData: TransferSwapRequestInterface = {
       ...this.apiQuote,
-      receiver: receiverAddress,
       id: this.apiResponse.id,
       enableChecks: !testMode,
-      ...(fromAddress && { fromAddress }),
+      receiver: receiverAddress ?? '',
       ...(refundAddress && { refundAddress })
     };
 
+    const isPrivateTrade = this.apiResponse.private;
     const res = isPrivateTrade
       ? await this.rubicApiService.fetchSwapPrivateTrade<TransactionInterface>(
           swapRequestData as SwapPrivateRequestInterface
@@ -194,7 +188,8 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
         false,
         options.useCacheData || false,
         options.testMode || false,
-        options?.receiverAddress || this.walletAddress
+        options.receiverAddress,
+        options.refundAddress
       );
       if (!this.paymentInfo) {
         throw new Error('Deposit address is not set');

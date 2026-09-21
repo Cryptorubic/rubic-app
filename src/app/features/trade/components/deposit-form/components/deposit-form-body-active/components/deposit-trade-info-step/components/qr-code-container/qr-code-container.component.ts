@@ -23,9 +23,13 @@ export class QrCodeContainerComponent {
     startWith(false)
   );
 
+  public readonly actionBtnState$ = this.depositFormManager.depositFormSteps$.pipe(
+    map(() => this.getActionBtnState())
+  );
+
   constructor(private readonly depositFormManager: DepositFormManager) {}
 
-  public getActionBtnState(): ActionBtnState {
+  private getActionBtnState(): ActionBtnState {
     return this.depositFormManager.getActionBtnState(
       DEPOSIT_STEP_ORDER.TRADE_INFO,
       'send_via_wallet'

@@ -46,6 +46,7 @@ import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.s
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { SwapMethodOptions } from '../swaps-controller/models/swap-options';
 
 @Injectable()
 export class OnChainService {
@@ -125,12 +126,7 @@ export class OnChainService {
     trade: OnChainTrade,
     onHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: {
-      useCacheData: boolean;
-      skipAmountCheck: boolean;
-      receiverAddress?: string;
-      refundAddress?: string;
-    } = {
+    params: SwapMethodOptions = {
       useCacheData: false,
       skipAmountCheck: false
     }

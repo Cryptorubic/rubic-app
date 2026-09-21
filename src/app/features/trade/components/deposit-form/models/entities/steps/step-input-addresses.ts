@@ -113,7 +113,7 @@ export class InputAddressesStep
       this.depositService.setupUpdate();
 
       const dstTokenUpdated = new TokenAmount({
-        ...detailsStep.depositDetails.srcToken.asStruct,
+        ...detailsStep.depositDetails.dstToken.asStruct,
         tokenAmount: paymentInfo.toAmount
       });
       detailsStep.updateDepositDetails({ dstToken: dstTokenUpdated });

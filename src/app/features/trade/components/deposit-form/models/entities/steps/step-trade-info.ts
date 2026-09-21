@@ -127,18 +127,19 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
       return;
     }
     if (!this.walletConnectorService.address) {
-      await firstValueFrom(
-        this.modalService.openWalletModal(this.injector, {
-          direction: 'row',
-          providers: CHAIN_SUPPORTED_WALLETS[srcChainType]
-        })
-      );
-    }
-    if (!this.walletConnectorService.address) {
-      this.updateActionBtnState('confirm_deposit', { active: true });
-      this.updateActionBtnState('send_via_wallet', { active: true });
-      this.errorsService.catch(new WalletError());
-      return;
+      try {
+        await firstValueFrom(
+          this.modalService.openWalletModal(this.injector, {
+            direction: 'row',
+            providers: CHAIN_SUPPORTED_WALLETS[srcChainType]
+          })
+        );
+      } catch {
+        this.updateActionBtnState('confirm_deposit', { active: true });
+        this.updateActionBtnState('send_via_wallet', { active: true });
+        this.errorsService.catch(new WalletError());
+        return;
+      }
     }
 
     if (this.walletConnectorService.network !== BlockchainsInfo.getChainType(srcChain)) {
@@ -173,7 +174,9 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
       },
       {
         receiverAddress,
-        refundAddress
+        refundAddress,
+        useCacheData: true, // needs to reuse same deposit address from previous /swap response
+        skipAmountCheck: false
       }
     );
   }

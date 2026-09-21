@@ -20,13 +20,14 @@
       @include flex(column, normal, center);
       padding: 16px;
       background: var(--tui-background-base);
+      border-radius: 20px;
 
       &__row:not(:last-child) {
         border-bottom: 1px solid var(--tui-background-neutral-1);
       }
 
       &__row {
-        @include flex(row, center, spac-between);
+        @include flex(row, center, space-between);
         gap: 10px;
         padding: 14px 0px;
         font-weight: 400;
