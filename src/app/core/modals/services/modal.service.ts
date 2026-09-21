@@ -132,7 +132,8 @@ export class ModalService {
     calculationProgress: CalculationProgress,
     isModal: true,
     injector: Injector,
-    noRoutes: boolean
+    noRoutes: boolean,
+    privateOnly: boolean
   ): Observable<TradeProvider> {
     this.setOpenedModalName('other-provider-list');
     return this.showDialog<ProvidersListComponent, TradeProvider>(
@@ -146,7 +147,8 @@ export class ModalService {
           calculationProgress,
           isModal,
           shortedInfo: false,
-          noRoutes
+          noRoutes,
+          privateOnly
         }
       },
       injector
