@@ -5,10 +5,7 @@
     loading: loading$ | async
   } as state"
 >
-  <app-input-output-container
-    [round]="creationConfig.withReceiver ? 'top' : 'all'"
-    [marginTop]="true"
-  >
+  <app-input-output-container [round]="creationConfig.withReceiver ? 'top' : 'all'">
     <app-asset-selector
       left
       selectorType="from"
