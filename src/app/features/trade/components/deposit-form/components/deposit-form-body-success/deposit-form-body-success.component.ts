@@ -69,7 +69,7 @@ export class DepositFormBodySuccessComponent {
       },
       {
         key: 'You received',
-        value: new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 10, 6),
+        value: new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6),
         valueTextColor: '#39E180'
       },
       {
@@ -79,7 +79,7 @@ export class DepositFormBodySuccessComponent {
       },
       {
         key: 'Trade ID',
-        value: depositTrade.id
+        value: new ShortAddressPipe().transform(depositTrade.id, 6, 4)
       },
       {
         key: 'Provider',

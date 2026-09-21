@@ -106,7 +106,7 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-    if (isDepositTrade && !receiverAddress) {
+    if (isDeposit && !receiverAddress) {
       return {
         type: 'action',
         text: 'Preview swap',
