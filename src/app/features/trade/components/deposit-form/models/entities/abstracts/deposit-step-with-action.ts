@@ -23,7 +23,7 @@ export abstract class DepositStepWithAction<T extends string = string> extends D
 
   public abstract doAction(action: T): Promise<void>;
 
-  protected updateActionBtnState(btnName: T, state: Partial<ActionBtnState>): void {
+  public updateActionBtnState(btnName: T, state: Partial<ActionBtnState>): void {
     this._actionButtonsMap[btnName] = { ...this._actionButtonsMap[btnName], ...state };
   }
 }

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { BehaviorSubject, map, share, switchMap, takeWhile, tap, timer } from 'rxjs';
+import { msToFriendlyTime } from './utils/ms-to-friendly-time';
 
 @Component({
   selector: 'app-timer',
@@ -17,6 +18,11 @@ export class TimerComponent {
 
   @Output() timerCompleted: EventEmitter<void> = new EventEmitter();
 
+  /**
+   * every second emits time passed from start in ms
+   */
+  @Output() timerTicked: EventEmitter<number> = new EventEmitter();
+
   private readonly _expiresAfterMs$ = new BehaviorSubject<number>(30_000);
 
   private readonly reverseTimerMs$ = this._expiresAfterMs$.pipe(
@@ -24,6 +30,7 @@ export class TimerComponent {
       const deadlineTimestampMs = expiresAfterMs + 1_000 + Date.now();
       const intervalDelayMs = 1_000;
       return timer(0, intervalDelayMs).pipe(
+        tap(count => this.timerTicked.emit(count * intervalDelayMs)),
         map(count => expiresAfterMs - count * intervalDelayMs),
         takeWhile(() => Date.now() <= deadlineTimestampMs),
         tap({ complete: () => this.timerCompleted.emit() })
@@ -33,23 +40,6 @@ export class TimerComponent {
   );
 
   public readonly reverseTimerFriendly$ = this.reverseTimerMs$.pipe(
-    map(msLeft => this.msToFriendlyTime(msLeft))
+    map(msLeft => msToFriendlyTime(msLeft))
   );
-
-  constructor() {}
-
-  private msToFriendlyTime(timestamp: number): string {
-    let timestampInSecs = Math.floor(timestamp / 1000);
-    const hours = Math.floor(timestampInSecs / 3600);
-    timestampInSecs = timestampInSecs - hours * 3600;
-    const minutes = Math.floor(timestampInSecs / 60);
-    timestampInSecs = timestampInSecs - minutes * 60;
-    const seconds = timestampInSecs;
-
-    const hh = hours < 10 ? `0${hours}` : `${hours}`;
-    const mm = minutes < 10 ? `0${minutes}` : `${minutes}`;
-    const ss = seconds < 10 ? `0${seconds}` : `${seconds}`;
-
-    return hh === '00' ? `${mm}:${ss}` : `${hh}:${mm}:${ss}`;
-  }
 }

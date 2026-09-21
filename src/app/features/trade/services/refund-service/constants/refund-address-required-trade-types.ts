@@ -15,3 +15,9 @@ export const refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTrad
   ON_CHAIN_TRADE_TYPE.CLEARSWAP,
   ON_CHAIN_TRADE_TYPE.HOUDINI
 ];
+
+export function isRefundAddressRequired(
+  tradeType: OnChainTradeType | CrossChainTradeType
+): boolean {
+  return refundAddressRequiredTradeTypes.includes(tradeType);
+}

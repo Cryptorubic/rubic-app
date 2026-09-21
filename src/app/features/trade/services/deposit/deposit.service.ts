@@ -9,7 +9,7 @@ import {
   API_STATUS_TO_DEPOSIT_STATUS,
   API_SUBSTATUS_TO_DEPOSIT_STATUS,
   CROSS_CHAIN_DEPOSIT_STATUS,
-  CrossChainDepositStatus
+  CrossChainDepositData
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
@@ -35,9 +35,10 @@ export class DepositService {
 
   public readonly depositTrade$ = this._depositTrade$.asObservable().pipe(filter(Boolean));
 
-  private readonly _status$ = new BehaviorSubject<CrossChainDepositStatus>(
-    CROSS_CHAIN_DEPOSIT_STATUS.WAITING
-  );
+  private readonly _status$ = new BehaviorSubject<CrossChainDepositData>({
+    status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,
+    dstHash: null
+  });
 
   public readonly status$ = this._status$.asObservable();
 
@@ -88,7 +89,7 @@ export class DepositService {
         startWith(-1),
         switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
         tap(status => this._status$.next(status)),
-        takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
+        takeWhile(status => status.status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
       )
       .subscribe();
 
@@ -97,10 +98,10 @@ export class DepositService {
 
   public removePrevDeposit(): void {
     this._depositTrade$.next(null);
-    this._status$.next(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
+    this._status$.next({ status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null });
   }
 
-  private async getSwapStatus(rubicId: string): Promise<CrossChainDepositStatus> {
+  private async getSwapStatus(rubicId: string): Promise<CrossChainDepositData> {
     try {
       if (!rubicId) {
         throw new Error(`[DepositService_getSwapStatus] Deposit id can't be undefined.`);
@@ -114,25 +115,25 @@ export class DepositService {
       const response = await this.rubicApiService.fetchCrossChainTxStatusExtended(rubicId);
 
       if (response.status === 'SUCCESS') {
-        return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+        return { status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED, dstHash: response.destinationTxHash };
       }
 
       if (!response.subStatus) {
-        return API_STATUS_TO_DEPOSIT_STATUS[response.status];
+        return { status: API_STATUS_TO_DEPOSIT_STATUS[response.status], dstHash: null };
       }
 
-      return API_SUBSTATUS_TO_DEPOSIT_STATUS[response.subStatus];
+      return { status: API_SUBSTATUS_TO_DEPOSIT_STATUS[response.subStatus], dstHash: null };
     } catch (err) {
       console.log(err);
-      return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+      return { status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null };
     }
   }
 
-  private async getClearswapDepositStatus(rubicId: string): Promise<CrossChainDepositStatus> {
+  private async getClearswapDepositStatus(rubicId: string): Promise<CrossChainDepositData> {
     const response = await this.tradeStatusService.getClearswapStatus(rubicId);
 
     if (response.status === CLEARSWAP_STATUS.SUCCESS) {
-      return CROSS_CHAIN_DEPOSIT_STATUS.FINISHED;
+      return { status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED, dstHash: response.destTxHash };
     }
     if (response.status === CLEARSWAP_STATUS.PENDING) {
       const subStatusValidValues: (keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS)[] = [
@@ -147,15 +148,19 @@ export class DepositService {
           response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
         )
       ) {
-        return API_SUBSTATUS_TO_DEPOSIT_STATUS[
-          response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
-        ];
+        return {
+          status:
+            API_SUBSTATUS_TO_DEPOSIT_STATUS[
+              response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
+            ],
+          dstHash: null
+        };
       }
 
-      return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
+      return { status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null };
     }
 
-    return CROSS_CHAIN_DEPOSIT_STATUS.FAILED;
+    return { status: CROSS_CHAIN_DEPOSIT_STATUS.FAILED, dstHash: null };
   }
 
   private saveTrade(tradeData: DepositTrade): void {

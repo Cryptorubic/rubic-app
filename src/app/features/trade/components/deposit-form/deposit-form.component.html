@@ -1,11 +1,9 @@
-<app-window-container
-  *ngLet="{
-    depositFormState: depositFormState$ | async,
-    tradeId: tradeId$ | async,
-    formTitle: formTitle$ | async
-  } as state"
-  class="deposit-form"
->
+@let depositFormState = depositFormState$ | async;
+@let tradeId = tradeId$ | async;
+@let formTitle = formTitle$ | async;
+@let durationMs = durationMs$ | async;
+
+<app-window-container class="deposit-form">
   <ng-container header>
     <div class="deposit-form__header">
       <app-back-button
@@ -14,12 +12,12 @@
         (onClick)="backToForm()"
       ></app-back-button>
 
-      <span class="deposit-form__title">{{ state.formTitle }}</span>
+      <span class="deposit-form__title">{{ formTitle }}</span>
 
-      @if (state.tradeId) {
+      @if (tradeId && depositFormState !== 'COMPLETED') {
         <app-field-with-copy-btn
-          [visibleText]="$any(state.tradeId | shortAddress: 6 : 6)"
-          [textToCopy]="state.tradeId"
+          [visibleText]="tradeId | shortAddress: 6 : 6"
+          [textToCopy]="tradeId"
           [bgColor]="'var(--tui-background-base)'"
           [borderColor]="'var(--tui-background-base)'"
         ></app-field-with-copy-btn>
@@ -28,19 +26,20 @@
   </ng-container>
 
   <div class="deposit-form__main">
-    @if (state.depositFormState === 'WAITING_FOR_SENDING_DEPOSIT') {
+    @if (depositFormState === 'WAITING_FOR_SENDING_DEPOSIT') {
       <div class="deposit-form__timer">
         <app-timer
           [expiresAfterMs]="1_800_000"
           text="remaining"
           (timerCompleted)="handleTradeExpired()"
+          (timerTicked)="handleTimeTick($event)"
         ></app-timer>
       </div>
     }
 
     <div class="deposit-form__body">
-      @if (state.depositFormState === 'COMPLETED') {
-        <app-deposit-form-body-success></app-deposit-form-body-success>
+      @if (depositFormState === 'COMPLETED') {
+        <app-deposit-form-body-success [durationMs]="durationMs"></app-deposit-form-body-success>
       } @else {
         <app-deposit-form-body-active></app-deposit-form-body-active>
       }

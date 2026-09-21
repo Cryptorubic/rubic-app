@@ -123,9 +123,14 @@ export class OnChainService {
    */
   public async swapTrade(
     trade: OnChainTrade,
-    callback?: (hash: string) => void,
+    onHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+    params: {
+      useCacheData: boolean;
+      skipAmountCheck: boolean;
+      receiverAddress?: string;
+      refundAddress?: string;
+    } = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -139,8 +144,6 @@ export class OnChainService {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
     }
     await this.handlePreSwapModal(trade);
-
-    const receiverAddress = this.receiverAddress;
 
     const { shouldCalculateGasPrice, gasPriceOptions } =
       await this.gasService.getGasInfo(blockchain);
@@ -161,11 +164,13 @@ export class OnChainService {
     };
 
     const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+    const receiverAddress = params.receiverAddress ?? this.receiverAddress;
+    const refundAddress = params.refundAddress;
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
-        callback?.(hash);
+        onHash?.(hash);
 
         this.notifyGtmAfterSignTx(
           transactionHash,
@@ -182,6 +187,7 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
+      ...(refundAddress && { refundAddress }),
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),

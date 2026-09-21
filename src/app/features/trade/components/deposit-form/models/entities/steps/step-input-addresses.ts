@@ -19,6 +19,8 @@ import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states'
 import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
 import { TransferTrade } from '../../deposit-form-info';
 import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { isRefundAddressRequired } from '@app/features/trade/services/refund-service/constants/refund-address-required-trade-types';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -28,7 +30,7 @@ export class InputAddressesStep
 
   public inputsForm = new FormGroup<InputAddressesStepForm>({
     receiverAddr: new FormControl('', [Validators.required]),
-    refundAddr: new FormControl('', [Validators.required])
+    refundAddr: new FormControl('', [])
   });
 
   private readonly _subs: Subscription[] = [];
@@ -39,7 +41,8 @@ export class InputAddressesStep
     private readonly swapsStateService: SwapsStateService,
     private readonly depositService: DepositService,
     private readonly modalService: ModalService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly headerStore: HeaderStore
   ) {
     const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
@@ -70,21 +73,12 @@ export class InputAddressesStep
       this.updateActionBtnState('confirm_addresses', { active: status === 'VALID' });
     });
     const tradeStatusSub = this.depositService.status$.subscribe(status => {
-      if (status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
-
-      const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
-
-      tradeStatusStep.setActive(true);
-      tradeStatusStep.setOpened(true);
-      this.setOpened(false);
-      this.setActive(false);
-
+      if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
       this._depositFormState$.next(
-        status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED
+        status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED
           ? DEPOSIT_FORM_STATE.COMPLETED
           : DEPOSIT_FORM_STATE.STATUS_TRACKING
       );
-      this.triggerStepsUpdate();
     });
 
     this._subs.push(formStatusSub, tradeStatusSub);
@@ -109,9 +103,13 @@ export class InputAddressesStep
 
     try {
       const selectedTrade = this.swapsStateService.tradeState.trade as TransferTrade;
+      const srcToken: TokenAmount = new TokenAmount(selectedTrade.from);
       const paymentInfo = await selectedTrade.getTransferTrade(receiverAddr, refundAddr);
 
       await this.depositService.updateTrade(paymentInfo, receiverAddr);
+      if (this.headerStore.isMobile) {
+        await tradeInfoStep.createQrCodeCanvases(receiverAddr, srcToken);
+      }
       this.depositService.setupUpdate();
 
       const dstTokenUpdated = new TokenAmount({
@@ -120,13 +118,8 @@ export class InputAddressesStep
       });
       detailsStep.updateDepositDetails({ dstToken: dstTokenUpdated });
 
-      this.updateActionBtnState('confirm_addresses', { active: false });
-      this.updateActionBtnState('change_addresses', { active: true });
-
-      this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
-      tradeInfoStep.setActive(true);
       tradeInfoStep.setLoading(false);
-      tradeInfoStep.setOpened(true);
+      this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
     } catch {
       const backToForm = await this.modalService.openDepositTradeRateChangedModal(
         this.swapsStateService.tradeState.tradeType as CrossChainTradeType
@@ -134,40 +127,32 @@ export class InputAddressesStep
       if (backToForm) {
         this.tradePageService.setState('form');
       } else {
-        // @TODO_3003 use DEPOSIT_FORM_STATE.ERROR
-        this._depositFormState$.next(DEPOSIT_FORM_STATE.EXPIRED);
-        this.depositFormSteps.forEach(step => {
-          step.setActive(false);
-          step.setOpened(false);
-          step.setLoading(false);
-        });
+        this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
       }
     }
   }
 
   private changeAddresses(): void {
-    const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
-    tradeInfoStep.setActive(false);
-    tradeInfoStep.setLoading(false);
-    tradeInfoStep.setOpened(false);
-
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).enable();
     }
-
-    this.updateActionBtnState('change_addresses', { active: false });
-    this.updateActionBtnState('confirm_addresses', { active: true });
     this.depositService.cleanup();
     this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
   }
 
   private initValidators(): void {
     const detailsStep = this._depositFormSteps$.value[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
+    const tradeType = this.swapsStateService.tradeState.tradeType;
+
     this.inputsForm.controls.receiverAddr.setAsyncValidators([
       isWalletAddressCorrect(detailsStep.depositDetails.dstToken.blockchain)
     ]);
     this.inputsForm.controls.refundAddr.setAsyncValidators([
       isWalletAddressCorrect(detailsStep.depositDetails.srcToken.blockchain)
     ]);
+    if (isRefundAddressRequired(tradeType)) {
+      this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
+    }
+    this.inputsForm.updateValueAndValidity();
   }
 }

@@ -54,7 +54,7 @@ export class DepositInputAddressesStepComponent {
         );
       default:
         throw new Error(
-          `Unsupported depositFormState ${this.depositFormManager.depositFormState}.`
+          `[DepositInputAddressesStepComponent_getActionBtnState] Unsupported depositFormState ${this.depositFormManager.depositFormState}.`
         );
     }
   }

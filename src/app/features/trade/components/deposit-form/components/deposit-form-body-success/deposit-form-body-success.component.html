@@ -1,1 +1,38 @@
-<p>deposit-form-body-success works!</p>
+@let explorerLink = explorerLink$ | async;
+@let finalTradeDetails = finalTradeDetails$ | async;
+
+<div class="body">
+  <div class="body-icon">
+    <img src="assets/images/icons/success-circle.png" width="64" height="64" />
+  </div>
+
+  <h2 class="body-title">Exchange Successful!</h2>
+
+  <div class="body-content">
+    @for (item of finalTradeDetails; track item.key) {
+      <div class="body-content__row">
+        <b class="key">{{ item.key }}</b>
+        <b class="value" [style.color]="item.valueTextColor && item.valueTextColor">{{
+          item.value
+        }}</b>
+      </div>
+    }
+  </div>
+
+  <div class="body-footer">
+    <a class="body-footer__link" [href]="explorerLink" target="_blank">
+      <b class="body-footer__link-text">View in Explorer</b>
+      <img src="assets/images/icons/arrow/link-green-arrow.png" width="12" height="12" />
+    </a>
+    <button
+      tuiButton
+      class="body-footer__btn"
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="startNewExchange()"
+    >
+      Start New Exchange
+    </button>
+  </div>
+</div>

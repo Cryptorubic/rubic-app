@@ -51,7 +51,6 @@ import { ProvidersListComponent } from '@features/trade/components/providers-lis
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
-import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
@@ -114,7 +113,6 @@ import { QrCodeContainerComponent } from './components/deposit-form/components/d
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -164,7 +162,6 @@ import { QrCodeContainerComponent } from './components/deposit-form/components/d
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,

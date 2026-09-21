@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector } from '@angular/core';
+import { DestroyRef, Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../models/deposit-form-states';
 import { DepositFormSteps } from '../models/deposit-form-step-types';
@@ -16,10 +16,12 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { STEP_ACTION } from '../models/deposit-form-step-actions';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { withHooks } from '../models/entities/abstracts/interfaces';
+import { isStepWithHooks } from '../models/entities/abstracts/interfaces';
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Injectable()
 export class DepositFormManager {
@@ -58,6 +60,7 @@ export class DepositFormManager {
     swapsControllerService: SwapsControllerService,
     walletConnectorService: WalletConnectorService,
     errorsService: ErrorsService,
+    headerStore: HeaderStore,
     @Inject(Injector) injector: Injector
   ) {
     const depositDetails: DepositFormDetails = {
@@ -72,7 +75,8 @@ export class DepositFormManager {
         swapsStateService,
         depositService,
         modalService,
-        tradePageService
+        tradePageService,
+        headerStore
       ),
       new TradeInfoStep(
         this._depositFormState$,
@@ -89,15 +93,66 @@ export class DepositFormManager {
     this._depositFormSteps$.next(steps);
   }
 
-  public init(): void {
+  public init(destroyRef: DestroyRef): void {
     this.depositFormSteps.forEach(step => {
-      if (withHooks(step)) step.onInit();
+      if (isStepWithHooks(step)) step.onInit();
+    });
+    this.depositFormState$.pipe(takeUntilDestroyed(destroyRef)).subscribe(state => {
+      const inputAddressesStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
+      const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
+      const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
+
+      switch (state) {
+        case DEPOSIT_FORM_STATE.IDLE:
+          inputAddressesStep.setActive(true);
+          inputAddressesStep.setOpened(true);
+          inputAddressesStep.updateActionBtnState('confirm_addresses', { active: false });
+          inputAddressesStep.updateActionBtnState('change_addresses', { active: false });
+
+          tradeInfoStep.setActive(false);
+          tradeInfoStep.setOpened(false);
+
+          tradeStatusStep.setActive(false);
+          tradeStatusStep.setOpened(false);
+          break;
+        case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
+          inputAddressesStep.setOpened(false);
+          inputAddressesStep.updateActionBtnState('confirm_addresses', { active: false });
+          inputAddressesStep.updateActionBtnState('change_addresses', { active: true });
+
+          tradeInfoStep.setActive(true);
+          tradeInfoStep.setOpened(true);
+
+          tradeStatusStep.setActive(false);
+          tradeStatusStep.setOpened(false);
+          break;
+        case DEPOSIT_FORM_STATE.STATUS_TRACKING:
+          inputAddressesStep.setOpened(false);
+          inputAddressesStep.setActive(false);
+
+          tradeInfoStep.setOpened(false);
+          tradeInfoStep.updateActionBtnState('confirm_deposit', { active: false });
+          tradeInfoStep.updateActionBtnState('send_via_wallet', { active: false });
+
+          tradeStatusStep.setActive(true);
+          tradeStatusStep.setOpened(true);
+          break;
+        case DEPOSIT_FORM_STATE.COMPLETED:
+          inputAddressesStep.setOpened(false);
+          inputAddressesStep.setActive(false);
+
+          tradeInfoStep.setOpened(false);
+          tradeInfoStep.setActive(false);
+          break;
+      }
+
+      this._depositFormSteps$.next(this.depositFormSteps);
     });
   }
 
   public cleanup(): void {
     this.depositFormSteps.forEach(step => {
-      if (withHooks(step)) step.onDestroy();
+      if (isStepWithHooks(step)) step.onDestroy();
     });
     this.setDepositFormState(DEPOSIT_FORM_STATE.IDLE);
     this.depositService.cleanup();

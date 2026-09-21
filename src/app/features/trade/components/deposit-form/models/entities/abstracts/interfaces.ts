@@ -5,7 +5,7 @@ export interface IWithHooks {
   onDestroy: () => void;
 }
 
-export function withHooks(step: DepositStep): step is DepositStep & IWithHooks {
+export function isStepWithHooks(step: DepositStep): step is DepositStep & IWithHooks {
   if ('onDestroy' in step && 'onInit' in step) return true;
   return false;
 }

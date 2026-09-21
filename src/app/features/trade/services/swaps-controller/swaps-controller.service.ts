@@ -257,6 +257,11 @@ export class SwapsControllerService {
     }
   }
 
+  /**
+   * @param options used to reassign receiver and refunds addresses
+   * from TargetNetworkAddressService and RefundService
+   * @returns
+   */
   public async swap(
     tradeState: SelectedTrade,
     checkSlippageAndPI?: boolean,
@@ -266,6 +271,10 @@ export class SwapsControllerService {
       onError?: (err: RubicError<ERROR_TYPE> | null) => void;
       onSimulationSuccess?: () => Promise<boolean>;
       onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
+    },
+    options?: {
+      receiverAddress?: string;
+      refundAddress?: string;
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -294,13 +303,25 @@ export class SwapsControllerService {
         txHash = await this.crossChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          {
+            useCacheData: false,
+            skipAmountCheck: false,
+            receiverAddress: options.receiverAddress,
+            refundAddress: options.refundAddress
+          }
         );
       } else {
         txHash = await this.onChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          {
+            useCacheData: false,
+            skipAmountCheck: false,
+            receiverAddress: options.receiverAddress,
+            refundAddress: options.refundAddress
+          }
         );
       }
     } catch (err) {
@@ -322,7 +343,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             } else {
@@ -332,7 +355,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             }

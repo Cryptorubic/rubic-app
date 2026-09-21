@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { map, startWith } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import { BehaviorSubject, map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/deposit-form-manager';
 import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
@@ -27,6 +34,12 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     startWith(DEPOSIT_FORM_TITLE.IDLE)
   );
 
+  private readonly _durationMs$ = new BehaviorSubject<number>(0);
+
+  public readonly durationMs$ = this._durationMs$.asObservable();
+
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly depositFormManager: DepositFormManager,
@@ -37,7 +50,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.depositFormManager.init();
+    this.depositFormManager.init(this.destroyRef);
   }
 
   ngOnDestroy(): void {
@@ -48,7 +61,11 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     this.tradePageService.setState('form');
   }
 
+  public handleTimeTick(timeSpent: number): void {
+    this._durationMs$.next(timeSpent);
+  }
+
   public handleTradeExpired(): void {
-    this.depositFormManager.setDepositFormState(DEPOSIT_FORM_STATE.EXPIRED);
+    this.depositFormManager.setDepositFormState(DEPOSIT_FORM_STATE.IDLE);
   }
 }
