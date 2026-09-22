@@ -72,7 +72,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.PLASMA]: [],
   [BLOCKCHAIN_NAME.MONAD]: [],
   [BLOCKCHAIN_NAME.HYPER_EVM]: [],
-  [BLOCKCHAIN_NAME.MEGAETH]: []
+  [BLOCKCHAIN_NAME.MEGAETH]: [],
+  [BLOCKCHAIN_NAME.ROBINHOOD]: []
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: []
 };
 

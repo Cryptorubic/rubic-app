@@ -1,3 +1,3 @@
-import { KitActions } from '@creit.tech/stellar-wallets-kit';
+// import { KitActions } from '@creit.tech/stellar-wallets-kit';
 
-export type StellarWallet = KitActions;
+// export type StellarWallet = KitActions;

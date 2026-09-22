@@ -5,13 +5,8 @@
     font-weight: $weight;
     font-family: $font-family;
     font-style: $style;
-
-    src:
-      url('#{$file-path}.woff2') format('woff2'),
-      url('#{$file-path}.woff') format('woff'),
-      url('#{$file-path}.eot'),
-      url('#{$file-path}.ttf') format('truetype');
-    font-display: block;
+    src: url('#{$file-path}.woff2') format('woff2');
+    font-display: swap;
   }
 }
 
@@ -148,7 +143,7 @@
 
 @mixin rubicText($type, $size) {
   @if $type==accent {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--tui-text-primary);
   }
 

@@ -78,8 +78,6 @@ import { SmallBlockchainButtonComponent } from './components/small-blockchain-bu
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
-import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
-import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { TimerComponent } from './components/timer/timer.component';
 
@@ -137,8 +135,6 @@ import { TimerComponent } from './components/timer/timer.component';
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TrustlineModalComponent,
-    TrustlineComponent,
     PrivacyDisclaimerModalComponent,
     TimerComponent
   ],
@@ -220,7 +216,6 @@ import { TimerComponent } from './components/timer/timer.component';
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TrustlineComponent,
     TimerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],

@@ -11,8 +11,7 @@ export const CHAIN_SUPPORTED_WALLETS = Object.values(CHAIN_TYPE).reduce(
           WALLET_NAME.COIN_BASE,
           WALLET_NAME.PHANTOM,
           WALLET_NAME.WALLET_CONNECT,
-          WALLET_NAME.TRUST_WALLET,
-          WALLET_NAME.BINANCE_WALLET
+          WALLET_NAME.TRUST_WALLET
         ];
         break;
       case CHAIN_TYPE.TON:
