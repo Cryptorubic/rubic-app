@@ -10,7 +10,7 @@
 
 @include b($mobile-md) {
   .input-container {
-    gap: var(--tui-padding-xs);
+    gap: 15px;
     align-items: flex-start;
   }
 }

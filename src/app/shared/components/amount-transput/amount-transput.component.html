@@ -9,7 +9,7 @@
     [decimals]="selectedToken?.decimals || defaultDecimals"
     (amountChange)="handleAmountChange($event)"
     inputmode="decimal"
-    id="token-amount-input-element"
+    [id]="formType === 'from' ? 'token-amount-input-element' : 'token-amount-output-element'"
     [readonly]="inputMode === 'output'"
   />
 </label>

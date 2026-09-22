@@ -13,33 +13,48 @@
 <app-window-container>
   <app-form-header></app-form-header>
   <div class="form__container">
-    <app-input-output-container
-      [round]="state.isTransferMode || !state.isMobile ? 'top' : 'none'"
-      [marginTop]="state.isMobile"
-    >
+    <app-input-output-container [round]="state.isTransferMode || !state.isMobile ? 'top' : 'none'">
       <app-asset-selector
         left
         selectorType="from"
         [asset]="state.fromAsset"
         (handleAssetSelection)="openSelector('from', state.isMobile)"
       ></app-asset-selector>
-      <div right class="input-container">
-        <app-amount-transput
-          formType="from"
-          [selectedToken]="state.fromAsset"
-          inputMode="input"
-          (amountUpdated)="updateInputValue($event)"
-          [amountValue]="state.fromAmount"
-        ></app-amount-transput>
-        <app-user-balance-container
-          [fromToken$]="fromAsset$"
-          (maxButtonClickEvent)="handleMaxButton()"
-        ></app-user-balance-container>
-      </div>
+
+      <ng-container right>
+        @if (!state.isMobile) {
+          <ng-container *ngTemplateOutlet="sendContainer"></ng-container>
+        } @else {
+          <label class="send-receive-label" for="token-amount-input-element">Send</label>
+        }
+      </ng-container>
+
+      <ng-container bottom>
+        @if (state.isMobile) {
+          <ng-container *ngTemplateOutlet="sendContainer"></ng-container>
+        }
+      </ng-container>
+
+      <ng-template #sendContainer>
+        <div class="input-container">
+          <app-amount-transput
+            formType="from"
+            [selectedToken]="state.fromAsset"
+            inputMode="input"
+            (amountUpdated)="updateInputValue($event)"
+            [amountValue]="state.fromAmount"
+          ></app-amount-transput>
+          <app-user-balance-container
+            [fromToken$]="fromAsset$"
+            (maxButtonClickEvent)="handleMaxButton()"
+          ></app-user-balance-container>
+        </div>
+      </ng-template>
     </app-input-output-container>
 
     @if (!state.isTransferMode) {
       <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+
       <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
         <app-asset-selector
           left
@@ -47,15 +62,32 @@
           [asset]="state.toAsset"
           (handleAssetSelection)="openSelector('to', state.isMobile)"
         ></app-asset-selector>
-        <div right class="input-container">
-          <app-amount-transput
-            formType="to"
-            [selectedToken]="state.toAsset"
-            inputMode="output"
-            [amountValue]="state.toAmount"
-          ></app-amount-transput>
-          <app-tokens-rate></app-tokens-rate>
-        </div>
+
+        <ng-container right>
+          @if (!state.isMobile) {
+            <ng-container *ngTemplateOutlet="receiveContainer"></ng-container>
+          } @else {
+            <div class="send-receive-label">Receive</div>
+          }
+        </ng-container>
+
+        <ng-container bottom>
+          @if (state.isMobile) {
+            <ng-container *ngTemplateOutlet="receiveContainer"></ng-container>
+          }
+        </ng-container>
+
+        <ng-template #receiveContainer>
+          <div right class="input-container">
+            <app-amount-transput
+              formType="to"
+              [selectedToken]="state.toAsset"
+              inputMode="output"
+              [amountValue]="state.toAmount"
+            ></app-amount-transput>
+            <app-tokens-rate></app-tokens-rate>
+          </div>
+        </ng-template>
       </app-input-output-container>
     }
   </div>

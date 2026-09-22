@@ -27,11 +27,10 @@
       <div class="form__container">
         <app-input-output-container
           [round]="!state.isMobile ? 'top' : 'none'"
-          [marginTop]="state.isMobile"
           *ngLet="fromAsset$ | async as fromAsset"
         >
           <app-asset-selector left selectorType="from" [asset]="fromAsset"></app-asset-selector>
-          <div right class="input-container">
+          <div bottom class="input-container">
             <app-amount-transput
               formType="from"
               [selectedToken]="fromAsset"
@@ -47,7 +46,7 @@
             selectorType="to"
             [asset]="toAsset$ | async"
           ></app-asset-selector>
-          <div right class="input-container">
+          <div bottom class="input-container">
             <app-amount-transput
               [class.tui-skeleton]="!state.isToAmountCalculated"
               formType="to"
