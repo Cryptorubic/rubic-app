@@ -46,10 +46,11 @@
 @include b($mobile-md) {
   .amount-transput {
     &__input {
-      @include font(25px, 35px, 500, var(--tui-text-primary), 0.25px);
+      height: 32px;
+      @include font(30px, 35px, 500, var(--tui-text-primary), 0.25px);
 
       &::placeholder {
-        @include font(18px, 18px, 500, var(--tui-text-tertiary), 0.54px);
+        @include font(24px, 18px, 500, var(--tui-text-tertiary), 0.54px);
       }
     }
   }
