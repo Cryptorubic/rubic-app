@@ -1,96 +1,90 @@
-<ng-container
-  *ngLet="{
-    step: step$ | async,
-    depositTrade: depositTrade$ | async,
-    fromAsset: fromAsset$ | async
-  } as state"
->
-  <tui-accordion class="step">
-    <tui-accordion-item
-      [class.tui-accordion-item__disabled]="!state.step.active"
-      [disabled]="!state.step.active"
-      [showArrow]="state.step.active"
-      [size]="'s'"
-      [(open)]="state.step.opened"
-    >
-      <span class="step-counter">3</span>
-      <span class="step-title">SEND DEPOSIT</span>
-      @if (state.step.loading) {
-        <app-step-loading-label></app-step-loading-label>
-      } @else if (!state.step.active) {
-        <app-step-locked-label></app-step-locked-label>
-      }
+@let step = step$ | async;
+@let depositTrade = depositTrade$ | async;
+@let fromAsset = fromAsset$ | async;
 
-      <ng-template tuiAccordionItemContent>
-        <div class="step-content">
-          <div class="step-content__main">
-            <div class="step-content__info">
-              <app-deposit-info-readonly-detail [labelTop]="'Asset'">
-                <div class="detail-wrapper">
-                  <app-asset-details [asset]="state.fromAsset"></app-asset-details>
-                  <app-field-with-copy-btn
-                    [visibleText]="$any(state.depositTrade.fromToken.address | shortAddress: 4 : 4)"
-                    [textToCopy]="state.depositTrade.fromToken.address"
-                    [bgColor]="'var(--tui-background-base)'"
-                    [borderColor]="'var(--tui-background-base)'"
-                    [padding]="'4px'"
-                  ></app-field-with-copy-btn>
-                </div>
-              </app-deposit-info-readonly-detail>
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter">3</span>
+    <span class="step-title">SEND DEPOSIT</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
 
-              <app-deposit-info-readonly-detail [labelTop]="'Amount to Send'">
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <div class="step-content__main">
+          <div class="step-content__info">
+            <app-deposit-info-readonly-detail [labelTop]="'Asset'">
+              <div class="detail-wrapper">
+                <app-asset-details [asset]="fromAsset"></app-asset-details>
                 <app-field-with-copy-btn
-                  [visibleText]="
-                    state.depositTrade.fromAmount + ' ' + state.depositTrade.fromToken.symbol
-                  "
-                  [textToCopy]="state.depositTrade.fromAmount"
+                  [visibleText]="$any(depositTrade.fromToken.address | shortAddress: 4 : 4)"
+                  [textToCopy]="depositTrade.fromToken.address"
+                  [bgColor]="'var(--tui-background-base)'"
+                  [borderColor]="'var(--tui-background-base)'"
+                  [padding]="'4px'"
+                ></app-field-with-copy-btn>
+              </div>
+            </app-deposit-info-readonly-detail>
+
+            <app-deposit-info-readonly-detail [labelTop]="'Amount to Send'">
+              <app-field-with-copy-btn
+                [visibleText]="depositTrade.fromAmount + ' ' + depositTrade.fromToken.symbol"
+                [textToCopy]="depositTrade.fromAmount"
+              ></app-field-with-copy-btn>
+            </app-deposit-info-readonly-detail>
+
+            <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
+              <app-field-with-copy-btn
+                [visibleText]="$any(depositTrade.depositAddress | shortAddress: 6 : 6)"
+                [textToCopy]="depositTrade.depositAddress"
+              ></app-field-with-copy-btn>
+            </app-deposit-info-readonly-detail>
+
+            @if (depositTrade.extraField?.value) {
+              <app-deposit-info-readonly-detail
+                [labelTop]="'Deposit Tag (MEMO)'"
+                [labelBottom]="'Required — funds may be lost without this tag'"
+              >
+                <app-field-with-copy-btn
+                  [visibleText]="$any(depositTrade.extraField.value | shortAddress: 4 : 4)"
+                  [textToCopy]="depositTrade.extraField.value"
+                  [bgColor]="'rgba(255, 159, 41, 0.08)'"
+                  [borderColor]="'#FF9F29'"
+                  [textColor]="'#FF9F29'"
                 ></app-field-with-copy-btn>
               </app-deposit-info-readonly-detail>
-
-              <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
-                <app-field-with-copy-btn
-                  [visibleText]="$any(state.depositTrade.depositAddress | shortAddress: 6 : 6)"
-                  [textToCopy]="state.depositTrade.depositAddress"
-                ></app-field-with-copy-btn>
-              </app-deposit-info-readonly-detail>
-
-              @if (state.depositTrade.extraField?.value) {
-                <app-deposit-info-readonly-detail
-                  [labelTop]="'Deposit Tag (MEMO)'"
-                  [labelBottom]="'Required — funds may be lost without this tag'"
-                >
-                  <app-field-with-copy-btn
-                    [visibleText]="$any(state.depositTrade.extraField.value | shortAddress: 4 : 4)"
-                    [textToCopy]="state.depositTrade.extraField.value"
-                    [bgColor]="'rgba(255, 159, 41, 0.08)'"
-                    [borderColor]="'#FF9F29'"
-                    [textColor]="'#FF9F29'"
-                  ></app-field-with-copy-btn>
-                </app-deposit-info-readonly-detail>
-              }
-            </div>
-
-            <div class="step-content__qrcode">
-              <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
-            </div>
+            }
           </div>
 
-          <div class="step-content__footer">
-            <button
-              *ngLet="getActionBtnState() as actionBtnState"
-              tuiButton
-              class="step-content__btn"
-              appearance="primary"
-              type="button"
-              size="m"
-              [disabled]="!actionBtnState.active"
-              (click)="confirmDeposit()"
-            >
-              {{ actionBtnState.text }}
-            </button>
+          <div class="step-content__qrcode">
+            <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
           </div>
         </div>
-      </ng-template>
-    </tui-accordion-item>
-  </tui-accordion>
-</ng-container>
+
+        <div class="step-content__footer">
+          <button
+            *ngLet="getActionBtnState() as actionBtnState"
+            tuiButton
+            class="step-content__btn"
+            appearance="primary"
+            type="button"
+            size="m"
+            [disabled]="!actionBtnState.active"
+            (click)="confirmDeposit()"
+          >
+            {{ actionBtnState.text }}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

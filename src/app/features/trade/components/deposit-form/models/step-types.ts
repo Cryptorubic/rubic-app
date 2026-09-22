@@ -21,3 +21,8 @@ export interface DepositStepParams {
   loading: boolean;
   opened: boolean;
 }
+
+export interface QrCodesType {
+  receiverOnly: HTMLCanvasElement;
+  receiverWithAmount: HTMLCanvasElement | null;
+}

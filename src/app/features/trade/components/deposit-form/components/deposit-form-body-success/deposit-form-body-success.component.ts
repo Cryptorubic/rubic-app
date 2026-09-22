@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { DepositFormManager } from '../../services/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../models/deposit-step-order';
@@ -25,7 +26,18 @@ interface RowConfig {
   standalone: false,
   templateUrl: './deposit-form-body-success.component.html',
   styleUrl: './deposit-form-body-success.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('appearFromBottom', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(40px)' }),
+        animate(
+          '320ms cubic-bezier(0.16, 1, 0.3, 1)',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        )
+      ])
+    ])
+  ]
 })
 export class DepositFormBodySuccessComponent {
   @Input() durationMs: number = 0;

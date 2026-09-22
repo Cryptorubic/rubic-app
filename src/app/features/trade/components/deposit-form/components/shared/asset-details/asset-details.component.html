@@ -8,7 +8,7 @@
 
   <div class="asset-details__info">
     <b class="asset-details__info-token"
-      >{{ tokenAmount ? tokenAmount + ' ' : '' }}{{ asset.mainLabel }}</b
+      >{{ tokenAmount ? (tokenAmount | shortenAmount: 8 : 6) + ' ' : '' }}{{ asset.mainLabel }}</b
     >
     <span class="asset-details__info-chain">{{ asset.secondLabel }}</span>
   </div>

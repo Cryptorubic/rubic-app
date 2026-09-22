@@ -42,7 +42,7 @@ export class FieldWithCopyBtnComponent {
 
   private showHint(): void {
     this.copied = true;
-    timer(1500).subscribe(() => {
+    timer(500).subscribe(() => {
       this.copied = false;
       this.cdr.markForCheck();
     });

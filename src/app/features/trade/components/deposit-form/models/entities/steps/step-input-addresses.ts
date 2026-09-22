@@ -107,8 +107,8 @@ export class InputAddressesStep
       const paymentInfo = await selectedTrade.getTransferTrade(receiverAddr, refundAddr);
 
       await this.depositService.updateTrade(paymentInfo, receiverAddr);
-      if (this.headerStore.isMobile) {
-        await tradeInfoStep.createQrCodeCanvases(receiverAddr, srcToken);
+      if (!this.headerStore.isMobile) {
+        await tradeInfoStep.createQrCodeCanvases(paymentInfo.depositAddress, srcToken);
       }
       this.depositService.setupUpdate();
 

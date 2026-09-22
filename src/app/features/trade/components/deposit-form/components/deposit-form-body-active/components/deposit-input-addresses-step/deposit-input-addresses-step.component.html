@@ -1,72 +1,72 @@
-<ng-container *ngLet="{ step: step$ | async } as state">
-  <tui-accordion class="step">
-    <tui-accordion-item
-      [class.tui-accordion-item__disabled]="!state.step.active"
-      [disabled]="!state.step.active"
-      [showArrow]="state.step.active"
-      [size]="'s'"
-      [(open)]="state.step.opened"
-    >
-      <span class="step-counter">2</span>
-      <span class="step-title">DESTINATION & REFUND</span>
-      @if (state.step.loading) {
-        <app-step-loading-label></app-step-loading-label>
-      } @else if (!state.step.active) {
-        <app-step-locked-label></app-step-locked-label>
-      }
+@let step = step$ | async;
 
-      <ng-template tuiAccordionItemContent>
-        <div class="step-content">
-          <div class="step-content__input">
-            <div class="step-content__input-title">
-              <img src="assets/images/icons/arrow/arrow-circle-down.png" width="16" height="16" />
-              <b>Receiving</b>
-              <b class="chain-label">{{ dstChain }} Address</b>
-            </div>
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter">2</span>
+    <span class="step-title">DESTINATION & REFUND</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
 
-            <tui-textfield tuiTextfieldSize="m">
-              <input
-                tuiTextfield
-                [placeholder]="'Enter or paste your ' + dstChain + ' address'"
-                [formControl]="state.step.inputsForm.controls.receiverAddr"
-              />
-            </tui-textfield>
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <div class="step-content__input">
+          <div class="step-content__input-title">
+            <img src="assets/images/icons/arrow/arrow-circle-down.png" width="16" height="16" />
+            <b>Receiving</b>
+            <b class="chain-label">{{ dstChain }} Address</b>
           </div>
 
-          <div class="step-content__input">
-            <div class="step-content__input-title">
-              <img src="assets/images/icons/arrow/flip-backward.png" width="16" height="16" />
-              <b>Refund</b>
-              <b class="chain-label">{{ srcChain }} Address</b>
-            </div>
-
-            <tui-textfield tuiTextfieldSize="m">
-              <input
-                tuiTextfield
-                [placeholder]="'Enter or paste your ' + srcChain + ' address in case of refund'"
-                [formControl]="state.step.inputsForm.controls.refundAddr"
-              />
-            </tui-textfield>
-          </div>
-
-          <div class="step-content__note">
-            <b>I agree to Terms of Service and Privacy Policy</b>
-          </div>
-
-          <button
-            *ngLet="getActionBtnState() as actionBtnState"
-            tuiButton
-            class="step-content__btn"
-            appearance="primary"
-            type="button"
-            size="m"
-            [disabled]="!actionBtnState.active"
-            (click)="doAction()"
-          >
-            {{ actionBtnState.text }}
-          </button>
+          <tui-textfield tuiTextfieldSize="m">
+            <input
+              tuiTextfield
+              [placeholder]="'Enter or paste your ' + dstChain + ' address'"
+              [formControl]="step.inputsForm.controls.receiverAddr"
+            />
+          </tui-textfield>
         </div>
-      </ng-template>
-    </tui-accordion-item>
-  </tui-accordion>
-</ng-container>
+
+        <div class="step-content__input">
+          <div class="step-content__input-title">
+            <img src="assets/images/icons/arrow/flip-backward.png" width="16" height="16" />
+            <b>Refund</b>
+            <b class="chain-label">{{ srcChain }} Address</b>
+          </div>
+
+          <tui-textfield tuiTextfieldSize="m">
+            <input
+              tuiTextfield
+              [placeholder]="'Enter or paste your ' + srcChain + ' address in case of refund'"
+              [formControl]="step.inputsForm.controls.refundAddr"
+            />
+          </tui-textfield>
+        </div>
+
+        <div class="step-content__note">
+          <b>I agree to Terms of Service and Privacy Policy</b>
+        </div>
+
+        <button
+          *ngLet="getActionBtnState() as actionBtnState"
+          tuiButton
+          class="step-content__btn"
+          appearance="primary"
+          type="button"
+          size="m"
+          [disabled]="!actionBtnState.active"
+          (click)="doAction()"
+        >
+          {{ actionBtnState.text }}
+        </button>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

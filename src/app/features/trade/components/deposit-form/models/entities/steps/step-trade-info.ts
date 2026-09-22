@@ -4,7 +4,7 @@ import {
   DepositFormSteps,
   DepositStepName
 } from '../../deposit-form-step-types';
-import { ActionBtnState, DepositStepParams } from '../../step-types';
+import { ActionBtnState, DepositStepParams, QrCodesType } from '../../step-types';
 import { DepositStepWithAction } from '../abstracts/deposit-step-with-action';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { TradeInfoStepAction } from '../../deposit-form-step-actions';
@@ -25,31 +25,40 @@ import { QrCodeGenerator } from '../../../utils/qr-code-generator';
 export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.TRADE_INFO;
 
-  private _qrCodeCanvases: {
-    receiverOnly: HTMLCanvasElement;
-    receiverWithAmount: HTMLCanvasElement | null;
-  };
+  private _qrCodeCanvases: QrCodesType | null = null;
 
-  public get qrCodeCanvases(): {
-    receiverOnly: HTMLCanvasElement;
-    receiverWithAmount?: HTMLCanvasElement;
-  } {
+  public get qrCodeCanvases(): QrCodesType | null {
     return this._qrCodeCanvases;
   }
 
-  public async createQrCodeCanvases(receiverAddr: string, srcToken: TokenAmount): Promise<void> {
+  public async createQrCodeCanvases(
+    targetWalletAddr: string,
+    srcToken: TokenAmount
+  ): Promise<void> {
     const srcChain = this.swapsStateService.tradeState.trade.from.blockchain;
     if (chainSupportsQrWithAmount(srcChain)) {
       const [receiverOnlyQR, receiverWithAmountQR] = await Promise.all([
-        QrCodeGenerator.generateTransferQrCode(srcChain, receiverAddr),
-        QrCodeGenerator.generateTransferQrCode(srcChain, receiverAddr, srcToken)
+        QrCodeGenerator.generateTransferQrCode(srcChain, targetWalletAddr, {
+          token: srcToken,
+          size: 142,
+          qrContent: 'receiver'
+        }),
+        QrCodeGenerator.generateTransferQrCode(srcChain, targetWalletAddr, {
+          size: 142,
+          token: srcToken,
+          qrContent: 'receiver+amount'
+        })
       ]);
       this._qrCodeCanvases = {
         receiverOnly: receiverOnlyQR,
         receiverWithAmount: receiverWithAmountQR
       };
     } else {
-      const receiverOnlyQR = await QrCodeGenerator.generateTransferQrCode(srcChain, receiverAddr);
+      const receiverOnlyQR = await QrCodeGenerator.generateTransferQrCode(
+        srcChain,
+        targetWalletAddr,
+        { token: srcToken, size: 142, qrContent: 'receiver' }
+      );
       this._qrCodeCanvases = {
         receiverOnly: receiverOnlyQR,
         receiverWithAmount: null

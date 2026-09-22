@@ -1,41 +1,37 @@
-<ng-container
-  *ngLet="{
-    step: step$ | async,
-    fromAsset: fromAsset$ | async,
-    toAsset: toAsset$ | async
-  } as state"
->
-  <tui-accordion class="step">
-    <tui-accordion-item
-      [class.tui-accordion-item__disabled]="!state.step.active"
-      [disabled]="!state.step.active"
-      [showArrow]="state.step.active"
-      [size]="'s'"
-      [(open)]="state.step.opened"
-    >
-      <span class="step-counter">1</span>
-      <span class="step-title">EXCHANGE DETAILS</span>
-      @if (state.step.loading) {
-        <app-step-loading-label></app-step-loading-label>
-      } @else if (!state.step.active) {
-        <app-step-locked-label></app-step-locked-label>
-      }
+@let step = step$ | async;
+@let fromAsset = fromAsset$ | async;
+@let toAsset = toAsset$ | async;
 
-      <ng-template tuiAccordionItemContent>
-        <div class="step-content">
-          <app-asset-details
-            [asset]="state.fromAsset"
-            [tokenAmount]="state.step.depositDetails.srcToken.stringTokenAmount"
-          ></app-asset-details>
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter">1</span>
+    <span class="step-title">EXCHANGE DETAILS</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
 
-          <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <app-asset-details
+          [asset]="fromAsset"
+          [tokenAmount]="step.depositDetails.srcToken.stringTokenAmount"
+        ></app-asset-details>
 
-          <app-asset-details
-            [asset]="state.toAsset"
-            [tokenAmount]="state.step.depositDetails.dstToken.stringTokenAmount"
-          ></app-asset-details>
-        </div>
-      </ng-template>
-    </tui-accordion-item>
-  </tui-accordion>
-</ng-container>
+        <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
+
+        <app-asset-details
+          [asset]="toAsset"
+          [tokenAmount]="step.depositDetails.dstToken.stringTokenAmount"
+        ></app-asset-details>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

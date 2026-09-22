@@ -5,6 +5,7 @@
     @include flex(column, start, start);
     gap: 8px;
     width: 100%;
+    height: 100%;
 
     &__label {
       color: var(--tui-text-secondary);
@@ -12,18 +13,31 @@
 
     &__main {
       @include flex(column, center, center);
-      gap: 20px;
+      gap: clamp(8px, 2vw, 12px);
       width: 100%;
-      height: 250px;
+      height: 100%;
       padding: 12px;
-      background: #1b1b22;
+      background: #3b3d4f;
       border-radius: 20px;
 
       .qr-code {
         width: 142px;
         height: 142px;
-        background-color: white;
         border-radius: 20px;
+      }
+
+      .toggler {
+        @include flex(row, center, center);
+        gap: 8px;
+        width: 100%;
+        color: var(--tui-text-secondary);
+        font-weight: 400;
+        font-size: 12px;
+      }
+
+      button {
+        width: 100%;
+        background: var(--tui-background-base) !important;
       }
     }
   }
