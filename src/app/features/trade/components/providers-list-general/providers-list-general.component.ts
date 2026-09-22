@@ -197,7 +197,7 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
       return states.length ? [states[0]] : [];
     }
 
-    return states.slice(0, states.some(trade => trade.private) ? 2 : 1).reverse();
+    return states.slice(0, states.some(trade => trade.private) ? 2 : 1);
   }
 
   public openOtherProvidersList(): void {
