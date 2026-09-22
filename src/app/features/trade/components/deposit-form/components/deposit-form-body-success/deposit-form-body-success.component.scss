@@ -3,7 +3,7 @@
 :host {
   .body {
     @include flex(column, normal, center);
-    gap: 16px;
+    gap: clamp(8px, 2vw, 16px);
     width: 100%;
 
     &-icon {
