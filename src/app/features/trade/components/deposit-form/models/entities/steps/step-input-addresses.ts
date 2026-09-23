@@ -80,9 +80,59 @@ export class InputAddressesStep
     this.initValidators();
     this.inputsForm.patchValue({ receiverAddr: this.targetNetworkAddressService.address });
 
-    const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
-      this.updateActionBtnState('confirm_addresses', { active: status === 'VALID' });
+    /**
+     * hack to update button state after async validation of this.targetNetworkAddressService.address
+     */
+    setTimeout(() => {
+      if (this.inputsForm.valid) {
+        this.updateActionBtnState('confirm_addresses', {
+          active: true,
+          text: 'Confirm Addresses'
+        });
+        this.triggerStepsUpdate();
+      }
     });
+
+    const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
+      const receiverCtrl = this.inputsForm.controls.receiverAddr;
+      const refundCtrl = this.inputsForm.controls.refundAddr;
+
+      if (status === 'VALID') {
+        this.updateActionBtnState('confirm_addresses', {
+          active: true,
+          text: 'Confirm Addresses'
+        });
+      } else {
+        if (receiverCtrl.invalid) {
+          if (receiverCtrl.hasError('incorrectAddress')) {
+            this.updateActionBtnState('confirm_addresses', {
+              active: false,
+              text: 'Invalid receiver address'
+            });
+          } else if (receiverCtrl.hasError('required')) {
+            this.updateActionBtnState('confirm_addresses', {
+              active: false,
+              text: 'Enter receiver address'
+            });
+          }
+        } else if (refundCtrl.invalid) {
+          if (refundCtrl.hasError('incorrectAddress')) {
+            this.updateActionBtnState('confirm_addresses', {
+              active: false,
+              text: 'Invalid refund address'
+            });
+          } else if (refundCtrl.hasError('required')) {
+            this.updateActionBtnState('confirm_addresses', {
+              active: false,
+              text: 'Enter refund address'
+            });
+          }
+        }
+      }
+
+      this.triggerStepsUpdate();
+    });
+
     const tradeStatusSub = this.depositService.status$.subscribe(status => {
       if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
       this._depositFormState$.next(

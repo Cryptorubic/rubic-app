@@ -60,7 +60,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     }
 
     const actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState> = {
-      confirm_deposit: { active: true, text: 'Translated funds is done' },
+      confirm_deposit: { active: true, text: 'Deposit sent' },
       send_via_wallet: { active: true, text: sendViaWalletBtnText }
     };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
