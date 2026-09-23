@@ -5,6 +5,7 @@ import {
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
+  SwapPrivateRequestInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -146,7 +147,15 @@ export abstract class CrossChainTrade<T = unknown> {
     this._apiFromAddress = value;
   }
 
-  public readonly rubicId: string;
+  public _rubicId: string;
+
+  public get rubicId(): string {
+    return this._rubicId;
+  }
+
+  protected set rubicId(value: string) {
+    this._rubicId = value;
+  }
 
   public readonly useProxy: boolean;
 
@@ -390,14 +399,33 @@ export abstract class CrossChainTrade<T = unknown> {
     }
   }
 
-  private refetchTrade<Data>(
+  protected async fetchSwapPrivateData<Data>(
+    body: TransferSwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    try {
+      const res = await this.rubicApiService.fetchSwapPrivateTrade<Data>(
+        body as SwapPrivateRequestInterface
+      );
+      this.lastSwapResponse = res as RubicAny;
+      return res;
+    } catch (err) {
+      if (err instanceof TradeExpiredError) {
+        return this.refetchTrade<Data>(body);
+      }
+
+      throw err;
+    }
+  }
+
+  private async refetchTrade<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {
-    const res = this.rubicApiService.fetchBestSwapData<Data>({
+    const res = await this.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });
     this.lastSwapResponse = res as RubicAny;
+    this._rubicId = res.quote.id;
     return res;
   }
 

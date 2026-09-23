@@ -19,7 +19,7 @@ import {
 } from '@app/features/trade/components/deposit-form/models/step-types';
 import { DepositFormManager } from '@app/features/trade/components/deposit-form/services/deposit-form-manager';
 import { BlockchainsInfo } from '@cryptorubic/core';
-import { BehaviorSubject, finalize, find, map, shareReplay, startWith } from 'rxjs';
+import { BehaviorSubject, find, map, shareReplay, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-qr-code-container',
@@ -63,8 +63,8 @@ export class QrCodeContainerComponent implements AfterViewInit {
     startWith(null)
   );
 
-  public readonly hasQrCodes$ = this.qrCodes$.pipe(
-    map(qrCodes => (qrCodes ? Object.keys(qrCodes).length > 0 : false)),
+  public readonly showToggler$ = this.qrCodes$.pipe(
+    map(qrCodes => (qrCodes ? Object.values(qrCodes).filter(Boolean).length > 1 : false)),
     startWith(false)
   );
 
@@ -76,17 +76,12 @@ export class QrCodeContainerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.qrCodes$
-      .pipe(
-        find(qrCodes => !!qrCodes && !!qrCodes.receiverOnly),
-        finalize(() => console.log('FINALIZED!!!'))
-      )
-      .subscribe(qrCodes => {
-        if (qrCodes) {
-          this.renderQrCodes(qrCodes);
-          this.cdr.markForCheck();
-        }
-      });
+    this.qrCodes$.pipe(find(qrCodes => !!qrCodes && !!qrCodes.receiverOnly)).subscribe(qrCodes => {
+      if (qrCodes) {
+        this.renderQrCodes(qrCodes);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   private renderQrCodes(qrCodes: QrCodesType): void {

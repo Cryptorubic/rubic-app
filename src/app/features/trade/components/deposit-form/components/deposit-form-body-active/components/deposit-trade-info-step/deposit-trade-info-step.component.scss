@@ -32,6 +32,7 @@
 
         .step-content__info {
           @include flex(column, stretch, space-between);
+          flex: 0 0 50%;
           gap: 8px;
 
           .detail-wrapper {
@@ -62,6 +63,8 @@
       }
 
       &__footer {
+        @include flex(column, stretch, stretch);
+        gap: 8px;
         width: 100%;
 
         button {

@@ -21,6 +21,7 @@ import { TransferTrade } from '../../deposit-form-info';
 import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { isRefundAddressRequired } from '@app/features/trade/services/refund-service/constants/refund-address-required-trade-types';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -42,7 +43,8 @@ export class InputAddressesStep
     private readonly depositService: DepositService,
     private readonly modalService: ModalService,
     private readonly tradePageService: TradePageService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
@@ -68,6 +70,7 @@ export class InputAddressesStep
 
   public onInit(): void {
     this.initValidators();
+    this.inputsForm.patchValue({ receiverAddr: this.targetNetworkAddressService.address });
 
     const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
       this.updateActionBtnState('confirm_addresses', { active: status === 'VALID' });

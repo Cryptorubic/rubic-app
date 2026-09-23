@@ -4,8 +4,7 @@ import {
   EvmBlockchainName,
   PriceTokenAmount,
   QuoteRequestInterface,
-  QuoteResponseInterface,
-  SwapPrivateRequestInterface
+  QuoteResponseInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
@@ -134,10 +133,9 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
 
     const isPrivateTrade = this.apiResponse.private;
     const res = isPrivateTrade
-      ? await this.rubicApiService.fetchSwapPrivateTrade<TransactionInterface>(
-          swapRequestData as SwapPrivateRequestInterface
-        )
+      ? await this.fetchSwapPrivateData<TransactionInterface>(swapRequestData)
       : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
+    console.log('getTransactionConfigAndAmount ==>', { swapRequestData, res });
 
     const amount = res.estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);
@@ -217,16 +215,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
             gasPriceOptions
           }
         });
-        // await evmAdapter.signer.tryExecuteContractMethod(
-        //   this.from.address,
-        //   erc20TokenAbi,
-        //   'transfer',
-        //   [this.paymentInfo.depositAddress, this.from.stringWeiAmount],
-        //   {
-        //     onTransactionHash,
-        //     gasPriceOptions
-        //   }
-        // );
       }
 
       return transactionHash!;
@@ -255,9 +243,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
       refundAddress
     );
     this.lastTransactionConfig = config;
-    setTimeout(() => {
-      this.lastTransactionConfig = null;
-    }, 15_000);
 
     if (!skipAmountChangeCheck) {
       this.checkAmountChange(amount, this.to.stringWeiAmount);

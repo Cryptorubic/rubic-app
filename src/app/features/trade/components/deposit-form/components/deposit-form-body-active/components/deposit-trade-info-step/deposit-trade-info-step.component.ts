@@ -6,6 +6,9 @@ import { ActionBtnState } from '../../../../models/step-types';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
+import { Token } from '@app/shared/models/tokens/token';
+import { Web3Pure } from '@cryptorubic/web3';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-deposit-trade-info-step',
@@ -39,10 +42,18 @@ export class DepositTradeInfoStepComponent {
 
   public readonly depositTrade$ = this.depositFormManager.depositTrade$;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   constructor(
     private readonly depositFormManager: DepositFormManager,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapsFormService: SwapsFormService,
+    private readonly headerStore: HeaderStore
   ) {}
+
+  public isNative(fromToken?: Token): boolean {
+    if (!fromToken) return false;
+    return Web3Pure.getInstance(fromToken.blockchain).isNativeAddress(fromToken.address);
+  }
 
   public confirmDeposit(): void {
     this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.TRADE_INFO, 'confirm_deposit');
@@ -52,7 +63,14 @@ export class DepositTradeInfoStepComponent {
     this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.TRADE_INFO, 'send_via_wallet');
   }
 
-  public getActionBtnState(): ActionBtnState {
+  public getSendBtnState(): ActionBtnState {
+    return this.depositFormManager.getActionBtnState(
+      DEPOSIT_STEP_ORDER.TRADE_INFO,
+      'send_via_wallet'
+    );
+  }
+
+  public getConfirmBtnState(): ActionBtnState {
     return this.depositFormManager.getActionBtnState(
       DEPOSIT_STEP_ORDER.TRADE_INFO,
       'confirm_deposit'

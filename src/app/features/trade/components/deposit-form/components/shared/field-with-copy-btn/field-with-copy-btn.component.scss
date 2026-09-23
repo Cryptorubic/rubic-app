@@ -13,21 +13,34 @@
 
     &__copy-btn {
       @include flex(row, center, center);
-      width: 28px;
-      height: 28px;
       background-color: var(--tui-background-base);
       border-radius: 6px;
       cursor: pointer;
-
-      ::ng-deep svg {
-        width: 16px;
-        height: 16px;
-      }
 
       &-copied {
         ::ng-deep svg path {
           fill: var(--tui-background-accent-1-pressed);
         }
+      }
+    }
+
+    .copy-btn-size-s {
+      width: 14px;
+      height: 14px;
+
+      ::ng-deep svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .copy-btn-size-m {
+      width: 16px;
+      height: 16px;
+
+      ::ng-deep svg {
+        width: 16px;
+        height: 16px;
       }
     }
   }

@@ -134,8 +134,7 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       enableChecks: !testMode
     };
 
-    const res =
-      await this.rubicApiService.fetchSwapPrivateTrade<TransactionInterface>(swapRequestData);
+    const res = await this.fetchSwapPrivateData<TransactionInterface>(swapRequestData);
 
     const amount = res.estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);
@@ -215,16 +214,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
             gasPriceOptions
           }
         });
-        // await evmAdapter.signer.tryExecuteContractMethod(
-        //   this.from.address,
-        //   erc20TokenAbi,
-        //   'transfer',
-        //   [this.paymentInfo.depositAddress, this.from.stringWeiAmount],
-        //   {
-        //     onTransactionHash,
-        //     gasPriceOptions
-        //   }
-        // );
       }
 
       return transactionHash!;
@@ -253,17 +242,10 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       refundAddress
     );
     this.lastTransactionConfig = config;
-    setTimeout(() => {
-      this.lastTransactionConfig = null;
-    }, 15_000);
 
     if (!skipAmountChangeCheck) {
       this.checkAmountChange(amount, this.to.stringWeiAmount);
     }
     return config;
-  }
-
-  public clone(): OnChainTrade {
-    return { ...this };
   }
 }

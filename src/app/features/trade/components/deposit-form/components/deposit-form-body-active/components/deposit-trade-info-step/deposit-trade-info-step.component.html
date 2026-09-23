@@ -1,6 +1,7 @@
 @let step = step$ | async;
 @let depositTrade = depositTrade$ | async;
 @let fromAsset = fromAsset$ | async;
+@let isMobile = isMobile$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -25,13 +26,17 @@
             <app-deposit-info-readonly-detail [labelTop]="'Asset'">
               <div class="detail-wrapper">
                 <app-asset-details [asset]="fromAsset"></app-asset-details>
-                <app-field-with-copy-btn
-                  [visibleText]="$any(depositTrade.fromToken.address | shortAddress: 4 : 4)"
-                  [textToCopy]="depositTrade.fromToken.address"
-                  [bgColor]="'var(--tui-background-base)'"
-                  [borderColor]="'var(--tui-background-base)'"
-                  [padding]="'4px'"
-                ></app-field-with-copy-btn>
+                @if (!isNative(depositTrade.fromToken)) {
+                  <app-field-with-copy-btn
+                    [visibleText]="depositTrade.fromToken.address | shortAddress: 4 : 4"
+                    [textToCopy]="depositTrade.fromToken.address"
+                    [bgColor]="'var(--tui-background-base)'"
+                    [borderColor]="'var(--tui-background-base)'"
+                    [padding]="'7px'"
+                    [iconSize]="'s'"
+                    [textColor]="'var(--tui-text-secondary)'"
+                  ></app-field-with-copy-btn>
+                }
               </div>
             </app-deposit-info-readonly-detail>
 
@@ -39,13 +44,15 @@
               <app-field-with-copy-btn
                 [visibleText]="depositTrade.fromAmount + ' ' + depositTrade.fromToken.symbol"
                 [textToCopy]="depositTrade.fromAmount"
+                [iconSize]="'s'"
               ></app-field-with-copy-btn>
             </app-deposit-info-readonly-detail>
 
             <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
               <app-field-with-copy-btn
-                [visibleText]="$any(depositTrade.depositAddress | shortAddress: 6 : 6)"
+                [visibleText]="depositTrade.depositAddress | shortAddress: 6 : 6"
                 [textToCopy]="depositTrade.depositAddress"
+                [iconSize]="'s'"
               ></app-field-with-copy-btn>
             </app-deposit-info-readonly-detail>
 
@@ -55,33 +62,52 @@
                 [labelBottom]="'Required — funds may be lost without this tag'"
               >
                 <app-field-with-copy-btn
-                  [visibleText]="$any(depositTrade.extraField.value | shortAddress: 4 : 4)"
+                  [visibleText]="depositTrade.extraField.value | shortAddress: 4 : 4"
                   [textToCopy]="depositTrade.extraField.value"
                   [bgColor]="'rgba(255, 159, 41, 0.08)'"
                   [borderColor]="'#FF9F29'"
                   [textColor]="'#FF9F29'"
+                  [iconSize]="'s'"
                 ></app-field-with-copy-btn>
               </app-deposit-info-readonly-detail>
             }
           </div>
 
-          <div class="step-content__qrcode">
-            <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
-          </div>
+          @if (!isMobile) {
+            <div class="step-content__qrcode">
+              <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
+            </div>
+          }
         </div>
 
         <div class="step-content__footer">
+          @let confirmBtnState = getConfirmBtnState();
+          @let sendBtnState = getSendBtnState();
+
+          @if (isMobile) {
+            <button
+              tuiButton
+              class="step-content__btn"
+              appearance="primary"
+              type="button"
+              size="m"
+              [disabled]="!sendBtnState.active"
+              (click)="connectWalletAndSend()"
+            >
+              {{ sendBtnState.text }}
+            </button>
+          }
+
           <button
-            *ngLet="getActionBtnState() as actionBtnState"
             tuiButton
             class="step-content__btn"
             appearance="primary"
             type="button"
             size="m"
-            [disabled]="!actionBtnState.active"
+            [disabled]="!confirmBtnState.active"
             (click)="confirmDeposit()"
           >
-            {{ actionBtnState.text }}
+            {{ confirmBtnState.text }}
           </button>
         </div>
       </div>

@@ -22,6 +22,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Injectable()
 export class DepositFormManager {
@@ -61,6 +62,7 @@ export class DepositFormManager {
     walletConnectorService: WalletConnectorService,
     errorsService: ErrorsService,
     headerStore: HeaderStore,
+    targetNetworkAddressService: TargetNetworkAddressService,
     @Inject(Injector) injector: Injector
   ) {
     const depositDetails: DepositFormDetails = {
@@ -76,7 +78,8 @@ export class DepositFormManager {
         depositService,
         modalService,
         tradePageService,
-        headerStore
+        headerStore,
+        targetNetworkAddressService
       ),
       new TradeInfoStep(
         this._depositFormState$,

@@ -2,6 +2,7 @@
 @let tradeId = tradeId$ | async;
 @let formTitle = formTitle$ | async;
 @let durationMs = durationMs$ | async;
+@let isMobile = isMobile$ | async;
 
 <app-window-container class="deposit-form">
   <ng-container header>
@@ -16,10 +17,13 @@
 
       @if (tradeId && depositFormState !== 'COMPLETED') {
         <app-field-with-copy-btn
-          [visibleText]="tradeId | shortAddress: 6 : 6"
+          [visibleText]="
+            isMobile ? (tradeId | shortAddress: 3 : 3) : (tradeId | shortAddress: 6 : 6)
+          "
           [textToCopy]="tradeId"
           [bgColor]="'var(--tui-background-base)'"
           [borderColor]="'var(--tui-background-base)'"
+          [padding]="isMobile ? '6px' : '8px 12px'"
         ></app-field-with-copy-btn>
       }
     </div>
