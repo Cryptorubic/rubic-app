@@ -125,7 +125,7 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
   ): Promise<{ config: CrossChainTransferConfig; amount: string }> {
     const swapRequestData: TransferSwapRequestInterface = {
       ...this.apiQuote,
-      id: this.apiResponse.id,
+      id: this.rubicId,
       enableChecks: !testMode,
       receiver: receiverAddress ?? '',
       ...(refundAddress && { refundAddress })
@@ -135,7 +135,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     const res = isPrivateTrade
       ? await this.fetchSwapPrivateData<TransactionInterface>(swapRequestData)
       : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
-    console.log('getTransactionConfigAndAmount ==>', { swapRequestData, res });
 
     const amount = res.estimate.destinationTokenAmount;
     this.actualTokenAmount = new BigNumber(amount);

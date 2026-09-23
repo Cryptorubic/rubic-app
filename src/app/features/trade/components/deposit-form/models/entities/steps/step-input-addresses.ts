@@ -22,6 +22,7 @@ import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/fe
 import { isRefundAddressRequired } from '@app/features/trade/services/refund-service/constants/refund-address-required-trade-types';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -36,10 +37,15 @@ export class InputAddressesStep
 
   private readonly _subs: Subscription[] = [];
 
+  /**
+   * makes shallow copy of swapsStateService.tradeState because it reassigns new trade every 60 secs on recalculation
+   */
+  private readonly _tradeState: SelectedTrade;
+
   constructor(
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
-    private readonly swapsStateService: SwapsStateService,
+    swapsStateService: SwapsStateService,
     private readonly depositService: DepositService,
     private readonly modalService: ModalService,
     private readonly tradePageService: TradePageService,
@@ -58,6 +64,8 @@ export class InputAddressesStep
       }
     };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
+
+    this._tradeState = { ...swapsStateService.tradeState };
   }
 
   public async doAction(action: InputAddressesStepAction): Promise<void> {
@@ -105,7 +113,7 @@ export class InputAddressesStep
     this.triggerStepsUpdate();
 
     try {
-      const selectedTrade = this.swapsStateService.tradeState.trade as TransferTrade;
+      const selectedTrade = this._tradeState.trade as TransferTrade;
       const srcToken: TokenAmount = new TokenAmount(selectedTrade.from);
       const paymentInfo = await selectedTrade.getTransferTrade(receiverAddr, refundAddr);
 
@@ -125,7 +133,7 @@ export class InputAddressesStep
       this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT);
     } catch {
       const backToForm = await this.modalService.openDepositTradeRateChangedModal(
-        this.swapsStateService.tradeState.tradeType as CrossChainTradeType
+        this._tradeState.tradeType as CrossChainTradeType
       );
       if (backToForm) {
         this.tradePageService.setState('form');
@@ -145,7 +153,7 @@ export class InputAddressesStep
 
   private initValidators(): void {
     const detailsStep = this._depositFormSteps$.value[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
-    const tradeType = this.swapsStateService.tradeState.tradeType;
+    const tradeType = this._tradeState.tradeType;
 
     this.inputsForm.controls.receiverAddr.setAsyncValidators([
       isWalletAddressCorrect(detailsStep.depositDetails.dstToken.blockchain)

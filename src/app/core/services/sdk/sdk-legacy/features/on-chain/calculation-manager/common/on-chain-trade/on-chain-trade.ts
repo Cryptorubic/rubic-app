@@ -118,14 +118,10 @@ export abstract class OnChainTrade<T = unknown> {
 
   public lastSwapResponse: SwapResponseInterface<T> | null = null;
 
-  public _rubicId: string;
+  private _rubicId: string;
 
   public get rubicId(): string {
     return this._rubicId;
-  }
-
-  protected set rubicId(value: string) {
-    this._rubicId = value;
   }
 
   public readonly warnings: ErrorInterface[];
@@ -135,7 +131,7 @@ export abstract class OnChainTrade<T = unknown> {
     protected readonly sdkLegacyService: SdkLegacyService,
     protected readonly rubicApiService: RubicApiService
   ) {
-    this.rubicId = apiResponse.id;
+    this._rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
   }
 
@@ -340,7 +336,7 @@ export abstract class OnChainTrade<T = unknown> {
       preferredProvider: this.type
     });
     this.lastSwapResponse = res as RubicAny;
-    this.rubicId = res.quote.id;
+    this._rubicId = res.quote.id;
     return res;
   }
 }

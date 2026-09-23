@@ -21,6 +21,7 @@ import { NotSupportedNetworkForDepositError } from '@app/core/errors/models/prov
 import { CHAIN_SUPPORTED_WALLETS } from '@app/core/services/wallets/constants/chaintype-supported-wallets';
 import { chainSupportsQrWithAmount } from '../../../utils/qr-supports';
 import { QrCodeGenerator } from '../../../utils/qr-code-generator';
+import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 
 export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.TRADE_INFO;
@@ -31,11 +32,47 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     return this._qrCodeCanvases;
   }
 
+  /**
+   * makes shallow copy of swapsStateService.tradeState because it reassigns new trade every 60 secs on recalculation
+   */
+  private readonly _tradeState: SelectedTrade;
+
+  constructor(
+    _depositFormState$: BehaviorSubject<DepositFormState>,
+    _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
+    private readonly injector: Injector,
+    swapsStateService: SwapsStateService,
+    private readonly swapsControllerService: SwapsControllerService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly modalService: ModalService,
+    private readonly errorsService: ErrorsService
+  ) {
+    const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
+
+    const srcChain = swapsStateService.tradeState.trade.from.blockchain;
+    let sendViaWalletBtnText: string = '';
+    if (!walletConnectorService.network) {
+      sendViaWalletBtnText = 'Connect Wallet & Send';
+    } else if (srcChain !== walletConnectorService.network) {
+      sendViaWalletBtnText = 'Change Wallet & Send';
+    } else {
+      sendViaWalletBtnText = 'Send';
+    }
+
+    const actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState> = {
+      confirm_deposit: { active: true, text: 'Translated funds is done' },
+      send_via_wallet: { active: true, text: sendViaWalletBtnText }
+    };
+    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
+
+    this._tradeState = { ...swapsStateService.tradeState };
+  }
+
   public async createQrCodeCanvases(
     targetWalletAddr: string,
     srcToken: TokenAmount
   ): Promise<void> {
-    const srcChain = this.swapsStateService.tradeState.trade.from.blockchain;
+    const srcChain = this._tradeState.trade.from.blockchain;
     if (chainSupportsQrWithAmount(srcChain)) {
       const [receiverOnlyQR, receiverWithAmountQR] = await Promise.all([
         QrCodeGenerator.generateTransferQrCode(srcChain, targetWalletAddr, {
@@ -66,35 +103,6 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     }
   }
 
-  constructor(
-    _depositFormState$: BehaviorSubject<DepositFormState>,
-    _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
-    private readonly injector: Injector,
-    private readonly swapsStateService: SwapsStateService,
-    private readonly swapsControllerService: SwapsControllerService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService,
-    private readonly errorsService: ErrorsService
-  ) {
-    const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
-
-    const srcChain = swapsStateService.tradeState.trade.from.blockchain;
-    let sendViaWalletBtnText: string = '';
-    if (!walletConnectorService.network) {
-      sendViaWalletBtnText = 'Connect Wallet & Send';
-    } else if (srcChain !== walletConnectorService.network) {
-      sendViaWalletBtnText = 'Change Wallet & Send';
-    } else {
-      sendViaWalletBtnText = 'Send';
-    }
-
-    const actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState> = {
-      confirm_deposit: { active: true, text: 'Translated funds is done' },
-      send_via_wallet: { active: true, text: sendViaWalletBtnText }
-    };
-    super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
-  }
-
   public async doAction(action: TradeInfoStepAction): Promise<void> {
     switch (action) {
       case 'confirm_deposit':
@@ -120,7 +128,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
   }
 
   private async sendTransferViaWallet(): Promise<void> {
-    const srcChain = this.swapsStateService.tradeState.trade.from.blockchain;
+    const srcChain = this._tradeState.trade.from.blockchain;
     const srcChainType = BlockchainsInfo.getChainType(srcChain);
     const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
     const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
@@ -167,7 +175,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     const refundAddress = inputAddrStep.inputsForm.controls.refundAddr.value.trim();
 
     await this.swapsControllerService.swap(
-      this.swapsStateService.tradeState,
+      this._tradeState,
       true,
       {
         onSwap: () => {

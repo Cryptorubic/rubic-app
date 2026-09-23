@@ -147,14 +147,10 @@ export abstract class CrossChainTrade<T = unknown> {
     this._apiFromAddress = value;
   }
 
-  public _rubicId: string;
+  private _rubicId: string;
 
   public get rubicId(): string {
     return this._rubicId;
-  }
-
-  protected set rubicId(value: string) {
-    this._rubicId = value;
   }
 
   public readonly useProxy: boolean;
@@ -173,7 +169,7 @@ export abstract class CrossChainTrade<T = unknown> {
   ) {
     this.useProxy = apiResponse.useRubicContract;
     this.contractSpender = apiResponse.transaction.approvalAddress!;
-    this.rubicId = apiResponse.id;
+    this._rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
   }
 
