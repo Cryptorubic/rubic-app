@@ -1,11 +1,15 @@
 @use 'src/scss/core' as *;
 
-:host.tui-skeleton::after {
-  background-color: transparent !important;
-  background-image: url('/assets/images/icons/amount-loader.svg');
-  background-repeat: no-repeat;
-  background-position-x: right;
-  animation: none;
+:host {
+  width: 100%;
+
+  &.tui-skeleton::after {
+    background-color: transparent !important;
+    background-image: url('/assets/images/icons/amount-loader.svg');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    animation: none;
+  }
 }
 
 .amount-transput {
@@ -39,11 +43,11 @@
 @include b($mobile-md) {
   .amount-transput {
     &__input {
-      @include font(25px, 35px, 500, var(--tui-text-primary), 0.25px);
-      text-align: left;
+      height: 32px;
+      @include font(30px, 35px, 500, var(--tui-text-primary), 0.25px);
 
       &::placeholder {
-        @include font(18px, 18px, 500, var(--tui-text-tertiary), 0.54px);
+        @include font(24px, 18px, 500, var(--tui-text-tertiary), 0.54px);
       }
     }
   }

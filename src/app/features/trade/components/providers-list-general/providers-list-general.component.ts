@@ -194,7 +194,7 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
 
   public getMobileStates(states: TradeState[]): TradeState[] {
     if (this.privateOnly) {
-      return [states[0]];
+      return states.length ? [states[0]] : [];
     }
 
     return states.slice(0, states.some(trade => trade.private) ? 2 : 1);
@@ -208,7 +208,8 @@ export class ProvidersListGeneralComponent implements OnInit, AfterViewInit {
         this.calculationStatus.calculationProgress,
         true,
         this.injector,
-        this.calculationStatus.noRoutes
+        this.calculationStatus.noRoutes,
+        this.privateOnly
       )
       .subscribe(tradeType => {
         if (tradeType) {

@@ -76,11 +76,6 @@
     align-items: center;
   }
 
-  &__token-provider {
-    @include font(18px, 18px, 500, var(--tui-text-tertiary), 0.54px);
-    display: none;
-  }
-
   &__token-image {
     width: 18px;
     height: 18px;
@@ -233,22 +228,6 @@ app-route-element {
 @include b($mobile-md) {
   .element {
     &_shorted {
-      .element__amounts-container {
-        align-items: end;
-      }
-
-      .element__token-info {
-        gap: var(--tui-padding-s);
-      }
-
-      .element__token {
-        gap: var(--tui-padding-m);
-      }
-
-      .element__token-provider {
-        display: block;
-      }
-
       .element__token-image {
         width: 25px;
         height: 25px;
@@ -259,16 +238,8 @@ app-route-element {
         @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
       }
 
-      .element__token-amount {
-        display: none;
-      }
-
       .element__right {
         gap: var(--tui-padding-m);
-      }
-
-      .element__amount-price {
-        display: none;
       }
     }
   }

@@ -4,8 +4,7 @@
     'io-container_round-top': round === 'top',
     'io-container_round-bottom': round === 'bottom',
     'io-container_round-all': round === 'all',
-    'io-container_round-none': round === 'none',
-    'io-container_margin-top': marginTop
+    'io-container_round-none': round === 'none'
   }"
 >
   <div class="io-left">
@@ -13,5 +12,8 @@
   </div>
   <div class="io-right">
     <ng-content select="[right]"></ng-content>
+  </div>
+  <div class="io-bottom">
+    <ng-content select="[bottom]"></ng-content>
   </div>
 </div>

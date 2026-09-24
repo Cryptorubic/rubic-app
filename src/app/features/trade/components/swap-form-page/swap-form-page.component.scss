@@ -44,6 +44,10 @@ app-target-network-address {
   margin-top: var(--tui-padding-l);
 }
 
+.send-receive-label {
+  font-size: 16px;
+}
+
 app-form-switcher {
   display: flex;
   justify-content: center;

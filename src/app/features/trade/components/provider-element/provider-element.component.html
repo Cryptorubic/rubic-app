@@ -32,20 +32,21 @@
             }
           </div>
           @if (!isShortedMobilePrivate) {
-            <div class="element__token-provider">Provider</div>
+            <div class="element__token-info">
+              <img
+                class="element__token-image"
+                [src]="providerInfo.image"
+                [alt]="providerInfo.name"
+              />
+              <div class="element__token-symbol">{{ providerInfo.name }}</div>
+            </div>
           }
-          <div class="element__token-info">
-            <img
-              class="element__token-image"
-              [src]="providerInfo.image"
-              [alt]="providerInfo.name"
-            />
-            <div class="element__token-symbol">{{ providerInfo.name }}</div>
-          </div>
         </div>
       </div>
       <div class="element__right">
-        @if (trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)) {
+        @if (
+          !isShortedMobilePrivate && trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)
+        ) {
           <div class="element__amount-price">
             @if (!minMaxErrorAmount || !trade.from?.price?.gt(0)) {
               ~ {{ trade.to.tokenAmount | getUsdPrice: trade.to.price : 2 : true }}&nbsp;$
