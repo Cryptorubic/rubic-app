@@ -2,6 +2,7 @@
 @let depositTrade = depositTrade$ | async;
 @let fromAsset = fromAsset$ | async;
 @let isMobile = isMobile$ | async;
+@let showMobileWalletBtn = showMobileWalletBtn$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -84,7 +85,7 @@
           @let confirmBtnState = getConfirmBtnState();
           @let sendBtnState = getSendBtnState();
 
-          @if (isMobile) {
+          @if (showMobileWalletBtn) {
             <button
               tuiButton
               class="step-content__btn"
