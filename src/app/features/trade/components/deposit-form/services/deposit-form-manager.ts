@@ -112,6 +112,9 @@ export class DepositFormManager {
           inputAddressesStep.updateActionBtnState('confirm_addresses', {
             active: inputAddressesStep.inputsForm.valid
           });
+          inputAddressesStep.updateActionBtnState('change_addresses', {
+            active: true
+          });
 
           tradeInfoStep.setActive(false);
           tradeInfoStep.setOpened(false);

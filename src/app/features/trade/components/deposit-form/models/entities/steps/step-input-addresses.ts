@@ -153,6 +153,7 @@ export class InputAddressesStep
 
     this.setOpened(false);
     tradeInfoStep.setLoading(true);
+    this.updateActionBtnState('confirm_addresses', { active: false });
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).disable();
     }

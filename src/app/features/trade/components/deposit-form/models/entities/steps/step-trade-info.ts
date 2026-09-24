@@ -135,9 +135,9 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
 
     this.updateActionBtnState('confirm_deposit', { active: false });
     this.updateActionBtnState('send_via_wallet', { active: false });
-
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
+    this.triggerStepsUpdate();
 
     if (!BlockchainsInfo.isEvmBlockchainName(srcChain)) {
       this.errorsService.catch(new NotSupportedNetworkForDepositError(srcChain));
@@ -154,6 +154,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
       } catch {
         this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', { active: true });
+        this.triggerStepsUpdate();
         this.errorsService.catch(new WalletError());
         return;
       }
@@ -167,6 +168,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
           active: true,
           text: 'Change Wallet & Send'
         });
+        this.triggerStepsUpdate();
         return;
       }
     }
@@ -183,10 +185,15 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
           tradeStatusStep.setOpened(true);
           this.setOpened(false);
           this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
+          this.triggerStepsUpdate();
         },
-        onError: err => {
-          this.errorsService.catch(err);
+        onError: () => {
+          for (const ctrl in inputAddrStep.inputsForm.controls) {
+            inputAddrStep.inputsForm.get(ctrl).enable();
+          }
+          inputAddrStep.updateActionBtnState('confirm_addresses', { active: true });
           this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
+          this.triggerStepsUpdate();
         }
       },
       {
