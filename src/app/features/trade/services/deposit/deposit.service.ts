@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, interval, Subscription } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { filter, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { DepositTrade, DepositTradeType } from '../../models/deposit-trade';
@@ -33,7 +33,7 @@ export class DepositService {
 
   private readonly _depositTrade$ = new BehaviorSubject<DepositTrade | null>(null);
 
-  public readonly depositTrade$ = this._depositTrade$.asObservable().pipe(filter(Boolean));
+  public readonly depositTrade$ = this._depositTrade$.asObservable();
 
   private readonly _status$ = new BehaviorSubject<CrossChainDepositData>({
     status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,

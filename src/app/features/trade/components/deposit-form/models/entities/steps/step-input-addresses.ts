@@ -56,7 +56,7 @@ export class InputAddressesStep
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
       confirm_addresses: {
         active: false,
-        text: 'Confirm Addresses'
+        text: 'Enter receiver address'
       },
       change_addresses: {
         active: false,
@@ -89,8 +89,18 @@ export class InputAddressesStep
           active: true,
           text: 'Confirm Addresses'
         });
-        this.triggerStepsUpdate();
+      } else if (this.inputsForm.controls.receiverAddr.hasError('required')) {
+        this.updateActionBtnState('confirm_addresses', {
+          active: false,
+          text: 'Enter receiver address'
+        });
+      } else if (this.inputsForm.controls.refundAddr.hasError('required')) {
+        this.updateActionBtnState('confirm_addresses', {
+          active: false,
+          text: 'Enter refund address'
+        });
       }
+      this.triggerStepsUpdate();
     });
 
     const formStatusSub = this.inputsForm.statusChanges.subscribe(status => {
