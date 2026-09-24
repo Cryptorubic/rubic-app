@@ -28,16 +28,17 @@
 
     &__info {
       @include flex(column, stretch, start);
-      gap: 1px;
 
       &-token {
         color: var(--tui-text-primary);
         font-weight: 400;
+        font-size: 14px;
       }
 
       &-chain {
         color: var(--tui-text-secondary);
         font-weight: 500;
+        font-size: 10px;
       }
     }
   }

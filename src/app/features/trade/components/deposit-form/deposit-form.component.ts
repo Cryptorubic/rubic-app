@@ -1,10 +1,10 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
   inject,
-  OnDestroy,
-  OnInit
+  OnDestroy
 } from '@angular/core';
 import { BehaviorSubject, map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
@@ -22,7 +22,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DepositFormManager]
 })
-export class DepositFormComponent implements OnInit, OnDestroy {
+export class DepositFormComponent implements AfterViewInit, OnDestroy {
   public readonly depositFormState$ = this.depositFormManager.depositFormState$;
 
   public readonly tradeId$ = this.depositFormManager.depositTrade$.pipe(
@@ -53,7 +53,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     this.previewSwapService.activateDepositPage();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.depositFormManager.init(this.destroyRef);
   }
 

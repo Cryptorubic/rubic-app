@@ -56,7 +56,7 @@ export class InputAddressesStep
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
       confirm_addresses: {
         active: false,
-        text: 'Enter receiver address'
+        text: 'Confirm Addresses'
       },
       change_addresses: {
         active: false,
@@ -83,7 +83,7 @@ export class InputAddressesStep
     /**
      * hack to update button state after async validation of this.targetNetworkAddressService.address
      */
-    setTimeout(() => this.validateInputs());
+    setTimeout(() => this.validateInputs(), 10);
 
     const formStatusSub = this.inputsForm.statusChanges.subscribe(() => {
       this.validateInputs();
@@ -197,9 +197,12 @@ export class InputAddressesStep
     this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
   }
 
+  public isRefundAddressRequired(): boolean {
+    return isRefundAddressRequired(this._tradeState.tradeType);
+  }
+
   private initValidators(): void {
     const detailsStep = this._depositFormSteps$.value[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
-    const tradeType = this._tradeState.tradeType;
 
     this.inputsForm.controls.receiverAddr.setAsyncValidators([
       isWalletAddressCorrect(detailsStep.depositDetails.dstToken.blockchain)
@@ -207,9 +210,10 @@ export class InputAddressesStep
     this.inputsForm.controls.refundAddr.setAsyncValidators([
       isWalletAddressCorrect(detailsStep.depositDetails.srcToken.blockchain)
     ]);
-    if (isRefundAddressRequired(tradeType)) {
+    if (this.isRefundAddressRequired()) {
       this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
     }
+    this.inputsForm.controls.refundAddr.hasValidator(Validators.required);
     this.inputsForm.updateValueAndValidity();
   }
 }

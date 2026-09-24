@@ -11,6 +11,7 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { switchIif } from '@app/shared/utils/utils';
+import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
 
 @Component({
   selector: 'app-deposit-trade-info-step',
@@ -45,6 +46,10 @@ export class DepositTradeInfoStepComponent {
   public readonly depositTrade$ = this.depositFormManager.depositTrade$;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
+    map(state => state === DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT)
+  );
 
   public readonly showMobileWalletBtn$ = this.isMobile$.pipe(
     switchIif(

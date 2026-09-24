@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepositFormManager } from '../../../../services/deposit-form-manager';
-import { map } from 'rxjs';
+import { map, share, startWith } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { BlockchainName } from '@cryptorubic/core';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
@@ -15,7 +15,17 @@ import { ActionBtnState } from '../../../../models/step-types';
 })
 export class DepositInputAddressesStepComponent {
   public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
-    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES])
+    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES]),
+    share()
+  );
+
+  public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
+    map(state => state === DEPOSIT_FORM_STATE.IDLE)
+  );
+
+  public readonly showRefundInput$ = this.step$.pipe(
+    map(step => step.isRefundAddressRequired()),
+    startWith(false)
   );
 
   public readonly srcChain: BlockchainName;

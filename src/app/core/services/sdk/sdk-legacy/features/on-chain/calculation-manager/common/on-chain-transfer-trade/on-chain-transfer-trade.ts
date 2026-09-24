@@ -181,16 +181,7 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     };
 
     try {
-      await this.setTransactionConfig(
-        false,
-        options.useCacheData || false,
-        options.testMode || false,
-        options.receiverAddress,
-        options.refundAddress
-      );
-      if (!this.paymentInfo) {
-        throw new Error('Deposit address is not set');
-      }
+      if (!this.paymentInfo) throw new Error('[swapDirect] this.paymentInfo is not set');
 
       const evmAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         this.from.blockchain

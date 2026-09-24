@@ -21,6 +21,10 @@
       @include accordion-counter();
     }
 
+    &-counter__active {
+      @include accordion-counter-active();
+    }
+
     &-content {
       @include accordion-content();
       @include flex(column, stretch, start);

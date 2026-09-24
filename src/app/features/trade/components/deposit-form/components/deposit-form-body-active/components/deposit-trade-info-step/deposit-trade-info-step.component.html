@@ -3,6 +3,7 @@
 @let fromAsset = fromAsset$ | async;
 @let isMobile = isMobile$ | async;
 @let showMobileWalletBtn = showMobileWalletBtn$ | async;
+@let isStepHighlighted = isStepHighlighted$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -12,7 +13,7 @@
     [size]="'s'"
     [(open)]="step.opened"
   >
-    <span class="step-counter">3</span>
+    <span class="step-counter" [class.step-counter__active]="isStepHighlighted">3</span>
     <span class="step-title">SEND DEPOSIT</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>

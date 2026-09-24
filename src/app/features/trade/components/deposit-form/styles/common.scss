@@ -39,6 +39,11 @@
   border-radius: 50%;
 }
 
+@mixin accordion-counter-active() {
+  color: black;
+  background: #39e180;
+}
+
 @mixin accordion-title {
   @include flex(row, center, space-between);
   color: var(--tui-text-primary);
