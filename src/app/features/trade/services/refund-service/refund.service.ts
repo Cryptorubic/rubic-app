@@ -5,8 +5,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
-import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
-import { refundAddressRequiredTradeTypes } from './constants/refund-address-required-trade-types';
+import { isRefundAddressRequired } from './constants/refund-address-required-trade-types';
 
 @Injectable()
 export class RefundService {
@@ -50,7 +49,7 @@ export class RefundService {
   }
 
   public onTradeSelection(trade: SelectedTrade): void {
-    if (this.isRefundAddressRequired(trade.tradeType)) {
+    if (isRefundAddressRequired(trade.tradeType)) {
       this.refundAddressCtrl.addValidators([Validators.required]);
       this._isValidRefundAddress$.next(false);
     } else {
@@ -59,9 +58,5 @@ export class RefundService {
     }
 
     this.refundAddressCtrl.updateValueAndValidity();
-  }
-
-  private isRefundAddressRequired(tradeType: OnChainTradeType | CrossChainTradeType): boolean {
-    return refundAddressRequiredTradeTypes.includes(tradeType);
   }
 }

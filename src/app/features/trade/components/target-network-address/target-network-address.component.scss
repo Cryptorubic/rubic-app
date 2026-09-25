@@ -3,13 +3,11 @@
 
 .network-container {
   position: relative;
-
   margin-top: 1px;
 
   &__row {
     position: relative;
     top: 0;
-
     display: flex;
     gap: 10px;
   }
@@ -18,10 +16,8 @@
     position: absolute;
     top: 50%;
     right: 50px;
-
     transform: translateY(-50%);
     cursor: pointer;
-
     transition: opacity 100ms;
 
     ::ng-deep svg {

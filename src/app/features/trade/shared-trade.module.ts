@@ -20,9 +20,10 @@ import {
   TuiButton,
   TuiHint,
   TuiAppearance,
-  TuiNumberFormat
+  TuiNumberFormat,
+  TuiTextfield
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { TuiAccordion, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -50,8 +51,6 @@ import { ProvidersListComponent } from '@features/trade/components/providers-lis
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
-import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
-import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
@@ -74,6 +73,20 @@ import { PreviewSwapService } from './services/preview-swap/preview-swap.service
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
+import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
+import { DepositDetailsStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-details-step/deposit-details-step.component';
+import { DepositInputAddressesStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-input-addresses-step/deposit-input-addresses-step.component';
+import { DepositTradeInfoStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/deposit-trade-info-step.component';
+import { DepositTradeStatusStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/deposit-trade-status-step.component';
+import { DepositFormBodySuccessComponent } from './components/deposit-form/components/deposit-form-body-success/deposit-form-body-success.component';
+import { DepositFormBodyActiveComponent } from './components/deposit-form/components/deposit-form-body-active/deposit-form-body-active.component';
+import { FieldWithCopyBtnComponent } from './components/deposit-form/components/shared/field-with-copy-btn/field-with-copy-btn.component';
+import { AssetDetailsComponent } from './components/deposit-form/components/shared/asset-details/asset-details.component';
+import { StepLockedLabelComponent } from './components/deposit-form/components/shared/step-locked-label/step-locked-label.component';
+import { DepositInfoReadonlyDetailComponent } from './components/deposit-form/components/shared/deposit-info-readonly-detail/deposit-info-readonly-detail.component';
+import { StepLoadingLabelComponent } from './components/deposit-form/components/shared/step-loading-label/step-loading-label.component';
+import { DepositStatusBarComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/components/deposit-status-bar/deposit-status-bar.component';
+import { QrCodeContainerComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/components/qr-code-container/qr-code-container.component';
 
 @NgModule({
   declarations: [
@@ -100,8 +113,6 @@ import { ActionButtonService } from './services/action-button-service/action-but
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -111,7 +122,21 @@ import { ActionButtonService } from './services/action-button-service/action-but
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent,
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -137,8 +162,6 @@ import { ActionButtonService } from './services/action-button-service/action-but
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -148,7 +171,21 @@ import { ActionButtonService } from './services/action-button-service/action-but
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent,
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   imports: [
     CommonModule,
@@ -173,7 +210,9 @@ import { ActionButtonService } from './services/action-button-service/action-but
     TuiNotification,
     ...TuiCarousel,
     TuiAppearance,
-    TuiNumberFormat
+    TuiNumberFormat,
+    ...TuiAccordion,
+    ...TuiTextfield
   ],
   providers: [
     SettingsService,

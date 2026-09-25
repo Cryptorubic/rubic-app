@@ -12,7 +12,6 @@
 
     > * {
       flex: 1;
-
       text-decoration: none;
     }
   }
@@ -22,7 +21,6 @@
     flex-direction: column;
     gap: var(--tui-padding-s);
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
 
@@ -53,7 +51,6 @@
     width: 67px;
     height: 100%;
     overflow: hidden;
-
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
     img {
@@ -69,7 +66,6 @@
     height: 50px;
     margin-top: -5px;
     margin-left: -25px;
-
     background: var(--primary-background);
     border: 5px solid var(--primary-background);
     border-radius: 100%;
@@ -86,7 +82,6 @@
 
   &__token-amount {
     width: 100%;
-
     font-size: 21px;
   }
 
@@ -112,7 +107,6 @@
 
   &__success-info {
     overflow: hidden;
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -121,7 +115,6 @@
 app-swap-data-element ::ng-deep {
   .provider-info {
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -147,7 +140,6 @@ app-swap-data-element ::ng-deep {
   .preview {
     &__data-container {
       position: relative;
-
       gap: 0;
       margin-top: 2px;
 
@@ -159,12 +151,9 @@ app-swap-data-element ::ng-deep {
           top: 16px;
           left: 27px;
           z-index: 0;
-
           width: 2px;
           height: calc(100% - 70px);
-
           background: var(--tui-border-normal);
-
           content: '';
         }
       }
@@ -186,7 +175,6 @@ app-swap-data-element ::ng-deep {
 
     &__io-container {
       z-index: 1;
-
       display: flex;
       flex-direction: column;
       gap: var(--tui-padding-xs);
@@ -217,7 +205,6 @@ app-swap-data-element ::ng-deep {
       height: 25px;
       margin-top: -2px;
       margin-left: -15px;
-
       border-width: 2px;
     }
   }
@@ -230,6 +217,5 @@ app-mev-bot {
 
 .notification {
   margin-bottom: var(--tui-padding-m);
-
   font-size: 15px;
 }

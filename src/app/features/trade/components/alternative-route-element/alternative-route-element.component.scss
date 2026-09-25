@@ -8,14 +8,12 @@
     height: 62px;
     margin-right: 10px;
     padding: var(--tui-padding-m);
-
     background: var(--io-background);
     border-radius: var(--tui-radius-s);
 
     button {
       font-weight: 500;
       font-size: 15px;
-
       border-radius: var(--tui-radius-s);
     }
   }
@@ -42,7 +40,6 @@
         width: 47px;
         height: 27px;
         overflow: hidden;
-
         border-radius: 10px 0 0 10px;
 
         img {
@@ -61,7 +58,6 @@
         gap: unset;
         width: 50px;
         margin: 0;
-
         line-height: 1.2;
 
         span {
@@ -85,7 +81,6 @@
     &__route-container {
       height: 55px;
       margin-right: 0;
-
       background: transparent;
     }
 

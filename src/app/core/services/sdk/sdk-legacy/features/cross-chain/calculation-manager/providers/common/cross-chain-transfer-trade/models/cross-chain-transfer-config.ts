@@ -1,7 +1,6 @@
-export interface CrossChainTransferConfig {
-  depositAddress: string;
-  amountToSend: string;
-  exchangeId: string;
+import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
+
+export interface CrossChainTransferConfig extends TransactionInterface {
   extraFields?: {
     name: string;
     value: string;

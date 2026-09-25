@@ -79,6 +79,7 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { TimerComponent } from './components/timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    PrivacyDisclaimerModalComponent
+    PrivacyDisclaimerModalComponent,
+    TimerComponent
   ],
   imports: [
     CommonModule,
@@ -213,7 +215,8 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
     ChartTogglerComponent,
-    InputNumberComponent
+    InputNumberComponent,
+    TimerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

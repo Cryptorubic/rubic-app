@@ -4,7 +4,6 @@
   &__content {
     @include flex(column, center, space-around);
     padding: 35px 20px 0;
-
     text-align: center;
   }
 

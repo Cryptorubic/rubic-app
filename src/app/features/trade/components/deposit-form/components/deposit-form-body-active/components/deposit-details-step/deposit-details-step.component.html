@@ -1,0 +1,37 @@
+@let step = step$ | async;
+@let fromAsset = fromAsset$ | async;
+@let toAsset = toAsset$ | async;
+
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter">1</span>
+    <span class="step-title">SWAP DETAILS</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
+
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <app-asset-details
+          [asset]="fromAsset"
+          [tokenAmount]="step.depositDetails.srcToken.stringTokenAmount"
+        ></app-asset-details>
+
+        <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
+
+        <app-asset-details
+          [asset]="toAsset"
+          [tokenAmount]="step.depositDetails.dstToken.stringTokenAmount"
+        ></app-asset-details>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

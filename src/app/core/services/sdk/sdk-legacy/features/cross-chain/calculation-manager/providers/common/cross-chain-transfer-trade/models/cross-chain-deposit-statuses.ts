@@ -38,7 +38,7 @@ export const API_STATUS_TO_DEPOSIT_STATUS: Record<
 };
 
 export const API_SUBSTATUS_TO_DEPOSIT_STATUS: Record<
-  Exclude<CrossChainTxStatusConfig['subStatus'], undefined>,
+  Exclude<CrossChainTxStatusConfig['subStatus'], 'undefined'>,
   CrossChainDepositStatus
 > = {
   AWAITING_DEPOSIT: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,

@@ -23,7 +23,6 @@
     img {
       display: block;
       height: auto;
-
       border-radius: 50%;
     }
   }
@@ -71,13 +70,11 @@
 
     &__text {
       margin-right: 0;
-
       font-size: 12px;
     }
 
     &__logout {
       height: 40px;
-
       font-size: 12px !important;
     }
   }

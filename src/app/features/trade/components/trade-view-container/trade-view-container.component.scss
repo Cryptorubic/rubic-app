@@ -2,6 +2,10 @@
 
 $mobile-width: 360px;
 
+app-deposit-form {
+  width: 100%;
+}
+
 :host {
   display: flex;
 
@@ -11,7 +15,6 @@ $mobile-width: 360px;
       gap: var(--tui-padding-s);
       align-items: center;
       padding: 0 5px;
-
       cursor: pointer;
 
       &__text {
@@ -37,13 +40,11 @@ $mobile-width: 360px;
     @include flex(column, center, center);
 
     position: relative;
-
     gap: 10px;
 
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
-
     transition: 0.2s ease-in-out;
 
     &_tokens {
@@ -79,7 +80,6 @@ $mobile-width: 360px;
     display: block;
     width: $mobile-width;
     height: 510px;
-
     background: var(--secondary-background);
     border-radius: 17px;
   }
@@ -114,7 +114,6 @@ $mobile-width: 360px;
       height: auto;
       margin-bottom: 10px;
       overflow: hidden;
-
       background: none;
       border-radius: 0;
     }

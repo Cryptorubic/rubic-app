@@ -1,0 +1,57 @@
+@use 'src/scss/core' as *;
+@use 'src/app/features/trade/components/deposit-form/styles/common' as *;
+
+:host {
+  .step {
+    width: 100%;
+
+    tui-accordion-item {
+      @include tui-accordion-item();
+    }
+
+    .tui-accordion-item__disabled {
+      @include tui-accordion-item-disabled();
+    }
+
+    &-title {
+      @include accordion-title();
+    }
+
+    &-counter {
+      @include accordion-counter();
+    }
+
+    &-counter__active {
+      @include accordion-counter-active();
+    }
+
+    &-content {
+      @include accordion-content();
+      @include flex(column, stretch, start);
+      gap: 16px;
+
+      &__input {
+        @include flex(column, start, start);
+        gap: 8px;
+        width: 100%;
+
+        &-title {
+          @include flex(row, center, start);
+          gap: 5px;
+
+          .chain-label {
+            color: var(--tui-text-secondary);
+          }
+        }
+
+        tui-textfield {
+          width: 100%;
+        }
+      }
+
+      &__btn {
+        width: 100%;
+      }
+    }
+  }
+}

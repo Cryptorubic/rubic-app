@@ -1,0 +1,79 @@
+@let step = step$ | async;
+@let showRefundInput = showRefundInput$ | async;
+@let isStepHighlighted = isStepHighlighted$ | async;
+
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter" [class.step-counter__active]="isStepHighlighted">2</span>
+    <span class="step-title">RECEIVER & REFUND ADDRESSES</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
+
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <div class="step-content__input">
+          <div class="step-content__input-title">
+            <img src="assets/images/icons/arrow/arrow-circle-down.png" width="16" height="16" />
+            <b>Receiver address</b>
+            <b class="chain-label">{{ srcChainUI }}</b>
+          </div>
+
+          <tui-textfield tuiTextfieldSize="m">
+            <input
+              tuiTextfield
+              [placeholder]="'Enter or paste your ' + dstChain + ' address'"
+              [formControl]="step.inputsForm.controls.receiverAddr"
+            />
+          </tui-textfield>
+        </div>
+
+        @if (showRefundInput) {
+          <div class="step-content__input">
+            <div class="step-content__input-title">
+              <img src="assets/images/icons/arrow/flip-backward.png" width="16" height="16" />
+              <b>Refund address</b>
+              <b class="chain-label">{{ dstChainUI }}</b>
+            </div>
+
+            <tui-textfield tuiTextfieldSize="m">
+              <input
+                tuiTextfield
+                [placeholder]="'Enter or paste your ' + srcChain + ' address in case of refund'"
+                [formControl]="step.inputsForm.controls.refundAddr"
+              />
+            </tui-textfield>
+          </div>
+        }
+
+        <div class="step-content__note">
+          <b>
+            I confirm that both addresses belong to the wallets I control, these are not CEX
+            accounts
+          </b>
+        </div>
+
+        <button
+          *ngLet="getActionBtnState() as actionBtnState"
+          tuiButton
+          class="step-content__btn"
+          appearance="primary"
+          type="button"
+          size="m"
+          [disabled]="!actionBtnState.active"
+          (click)="doAction()"
+        >
+          {{ actionBtnState.text }}
+        </button>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

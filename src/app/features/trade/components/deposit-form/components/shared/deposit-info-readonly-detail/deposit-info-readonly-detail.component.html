@@ -1,0 +1,9 @@
+<div class="detail">
+  @if (labelTop) {
+    <b class="detail__label-top">{{ labelTop }}</b>
+  }
+  <ng-content></ng-content>
+  @if (labelBottom) {
+    <b class="detail__label-bottom">{{ labelBottom }}</b>
+  }
+</div>

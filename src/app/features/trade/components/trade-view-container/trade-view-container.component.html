@@ -37,7 +37,7 @@
         <app-preview-swap></app-preview-swap>
       }
       @case ('depositPreview') {
-        <app-deposit-preview-swap></app-deposit-preview-swap>
+        <app-deposit-form></app-deposit-form>
       }
     }
 
@@ -81,9 +81,5 @@
       [calculationStatus]="state.calculationStatus"
       [showCalculation]="true"
     ></app-providers-list-general>
-  }
-
-  @if (state.content === 'depositPreview') {
-    <app-deposit-trade-info></app-deposit-trade-info>
   }
 </div>

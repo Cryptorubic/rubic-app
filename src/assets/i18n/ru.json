@@ -65,6 +65,7 @@
     "wrongToken": "Rubic мост поддерживает только токен RBC.",
     "oneInchQuote": "Ошибка котировки 1inch",
     "notSupportedNetwork": "{{networkToChoose}} не поддерживается выбранным поставщиком кошелька.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Вы отменили вход в кошелек. Пожалуйста, подтвердите вход в Ваш кошелек для совершения транзакций на платформе.",
     "lowGas": "Газ транзакции слишком низкий. Не хватает газа, чтобы покрыть минимальную стоимость сделки. Попробуйте увеличить подачу газа",
     "noSelectedProvider": "Вы не выбрали провайдера для обмена",

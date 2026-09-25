@@ -1,0 +1,47 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .field-with-copy-btn {
+    @include flex(row, center, space-between);
+    gap: 5px;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &__copy-btn {
+      @include flex(row, center, center);
+      background-color: var(--tui-background-base);
+      border-radius: 6px;
+
+      &-copied {
+        ::ng-deep svg path {
+          fill: var(--tui-background-accent-1-pressed);
+        }
+      }
+    }
+
+    .copy-btn-size-s {
+      width: 14px;
+      height: 14px;
+
+      ::ng-deep svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .copy-btn-size-m {
+      width: 16px;
+      height: 16px;
+
+      ::ng-deep svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}

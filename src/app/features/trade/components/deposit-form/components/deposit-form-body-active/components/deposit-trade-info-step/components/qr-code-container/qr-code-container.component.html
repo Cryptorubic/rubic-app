@@ -1,0 +1,32 @@
+@let showWalletBtn = showWalletBtn$ | async;
+@let actionBtnState = actionBtnState$ | async;
+
+<div class="qr-container">
+  <b class="qr-container__label">Scan to send</b>
+
+  <div class="qr-container__main">
+    <div class="qr-code" [id]="QR_CODE_CONTAINER_ID"></div>
+
+    @if (showWalletBtn) {
+      <button
+        tuiButton
+        class="step-content__btn"
+        appearance="secondary"
+        type="button"
+        size="m"
+        [disabled]="!actionBtnState.active"
+        (click)="btnClicked.emit()"
+      >
+        {{ actionBtnState.text }}
+      </button>
+      <!--<app-rubic-button
+        appearance="secondary"
+        [loading]="actionBtnState.loading"
+        [disabled]="!actionBtnState.active"
+        (onClick)="btnClicked.emit()"
+      >
+        {{ actionBtnState.text }}
+      </app-rubic-button>-->
+    }
+  </div>
+</div>

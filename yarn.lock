@@ -2370,18 +2370,18 @@
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
 
-"@cryptorubic/core@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.9.0.tgz#934bc2ac1f90c5aa0a77aa02eac6e503fe9dd718"
-  integrity sha512-Ug0UKGpSAeU8Tpu2SThEcRkau58AQZVkl+9S+4aGxDGF63OyJKsjhvfFaH5QxuewFYLjLseBX/jigPDHnWO/yg==
+"@cryptorubic/core@1.9.1-alpha.deposit.1":
+  version "1.9.1-alpha.deposit.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.9.1-alpha.deposit.1.tgz#b563b19aa4e11bc8602de9b5efdbc3a03383031f"
+  integrity sha512-wmg0zwM96ISYfJ7sf6ItpfT32RW6De8CgyexB8EgyJzLDTeexIWe4x1zX8FBK+BbOnvLbzNhU01hPCTNBsNNYw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.9.0.tgz#0501b95ead3f4e182a5c69dfb52b8790801a3358"
-  integrity sha512-OnZD6nU2yKHus6S4KqzaWLMcHh2VAcSERqte8N67PFybCxFybzyjuekNAbuTWL+jEXzVbQ5ynGLBm3gL1bM7Ew==
+"@cryptorubic/web3@1.9.1-alpha.deposit.1":
+  version "1.9.1-alpha.deposit.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.9.1-alpha.deposit.1.tgz#4f509052b70c3e6dcec67ab9be3a5740485dc6c3"
+  integrity sha512-IfNrfUhVc/m5PNh58C5H91R5QhgqvkHwKmRp1JrsyU5wWXbXtuMMevieqHC4iZaS60OsRbV0fEe668BOt4IHRw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -7596,6 +7596,13 @@
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
   integrity sha512-qYi3YV9inU/REEfxwVcGZzbS3KG/Xs90lv0Pr+lDtuVjBPGd1A+eciXzVSaRvLify132BfcvhvEjeVahrUl0Ug==
+
+"@types/qrcode@^1.5.6":
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/@types/qrcode/-/qrcode-1.5.6.tgz#07c33cb9ec0ad88be4636e636e28e54d99b65f42"
+  integrity sha512-te7NQcV2BOvdj2b1hCAHzAoMNuj65kNBMz0KBaxM6c3VGBOhU0dURQKOtH8CFNI/dsKkwlv32p26qYQTWoB5bw==
+  dependencies:
+    "@types/node" "*"
 
 "@types/qs@*":
   version "6.15.1"
@@ -19528,6 +19535,15 @@ qrcode@1.5.3:
   dependencies:
     dijkstrajs "^1.0.1"
     encode-utf8 "^1.0.3"
+    pngjs "^5.0.0"
+    yargs "^15.3.1"
+
+qrcode@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.5.4.tgz#5cb81d86eb57c675febb08cf007fff963405da88"
+  integrity sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==
+  dependencies:
+    dijkstrajs "^1.0.1"
     pngjs "^5.0.0"
     yargs "^15.3.1"
 
