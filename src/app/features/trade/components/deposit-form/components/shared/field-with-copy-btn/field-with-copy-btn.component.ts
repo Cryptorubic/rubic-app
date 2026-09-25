@@ -30,6 +30,8 @@ export class FieldWithCopyBtnComponent {
 
   @Input() iconSize: 's' | 'm' = 'm';
 
+  @Input() fontSize: string;
+
   public copied: boolean = false;
 
   constructor(

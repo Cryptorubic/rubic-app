@@ -21,6 +21,7 @@ import { NotSupportedNetworkForDepositError } from '@app/core/errors/models/prov
 import { CHAIN_SUPPORTED_WALLETS } from '@app/core/services/wallets/constants/chaintype-supported-wallets';
 import { QrCodeGenerator } from '../../../utils/qr-code-generator';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
+import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
 
 export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.TRADE_INFO;
@@ -44,7 +45,8 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     private readonly swapsControllerService: SwapsControllerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly depositService: DepositService
   ) {
     const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
 
@@ -114,7 +116,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
 
     this.updateActionBtnState('confirm_deposit', { active: false });
-    this.updateActionBtnState('send_via_wallet', { active: false });
+    this.updateActionBtnState('send_via_wallet', { active: false, loading: true });
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
     this.triggerStepsUpdate();
@@ -172,6 +174,7 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
             inputAddrStep.inputsForm.get(ctrl).enable();
           }
           inputAddrStep.updateActionBtnState('confirm_addresses', { active: true });
+          this.depositService.cleanup();
           this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
           this.triggerStepsUpdate();
         }

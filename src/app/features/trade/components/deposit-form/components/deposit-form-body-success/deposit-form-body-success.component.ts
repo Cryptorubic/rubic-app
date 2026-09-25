@@ -13,13 +13,15 @@ import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers
 import { ON_CHAIN_PROVIDERS } from '@app/features/trade/constants/on-chain-providers';
 import { OnChainTradeType } from '@cryptorubic/core';
 import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
-import { msToFriendlyTime } from '@app/shared/components/timer/utils/ms-to-friendly-time';
+import { msToMinsSecs } from '@app/shared/components/timer/utils/ms-to-friendly-time';
 
-interface RowConfig {
+export type RowConfig = {
   key: string;
-  value: string;
-  valueTextColor?: string;
-}
+} & (
+  | { type: 'span'; value: string; valueTextColor?: string }
+  | { type: 'link'; visibleText: string; linkUrl: string }
+  | { type: 'copy-btn'; visibleText: string; textToCopy: string }
+);
 
 @Component({
   selector: 'app-deposit-form-body-success',
@@ -44,16 +46,16 @@ export class DepositFormBodySuccessComponent {
 
   public readonly finalTradeDetails$: Observable<RowConfig[]> = forkJoin([
     this.depositFormManager.tradeStatus$.pipe(find(status => !!status.dstHash)),
-    this.depositFormManager.depositTrade$.pipe(first())
+    this.depositFormManager.depositTrade$.pipe(first()),
+    this.depositFormManager.exchangeDuration$.pipe(first())
   ]).pipe(
-    map(([statusData, depositTrade]) => this.getDetailsArray(statusData, depositTrade)),
+    map(([statusData, depositTrade, durationMs]) =>
+      this.getDetailsArray(statusData, depositTrade, durationMs)
+    ),
     startWith([])
   );
 
-  public readonly explorerLink$ = this.depositFormManager.tradeStatus$.pipe(
-    map(status => this.getExplorerLink(status.dstHash)),
-    startWith('')
-  );
+  public readonly exchangeDuration$ = this.depositFormManager.exchangeDuration$;
 
   constructor(
     private readonly tradePageService: TradePageService,
@@ -67,7 +69,8 @@ export class DepositFormBodySuccessComponent {
 
   public getDetailsArray(
     statusData: CrossChainDepositData,
-    depositTrade: DepositTrade
+    depositTrade: DepositTrade,
+    _durationMs: number
   ): RowConfig[] {
     const providerUiName =
       depositTrade.fromToken.blockchain === depositTrade.toToken.blockchain
@@ -76,35 +79,42 @@ export class DepositFormBodySuccessComponent {
 
     return [
       {
-        key: 'You sent',
-        value: depositTrade.fromAmount
+        type: 'span',
+        key: 'Sent',
+        value: `${depositTrade.fromAmount} ${depositTrade.fromToken.symbol}`
       },
       {
-        key: 'You received',
-        value: new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6),
+        type: 'span',
+        key: 'Received',
+        value: `${new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6)} ${depositTrade.toToken.symbol}`,
         valueTextColor: '#39E180'
       },
       {
-        key: 'Transaction',
-        value: new ShortAddressPipe().transform(statusData.dstHash, 6, 4),
-        valueTextColor: 'var(--tui-text-secondary)'
+        type: 'link',
+        key: 'Transaction Hash',
+        visibleText: new ShortAddressPipe().transform(statusData.dstHash, 6, 4),
+        linkUrl: this.getExplorerLink(statusData.dstHash)
       },
       {
-        key: 'Trade ID',
-        value: new ShortAddressPipe().transform(depositTrade.id, 6, 4)
+        type: 'copy-btn',
+        key: 'Swap ID',
+        visibleText: new ShortAddressPipe().transform(depositTrade.id, 6, 6),
+        textToCopy: depositTrade.id
       },
       {
+        type: 'span',
         key: 'Provider',
         value: providerUiName
       },
       {
+        type: 'span',
         key: 'Duration',
-        value: msToFriendlyTime(this.durationMs)
+        value: msToMinsSecs(this.durationMs)
       }
     ];
   }
 
-  public getExplorerLink(dstTxHash: string): string {
+  private getExplorerLink(dstTxHash: string): string {
     const detailsStep =
       this.depositFormManager.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
     const dstChain = detailsStep.depositDetails.dstToken.blockchain;

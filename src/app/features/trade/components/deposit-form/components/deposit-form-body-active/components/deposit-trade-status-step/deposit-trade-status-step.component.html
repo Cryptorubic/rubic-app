@@ -10,7 +10,7 @@
     [(open)]="step.opened"
   >
     <span class="step-counter" [class.step-counter__active]="isStepHighlighted">4</span>
-    <span class="step-title">EXCHANGE STATUS</span>
+    <span class="step-title">SWAP STATUS</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>
     } @else if (!step.active) {

@@ -3,13 +3,18 @@
   [style.background-color]="bgColor"
   [style.border-color]="borderColor"
   [style.padding]="padding && padding"
+  (click)="copyToClipboard()"
 >
-  <b class="field-with-copy-btn__text" [style.color]="textColor">{{ visibleText }}</b>
+  <b
+    class="field-with-copy-btn__text"
+    [style.color]="textColor"
+    [style.fontSize]="fontSize && fontSize"
+    >{{ visibleText }}
+  </b>
   <span
     class="field-with-copy-btn__copy-btn"
     [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
     [class.field-with-copy-btn__copy-btn-copied]="copied"
     [ngClass]="{ 'copy-btn-size-s': iconSize === 's', 'copy-btn-size-m': iconSize === 'm' }"
-    (click)="copyToClipboard()"
   ></span>
 </div>

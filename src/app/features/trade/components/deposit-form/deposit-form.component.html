@@ -1,7 +1,6 @@
 @let depositFormState = depositFormState$ | async;
 @let tradeId = tradeId$ | async;
 @let formTitle = formTitle$ | async;
-@let durationMs = durationMs$ | async;
 @let isMobile = isMobile$ | async;
 
 <app-window-container class="deposit-form">
@@ -43,7 +42,7 @@
 
     <div class="deposit-form__body">
       @if (depositFormState === 'COMPLETED') {
-        <app-deposit-form-body-success [durationMs]="durationMs"></app-deposit-form-body-success>
+        <app-deposit-form-body-success></app-deposit-form-body-success>
       } @else {
         <app-deposit-form-body-active></app-deposit-form-body-active>
       }

@@ -38,7 +38,19 @@
         }
 
         .value {
+          width: fit-content;
           color: var(--tui-text-primary);
+        }
+
+        .link {
+          @include flex(row, center, center);
+          color: #39e180;
+
+          &:hover {
+            &-text {
+              text-decoration: underline;
+            }
+          }
         }
       }
     }
@@ -47,17 +59,6 @@
       @include flex(column, center, center);
       gap: 16px;
       width: 100%;
-
-      &__link {
-        @include flex(row, center, center);
-        gap: 6px;
-
-        &:hover {
-          &-text {
-            text-decoration: underline;
-          }
-        }
-      }
 
       &__btn {
         width: 100%;

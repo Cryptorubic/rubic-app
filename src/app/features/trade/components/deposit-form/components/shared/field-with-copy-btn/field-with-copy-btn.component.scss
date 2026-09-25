@@ -10,12 +10,12 @@
     border-style: solid;
     border-width: 1px;
     border-radius: 8px;
+    cursor: pointer;
 
     &__copy-btn {
       @include flex(row, center, center);
       background-color: var(--tui-background-base);
       border-radius: 6px;
-      cursor: pointer;
 
       &-copied {
         ::ng-deep svg path {

@@ -1,4 +1,3 @@
-@let explorerLink = explorerLink$ | async;
 @let finalTradeDetails = finalTradeDetails$ | async;
 
 <div class="body" @appearFromBottom>
@@ -6,24 +5,18 @@
     <img src="assets/images/icons/success-circle.png" width="64" height="64" />
   </div>
 
-  <h2 class="body-title">Exchange Successful!</h2>
+  <h2 class="body-title">Swap Complete!</h2>
 
   <div class="body-content">
     @for (item of finalTradeDetails; track item.key) {
       <div class="body-content__row">
         <b class="key">{{ item.key }}</b>
-        <b class="value" [style.color]="item.valueTextColor && item.valueTextColor">{{
-          item.value
-        }}</b>
+        <ng-container *ngTemplateOutlet="rowValue; context: { item: item }"></ng-container>
       </div>
     }
   </div>
 
   <div class="body-footer">
-    <a class="body-footer__link" [href]="explorerLink" target="_blank">
-      <b class="body-footer__link-text">View in Explorer</b>
-      <img src="assets/images/icons/arrow/link-green-arrow.png" width="12" height="12" />
-    </a>
     <button
       tuiButton
       class="body-footer__btn"
@@ -32,7 +25,32 @@
       size="m"
       (click)="startNewExchange()"
     >
-      Start New Exchange
+      Done
     </button>
   </div>
 </div>
+
+<ng-template #rowValue let-item="item">
+  @switch (item.type) {
+    @case ('span') {
+      <b class="value" [style.color]="item.valueTextColor && item.valueTextColor">
+        {{ item.value }}
+      </b>
+    }
+    @case ('copy-btn') {
+      <app-field-with-copy-btn
+        class="value"
+        [visibleText]="item.visibleText"
+        [textToCopy]="item.textToCopy"
+        [textColor]="item.valueTextColor && item.valueTextColor"
+        [bgColor]="'var(--tui-background-base)'"
+        [borderColor]="'var(--tui-background-base)'"
+        [iconSize]="'m'"
+        [padding]="'0px'"
+      ></app-field-with-copy-btn>
+    }
+    @case ('link') {
+      <a class="value link" [href]="item.linkUrl" target="_blank">{{ item.visibleText }}</a>
+    }
+  }
+</ng-template>

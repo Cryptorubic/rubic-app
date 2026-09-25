@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { BehaviorSubject, map, share, switchMap, takeWhile, tap, timer } from 'rxjs';
-import { msToFriendlyTime } from './utils/ms-to-friendly-time';
+import { msToHHMMSS } from './utils/ms-to-friendly-time';
 
 @Component({
   selector: 'app-timer',
@@ -40,6 +40,6 @@ export class TimerComponent {
   );
 
   public readonly reverseTimerFriendly$ = this.reverseTimerMs$.pipe(
-    map(msLeft => msToFriendlyTime(msLeft))
+    map(msLeft => msToHHMMSS(msLeft))
   );
 }

@@ -42,7 +42,7 @@
               </div>
             </app-deposit-info-readonly-detail>
 
-            <app-deposit-info-readonly-detail [labelTop]="'Amount to Send'">
+            <app-deposit-info-readonly-detail [labelTop]="'Amount to send'">
               <app-field-with-copy-btn
                 [visibleText]="depositTrade.fromAmount + ' ' + depositTrade.fromToken.symbol"
                 [textToCopy]="depositTrade.fromAmount"
@@ -50,7 +50,7 @@
               ></app-field-with-copy-btn>
             </app-deposit-info-readonly-detail>
 
-            <app-deposit-info-readonly-detail [labelTop]="'Send to Address'">
+            <app-deposit-info-readonly-detail [labelTop]="'Deposit address'">
               <app-field-with-copy-btn
                 [visibleText]="depositTrade.depositAddress | shortAddress: 6 : 6"
                 [textToCopy]="depositTrade.depositAddress"
@@ -98,6 +98,14 @@
             >
               {{ sendBtnState.text }}
             </button>
+
+            <!--<app-rubic-button
+              [loading]="sendBtnState.loading"
+              [disabled]="!sendBtnState.active"
+              (onClick)="confirmDeposit()"
+            >
+              {{ sendBtnState.text }}
+            </app-rubic-button>-->
           }
 
           <button

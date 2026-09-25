@@ -56,7 +56,7 @@ export class InputAddressesStep
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
       confirm_addresses: {
         active: false,
-        text: 'Confirm Addresses'
+        text: 'Confirm'
       },
       change_addresses: {
         active: false,
@@ -112,7 +112,7 @@ export class InputAddressesStep
     if (this.inputsForm.valid) {
       this.updateActionBtnState('confirm_addresses', {
         active: true,
-        text: 'Confirm Addresses'
+        text: 'Confirm'
       });
     } else {
       if (receiverCtrl.invalid) {

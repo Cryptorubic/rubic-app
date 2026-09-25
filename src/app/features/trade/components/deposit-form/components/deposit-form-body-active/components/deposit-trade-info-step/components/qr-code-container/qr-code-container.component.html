@@ -2,7 +2,7 @@
 @let actionBtnState = actionBtnState$ | async;
 
 <div class="qr-container">
-  <b class="qr-container__label">Scan QR to pay</b>
+  <b class="qr-container__label">Scan to send</b>
 
   <div class="qr-container__main">
     <div class="qr-code" [id]="QR_CODE_CONTAINER_ID"></div>
@@ -19,6 +19,14 @@
       >
         {{ actionBtnState.text }}
       </button>
+      <!--<app-rubic-button
+        appearance="secondary"
+        [loading]="actionBtnState.loading"
+        [disabled]="!actionBtnState.active"
+        (onClick)="btnClicked.emit()"
+      >
+        {{ actionBtnState.text }}
+      </app-rubic-button>-->
     }
   </div>
 </div>

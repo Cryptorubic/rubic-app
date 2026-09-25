@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, interval, Subscription } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { DepositTrade, DepositTradeType } from '../../models/deposit-trade';
@@ -41,6 +41,23 @@ export class DepositService {
   });
 
   public readonly status$ = this._status$.asObservable();
+
+  private readonly _exchangeTime$ = new BehaviorSubject<{
+    startedAt: number;
+    finishedAt: number;
+  }>({ startedAt: 0, finishedAt: 0 });
+
+  public readonly exchangeDuration$ = this._exchangeTime$.pipe(
+    map(time => time.finishedAt - time.startedAt)
+  );
+
+  public setExchangeStartTime(startedAt: number): void {
+    this._exchangeTime$.next({ ...this._exchangeTime$.value, startedAt });
+  }
+
+  public setExchangeEndTime(finishedAt: number): void {
+    this._exchangeTime$.next({ ...this._exchangeTime$.value, finishedAt });
+  }
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
@@ -89,6 +106,13 @@ export class DepositService {
         startWith(-1),
         switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
         tap(status => this._status$.next(status)),
+        tap(status => {
+          if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED) {
+            this.setExchangeEndTime(Date.now());
+          } else if (status.status !== CROSS_CHAIN_DEPOSIT_STATUS.WAITING) {
+            this.setExchangeStartTime(Date.now());
+          }
+        }),
         takeWhile(status => status.status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
       )
       .subscribe();

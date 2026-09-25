@@ -14,6 +14,7 @@ export interface InputAddressesStepForm {
 export interface ActionBtnState {
   text: string;
   active: boolean;
+  loading?: boolean;
 }
 
 export interface DepositStepParams {

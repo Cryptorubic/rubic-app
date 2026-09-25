@@ -5,6 +5,7 @@ import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { BlockchainName } from '@cryptorubic/core';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
 import { ActionBtnState } from '../../../../models/step-types';
+import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 
 @Component({
   selector: 'app-deposit-input-addresses-step',
@@ -32,11 +33,17 @@ export class DepositInputAddressesStepComponent {
 
   public readonly dstChain: BlockchainName;
 
+  public readonly srcChainUI: string;
+
+  public readonly dstChainUI: string;
+
   constructor(private readonly depositFormManager: DepositFormManager) {
     const detailsStep =
       this.depositFormManager.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
     this.srcChain = detailsStep.depositDetails.srcToken.blockchain;
     this.dstChain = detailsStep.depositDetails.dstToken.blockchain;
+    this.srcChainUI = BLOCKCHAINS[this.srcChain].name;
+    this.dstChainUI = BLOCKCHAINS[this.dstChain].name;
   }
 
   public doAction(): void {

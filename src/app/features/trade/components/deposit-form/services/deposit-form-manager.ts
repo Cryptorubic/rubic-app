@@ -53,6 +53,8 @@ export class DepositFormManager {
 
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
+  public readonly exchangeDuration$ = this.depositService.exchangeDuration$;
+
   constructor(
     private readonly depositService: DepositService,
     swapsStateService: SwapsStateService,
@@ -89,7 +91,8 @@ export class DepositFormManager {
         swapsControllerService,
         walletConnectorService,
         modalService,
-        errorsService
+        errorsService,
+        depositService
       ),
       new TradeStatusStep(this._depositFormState$, this._depositFormSteps$)
     ];
@@ -129,6 +132,8 @@ export class DepositFormManager {
 
           tradeInfoStep.setActive(true);
           tradeInfoStep.setOpened(true);
+          tradeInfoStep.updateActionBtnState('confirm_deposit', { active: true });
+          tradeInfoStep.updateActionBtnState('send_via_wallet', { active: true, loading: false });
 
           tradeStatusStep.setActive(false);
           tradeStatusStep.setOpened(false);
