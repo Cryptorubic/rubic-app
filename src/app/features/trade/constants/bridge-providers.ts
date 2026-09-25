@@ -200,6 +200,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}lifuel.png`,
     name: 'Li Fuel'
   },
+  lizex: {
+    averageTime: 5,
+    color: '#FFFFFF',
+    image: `${imageBasePath}lizex.svg`,
+    name: 'Lizex'
+  },
   //MMMMMMMMMMMMMMMMMMM
   maker: {
     averageTime: 5,

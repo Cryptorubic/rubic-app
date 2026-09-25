@@ -30,32 +30,64 @@
           *ngLet="fromAsset$ | async as fromAsset"
         >
           <app-asset-selector left selectorType="from" [asset]="fromAsset"></app-asset-selector>
-          <div bottom class="input-container">
-            <app-amount-transput
-              formType="from"
-              [selectedToken]="fromAsset"
-              inputMode="output"
-              [amountValue]="fromAmount$ | async"
-            ></app-amount-transput>
-          </div>
+
+          @if (!state.isMobile) {
+            <ng-container right>
+              <ng-container *ngTemplateOutlet="fromAmountContainer"></ng-container>
+            </ng-container>
+          }
+
+          @if (state.isMobile) {
+            <ng-container bottom>
+              <ng-container *ngTemplateOutlet="fromAmountContainer"></ng-container>
+            </ng-container>
+          }
+
+          <ng-template #fromAmountContainer>
+            <div class="input-container">
+              <app-amount-transput
+                formType="from"
+                [selectedToken]="fromAsset"
+                inputMode="output"
+                [amountValue]="fromAmount$ | async"
+              ></app-amount-transput>
+            </div>
+          </ng-template>
         </app-input-output-container>
+
         <app-form-switcher></app-form-switcher>
+
         <app-input-output-container round="bottom">
           <app-asset-selector
             left
             selectorType="to"
             [asset]="toAsset$ | async"
           ></app-asset-selector>
-          <div bottom class="input-container">
-            <app-amount-transput
-              [class.tui-skeleton]="!state.isToAmountCalculated"
-              formType="to"
-              [selectedToken]="toAsset$ | async"
-              inputMode="output"
-              [amountValue]="toAmount$ | async"
-            ></app-amount-transput>
-            <app-tokens-rate></app-tokens-rate>
-          </div>
+
+          @if (!state.isMobile) {
+            <ng-container right>
+              <ng-container *ngTemplateOutlet="toAmountContainer"></ng-container>
+            </ng-container>
+          }
+
+          @if (state.isMobile) {
+            <ng-container bottom>
+              <ng-container *ngTemplateOutlet="toAmountContainer"></ng-container>
+            </ng-container>
+          }
+
+          <ng-template #toAmountContainer>
+            <div class="input-container">
+              <app-amount-transput
+                [class.tui-skeleton]="!state.isToAmountCalculated"
+                formType="to"
+                [selectedToken]="toAsset$ | async"
+                inputMode="output"
+                [amountValue]="toAmount$ | async"
+              ></app-amount-transput>
+              <app-tokens-rate></app-tokens-rate>
+            </div>
+          </ng-template>
         </app-input-output-container>
       </div>
     </div>

@@ -15,7 +15,8 @@ export const crossChainTransferTradeSupportedProviders = [
   CROSS_CHAIN_TRADE_TYPE.XGRAM,
   CROSS_CHAIN_TRADE_TYPE.CLEARSWAP,
   CROSS_CHAIN_TRADE_TYPE.THE_CHANGE,
-  CROSS_CHAIN_TRADE_TYPE.CCE_CASH
+  CROSS_CHAIN_TRADE_TYPE.CCE_CASH,
+  CROSS_CHAIN_TRADE_TYPE.LIZEX
 ] as const;
 
 export type CrossChainTransferTradeType =
