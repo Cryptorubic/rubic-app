@@ -1,29 +1,11 @@
 @let showWalletBtn = showWalletBtn$ | async;
 @let actionBtnState = actionBtnState$ | async;
-@let showToggler = showToggler$ | async;
-@let showQrWithAmountSub = showQrWithAmount$ | async;
 
 <div class="qr-container">
   <b class="qr-container__label">Scan QR to pay</b>
 
   <div class="qr-container__main">
-    <div
-      class="qr-code"
-      [style.display]="showQrWithAmountSub ? 'none' : 'block'"
-      [id]="QR_CODE_CONTAINER_ID"
-    ></div>
-    <div
-      class="qr-code"
-      [style.display]="showQrWithAmountSub ? 'block' : 'none'"
-      [id]="QR_CODE_WITH_AMOUNT_CONTAINER_ID"
-    ></div>
-
-    @if (showToggler) {
-      <div class="toggler">
-        <input tuiSwitch type="checkbox" size="s" [(ngModel)]="showQrWithAmount" />
-        <span>Include amount in QR</span>
-      </div>
-    }
+    <div class="qr-code" [id]="QR_CODE_CONTAINER_ID"></div>
 
     @if (showWalletBtn) {
       <button

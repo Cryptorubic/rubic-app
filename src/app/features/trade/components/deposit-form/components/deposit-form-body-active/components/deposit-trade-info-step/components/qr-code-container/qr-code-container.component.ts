@@ -8,10 +8,7 @@ import {
   Output,
   Renderer2
 } from '@angular/core';
-import {
-  QR_CODE_CONTAINER_ID,
-  QR_CODE_WITH_AMOUNT_CONTAINER_ID
-} from '@app/features/trade/components/deposit-form/constants/qr-code-id';
+import { QR_CODE_CONTAINER_ID } from '@app/features/trade/components/deposit-form/constants/qr-code-id';
 import { DEPOSIT_STEP_ORDER } from '@app/features/trade/components/deposit-form/models/deposit-step-order';
 import {
   ActionBtnState,
@@ -19,7 +16,7 @@ import {
 } from '@app/features/trade/components/deposit-form/models/step-types';
 import { DepositFormManager } from '@app/features/trade/components/deposit-form/services/deposit-form-manager';
 import { BlockchainsInfo } from '@cryptorubic/core';
-import { BehaviorSubject, find, map, shareReplay, startWith } from 'rxjs';
+import { find, map, shareReplay, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-qr-code-container',
@@ -32,20 +29,6 @@ export class QrCodeContainerComponent implements AfterViewInit {
   @Output() btnClicked: EventEmitter<void> = new EventEmitter();
 
   public readonly QR_CODE_CONTAINER_ID = QR_CODE_CONTAINER_ID;
-
-  public readonly QR_CODE_WITH_AMOUNT_CONTAINER_ID = QR_CODE_WITH_AMOUNT_CONTAINER_ID;
-
-  private readonly _showQrWithAmount$ = new BehaviorSubject<boolean>(false);
-
-  public readonly showQrWithAmount$ = this._showQrWithAmount$.asObservable();
-
-  public get showQrWithAmount(): boolean {
-    return this._showQrWithAmount$.value;
-  }
-
-  public set showQrWithAmount(value: boolean) {
-    this._showQrWithAmount$.next(value);
-  }
 
   public readonly showWalletBtn$ = this.depositFormManager.depositTrade$.pipe(
     map(depositTrade => BlockchainsInfo.isEvmBlockchainName(depositTrade.fromToken.blockchain)),
@@ -63,11 +46,6 @@ export class QrCodeContainerComponent implements AfterViewInit {
     startWith(null)
   );
 
-  public readonly showToggler$ = this.qrCodes$.pipe(
-    map(qrCodes => (qrCodes ? Object.values(qrCodes).filter(Boolean).length > 1 : false)),
-    startWith(false)
-  );
-
   constructor(
     private readonly depositFormManager: DepositFormManager,
     private readonly renderer: Renderer2,
@@ -76,7 +54,7 @@ export class QrCodeContainerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.qrCodes$.pipe(find(qrCodes => !!qrCodes && !!qrCodes.receiverOnly)).subscribe(qrCodes => {
+    this.qrCodes$.pipe(find(qrCodes => !!qrCodes?.receiverOnly)).subscribe(qrCodes => {
       if (qrCodes) {
         this.renderQrCodes(qrCodes);
         this.cdr.markForCheck();
@@ -90,12 +68,6 @@ export class QrCodeContainerComponent implements AfterViewInit {
     const qrWithReceiverEl = hostEl.querySelector(`#${this.QR_CODE_CONTAINER_ID}`);
     qrCodes.receiverOnly.style.borderRadius = '20px';
     this.renderer.appendChild(qrWithReceiverEl, qrCodes.receiverOnly);
-
-    if (qrCodes.receiverWithAmount) {
-      const qrWithAmountEl = hostEl.querySelector(`#${this.QR_CODE_WITH_AMOUNT_CONTAINER_ID}`);
-      qrCodes.receiverWithAmount.style.borderRadius = '20px';
-      this.renderer.appendChild(qrWithAmountEl, qrCodes.receiverWithAmount);
-    }
   }
 
   private getActionBtnState(): ActionBtnState {

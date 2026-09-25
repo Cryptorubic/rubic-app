@@ -6,7 +6,7 @@ import {
   TokenAmount
 } from '@cryptorubic/core';
 import QRCode from 'qrcode';
-import { ChainSupportingAmountQR, chainTypeSupportsQrWithAmount } from './qr-supports';
+import { ChainWithCustomQrSpecGenerator, isChainTypeWithCustomQrGenerator } from './qr-supports';
 
 interface OptionalParams {
   token: TokenAmount;
@@ -16,7 +16,7 @@ interface OptionalParams {
 
 export class QrCodeGenerator {
   private static readonly transferQrCodeGenerators: Record<
-    ChainSupportingAmountQR,
+    ChainWithCustomQrSpecGenerator,
     (targetWalletAddr: string, params: OptionalParams) => Promise<HTMLCanvasElement>
   > = {
     [CHAIN_TYPE.BITCOIN]: this.generateBitcoinTransferQrCode,
@@ -31,7 +31,7 @@ export class QrCodeGenerator {
     params: OptionalParams
   ): Promise<HTMLCanvasElement> {
     const chainType = BlockchainsInfo.getChainType(srcChain);
-    const qrGenerator = chainTypeSupportsQrWithAmount(chainType)
+    const qrGenerator = isChainTypeWithCustomQrGenerator(chainType)
       ? this.transferQrCodeGenerators[chainType]
       : this.generateUnknownChainTransferQrCode;
     const canvas = await qrGenerator.apply(this, [targetWalletAddr, params]);

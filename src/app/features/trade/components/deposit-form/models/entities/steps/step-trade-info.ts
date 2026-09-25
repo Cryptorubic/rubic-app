@@ -19,7 +19,6 @@ import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { BlockchainsInfo, TokenAmount } from '@cryptorubic/core';
 import { NotSupportedNetworkForDepositError } from '@app/core/errors/models/provider/not-supported-network-for-deposit-error';
 import { CHAIN_SUPPORTED_WALLETS } from '@app/core/services/wallets/constants/chaintype-supported-wallets';
-import { chainSupportsQrWithAmount } from '../../../utils/qr-supports';
 import { QrCodeGenerator } from '../../../utils/qr-code-generator';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 
@@ -73,34 +72,15 @@ export class TradeInfoStep extends DepositStepWithAction<TradeInfoStepAction> {
     srcToken: TokenAmount
   ): Promise<void> {
     const srcChain = this._tradeState.trade.from.blockchain;
-    if (chainSupportsQrWithAmount(srcChain)) {
-      const [receiverOnlyQR, receiverWithAmountQR] = await Promise.all([
-        QrCodeGenerator.generateTransferQrCode(srcChain, targetWalletAddr, {
-          token: srcToken,
-          size: 142,
-          qrContent: 'receiver'
-        }),
-        QrCodeGenerator.generateTransferQrCode(srcChain, targetWalletAddr, {
-          size: 142,
-          token: srcToken,
-          qrContent: 'receiver+amount'
-        })
-      ]);
-      this._qrCodeCanvases = {
-        receiverOnly: receiverOnlyQR,
-        receiverWithAmount: receiverWithAmountQR
-      };
-    } else {
-      const receiverOnlyQR = await QrCodeGenerator.generateTransferQrCode(
-        srcChain,
-        targetWalletAddr,
-        { token: srcToken, size: 142, qrContent: 'receiver' }
-      );
-      this._qrCodeCanvases = {
-        receiverOnly: receiverOnlyQR,
-        receiverWithAmount: null
-      };
-    }
+    const receiverOnlyQR = await QrCodeGenerator.generateTransferQrCode(
+      srcChain,
+      targetWalletAddr,
+      { token: srcToken, size: 142, qrContent: 'receiver' }
+    );
+    this._qrCodeCanvases = {
+      receiverOnly: receiverOnlyQR,
+      receiverWithAmount: null
+    };
   }
 
   public async doAction(action: TradeInfoStepAction): Promise<void> {

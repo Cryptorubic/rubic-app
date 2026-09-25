@@ -1,21 +1,21 @@
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, ChainType } from '@cryptorubic/core';
 
-const CHAINTYPE_WITH_AMOUNT_IN_QR_SUPPORT = [
+const CHAINTYPE_WITH_CUSTOM_QR_SPEC = [
   CHAIN_TYPE.EVM,
   CHAIN_TYPE.SOLANA,
   CHAIN_TYPE.TON,
   CHAIN_TYPE.BITCOIN
 ] as const;
 
-export type ChainSupportingAmountQR = (typeof CHAINTYPE_WITH_AMOUNT_IN_QR_SUPPORT)[number];
+export type ChainWithCustomQrSpecGenerator = (typeof CHAINTYPE_WITH_CUSTOM_QR_SPEC)[number];
 
-export function chainSupportsQrWithAmount(chain: BlockchainName): boolean {
+export function isChainWithCustomQrGenerator(chain: BlockchainName): boolean {
   const chainType = BlockchainsInfo.getChainType(chain);
-  return CHAINTYPE_WITH_AMOUNT_IN_QR_SUPPORT.some(ct => ct === chainType);
+  return CHAINTYPE_WITH_CUSTOM_QR_SPEC.some(ct => ct === chainType);
 }
 
-export function chainTypeSupportsQrWithAmount(
+export function isChainTypeWithCustomQrGenerator(
   chainType: ChainType
-): chainType is ChainSupportingAmountQR {
-  return CHAINTYPE_WITH_AMOUNT_IN_QR_SUPPORT.some(ct => ct === chainType);
+): chainType is ChainWithCustomQrSpecGenerator {
+  return CHAINTYPE_WITH_CUSTOM_QR_SPEC.some(ct => ct === chainType);
 }
