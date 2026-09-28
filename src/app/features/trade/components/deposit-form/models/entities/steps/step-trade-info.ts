@@ -215,6 +215,7 @@ export class TradeInfoStep
         onError: () => {
           this.updateActionBtnState('confirm_deposit', { active: true });
           this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
+          inputAddrStep.setActive(true);
           this.triggerStepsUpdate();
         }
       },
