@@ -27,13 +27,12 @@ export class DepositStatusBarComponent {
     ),
     this.depositService.depositTrade$.pipe(startWith(null))
   ]).pipe(
-    map(() => CROSS_CHAIN_DEPOSIT_STATUS.FAILED)
-    // map(([status, depositTrade]) => {
-    //   const specificStatusText = depositTrade?.tradeType
-    //     ? specificProviderStatusText[depositTrade.tradeType]?.[status.status]
-    //     : null;
-    //   return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status.status;
-    // })
+    map(([status, depositTrade]) => {
+      const specificStatusText = depositTrade?.tradeType
+        ? specificProviderStatusText[depositTrade.tradeType]?.[status.status]
+        : null;
+      return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status.status;
+    })
   );
 
   public readonly specificProviderStatusText$ = combineLatest([
