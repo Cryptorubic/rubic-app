@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { DepositFormManager } from '../../services/deposit-form-manager';
@@ -42,8 +42,6 @@ export type RowConfig = {
   ]
 })
 export class DepositFormBodySuccessComponent {
-  @Input() durationMs: number = 0;
-
   public readonly finalTradeDetails$: Observable<RowConfig[]> = forkJoin([
     this.depositFormManager.tradeStatus$.pipe(find(status => !!status.dstHash)),
     this.depositFormManager.depositTrade$.pipe(first()),
@@ -70,7 +68,7 @@ export class DepositFormBodySuccessComponent {
   public getDetailsArray(
     statusData: CrossChainDepositData,
     depositTrade: DepositTrade,
-    _durationMs: number
+    durationMs: number
   ): RowConfig[] {
     const providerUiName =
       depositTrade.fromToken.blockchain === depositTrade.toToken.blockchain
@@ -86,7 +84,7 @@ export class DepositFormBodySuccessComponent {
       {
         type: 'span',
         key: 'Received',
-        value: `${new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6)} ${depositTrade.toToken.symbol}`
+        value: `${new ShortenAmountPipe().transform(statusData.toAmount.toFixed(), 12, 6)} ${depositTrade.toToken.symbol}`
       },
       {
         type: 'link',
@@ -108,7 +106,7 @@ export class DepositFormBodySuccessComponent {
       {
         type: 'span',
         key: 'Duration',
-        value: msToMinsSecs(this.durationMs)
+        value: msToMinsSecs(Math.max(durationMs, 60_000))
       }
     ];
   }

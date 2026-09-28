@@ -1,4 +1,5 @@
 import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
+import BigNumber from 'bignumber.js';
 
 export const CROSS_CHAIN_DEPOSIT_STATUS = {
   WAITING: 'waiting',
@@ -20,6 +21,7 @@ export type CrossChainDepositStatus =
 export interface CrossChainDepositData {
   status: CrossChainDepositStatus;
   dstHash: string | null;
+  toAmount: BigNumber;
 }
 
 export const API_STATUS_TO_DEPOSIT_STATUS: Record<

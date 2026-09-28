@@ -20,6 +20,8 @@ import {
 } from '@app/features/privacy/providers/clearswap/models/status';
 import { TradeStatusService } from '@app/core/services/sdk/sdk-legacy/trade-status-service/trade-status.service';
 import { isClearswap } from '@app/core/services/sdk/sdk-legacy/features/common/utils/is-clearswap';
+import BigNumber from 'bignumber.js';
+import { Token } from '@cryptorubic/core';
 
 @Injectable()
 export class DepositService {
@@ -37,7 +39,8 @@ export class DepositService {
 
   private readonly _status$ = new BehaviorSubject<CrossChainDepositData>({
     status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,
-    dstHash: null
+    dstHash: null,
+    toAmount: new BigNumber(0)
   });
 
   public readonly status$ = this._status$.asObservable();
@@ -109,6 +112,10 @@ export class DepositService {
         tap(status => {
           if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED) {
             this.setExchangeEndTime(Date.now());
+            if (!this._exchangeTime$.value.startedAt) {
+              /* in case if startedAt not defined we set default 60 secs */
+              this.setExchangeStartTime(Date.now() - 60_000);
+            }
           } else if (status.status !== CROSS_CHAIN_DEPOSIT_STATUS.WAITING) {
             this.setExchangeStartTime(Date.now());
           }
@@ -122,7 +129,11 @@ export class DepositService {
 
   public removePrevDeposit(): void {
     this._depositTrade$.next(null);
-    this._status$.next({ status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null });
+    this._status$.next({
+      status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,
+      dstHash: null,
+      toAmount: new BigNumber(0)
+    });
   }
 
   private async getSwapStatus(rubicId: string): Promise<CrossChainDepositData> {
@@ -131,33 +142,62 @@ export class DepositService {
         throw new Error(`[DepositService_getSwapStatus] Deposit id can't be undefined.`);
       }
 
-      const tradeType = this._depositTrade$.value?.tradeType;
+      const depositTrade = this._depositTrade$.value;
+      const tradeType = depositTrade?.tradeType;
       if (isClearswap(tradeType)) {
         return this.getClearswapDepositStatus(rubicId);
       }
 
       const response = await this.rubicApiService.fetchCrossChainTxStatusExtended(rubicId);
+      const toAmount = response.toAmount
+        ? new BigNumber(response.toAmount)
+        : response.toAmountWei
+          ? Token.fromWei(response.toAmountWei, depositTrade.toToken.decimals)
+          : this._depositTrade$.value.toAmount;
 
       if (response.status === 'SUCCESS') {
-        return { status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED, dstHash: response.destinationTxHash };
+        return {
+          status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED,
+          dstHash: response.destinationTxHash,
+          toAmount
+        };
       }
 
       if (!response.subStatus) {
-        return { status: API_STATUS_TO_DEPOSIT_STATUS[response.status], dstHash: null };
+        return { status: API_STATUS_TO_DEPOSIT_STATUS[response.status], dstHash: null, toAmount };
       }
 
-      return { status: API_SUBSTATUS_TO_DEPOSIT_STATUS[response.subStatus], dstHash: null };
+      return {
+        status: API_SUBSTATUS_TO_DEPOSIT_STATUS[response.subStatus],
+        dstHash: null,
+        toAmount
+      };
     } catch (err) {
       console.log(err);
-      return { status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null };
+      return {
+        status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,
+        dstHash: null,
+        toAmount: this._depositTrade$.value.toAmount
+      };
     }
   }
 
   private async getClearswapDepositStatus(rubicId: string): Promise<CrossChainDepositData> {
     const response = await this.tradeStatusService.getClearswapStatus(rubicId);
 
+    const depositTrade = this._depositTrade$.value;
+    const toAmount = response.toAmount
+      ? new BigNumber(response.toAmount)
+      : response.toAmountWei
+        ? Token.fromWei(response.toAmountWei, depositTrade.toToken.decimals)
+        : this._depositTrade$.value.toAmount;
+
     if (response.status === CLEARSWAP_STATUS.SUCCESS) {
-      return { status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED, dstHash: response.destTxHash };
+      return {
+        status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED,
+        dstHash: response.destTxHash,
+        toAmount
+      };
     }
     if (response.status === CLEARSWAP_STATUS.PENDING) {
       const subStatusValidValues: (keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS)[] = [
@@ -167,24 +207,21 @@ export class DepositService {
         CLEARSWAP_SUB_STATUS.HIDING,
         CLEARSWAP_SUB_STATUS.SENDING
       ];
-      if (
-        subStatusValidValues.includes(
-          response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
-        )
-      ) {
+      if (subStatusValidValues.some(s => s === response.subStatus)) {
         return {
           status:
             API_SUBSTATUS_TO_DEPOSIT_STATUS[
               response.subStatus as keyof typeof API_SUBSTATUS_TO_DEPOSIT_STATUS
             ],
-          dstHash: null
+          dstHash: null,
+          toAmount
         };
       }
 
-      return { status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null };
+      return { status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING, dstHash: null, toAmount };
     }
 
-    return { status: CROSS_CHAIN_DEPOSIT_STATUS.FAILED, dstHash: null };
+    return { status: CROSS_CHAIN_DEPOSIT_STATUS.FAILED, dstHash: null, toAmount };
   }
 
   private saveTrade(tradeData: DepositTrade): void {

@@ -23,6 +23,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 
 @Injectable()
 export class DepositFormManager {
@@ -102,6 +103,16 @@ export class DepositFormManager {
     this.depositFormSteps.forEach(step => {
       if (isStepWithHooks(step)) step.onInit();
     });
+
+    this.depositService.status$.pipe(takeUntilDestroyed(destroyRef)).subscribe(status => {
+      if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
+      this._depositFormState$.next(
+        status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED
+          ? DEPOSIT_FORM_STATE.COMPLETED
+          : DEPOSIT_FORM_STATE.STATUS_TRACKING
+      );
+    });
+
     this.depositFormState$.pipe(takeUntilDestroyed(destroyRef)).subscribe(state => {
       const inputAddressesStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
       const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];

@@ -169,6 +169,10 @@ export class TradeInfoStep
             providers: CHAIN_SUPPORTED_WALLETS[srcChainType]
           })
         );
+
+        if (this.walletConnectorService.chainType !== srcChainType) {
+          throw new WalletError();
+        }
       } catch {
         this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', { active: true, loading: false });

@@ -18,7 +18,6 @@ import { IWithHooks } from '../abstracts/interfaces';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states';
 import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
 import { TransferTrade } from '../../deposit-form-info';
-import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { isRefundAddressRequired } from '@app/features/trade/services/refund-service/constants/refund-address-required-trade-types';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
@@ -84,21 +83,11 @@ export class InputAddressesStep
      * hack to update button state after async validation of this.targetNetworkAddressService.address
      */
     setTimeout(() => this.validateInputs(), 10);
-
     const formStatusSub = this.inputsForm.statusChanges.subscribe(() => {
       this.validateInputs();
     });
 
-    const tradeStatusSub = this.depositService.status$.subscribe(status => {
-      if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.WAITING) return;
-      this._depositFormState$.next(
-        status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED
-          ? DEPOSIT_FORM_STATE.COMPLETED
-          : DEPOSIT_FORM_STATE.STATUS_TRACKING
-      );
-    });
-
-    this._subs.push(formStatusSub, tradeStatusSub);
+    this._subs.push(formStatusSub);
   }
 
   public onDestroy(): void {

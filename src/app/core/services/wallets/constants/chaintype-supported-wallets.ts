@@ -1,7 +1,6 @@
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { CHAIN_TYPE, ChainType } from '@cryptorubic/core';
 
-// @TODO_3003 get list of supported wallets for every chain type from QA
 export const CHAIN_SUPPORTED_WALLETS = Object.values(CHAIN_TYPE).reduce(
   (acc, chainType: ChainType) => {
     switch (chainType) {

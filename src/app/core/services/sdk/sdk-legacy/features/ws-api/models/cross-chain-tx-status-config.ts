@@ -11,9 +11,12 @@ export interface CrossChainTxStatusConfig {
 
   destinationTxHash: string | null;
 
-  destinationNetworkTitle: string | null;
+  /**
+   * non wei
+   */
+  toAmount?: string;
 
-  destinationNetworkChainId: number | null;
+  toAmountWei?: string;
 
   subStatus?: 'AWAITING_DEPOSIT' | 'CONFIRMING' | 'EXCHANGING' | 'SENDING' | 'HIDING' | 'PENDING';
 }
