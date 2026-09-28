@@ -32,7 +32,7 @@ export class FieldWithCopyBtnComponent {
 
   @Input() fontSize: string;
 
-  @Input() fontWeight: string;
+  @Input() fontWeight: number;
 
   public copied: boolean = false;
 
