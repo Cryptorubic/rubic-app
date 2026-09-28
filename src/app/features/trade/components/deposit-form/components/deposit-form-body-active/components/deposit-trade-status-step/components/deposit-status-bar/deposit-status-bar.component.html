@@ -2,7 +2,8 @@
   *ngLet="{
     status: status$ | async,
     needTrustline: needTrustline$ | async,
-    isPrivate: isPrivate$ | async
+    isPrivate: isPrivate$ | async,
+    spesificStatusText: specificProviderStatusText$ | async
   } as state"
   class="status-wrapper"
 >
@@ -139,6 +140,21 @@
       </div>
     </div>
   </div>
+
+  @if (state.status === 'failed') {
+    @if (state.spesificStatusText) {
+      <tui-notification class="failed-notification" size="m" appearance="error">
+        {{ state.spesificStatusText }}
+      </tui-notification>
+    } @else {
+      <tui-notification class="failed-notification" size="m" appearance="error">
+        <div>
+          The transaction failed, please contact our
+          <span class="error-link" (click)="openLiveChat()">Support Team</span>
+        </div>
+      </tui-notification>
+    }
+  }
 </div>
 
 <ng-template #failedStatus>

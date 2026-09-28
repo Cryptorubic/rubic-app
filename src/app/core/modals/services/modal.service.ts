@@ -85,10 +85,14 @@ export class ModalService {
 
   public closeModal(): void {
     if (!this.openedModal) return;
-    this.openedModal.elRef.nativeElement.classList.add('hidden');
-    this.openedModal.elRef.nativeElement.classList.remove('opened');
-    this.openedModal.elRef.nativeElement.classList.remove('collapsed');
-    this.openedModal.context.completeWith(null);
+    if (this.openedModal.elRef) {
+      this.openedModal.elRef.nativeElement.classList.add('hidden');
+      this.openedModal.elRef.nativeElement.classList.remove('opened');
+      this.openedModal.elRef.nativeElement.classList.remove('collapsed');
+    }
+    if (this.openedModal.context) {
+      this.openedModal.context.completeWith(null);
+    }
   }
 
   public closeSwapRetryModal(): void {

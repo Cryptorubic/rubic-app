@@ -80,6 +80,7 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { TimerComponent } from './components/timer/timer.component';
+import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-button-new.component';
 
 @NgModule({
   declarations: [
@@ -136,7 +137,8 @@ import { TimerComponent } from './components/timer/timer.component';
     ChartTogglerComponent,
     InputNumberComponent,
     PrivacyDisclaimerModalComponent,
-    TimerComponent
+    TimerComponent,
+    RubicButtonNewComponent
   ],
   imports: [
     CommonModule,
@@ -216,7 +218,8 @@ import { TimerComponent } from './components/timer/timer.component';
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TimerComponent
+    TimerComponent,
+    RubicButtonNewComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

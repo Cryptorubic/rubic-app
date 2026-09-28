@@ -87,38 +87,25 @@
           @let sendBtnState = getSendBtnState();
 
           @if (showMobileWalletBtn) {
-            <button
-              tuiButton
-              class="step-content__btn"
+            <app-rubic-button-new
               appearance="primary"
-              type="button"
               size="m"
               [disabled]="!sendBtnState.active"
-              (click)="connectWalletAndSend()"
-            >
-              {{ sendBtnState.text }}
-            </button>
-
-            <!--<app-rubic-button
               [loading]="sendBtnState.loading"
-              [disabled]="!sendBtnState.active"
-              (onClick)="confirmDeposit()"
+              (onClick)="connectWalletAndSend()"
             >
               {{ sendBtnState.text }}
-            </app-rubic-button>-->
+            </app-rubic-button-new>
           }
 
-          <button
-            tuiButton
-            class="step-content__btn"
+          <app-rubic-button-new
             appearance="primary"
-            type="button"
             size="m"
             [disabled]="!confirmBtnState.active"
-            (click)="confirmDeposit()"
+            (onClick)="confirmDeposit()"
           >
             {{ confirmBtnState.text }}
-          </button>
+          </app-rubic-button-new>
         </div>
       </div>
     </ng-template>

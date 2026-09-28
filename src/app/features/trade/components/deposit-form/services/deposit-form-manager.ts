@@ -91,8 +91,7 @@ export class DepositFormManager {
         swapsControllerService,
         walletConnectorService,
         modalService,
-        errorsService,
-        depositService
+        errorsService
       ),
       new TradeStatusStep(this._depositFormState$, this._depositFormSteps$)
     ];

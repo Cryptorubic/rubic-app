@@ -35,9 +35,12 @@
         font-size: 12px;
       }
 
-      button {
+      app-rubic-button-new {
         width: 100%;
-        background: var(--tui-background-base) !important;
+
+        ::ng-deep button {
+          background: var(--tui-background-base) !important;
+        }
       }
     }
   }

@@ -8,25 +8,15 @@
     <div class="qr-code" [id]="QR_CODE_CONTAINER_ID"></div>
 
     @if (showWalletBtn) {
-      <button
-        tuiButton
-        class="step-content__btn"
+      <app-rubic-button-new
         appearance="secondary"
-        type="button"
         size="m"
         [disabled]="!actionBtnState.active"
-        (click)="btnClicked.emit()"
-      >
-        {{ actionBtnState.text }}
-      </button>
-      <!--<app-rubic-button
-        appearance="secondary"
         [loading]="actionBtnState.loading"
-        [disabled]="!actionBtnState.active"
         (onClick)="btnClicked.emit()"
       >
         {{ actionBtnState.text }}
-      </app-rubic-button>-->
+      </app-rubic-button-new>
     }
   </div>
 </div>

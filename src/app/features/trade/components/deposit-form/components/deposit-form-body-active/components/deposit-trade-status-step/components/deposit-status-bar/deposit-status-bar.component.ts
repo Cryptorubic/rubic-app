@@ -8,6 +8,7 @@ import {
   CrossChainDepositData
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { specificProviderStatusText } from '@app/features/trade/components/deposit-form/constants/specific-provider-status';
+import { LiveChatService } from '@app/core/services/live-chat/live-chat.service';
 
 @Component({
   selector: 'app-deposit-status-bar',
@@ -26,11 +27,24 @@ export class DepositStatusBarComponent {
     ),
     this.depositService.depositTrade$.pipe(startWith(null))
   ]).pipe(
+    map(() => CROSS_CHAIN_DEPOSIT_STATUS.FAILED)
+    // map(([status, depositTrade]) => {
+    //   const specificStatusText = depositTrade?.tradeType
+    //     ? specificProviderStatusText[depositTrade.tradeType]?.[status.status]
+    //     : null;
+    //   return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status.status;
+    // })
+  );
+
+  public readonly specificProviderStatusText$ = combineLatest([
+    this.depositService.status$,
+    this.depositService.depositTrade$
+  ]).pipe(
     map(([status, depositTrade]) => {
       const specificStatusText = depositTrade?.tradeType
         ? specificProviderStatusText[depositTrade.tradeType]?.[status.status]
         : null;
-      return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status.status;
+      return specificStatusText ? specificStatusText : null;
     })
   );
 
@@ -45,6 +59,11 @@ export class DepositStatusBarComponent {
 
   constructor(
     private readonly depositService: DepositService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly liveChatService: LiveChatService
   ) {}
+
+  public openLiveChat(): void {
+    this.liveChatService.toggleLiveChatContainerHeight('show', true);
+  }
 }

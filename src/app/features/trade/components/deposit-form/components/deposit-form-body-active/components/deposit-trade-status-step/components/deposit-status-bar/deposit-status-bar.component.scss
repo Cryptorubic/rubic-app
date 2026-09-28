@@ -1,10 +1,28 @@
 @use 'src/scss/core' as *;
 
 .status-wrapper {
+  @include flex(column, normal, normal);
+  gap: 20px;
+  width: 100%;
   padding: var(--tui-padding-l);
   background: var(--primary-background);
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   transition: all 100ms;
+
+  .failed-notification {
+    width: 100%;
+
+    .error-link {
+      font-weight: 500;
+
+      &:hover {
+        color: #39e180;
+        text-decoration: underline;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+    }
+  }
 }
 
 .row {
