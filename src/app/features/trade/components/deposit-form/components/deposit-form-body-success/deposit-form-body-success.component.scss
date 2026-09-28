@@ -30,20 +30,22 @@
         @include flex(row, center, space-between);
         gap: 10px;
         padding: 14px 0px;
-        font-weight: 400;
         font-size: 16px;
 
         .key {
           color: var(--tui-text-secondary);
+          font-weight: 400;
         }
 
         .value {
           width: fit-content;
           color: var(--tui-text-primary);
+          font-weight: 400;
         }
 
         .link {
           @include flex(row, center, center);
+          gap: 5px;
           color: #39e180;
 
           &:hover {

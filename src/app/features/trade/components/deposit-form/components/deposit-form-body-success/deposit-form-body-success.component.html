@@ -47,10 +47,15 @@
         [borderColor]="'var(--tui-background-base)'"
         [iconSize]="'m'"
         [padding]="'0px'"
+        [fontSize]="'16px'"
+        [fontWeight]="400"
       ></app-field-with-copy-btn>
     }
     @case ('link') {
-      <a class="value link" [href]="item.linkUrl" target="_blank">{{ item.visibleText }}</a>
+      <a class="value link" [href]="item.linkUrl" target="_blank">
+        <span>{{ item.visibleText }}</span>
+        <img src="assets/images/icons/arrow/link-green-arrow.png" width="14" height="14" />
+      </a>
     }
   }
 </ng-template>

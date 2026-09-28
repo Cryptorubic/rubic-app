@@ -32,6 +32,8 @@ export class FieldWithCopyBtnComponent {
 
   @Input() fontSize: string;
 
+  @Input() fontWeight: string;
+
   public copied: boolean = false;
 
   constructor(

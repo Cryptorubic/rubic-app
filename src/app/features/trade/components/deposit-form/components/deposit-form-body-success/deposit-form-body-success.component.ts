@@ -18,7 +18,7 @@ import { msToMinsSecs } from '@app/shared/components/timer/utils/ms-to-friendly-
 export type RowConfig = {
   key: string;
 } & (
-  | { type: 'span'; value: string; valueTextColor?: string }
+  | { type: 'span'; value: string }
   | { type: 'link'; visibleText: string; linkUrl: string }
   | { type: 'copy-btn'; visibleText: string; textToCopy: string }
 );
@@ -86,8 +86,7 @@ export class DepositFormBodySuccessComponent {
       {
         type: 'span',
         key: 'Received',
-        value: `${new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6)} ${depositTrade.toToken.symbol}`,
-        valueTextColor: '#39E180'
+        value: `${new ShortenAmountPipe().transform(depositTrade.toAmount.toFixed(), 12, 6)} ${depositTrade.toToken.symbol}`
       },
       {
         type: 'link',
