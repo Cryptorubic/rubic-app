@@ -375,17 +375,14 @@ export class SwapsStateService {
 
     if (privateOnly) {
       if (privateTrades.length > 0) return privateTrades[0];
-      /**
-       * it fixes softlock "Trade is not available" (when run app with privateOnly=true and then toggle to non private provider list)
-       */
-      return tradesWithQuote[0] ?? null;
+      return nonPrivateTrades[0] ?? null;
     }
 
     if (nonPrivateTrades.length > 0) return nonPrivateTrades[0];
 
     if (privateTrades[0] && isCalculationEnd) return privateTrades[0];
 
-    return tradesWithQuote[0];
+    return tradesWithQuote[0] ?? null;
   }
 
   private sortCrossChainTrades(
@@ -467,6 +464,8 @@ export class SwapsStateService {
     if (!trade) return;
 
     this.userSelectedTradeType = !automaticSelection ? trade.tradeType : null;
+    this.applySelectedTrade(this._tradesStore$.value, false);
+
     this.currentTrade = {
       ...trade,
       selectedByUser: !automaticSelection,
