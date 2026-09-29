@@ -374,20 +374,14 @@ export class SwapsStateService {
     const privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
 
     if (privateOnly) {
-      if (privateTrades.length > 0) {
-        return privateTrades[0];
-      }
+      if (privateTrades.length > 0) return privateTrades[0];
 
-      return isCalculationEnd ? (nonPrivateTrades[0] ?? null) : null;
+      return nonPrivateTrades[0] ?? null;
     }
 
-    if (nonPrivateTrades.length > 0) {
-      return nonPrivateTrades[0];
-    }
+    if (nonPrivateTrades.length > 0) return nonPrivateTrades[0];
 
-    if (privateTrades[0] && isCalculationEnd) {
-      return privateTrades[0];
-    }
+    if (privateTrades[0] && isCalculationEnd) return privateTrades[0];
 
     return null;
   }
