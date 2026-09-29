@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, interval, Subscription } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { find, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { DepositTrade, DepositTradeType } from '../../models/deposit-trade';
@@ -51,6 +51,7 @@ export class DepositService {
   }>({ startedAt: 0, finishedAt: 0 });
 
   public readonly exchangeDuration$ = this._exchangeTime$.pipe(
+    find(time => time.finishedAt > 0),
     map(time => time.finishedAt - time.startedAt)
   );
 
@@ -120,7 +121,11 @@ export class DepositService {
             this.setExchangeStartTime(Date.now());
           }
         }),
-        takeWhile(status => status.status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
+        takeWhile(
+          status =>
+            status.status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED &&
+            status.status !== CROSS_CHAIN_DEPOSIT_STATUS.FAILED
+        )
       )
       .subscribe();
 

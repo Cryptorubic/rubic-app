@@ -183,7 +183,7 @@ export class TradeInfoStep
       }
     }
 
-    if (this.walletConnectorService.network !== BlockchainsInfo.getChainType(srcChain)) {
+    if (this.walletConnectorService.network !== srcChain) {
       const switched = await this.walletConnectorService.switchChain(srcChain);
       if (!switched) {
         this.updateActionBtnState('confirm_deposit', { active: true });
