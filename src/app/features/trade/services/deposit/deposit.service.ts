@@ -74,6 +74,7 @@ export class DepositService {
   public cleanup(): void {
     this.subs.forEach(sub => sub.unsubscribe());
     this.removePrevDeposit();
+    this._exchangeTime$.next({ finishedAt: 0, startedAt: 0 });
   }
 
   public async updateTrade(
