@@ -106,7 +106,13 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-
+    if (isDeposit && !receiverAddress) {
+      return {
+        type: 'action',
+        text: 'Preview swap',
+        action: this.deposit.bind(this)
+      };
+    }
     if (!address && !isDeposit) {
       return {
         type: 'action',
@@ -157,17 +163,10 @@ export class ActionButtonService {
             action: () => {}
           };
         }
-        if (isDeposit) {
-          return {
-            type: 'action',
-            text: 'Preview swap',
-            action: this.deposit.bind(this)
-          };
-        }
         return {
           type: 'action',
           text: 'Preview swap',
-          action: this.swap.bind(this)
+          action: isDeposit ? this.deposit.bind(this) : this.swap.bind(this)
         };
       }
     }

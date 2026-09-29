@@ -4,7 +4,6 @@
   &-roadmap-month,
   &-roadmap-quarter {
     margin-bottom: 5px;
-
     color: var(--primary-color);
     font-weight: 600;
     font-size: 20px;
@@ -18,7 +17,6 @@
   &-roadmap-quarter {
     position: absolute;
     left: -110px;
-
     color: rgba(#838383, 0.5);
   }
 
@@ -32,7 +30,6 @@
     &-section {
       display: inline-block;
       margin-bottom: 15px;
-
       font-weight: 600;
       font-size: 28px;
       line-height: 32px;
@@ -61,13 +58,11 @@
   &-roadmap-text {
     margin: 0;
     padding-left: 0;
-
     color: black;
 
     font-weight: normal;
     font-size: 18px;
     line-height: 27px;
-
     list-style: none;
 
     li {
@@ -85,11 +80,9 @@
         width: 24px;
         height: 24px;
         margin-right: 10px;
-
         color: var(--primary-color);
         font-weight: 600;
         text-align: center;
-
         content: '\2022';
       }
     }

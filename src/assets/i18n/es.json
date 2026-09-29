@@ -64,6 +64,7 @@
     "wrongToken": "El puente Rubic solo admite el token rubic.",
     "oneInchQuote": "1inch error de cotización",
     "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Ha rechazado un inicio de sesión con su billetera. Por favor, confirme un inicio de sesión con su billetera, para utilizar completamente nuestra aplicación.",
     "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Trate de aumentar el gas suministrado",
     "noSelectedProvider": "Seleccionar proveedor de intercambio",

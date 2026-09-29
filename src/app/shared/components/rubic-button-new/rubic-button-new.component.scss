@@ -1,0 +1,8 @@
+@use 'src/scss/core' as *;
+
+:host {
+  tui-loader,
+  button {
+    width: 100%;
+  }
+}

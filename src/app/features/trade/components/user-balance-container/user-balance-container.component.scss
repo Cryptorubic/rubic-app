@@ -6,7 +6,6 @@
 
   &__balance {
     margin-right: var(--tui-padding-xs);
-
     color: var(--tui-text-tertiary);
     font-size: 15px;
     line-height: 15px;
@@ -23,7 +22,6 @@
 
     &_disabled {
       color: var(--secondary-text);
-
       cursor: default;
     }
   }

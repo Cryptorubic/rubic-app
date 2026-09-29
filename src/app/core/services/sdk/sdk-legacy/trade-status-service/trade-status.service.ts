@@ -12,9 +12,13 @@ import {
 export class TradeStatusService {
   constructor(private readonly httpService: HttpService) {}
 
-  public getClearswapStatus(
-    id: string
-  ): Promise<{ status: CLEARSWAP_STATUS; subStatus: CLEARSWAP_SUB_STATUS; destTxHash: string }> {
+  public getClearswapStatus(id: string): Promise<{
+    status: CLEARSWAP_STATUS;
+    subStatus: CLEARSWAP_SUB_STATUS;
+    destTxHash: string;
+    toAmount?: string;
+    toAmountWei?: string;
+  }> {
     return firstValueFrom(
       this.httpService.get(`v3/internal/statuses/clearswap/status?rubic_id=${id}`)
     );

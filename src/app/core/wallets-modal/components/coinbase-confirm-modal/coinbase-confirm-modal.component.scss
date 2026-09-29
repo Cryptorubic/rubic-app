@@ -10,7 +10,6 @@
   flex-wrap: wrap;
   justify-content: space-around;
   margin-bottom: 20px;
-
   column-gap: 20px;
   row-gap: 20px;
 
@@ -29,11 +28,9 @@
     justify-content: center;
     width: 150px;
     padding: 10px 15px;
-
     border-radius: $border-radius-1;
 
     cursor: pointer;
-
     transition: transform 0.1s ease-in-out;
 
     &:hover {

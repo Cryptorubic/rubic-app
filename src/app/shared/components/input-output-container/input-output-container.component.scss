@@ -6,22 +6,18 @@
   gap: var(--tui-padding-m);
   justify-content: center;
   padding: var(--tui-padding-l);
-
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
-
   transition: 0.2s ease-in-out;
 
   &_round {
     &-top {
       padding-bottom: var(--tui-padding-s);
-
       border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
     }
 
     &-bottom {
       padding-top: var(--tui-padding-s);
-
       border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
     }
 
@@ -31,7 +27,6 @@
 
     &-none {
       padding-top: var(--tui-padding-s);
-
       border-radius: 0;
     }
   }

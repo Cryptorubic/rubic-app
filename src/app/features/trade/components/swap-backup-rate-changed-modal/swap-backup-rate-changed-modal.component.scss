@@ -31,7 +31,6 @@
   &__body > p,
   &__body > h3 {
     margin: 0;
-
     text-align: center;
   }
 
@@ -55,7 +54,6 @@
     flex-direction: column;
     gap: var(--tui-padding-s);
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
 
@@ -85,7 +83,6 @@
     width: 45px;
     height: 100%;
     overflow: hidden;
-
     border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
 
     img {
@@ -99,7 +96,6 @@
   &__main-image {
     width: 30px;
     margin-left: -15px;
-
     background: var(--primary-background);
 
     border-radius: 100%;
@@ -118,7 +114,6 @@
 
   &__token-amount {
     width: 100%;
-
     font-weight: 500;
   }
 
@@ -132,7 +127,6 @@
 
   &__success-info {
     overflow: hidden;
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -153,7 +147,6 @@
 app-swap-data-element ::ng-deep {
   .provider-info {
     padding: var(--tui-padding-l);
-
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
@@ -179,7 +172,6 @@ app-swap-data-element ::ng-deep {
   .modal {
     &__data-container {
       position: relative;
-
       gap: 0;
       margin-top: 2px;
 
@@ -191,12 +183,9 @@ app-swap-data-element ::ng-deep {
           top: 16px;
           left: 27px;
           z-index: 0;
-
           width: 2px;
           height: calc(100% - 70px);
-
           background: var(--tui-border-normal);
-
           content: '';
         }
       }
@@ -208,7 +197,6 @@ app-swap-data-element ::ng-deep {
 
     &__io-container {
       z-index: 1;
-
       display: flex;
       flex-direction: column;
       gap: var(--tui-padding-xs);

@@ -66,6 +66,7 @@
     "wrongToken": "Rubic bridge supports only rubic token.",
     "oneInchQuote": "1inch quote error",
     "notSupportedNetwork": "{{networkToChoose}} is not supported by the selected wallet provider.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "You have rejected a sign-in with your wallet. Please confirm a sign-in with your wallet, in order to fully utilize our application.",
     "lowGas": "Transaction gas is too low. There is not enough gas to cover the minimal cost of the transaction. Try increasing the supplied gas",
     "noSelectedProvider": "Select swap provider",

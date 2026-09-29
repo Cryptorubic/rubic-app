@@ -16,7 +16,8 @@
           "style": "scss",
           "changeDetection": "OnPush",
           "standalone": false,
-          "skipTests": true
+          "skipTests": true,
+          "type": "component"
         }
       },
       "architect": {

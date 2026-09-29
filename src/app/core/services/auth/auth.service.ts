@@ -72,6 +72,8 @@ export class AuthService {
     hideError?: boolean;
   }): Promise<void> {
     try {
+      if (this.userAddress) this.disconnectWallet();
+
       const { walletName } = options;
       if (walletName && this.walletConnectorService.provider?.walletName !== walletName) {
         this.walletConnectorService.connectProvider(walletName, options.chainId);

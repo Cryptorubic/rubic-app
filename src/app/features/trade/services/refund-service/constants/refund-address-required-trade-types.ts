@@ -6,12 +6,18 @@ import {
 } from '@cryptorubic/core';
 
 export const refundAddressRequiredTradeTypes: (OnChainTradeType | CrossChainTradeType)[] = [
+  CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
   CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
   CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS,
   CROSS_CHAIN_TRADE_TYPE.INSTASWAP,
-  CROSS_CHAIN_TRADE_TYPE.CHANGE_HERO,
   CROSS_CHAIN_TRADE_TYPE.CLEARSWAP,
   CROSS_CHAIN_TRADE_TYPE.HOUDINI,
   ON_CHAIN_TRADE_TYPE.CLEARSWAP,
   ON_CHAIN_TRADE_TYPE.HOUDINI
 ];
+
+export function isRefundAddressRequired(
+  tradeType: OnChainTradeType | CrossChainTradeType
+): boolean {
+  return refundAddressRequiredTradeTypes.includes(tradeType);
+}
