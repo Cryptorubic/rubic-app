@@ -375,15 +375,17 @@ export class SwapsStateService {
 
     if (privateOnly) {
       if (privateTrades.length > 0) return privateTrades[0];
-
-      return nonPrivateTrades[0] ?? null;
+      /**
+       * it fixes softlock "Trade is not available" (when run app with privateOnly=true and then toggle to non private provider list)
+       */
+      return tradesWithQuote[0] ?? null;
     }
 
     if (nonPrivateTrades.length > 0) return nonPrivateTrades[0];
 
     if (privateTrades[0] && isCalculationEnd) return privateTrades[0];
 
-    return null;
+    return tradesWithQuote[0];
   }
 
   private sortCrossChainTrades(
