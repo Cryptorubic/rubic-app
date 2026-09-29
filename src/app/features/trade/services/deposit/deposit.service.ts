@@ -111,14 +111,13 @@ export class DepositService {
         switchMap(() => this.getSwapStatus(this._depositTrade$.value?.rubicId)),
         tap(status => this._status$.next(status)),
         tap(status => {
+          if (status.status !== CROSS_CHAIN_DEPOSIT_STATUS.WAITING) {
+            if (!this._exchangeTime$.value.startedAt) {
+              this.setExchangeStartTime(Date.now());
+            }
+          }
           if (status.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED) {
             this.setExchangeEndTime(Date.now());
-            if (!this._exchangeTime$.value.startedAt) {
-              /* in case if startedAt not defined we set default 60 secs */
-              this.setExchangeStartTime(Date.now() - 60_000);
-            }
-          } else if (status.status !== CROSS_CHAIN_DEPOSIT_STATUS.WAITING) {
-            this.setExchangeStartTime(Date.now());
           }
         }),
         takeWhile(

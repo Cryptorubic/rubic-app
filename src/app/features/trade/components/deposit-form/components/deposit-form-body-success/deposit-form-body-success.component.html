@@ -33,9 +33,7 @@
 <ng-template #rowValue let-item="item">
   @switch (item.type) {
     @case ('span') {
-      <b class="value" [style.color]="item.valueTextColor && item.valueTextColor">
-        {{ item.value }}
-      </b>
+      <b class="value">{{ item.value }}</b>
     }
     @case ('copy-btn') {
       <app-field-with-copy-btn
