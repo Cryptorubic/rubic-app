@@ -1,0 +1,29 @@
+@use 'src/scss/core' as *;
+@use 'src/app/features/trade/components/deposit-form/styles/common' as *;
+
+:host {
+  .step {
+    width: 100%;
+
+    tui-accordion-item {
+      @include tui-accordion-item();
+    }
+
+    .tui-accordion-item__disabled {
+      @include tui-accordion-item-disabled();
+    }
+
+    &-title {
+      @include accordion-title();
+    }
+
+    &-counter {
+      @include accordion-counter();
+    }
+
+    &-content {
+      @include accordion-content();
+      @include flex(row, center, space-between);
+    }
+  }
+}

@@ -6,7 +6,6 @@
   align-items: center;
   margin-bottom: 10px;
   padding: 0 20px;
-
   font-weight: 300;
 
   @include hide-unused-ui {
@@ -27,7 +26,6 @@
   &__link {
     margin-right: 21px;
     margin-bottom: 16px;
-
     transition: 0.1s ease-in-out;
 
     img {

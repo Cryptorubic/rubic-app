@@ -2,7 +2,6 @@
 
 .maintenance {
   position: relative;
-
   display: flex;
   flex-direction: column;
   width: 100vw;
@@ -29,25 +28,19 @@
     position: absolute;
     top: 0;
     left: 0;
-
     width: 100%;
-
     content: '';
   }
 
   &::before {
     z-index: -2;
-
     height: 100%;
-
     background-color: #16182c;
   }
 
   &::after {
     z-index: -1;
-
     height: 100%;
-
     background: url('/assets/images/maintenance/maintenance-background.webp') center no-repeat;
     background-size: cover;
   }
@@ -61,7 +54,6 @@
     max-width: 600px;
     margin: auto auto 120px;
     padding: 0 30px;
-
     color: white;
 
     @include b($mobile-md-minus) {
@@ -76,7 +68,6 @@
 
   &__title {
     margin-bottom: 30px;
-
     color: white;
     font-weight: 600;
     font-size: 40px;
@@ -91,7 +82,6 @@
   &__description {
     max-width: 350px;
     margin: 0 auto;
-
     font-weight: 400;
     font-size: 24px;
     text-align: center;
@@ -100,7 +90,6 @@
   &__footer {
     position: fixed;
     bottom: 0;
-
     width: 100%;
   }
 }

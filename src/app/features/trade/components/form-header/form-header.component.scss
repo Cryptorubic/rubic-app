@@ -7,42 +7,35 @@
   width: 100%;
 
   padding: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
-
   font-weight: 600;
   font-size: 15px;
 
   &__links {
     display: flex;
     gap: 12px;
-
     color: var(--tui-text-tertiary);
   }
 
   &__link {
     position: relative;
-
     cursor: pointer;
 
     &_active {
       color: var(--tui-text-primary);
-      text-decoration-line: underline;
       text-decoration-color: #00e28d;
+      text-decoration-line: underline;
     }
 
     &-new {
       position: absolute;
       top: -7px;
       right: -17px;
-
       padding: 0 3px;
-
       color: white;
       font-size: 9px;
       line-height: 12px;
-
       background: var(--tui-background-accent-1-pressed);
       border-radius: 5px;
-
       pointer-events: none;
     }
   }

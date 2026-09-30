@@ -1,0 +1,56 @@
+@use 'src/scss/core' as *;
+
+@mixin deposit-step {
+  width: 100%;
+}
+
+@mixin tui-accordion-item {
+  background-color: var(--tui-background-base);
+
+  ::ng-deep .t-wrapper {
+    .t-header {
+      padding: 14px 16px;
+
+      .t-title {
+        @include flex(row, center, start);
+        gap: 12px;
+        width: 100%;
+      }
+    }
+  }
+
+  app-step-locked-label,
+  app-step-loading-label {
+    position: absolute;
+    right: 16px;
+  }
+}
+
+@mixin tui-accordion-item-disabled {
+  opacity: 0.8;
+}
+
+@mixin accordion-counter {
+  @include flex(row, center, center);
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  background: var(--tui-background-neutral-1);
+  border-radius: 50%;
+}
+
+@mixin accordion-counter-active() {
+  color: black;
+  background: #39e180;
+}
+
+@mixin accordion-title {
+  @include flex(row, center, space-between);
+  color: var(--tui-text-primary);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+@mixin accordion-content {
+  padding: 16px;
+}

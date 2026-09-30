@@ -46,6 +46,7 @@ import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.s
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { SwapMethodOptions } from '../swaps-controller/models/swap-options';
 
 @Injectable()
 export class OnChainService {
@@ -123,9 +124,9 @@ export class OnChainService {
    */
   public async swapTrade(
     trade: OnChainTrade,
-    callback?: (hash: string) => void,
+    onHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+    params: SwapMethodOptions = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -139,8 +140,6 @@ export class OnChainService {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
     }
     await this.handlePreSwapModal(trade);
-
-    const receiverAddress = this.receiverAddress;
 
     const { shouldCalculateGasPrice, gasPriceOptions } =
       await this.gasService.getGasInfo(blockchain);
@@ -161,11 +160,13 @@ export class OnChainService {
     };
 
     const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+    const receiverAddress = params.receiverAddress ?? this.receiverAddress;
+    const refundAddress = params.refundAddress;
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
-        callback?.(hash);
+        onHash?.(hash);
 
         this.notifyGtmAfterSignTx(
           transactionHash,
@@ -182,6 +183,7 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
+      ...(refundAddress && { refundAddress }),
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),

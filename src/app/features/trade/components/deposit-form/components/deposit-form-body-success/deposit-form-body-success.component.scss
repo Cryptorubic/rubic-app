@@ -1,0 +1,75 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .body {
+    @include flex(column, normal, center);
+    gap: clamp(8px, 2vw, 16px);
+    width: 100%;
+
+    &-icon {
+      @include flex(row, center, center);
+    }
+
+    &-title {
+      font-weight: 500;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    &-content {
+      @include flex(column, normal, center);
+      padding: 16px;
+      background: var(--tui-background-base);
+      border-radius: 20px;
+
+      &__row:not(:last-child) {
+        border-bottom: 1px solid var(--tui-background-neutral-1);
+      }
+
+      &__row {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        padding: 14px 0px;
+        font-size: 16px;
+
+        .key {
+          color: var(--tui-text-secondary);
+          font-weight: 400;
+        }
+
+        .value {
+          width: fit-content;
+          color: var(--tui-text-primary);
+          font-weight: 400;
+        }
+
+        .link {
+          @include flex(row, center, center);
+          gap: 5px;
+          color: #39e180;
+
+          &:hover {
+            &-text {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    &-footer {
+      @include flex(column, center, center);
+      gap: 16px;
+      width: 100%;
+
+      &__btn {
+        width: 100%;
+
+        button {
+          width: 100%;
+          max-width: 331px;
+        }
+      }
+    }
+  }
+}

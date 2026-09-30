@@ -1,21 +1,18 @@
 :host {
   display: block;
   width: 360px;
-
   background: var(--secondary-background);
   border-radius: 17px;
 }
 
 .transaction-details {
   padding: var(--tui-padding-l);
-
   background: var(--primary-background);
   border-radius: var(--tui-radius-m);
 
   &__label {
     margin-top: 0;
     margin-bottom: var(--tui-padding-l);
-
     font-size: 15px;
     text-align: center;
   }
@@ -44,7 +41,6 @@
 tui-notification {
   margin-top: var(--tui-padding-s) !important;
   margin-bottom: 0 !important;
-
   border: 1px solid;
 }
 

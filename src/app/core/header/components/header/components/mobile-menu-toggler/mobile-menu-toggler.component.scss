@@ -1,7 +1,6 @@
 .navbar-toggler {
   margin-top: -5px;
   padding: 10px 6px;
-
   background: none;
   border: 0 none;
   cursor: pointer;
@@ -10,17 +9,13 @@
     display: block;
     width: 22px;
     height: 2px;
-
     background-color: black;
     border-radius: 1px;
-
     transition: transform 0.3s ease-in-out;
 
     &:nth-child(2) {
       margin-top: 4px;
-
       opacity: 1;
-
       transition: opacity 0.3s ease-in-out;
     }
 

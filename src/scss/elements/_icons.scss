@@ -6,12 +6,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     background-repeat: no-repeat;
     background-position: center;
     background-size: initial;
     border-radius: 5px;
-
     content: '';
   }
 
@@ -24,7 +22,6 @@
       min-width: 20px !important;
       min-height: 20px !important;
       margin-right: 25px;
-
       background-image: url('/assets/images/icons/icon-checked.svg');
       background-size: contain;
     }

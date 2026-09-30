@@ -47,7 +47,6 @@
       display: flex;
       flex-direction: column;
       gap: var(--tui-padding-xs);
-
       font-weight: 400;
       font-size: 1rem;
 
@@ -57,7 +56,6 @@
 
       > div:first-child {
         margin-bottom: var(--tui-padding-l);
-
         text-align: left;
       }
 

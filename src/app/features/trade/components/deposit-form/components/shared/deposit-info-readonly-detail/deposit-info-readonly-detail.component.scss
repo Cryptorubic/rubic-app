@@ -1,0 +1,21 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .detail {
+    @include flex(column, start, stretch);
+    gap: 8px;
+    width: 100%;
+
+    &__label-top {
+      color: var(--tui-text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    &__label-bottom {
+      color: #ff9f29;
+      font-weight: 400;
+      font-size: 12px;
+    }
+  }
+}

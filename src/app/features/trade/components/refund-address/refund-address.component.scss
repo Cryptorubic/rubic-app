@@ -6,7 +6,6 @@
     @include flex(column, normal, normal);
     gap: 2px;
     width: 100%;
-
     font-size: 15px;
 
     .refund-address__title,
@@ -19,10 +18,8 @@
       gap: 7px;
 
       padding: var(--tui-padding-l);
-
       color: var(--tui-warn);
       font-weight: 600;
-
       border-top-left-radius: var(--tui-radius-m);
       border-top-right-radius: var(--tui-radius-m);
 
@@ -37,7 +34,6 @@
 
     .refund-address__input {
       position: relative;
-
       border-bottom-right-radius: var(--tui-radius-m);
       border-bottom-left-radius: var(--tui-radius-m);
 
