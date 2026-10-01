@@ -50,13 +50,17 @@ export class TradeInfoManager {
     if (tradeType === ON_CHAIN_TRADE_TYPE.HOUDINI) {
       tradeType = CROSS_CHAIN_TRADE_TYPE.HOUDINI;
     }
+    if (tradeType === ON_CHAIN_TRADE_TYPE.ROCKETX) {
+      tradeType = CROSS_CHAIN_TRADE_TYPE.ROCKETX;
+    }
 
     const provider = TRADES_PROVIDERS[tradeType];
 
     if (
       trade instanceof CrossChainTrade ||
       tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP ||
-      tradeType === CROSS_CHAIN_TRADE_TYPE.HOUDINI
+      tradeType === CROSS_CHAIN_TRADE_TYPE.HOUDINI ||
+      tradeType === CROSS_CHAIN_TRADE_TYPE.ROCKETX
     ) {
       const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
       const ccrProviderInfo = ccrProviders[tradeType as CrossChainTradeType];
