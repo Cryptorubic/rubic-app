@@ -152,7 +152,7 @@ export class TradeInfoStep
       return;
     }
 
-    this.updateActionBtnState('confirm_deposit', { active: false });
+    // this.updateActionBtnState('confirm_deposit', { active: false });
     this.updateActionBtnState('send_via_wallet', { active: false, loading: true });
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
@@ -174,7 +174,7 @@ export class TradeInfoStep
           throw new WalletError();
         }
       } catch {
-        this.updateActionBtnState('confirm_deposit', { active: true });
+        // this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
         inputAddrStep.setActive(true);
         this.triggerStepsUpdate();
@@ -186,7 +186,7 @@ export class TradeInfoStep
     if (this.walletConnectorService.network !== srcChain) {
       const switched = await this.walletConnectorService.switchChain(srcChain);
       if (!switched) {
-        this.updateActionBtnState('confirm_deposit', { active: true });
+        // this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', {
           active: true,
           text: 'Change Wallet & Send'
@@ -199,6 +199,8 @@ export class TradeInfoStep
     const receiverAddress = inputAddrStep.inputsForm.controls.receiverAddr.value.trim();
     const refundAddress = inputAddrStep.inputsForm.controls.refundAddr.value.trim();
 
+    // @TODO_3003 add logic with getTransferTrade()
+
     await this.swapsControllerService.swap(
       this._tradeState,
       true,
@@ -206,17 +208,17 @@ export class TradeInfoStep
         onSwap: () => {
           tradeStatusStep.setActive(true);
           tradeStatusStep.setOpened(true);
-          this.setOpened(false);
 
+          this.setOpened(false);
           this.updateActionBtnState('send_via_wallet', { loading: false });
 
           this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
           this.triggerStepsUpdate();
         },
         onError: () => {
-          this.updateActionBtnState('confirm_deposit', { active: true });
-          this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
+          // this.updateActionBtnState('confirm_deposit', { active: true });
           inputAddrStep.setActive(true);
+          this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
           this.triggerStepsUpdate();
         }
       },

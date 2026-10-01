@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DepositFormManager } from '../../services/deposit-form-manager';
 
 @Component({
   selector: 'app-deposit-form-body-active',
@@ -7,4 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './deposit-form-body-active.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DepositFormBodyActiveComponent {}
+export class DepositFormBodyActiveComponent {
+  constructor(private readonly depositFormManager: DepositFormManager) {}
+}

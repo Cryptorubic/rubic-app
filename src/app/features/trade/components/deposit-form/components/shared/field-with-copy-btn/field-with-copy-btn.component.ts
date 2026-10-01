@@ -50,7 +50,7 @@ export class FieldWithCopyBtnComponent {
     this.copied = true;
     timer(500).subscribe(() => {
       this.copied = false;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 }

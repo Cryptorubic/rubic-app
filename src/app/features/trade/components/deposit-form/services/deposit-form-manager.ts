@@ -114,12 +114,16 @@ export class DepositFormManager {
     });
 
     this.depositFormState$.pipe(takeUntilDestroyed(destroyRef)).subscribe(state => {
+      const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
       const inputAddressesStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
       const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
       const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
 
       switch (state) {
         case DEPOSIT_FORM_STATE.IDLE:
+          detailsStep.setActive(true);
+          detailsStep.setOpened(true);
+
           inputAddressesStep.setActive(true);
           inputAddressesStep.setOpened(true);
           inputAddressesStep.updateActionBtnState('confirm_addresses', {
@@ -134,6 +138,25 @@ export class DepositFormManager {
 
           tradeStatusStep.setActive(false);
           tradeStatusStep.setOpened(false);
+          break;
+        case DEPOSIT_FORM_STATE.INPUT_ADDRESSES:
+          inputAddressesStep.setActive(true);
+          inputAddressesStep.setOpened(true);
+          inputAddressesStep.updateActionBtnState('confirm_addresses', {
+            active: inputAddressesStep.inputsForm.valid
+          });
+          inputAddressesStep.updateActionBtnState('change_addresses', {
+            active: true
+          });
+
+          tradeInfoStep.setActive(false);
+          tradeInfoStep.setOpened(false);
+
+          tradeStatusStep.setActive(false);
+          tradeStatusStep.setOpened(false);
+          break;
+        case DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER:
+          // @TODO_3003 implement state
           break;
         case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
           inputAddressesStep.setOpened(false);

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepositFormManager } from '../../../../services/deposit-form-manager';
-import { first, map, of, share, startWith, switchMap } from 'rxjs';
+import { first, map, share, switchMap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { ActionBtnState } from '../../../../models/step-types';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
@@ -9,8 +9,6 @@ import { getTokenAsset } from '../../../../utils/get-token-asset';
 import { Token } from '@app/shared/models/tokens/token';
 import { Web3Pure } from '@cryptorubic/web3';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { BlockchainsInfo } from '@cryptorubic/core';
-import { switchIif } from '@app/shared/utils/utils';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
 
 @Component({
@@ -48,23 +46,11 @@ export class DepositTradeInfoStepComponent {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
-    map(state => state === DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT)
-  );
-
-  public readonly showMobileWalletBtn$ = this.isMobile$.pipe(
-    switchIif(
-      isMobile => isMobile,
-      () =>
-        this.depositFormManager.depositTrade$.pipe(
-          map(depositTrade => {
-            return depositTrade
-              ? BlockchainsInfo.isEvmBlockchainName(depositTrade.fromToken.blockchain)
-              : false;
-          })
-        ),
-      () => of(false)
-    ),
-    startWith(false)
+    map(
+      state =>
+        state === DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT ||
+        state === DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER
+    )
   );
 
   constructor(

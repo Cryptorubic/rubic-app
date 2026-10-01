@@ -3,6 +3,7 @@
   [style.background-color]="bgColor"
   [style.border-color]="borderColor"
   [style.padding]="padding && padding"
+  [tuiHint]="tooltip"
   (click)="copyToClipboard()"
 >
   <b
@@ -19,3 +20,7 @@
     [ngClass]="{ 'copy-btn-size-s': iconSize === 's', 'copy-btn-size-m': iconSize === 'm' }"
   ></span>
 </div>
+
+<ng-template #tooltip>
+  <span class="hint">{{ textToCopy }}</span>
+</ng-template>

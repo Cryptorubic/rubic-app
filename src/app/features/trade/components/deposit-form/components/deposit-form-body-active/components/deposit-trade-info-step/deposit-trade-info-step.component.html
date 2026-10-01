@@ -2,7 +2,6 @@
 @let depositTrade = depositTrade$ | async;
 @let fromAsset = fromAsset$ | async;
 @let isMobile = isMobile$ | async;
-@let showMobileWalletBtn = showMobileWalletBtn$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
 
 <tui-accordion class="step">
@@ -22,92 +21,94 @@
     }
 
     <ng-template tuiAccordionItemContent>
-      <div class="step-content">
-        <div class="step-content__main">
-          <div class="step-content__info">
-            <app-deposit-info-readonly-detail [labelTop]="'Asset'">
-              <div class="detail-wrapper">
-                <app-asset-details [asset]="fromAsset"></app-asset-details>
-                @if (!isNative(depositTrade.fromToken)) {
-                  <app-field-with-copy-btn
-                    [visibleText]="depositTrade.fromToken.address | shortAddress: 4 : 4"
-                    [textToCopy]="depositTrade.fromToken.address"
-                    [bgColor]="'var(--tui-background-base)'"
-                    [borderColor]="'var(--tui-background-base)'"
-                    [padding]="'7px'"
-                    [iconSize]="'s'"
-                    [textColor]="'var(--tui-text-secondary)'"
-                  ></app-field-with-copy-btn>
-                }
-              </div>
-            </app-deposit-info-readonly-detail>
+      @if (step.name) {
+        <div class="step-content">
+          <div class="step-content__main">
+            <div class="step-content__info">
+              <app-deposit-info-readonly-detail [labelTop]="'Asset'">
+                <div class="detail-wrapper">
+                  <app-asset-details [asset]="fromAsset"></app-asset-details>
+                  @if (!isNative(depositTrade.fromToken)) {
+                    <app-field-with-copy-btn
+                      [visibleText]="depositTrade.fromToken.address | shortAddress: 4 : 4"
+                      [textToCopy]="depositTrade.fromToken.address"
+                      [bgColor]="'var(--tui-background-base)'"
+                      [borderColor]="'var(--tui-background-base)'"
+                      [padding]="'7px'"
+                      [iconSize]="'s'"
+                      [textColor]="'var(--tui-text-secondary)'"
+                    ></app-field-with-copy-btn>
+                  }
+                </div>
+              </app-deposit-info-readonly-detail>
 
-            <app-deposit-info-readonly-detail [labelTop]="'Amount to send'">
-              <app-field-with-copy-btn
-                [visibleText]="depositTrade.fromAmount + ' ' + depositTrade.fromToken.symbol"
-                [textToCopy]="depositTrade.fromAmount"
-                [iconSize]="'s'"
-              ></app-field-with-copy-btn>
-            </app-deposit-info-readonly-detail>
-
-            <app-deposit-info-readonly-detail [labelTop]="'Deposit address'">
-              <app-field-with-copy-btn
-                [visibleText]="depositTrade.depositAddress | shortAddress: 6 : 6"
-                [textToCopy]="depositTrade.depositAddress"
-                [iconSize]="'s'"
-              ></app-field-with-copy-btn>
-            </app-deposit-info-readonly-detail>
-
-            @if (depositTrade.extraField?.value) {
-              <app-deposit-info-readonly-detail
-                [labelTop]="'Deposit Tag (MEMO)'"
-                [labelBottom]="'Required — funds may be lost without this tag'"
-              >
+              <app-deposit-info-readonly-detail [labelTop]="'Amount to send'">
                 <app-field-with-copy-btn
-                  [visibleText]="depositTrade.extraField.value | shortAddress: 4 : 4"
-                  [textToCopy]="depositTrade.extraField.value"
-                  [bgColor]="'rgba(255, 159, 41, 0.08)'"
-                  [borderColor]="'#FF9F29'"
-                  [textColor]="'#FF9F29'"
+                  [visibleText]="depositTrade.fromAmount + ' ' + depositTrade.fromToken.symbol"
+                  [textToCopy]="depositTrade.fromAmount"
                   [iconSize]="'s'"
                 ></app-field-with-copy-btn>
               </app-deposit-info-readonly-detail>
+
+              <app-deposit-info-readonly-detail [labelTop]="'Deposit address'">
+                <app-field-with-copy-btn
+                  [visibleText]="depositTrade.depositAddress | shortAddress: 6 : 6"
+                  [textToCopy]="depositTrade.depositAddress"
+                  [iconSize]="'s'"
+                ></app-field-with-copy-btn>
+              </app-deposit-info-readonly-detail>
+
+              @if (depositTrade.extraField?.value) {
+                <app-deposit-info-readonly-detail
+                  [labelTop]="'Deposit Tag (MEMO)'"
+                  [labelBottom]="'Required — funds may be lost without this tag'"
+                >
+                  <app-field-with-copy-btn
+                    [visibleText]="depositTrade.extraField.value | shortAddress: 4 : 4"
+                    [textToCopy]="depositTrade.extraField.value"
+                    [bgColor]="'rgba(255, 159, 41, 0.08)'"
+                    [borderColor]="'#FF9F29'"
+                    [textColor]="'#FF9F29'"
+                    [iconSize]="'s'"
+                  ></app-field-with-copy-btn>
+                </app-deposit-info-readonly-detail>
+              }
+            </div>
+
+            @if (!isMobile) {
+              <div class="step-content__qrcode">
+                <app-qr-code-container></app-qr-code-container>
+              </div>
             }
           </div>
 
-          @if (!isMobile) {
-            <div class="step-content__qrcode">
-              <app-qr-code-container (btnClicked)="connectWalletAndSend()"></app-qr-code-container>
-            </div>
-          }
-        </div>
+          <div class="step-content__footer">
+            @let confirmBtnState = getConfirmBtnState();
 
-        <div class="step-content__footer">
-          @let confirmBtnState = getConfirmBtnState();
-          @let sendBtnState = getSendBtnState();
-
-          @if (showMobileWalletBtn) {
             <app-rubic-button-new
               appearance="primary"
               size="m"
-              [disabled]="!sendBtnState.active"
-              [loading]="sendBtnState.loading"
-              (onClick)="connectWalletAndSend()"
+              [disabled]="!confirmBtnState.active"
+              (onClick)="confirmDeposit()"
             >
-              {{ sendBtnState.text }}
+              {{ confirmBtnState.text }}
             </app-rubic-button-new>
-          }
-
+          </div>
+        </div>
+      } @else {
+        @let sendBtnState = getSendBtnState();
+        <div class="step-content">
           <app-rubic-button-new
             appearance="primary"
             size="m"
-            [disabled]="!confirmBtnState.active"
-            (onClick)="confirmDeposit()"
+            [disabled]="!sendBtnState.active"
+            [loading]="sendBtnState.loading"
+            (onClick)="connectWalletAndSend()"
           >
-            {{ confirmBtnState.text }}
+            {{ sendBtnState.text }}
           </app-rubic-button-new>
         </div>
-      </div>
+      }
     </ng-template>
   </tui-accordion-item>
 </tui-accordion>

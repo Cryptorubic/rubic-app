@@ -53,14 +53,8 @@ export class InputAddressesStep
   ) {
     const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
     const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
-      confirm_addresses: {
-        active: false,
-        text: 'Confirm'
-      },
-      change_addresses: {
-        active: false,
-        text: 'Change Addresses'
-      }
+      confirm_addresses: { active: false, text: 'Confirm' },
+      change_addresses: { active: false, text: 'Change Addresses' }
     };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
 
@@ -203,7 +197,6 @@ export class InputAddressesStep
     if (this.isRefundAddressRequired()) {
       this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
     }
-    this.inputsForm.controls.refundAddr.hasValidator(Validators.required);
     this.inputsForm.updateValueAndValidity();
   }
 }

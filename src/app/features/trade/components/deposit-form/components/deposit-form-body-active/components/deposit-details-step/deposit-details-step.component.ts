@@ -5,6 +5,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { DepositFormManager } from '../../../../services/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
+import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
 
 @Component({
   selector: 'app-deposit-details-step',
@@ -16,6 +17,10 @@ import { getTokenAsset } from '../../../../utils/get-token-asset';
 export class DepositDetailsStepComponent {
   public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
     map(steps => steps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS])
+  );
+
+  public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
+    map(state => state === DEPOSIT_FORM_STATE.IDLE)
   );
 
   public readonly details$ = this.step$.pipe(
