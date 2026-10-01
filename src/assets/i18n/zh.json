@@ -65,6 +65,7 @@
     "wrongToken": "Rubic 橋僅支持 rubic 令牌。",
     "oneInchQuote": "1inch 報價錯誤",
     "notSupportedNetwork": "{{networkToChoose}} 所選錢包提供商不支持。",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "您已拒絕使用錢包登錄。 請使用您的錢包確認登錄，以便充分利用我們的應用程序。",
     "lowGas": "交易氣體太低。 沒有足夠的氣體來支付交易的最低成本。 嘗試增加供氣",
     "noSelectedProvider": "您尚未選擇任何掉期提供者",

@@ -34,7 +34,6 @@
 tui-dialog-host .t-close {
   background: var(--tui-background-neutral-1) !important;
   opacity: 0.75;
-
   transition: 0.2s ease-in-out;
 
   &:hover {
@@ -67,7 +66,6 @@ tui-notification {
     background: #1b1a2e !important;
     outline: none !important;
     box-shadow: -2.625rem 0 0 0.5rem rgb(255, 255, 255, 0.85) !important;
-
     transition-property: box-shadow, background !important;
   }
 

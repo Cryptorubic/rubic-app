@@ -6,6 +6,7 @@ import {
   OnChainTradeType,
   PriceTokenAmount,
   QuoteResponseInterface,
+  SwapPrivateRequestInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -117,7 +118,11 @@ export abstract class OnChainTrade<T = unknown> {
 
   public lastSwapResponse: SwapResponseInterface<T> | null = null;
 
-  public readonly rubicId: string;
+  private _rubicId: string;
+
+  public get rubicId(): string {
+    return this._rubicId;
+  }
 
   public readonly warnings: ErrorInterface[];
 
@@ -126,7 +131,7 @@ export abstract class OnChainTrade<T = unknown> {
     protected readonly sdkLegacyService: SdkLegacyService,
     protected readonly rubicApiService: RubicApiService
   ) {
-    this.rubicId = apiResponse.id;
+    this._rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
   }
 
@@ -307,12 +312,31 @@ export abstract class OnChainTrade<T = unknown> {
     }
   }
 
-  private refetchTrade<Data>(body: SwapRequestInterface): Promise<SwapResponseInterface<Data>> {
-    const res = this.rubicApiService.fetchBestSwapData<Data>({
+  protected async fetchSwapPrivateData<Data>(
+    body: SwapPrivateRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    try {
+      const res = await this.rubicApiService.fetchSwapPrivateTrade<Data>(body);
+      this.lastSwapResponse = res as RubicAny;
+      return res;
+    } catch (err) {
+      if (err instanceof TradeExpiredError) {
+        return this.refetchTrade<Data>(body as SwapRequestInterface);
+      }
+
+      throw err;
+    }
+  }
+
+  private async refetchTrade<Data>(
+    body: SwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    const res = await this.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });
     this.lastSwapResponse = res as RubicAny;
+    this._rubicId = res.quote.id;
     return res;
   }
 }

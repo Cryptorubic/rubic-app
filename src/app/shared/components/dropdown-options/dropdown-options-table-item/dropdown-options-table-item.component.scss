@@ -5,7 +5,6 @@ $transition: all 0.1s ease-in-out;
 .dropdown-content-wrapper {
   position: relative;
   z-index: 1000000000000000;
-
   display: flex;
   gap: var(--tui-padding-s);
   align-items: baseline;
@@ -46,7 +45,6 @@ $transition: all 0.1s ease-in-out;
     &-copied-container {
       width: 14px;
       height: 14px;
-
       transition: $transition;
 
       &:hover {
@@ -57,9 +55,7 @@ $transition: all 0.1s ease-in-out;
     &-link-arrow {
       width: 12px;
       height: 12px;
-
       transform: scale(1) translate(0px, 3px);
-
       transition: $transition;
 
       &:hover {

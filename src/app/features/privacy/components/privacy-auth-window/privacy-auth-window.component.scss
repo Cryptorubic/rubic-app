@@ -3,7 +3,6 @@
 :host {
   .wrapper {
     position: relative;
-
     display: flex;
     align-items: center;
     width: 100%;
@@ -15,15 +14,11 @@
         position: absolute;
         top: 0 !important;
         z-index: -1 !important;
-
         height: 377px;
-
         background-image: url('/assets/images/private-swaps/overlay.svg');
         background-repeat: repeat-x;
         transform: none;
-
         animation: infiniteScrollRight 20s linear infinite;
-
         content: '';
         pointer-events: none;
       }
@@ -32,15 +27,11 @@
         position: absolute;
         bottom: 0;
         z-index: -1;
-
         width: 100%;
         height: 377px;
-
         background-image: url('/assets/images/private-swaps/overlay.svg');
         background-repeat: repeat-x;
-
         animation: infiniteScrollRight 20s linear infinite;
-
         content: '';
         pointer-events: none;
       }
@@ -50,16 +41,12 @@
       position: absolute;
       top: 50%;
       z-index: 0;
-
       width: 100%;
       height: 377px;
-
       background-image: url('/assets/images/private-swaps/overlay.svg');
       background-repeat: repeat-x;
       transform: translateY(-50%);
-
       animation: infiniteScrollRight 20s linear infinite;
-
       content: '';
       pointer-events: none;
     }
@@ -68,11 +55,8 @@
   .private-auth-window {
     position: fixed;
     z-index: 1;
-
     width: 100vw;
-
     font-weight: 600;
-
     background-color: var(--app-background);
     inset: 0;
 
@@ -86,7 +70,6 @@
     app-header {
       position: absolute;
       top: 0;
-
       height: 0;
     }
 
@@ -96,13 +79,11 @@
       top: 50%;
       left: 50%;
       z-index: 1;
-
       gap: 10px;
       width: 100%;
       max-width: 679px;
       height: 377px;
       padding: 15px;
-
       background-color: var(--app-background);
       transform: translate(-50%, -50%);
 
@@ -117,15 +98,12 @@
 
       .third-row {
         font-size: 15px;
-
         background: url('../../../../../assets/images/private-swaps/modals/rounded-rectangle.svg');
       }
 
       .fourth-row {
         width: 147px;
-
         font-size: 15px;
-
         background-color: var(--tui-text-primary-on-accent-1);
         border: 0;
         border-radius: 4px;

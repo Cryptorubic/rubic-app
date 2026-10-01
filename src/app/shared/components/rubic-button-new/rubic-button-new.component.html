@@ -1,0 +1,12 @@
+<tui-loader [showLoader]="loading" [overlay]="loading">
+  <button
+    tuiButton
+    type="button"
+    [appearance]="appearance"
+    [size]="size"
+    [disabled]="disabled"
+    (click)="handleClick()"
+  >
+    <ng-content></ng-content>
+  </button>
+</tui-loader>

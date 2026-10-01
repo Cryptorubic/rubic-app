@@ -1,0 +1,26 @@
+@let step = step$ | async;
+@let isStepHighlighted = isStepHighlighted$ | async;
+
+<tui-accordion class="step">
+  <tui-accordion-item
+    [class.tui-accordion-item__disabled]="!step.active"
+    [disabled]="!step.active"
+    [showArrow]="step.active"
+    [size]="'s'"
+    [(open)]="step.opened"
+  >
+    <span class="step-counter" [class.step-counter__active]="isStepHighlighted">4</span>
+    <span class="step-title">SWAP STATUS</span>
+    @if (step.loading) {
+      <app-step-loading-label></app-step-loading-label>
+    } @else if (!step.active) {
+      <app-step-locked-label></app-step-locked-label>
+    }
+
+    <ng-template tuiAccordionItemContent>
+      <div class="step-content">
+        <app-deposit-status-bar></app-deposit-status-bar>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

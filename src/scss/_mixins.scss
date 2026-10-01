@@ -2,11 +2,11 @@
 
 @mixin font-face($font-family, $file-path, $weight, $style: normal) {
   @font-face {
-    font-family: $font-family;
     font-weight: $weight;
+    font-family: $font-family;
     font-style: $style;
-    font-display: swap;
     src: url('#{$file-path}.woff2') format('woff2');
+    font-display: swap;
   }
 }
 
@@ -21,7 +21,6 @@
   &::after {
     display: block;
     clear: both;
-
     content: ' ';
   }
 }
@@ -86,7 +85,6 @@
 
     width: $width;
     height: $height;
-
     content: '';
 
     @if $position==a {
@@ -106,7 +104,6 @@
 
     width: $width;
     height: $height;
-
     content: '';
 
     @if $position==a {
@@ -130,13 +127,10 @@
 
 @mixin clearbtn() {
   padding: 0;
-
   font-size: inherit;
   line-height: inherit;
-
   background: none;
   border: 0;
-
   appearance: none;
 }
 

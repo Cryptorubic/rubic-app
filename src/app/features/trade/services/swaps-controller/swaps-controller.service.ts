@@ -71,6 +71,7 @@ import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
+import { SwapMethodOptions } from './models/swap-options';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -256,6 +257,11 @@ export class SwapsControllerService {
     }
   }
 
+  /**
+   * @param options used to reassign receiver and refunds addresses
+   * from TargetNetworkAddressService and RefundService
+   * @returns
+   */
   public async swap(
     tradeState: SelectedTrade,
     checkSlippageAndPI?: boolean,
@@ -265,6 +271,10 @@ export class SwapsControllerService {
       onError?: (err: RubicError<ERROR_TYPE> | null) => void;
       onSimulationSuccess?: () => Promise<boolean>;
       onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
+    },
+    options: SwapMethodOptions = {
+      useCacheData: false,
+      skipAmountCheck: false
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -293,13 +303,15 @@ export class SwapsControllerService {
         txHash = await this.crossChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          options
         );
       } else {
         txHash = await this.onChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          options
         );
       }
     } catch (err) {
@@ -321,7 +333,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             } else {
@@ -331,7 +345,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             }
@@ -486,7 +502,7 @@ export class SwapsControllerService {
     return false;
   }
 
-  private catchSwapError(
+  public catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
     onError?: (err: RubicError<ERROR_TYPE> | null) => void

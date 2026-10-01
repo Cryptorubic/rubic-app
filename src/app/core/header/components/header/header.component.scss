@@ -3,7 +3,6 @@
 .rubic-header {
   @include flex(row, center, space-between);
   position: relative;
-
   padding: 30px;
 
   &__logo {
@@ -40,7 +39,6 @@
 
 .active-router-link {
   color: black !important;
-
   background: var(--tui-background-accent-1);
 
   .icon {

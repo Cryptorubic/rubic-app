@@ -12,10 +12,8 @@
 
 .tokens-container {
   position: relative;
-
   height: 469px;
   padding: 10px;
-
   background: var(--io-background);
   border-bottom-right-radius: var(--tui-radius-m);
   border-bottom-left-radius: var(--tui-radius-m);
@@ -23,19 +21,16 @@
   @include b($mobile-md) {
     height: 67vh;
     padding: var(--tui-padding-l);
-
     background: none;
     border-radius: 0;
   }
 
   &__empty-list {
     position: relative;
-
     margin-top: 20px;
 
     &_metis {
       margin: 0 20px;
-
       font-size: 16px;
     }
   }
@@ -69,7 +64,6 @@ tui-loader {
     display: flex;
     justify-content: space-between;
     margin-bottom: 2px;
-
     background-color: var(--io-background);
     border-radius: 0;
     border-top-left-radius: var(--tui-radius-m);
@@ -127,7 +121,6 @@ tui-loader {
     &_empty {
       display: flex;
       justify-content: center;
-
       font-size: 18px;
 
       &:hover {
@@ -158,7 +151,6 @@ tui-loader {
     display: block;
     width: 100%;
     height: 100%;
-
     line-height: 30px;
     text-align: center;
   }

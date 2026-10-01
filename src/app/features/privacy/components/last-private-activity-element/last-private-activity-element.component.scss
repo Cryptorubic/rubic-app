@@ -5,10 +5,8 @@
     @include flex(row, center, space-between);
     width: 100%;
     padding: 16px 16px 23px 23px;
-
     background-color: var(--tui-background-base-alt);
     border-radius: var(--tui-radius-s);
-
     user-select: none;
 
     @include b($tablet) {
@@ -22,7 +20,6 @@
       .name {
         @include flex(row, center, start);
         gap: 8px;
-
         font-size: 18px;
       }
 

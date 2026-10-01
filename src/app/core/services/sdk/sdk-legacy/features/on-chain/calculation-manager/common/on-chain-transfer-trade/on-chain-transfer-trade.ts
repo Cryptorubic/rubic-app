@@ -1,8 +1,9 @@
 import {
+  BlockchainsInfo,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
-  Token
+  SwapPrivateRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../common/models/encode-transaction-options';
@@ -15,14 +16,24 @@ import { FeeInfo } from '../../../../cross-chain/calculation-manager/providers/c
 import { RubicStep } from '../../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { BasicSendTransactionOptions, RubicSdkError } from '@cryptorubic/web3';
+import {
+  BasicSendTransactionOptions,
+  FailedToCheckForTransactionReceiptError,
+  RubicSdkError
+} from '@cryptorubic/web3';
 import { OnChainTrade } from '../on-chain-trade/on-chain-trade';
 import { OnChainTransferConfig } from './models/on-chain-transfer-config';
+import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
+import { parseExtraFields } from '../../../../ws-api/chains/transfer-trade/utils/parse-extra-fields';
 
 export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferConfig> {
   protected lastTransactionConfig: OnChainTransferConfig | null = null;
 
-  protected paymentInfo: CrossChainTransferData | null = null;
+  protected _paymentInfo: CrossChainTransferData | null = null;
+
+  public get paymentInfo(): CrossChainTransferData | null {
+    return this._paymentInfo;
+  }
 
   public readonly from: PriceTokenAmount;
 
@@ -76,10 +87,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     throw new RubicSdkError("For deposit trades use 'getTransferTrade' method");
   }
 
-  public async swap(_options?: SwapTransactionOptions): Promise<string | never> {
-    throw new RubicSdkError("For deposit trades use 'getTransferTrade' method");
-  }
-
   public async encode(_options: EncodeTransactionOptions): Promise<unknown> {
     throw new RubicSdkError("For deposit trades use 'getTransferTrade' method");
   }
@@ -119,34 +126,95 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     receiverAddress?: string,
     refundAddress?: string
   ): Promise<{ config: OnChainTransferConfig; amount: string }> {
-    const res = await this.getPaymentInfo(receiverAddress || '', testMode, '', refundAddress);
+    const swapRequestData: SwapPrivateRequestInterface = {
+      ...this.apiQuote,
+      id: this.apiResponse.id,
+      receiver: receiverAddress || '',
+      refundAddress: refundAddress || '',
+      enableChecks: !testMode
+    };
 
-    const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
-    this.paymentInfo = res;
+    const res = await this.fetchSwapPrivateData<TransactionInterface>(swapRequestData);
+
+    const amount = res.estimate.destinationTokenAmount;
+    this.actualTokenAmount = new BigNumber(amount);
+
+    const extraFields = parseExtraFields(res.transaction);
+
+    this._paymentInfo = {
+      depositAddress: res.transaction.depositAddress,
+      id: res.transaction.exchangeId,
+      toAmount: res.estimate.destinationTokenAmount,
+      ...(extraFields && {
+        depositExtraId: extraFields.value,
+        depositExtraIdName: extraFields.name
+      })
+    };
 
     return {
-      config: {
-        amountToSend: res.toAmount,
-        depositAddress: res.depositAddress,
-        exchangeId: res.id,
-        ...(res.depositExtraId &&
-          res.depositExtraIdName && {
-            extraFields: {
-              name: res.depositExtraIdName,
-              value: res.depositExtraId
-            }
-          })
-      },
-      amount: toAmountWei
+      config: res as OnChainTransferConfig,
+      amount: res.estimate.destinationWeiAmount
     };
   }
 
-  protected abstract getPaymentInfo(
-    receiverAddress: string,
-    testMode?: boolean,
-    fromAddress?: string,
-    refundAddress?: string
-  ): Promise<CrossChainTransferData>;
+  public swap(options: SwapTransactionOptions = {}): Promise<string | never> {
+    return this.swapDirect(options);
+  }
+
+  private async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
+    if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
+      throw new RubicSdkError("For non-evm chains use 'getTransferTrade' method");
+    }
+
+    await this.checkWalletState(options?.testMode);
+    await this.checkReceiverAddress(
+      options.receiverAddress,
+      !BlockchainsInfo.isEvmBlockchainName(this.to.blockchain),
+      this.type
+    );
+
+    const { onConfirm, gasPriceOptions } = options;
+    let transactionHash: string;
+    const onTransactionHash = (hash: string) => {
+      if (onConfirm) onConfirm(hash);
+      transactionHash = hash;
+    };
+
+    try {
+      if (!this.paymentInfo) throw new Error('[swapDirect] this.paymentInfo is not set');
+
+      const evmAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        this.from.blockchain
+      );
+      if (this.from.isNative) {
+        await evmAdapter.signer.trySendTransaction({
+          txOptions: {
+            to: this.paymentInfo.depositAddress,
+            value: this.from.weiAmount,
+            onTransactionHash,
+            gasPriceOptions
+          }
+        });
+      } else {
+        await evmAdapter.signer.trySendTransaction({
+          txOptions: {
+            to: this.from.address,
+            data: this.lastSwapResponse.transaction.data,
+            value: '0',
+            onTransactionHash,
+            gasPriceOptions
+          }
+        });
+      }
+
+      return transactionHash!;
+    } catch (err) {
+      if (err instanceof FailedToCheckForTransactionReceiptError) {
+        return transactionHash!;
+      }
+      throw err;
+    }
+  }
 
   protected async setTransactionConfig(
     skipAmountChangeCheck: boolean,
@@ -165,9 +233,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
       refundAddress
     );
     this.lastTransactionConfig = config;
-    setTimeout(() => {
-      this.lastTransactionConfig = null;
-    }, 15_000);
 
     if (!skipAmountChangeCheck) {
       this.checkAmountChange(amount, this.to.stringWeiAmount);
