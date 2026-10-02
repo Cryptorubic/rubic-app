@@ -3,6 +3,7 @@
 @let fromAsset = fromAsset$ | async;
 @let isMobile = isMobile$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
+@let depositFlow = depositFlow$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -21,7 +22,7 @@
     }
 
     <ng-template tuiAccordionItemContent>
-      @if (step.name) {
+      @if (depositFlow === 'MANUAL') {
         <div class="step-content">
           <div class="step-content__main">
             <div class="step-content__info">
@@ -64,7 +65,7 @@
                   [labelBottom]="'Required — funds may be lost without this tag'"
                 >
                   <app-field-with-copy-btn
-                    [visibleText]="depositTrade.extraField.value | shortAddress: 4 : 4"
+                    [visibleText]="depositTrade.extraField.value | shortAddress: 7 : 7"
                     [textToCopy]="depositTrade.extraField.value"
                     [bgColor]="'rgba(255, 159, 41, 0.08)'"
                     [borderColor]="'#FF9F29'"
@@ -84,29 +85,32 @@
 
           <div class="step-content__footer">
             @let confirmBtnState = getConfirmBtnState();
-
-            <app-rubic-button-new
-              appearance="primary"
-              size="m"
-              [disabled]="!confirmBtnState.active"
-              (onClick)="confirmDeposit()"
-            >
-              {{ confirmBtnState.text }}
-            </app-rubic-button-new>
+            @if (!confirmBtnState.invisible) {
+              <app-rubic-button-new
+                appearance="primary"
+                size="m"
+                [disabled]="!confirmBtnState.active"
+                (onClick)="confirmDeposit()"
+              >
+                {{ confirmBtnState.text }}
+              </app-rubic-button-new>
+            }
           </div>
         </div>
       } @else {
-        @let sendBtnState = getSendBtnState();
         <div class="step-content">
-          <app-rubic-button-new
-            appearance="primary"
-            size="m"
-            [disabled]="!sendBtnState.active"
-            [loading]="sendBtnState.loading"
-            (onClick)="connectWalletAndSend()"
-          >
-            {{ sendBtnState.text }}
-          </app-rubic-button-new>
+          @let sendBtnState = getSendBtnState();
+          @if (!sendBtnState.invisible) {
+            <app-rubic-button-new
+              appearance="primary"
+              size="m"
+              [disabled]="!sendBtnState.active"
+              [loading]="sendBtnState.loading"
+              (onClick)="connectWalletAndSend()"
+            >
+              {{ sendBtnState.text }}
+            </app-rubic-button-new>
+          }
         </div>
       }
     </ng-template>

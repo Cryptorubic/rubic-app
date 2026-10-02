@@ -12,10 +12,10 @@ export class TradeStatusStep extends DepositStep {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.TRADE_INFO;
 
   constructor(
+    depositStepParams: DepositStepParams,
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>
   ) {
-    const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
     super(depositStepParams, _depositFormState$, _depositFormSteps$);
   }
 }

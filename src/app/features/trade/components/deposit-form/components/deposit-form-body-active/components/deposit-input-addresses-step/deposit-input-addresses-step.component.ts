@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DepositFormManager } from '../../../../services/deposit-form-manager';
+import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
 import { map, share, startWith } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { BlockchainName } from '@cryptorubic/core';
@@ -68,10 +68,6 @@ export class DepositInputAddressesStepComponent {
         return this.depositFormManager.getActionBtnState(
           DEPOSIT_STEP_ORDER.INPUT_ADDRESSES,
           'change_addresses'
-        );
-      default:
-        throw new Error(
-          `[DepositInputAddressesStepComponent_getActionBtnState] Unsupported depositFormState ${this.depositFormManager.depositFormState}.`
         );
     }
   }

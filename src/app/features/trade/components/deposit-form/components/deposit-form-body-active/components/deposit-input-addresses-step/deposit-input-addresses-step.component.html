@@ -1,6 +1,7 @@
 @let step = step$ | async;
 @let showRefundInput = showRefundInput$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
+@let actionBtnState = getActionBtnState();
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -61,18 +62,19 @@
           </b>
         </div>
 
-        <button
-          *ngLet="getActionBtnState() as actionBtnState"
-          tuiButton
-          class="step-content__btn"
-          appearance="primary"
-          type="button"
-          size="m"
-          [disabled]="!actionBtnState.active"
-          (click)="doAction()"
-        >
-          {{ actionBtnState.text }}
-        </button>
+        @if (!actionBtnState.invisible) {
+          <button
+            tuiButton
+            class="step-content__btn"
+            appearance="primary"
+            type="button"
+            size="m"
+            [disabled]="!actionBtnState.active"
+            (click)="doAction()"
+          >
+            {{ actionBtnState.text }}
+          </button>
+        }
       </div>
     </ng-template>
   </tui-accordion-item>

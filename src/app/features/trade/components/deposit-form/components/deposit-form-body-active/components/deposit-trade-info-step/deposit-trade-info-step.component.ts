@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DepositFormManager } from '../../../../services/deposit-form-manager';
-import { first, map, share, switchMap } from 'rxjs';
+import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
+import { first, map, Observable, share, switchMap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
-import { ActionBtnState } from '../../../../models/step-types';
+import { ActionBtnState, DepositFlow } from '../../../../models/step-types';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
@@ -52,6 +52,12 @@ export class DepositTradeInfoStepComponent {
         state === DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER
     )
   );
+
+  public readonly depositFlow$: Observable<DepositFlow> =
+    this.depositFormManager.depositFormSteps$.pipe(
+      map(steps => steps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS]),
+      map(detailsStep => detailsStep.depositFlow)
+    );
 
   constructor(
     private readonly depositFormManager: DepositFormManager,

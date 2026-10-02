@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DepositFormManager } from '../../services/deposit-form-manager';
+import { DepositFormManager } from '../../services/injectable/deposit-form-manager';
 
 @Component({
   selector: 'app-deposit-form-body-active',

@@ -1,22 +1,22 @@
 import { DestroyRef, Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DEPOSIT_FORM_STATE, DepositFormState } from '../models/deposit-form-states';
-import { DepositFormSteps } from '../models/deposit-form-step-types';
-import { isDepositStepWithAction } from '../models/entities/abstracts/deposit-step-with-action';
-import { DEPOSIT_STEP_ORDER } from '../models/deposit-step-order';
-import { ExchangeDetailsStep } from '../models/entities/steps/step-exchange-details';
-import { InputAddressesStep } from '../models/entities/steps/step-input-addresses';
-import { TradeInfoStep } from '../models/entities/steps/step-trade-info';
-import { TradeStatusStep } from '../models/entities/steps/step-trade-status';
+import { DEPOSIT_FORM_STATE, DepositFormState } from '../../models/deposit-form-states';
+import { DepositFormSteps } from '../../models/deposit-form-step-types';
+import { isDepositStepWithAction } from '../../models/entities/abstracts/deposit-step-with-action';
+import { DEPOSIT_STEP_ORDER } from '../../models/deposit-step-order';
+import { ExchangeDetailsStep } from '../../models/entities/steps/step-exchange-details';
+import { InputAddressesStep } from '../../models/entities/steps/step-input-addresses';
+import { TradeInfoStep } from '../../models/entities/steps/step-trade-info';
+import { TradeStatusStep } from '../../models/entities/steps/step-trade-status';
 import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
-import { ActionBtnState, DepositFormDetails } from '../models/step-types';
-import { TokenAmount } from '@cryptorubic/core';
+import { ActionBtnState, DepositFormDetails } from '../../models/step-types';
+import { BlockchainsInfo, TokenAmount } from '@cryptorubic/core';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
-import { STEP_ACTION } from '../models/deposit-form-step-actions';
+import { STEP_ACTION } from '../../models/deposit-form-step-actions';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { isStepWithHooks } from '../models/entities/abstracts/interfaces';
+import { isStepWithHooks } from '../../models/entities/abstracts/interfaces';
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
@@ -24,6 +24,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { DepositStepParamsFactory } from '../factory/deposit-step-params-factory';
+import { DepositActionButtonsFactory } from '../factory/deposit-action-buttons-factory';
 
 @Injectable()
 export class DepositFormManager {
@@ -35,10 +37,6 @@ export class DepositFormManager {
 
   public get depositFormState(): DepositFormState {
     return this._depositFormState$.value;
-  }
-
-  public setDepositFormState(state: DepositFormState): void {
-    this._depositFormState$.next(state);
   }
 
   private readonly _depositFormSteps$: BehaviorSubject<DepositFormSteps> =
@@ -72,9 +70,22 @@ export class DepositFormManager {
       srcToken: new TokenAmount(swapsStateService.tradeState.trade.from),
       dstToken: new TokenAmount(swapsStateService.tradeState.trade.to)
     };
+    const srcChain = depositDetails.srcToken.blockchain;
+
+    const initialStepsParams = DepositStepParamsFactory.create(srcChain);
+    const actionButtonsMap = DepositActionButtonsFactory.create(srcChain);
+
     const steps: DepositFormSteps = [
-      new ExchangeDetailsStep(this._depositFormState$, this._depositFormSteps$, depositDetails),
+      new ExchangeDetailsStep(
+        initialStepsParams[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS],
+        actionButtonsMap[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS],
+        this._depositFormState$,
+        this._depositFormSteps$,
+        depositDetails
+      ),
       new InputAddressesStep(
+        initialStepsParams[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES],
+        actionButtonsMap[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES],
         this._depositFormState$,
         this._depositFormSteps$,
         swapsStateService,
@@ -82,9 +93,12 @@ export class DepositFormManager {
         modalService,
         tradePageService,
         headerStore,
-        targetNetworkAddressService
+        targetNetworkAddressService,
+        walletConnectorService
       ),
       new TradeInfoStep(
+        initialStepsParams[DEPOSIT_STEP_ORDER.TRADE_INFO],
+        actionButtonsMap[DEPOSIT_STEP_ORDER.TRADE_INFO],
         this._depositFormState$,
         this._depositFormSteps$,
         injector,
@@ -92,10 +106,17 @@ export class DepositFormManager {
         swapsControllerService,
         walletConnectorService,
         modalService,
-        errorsService
+        errorsService,
+        depositService,
+        tradePageService
       ),
-      new TradeStatusStep(this._depositFormState$, this._depositFormSteps$)
+      new TradeStatusStep(
+        initialStepsParams[DEPOSIT_STEP_ORDER.TRADE_STATUS],
+        this._depositFormState$,
+        this._depositFormSteps$
+      )
     ];
+
     this._depositFormSteps$.next(steps);
   }
 
@@ -140,6 +161,9 @@ export class DepositFormManager {
           tradeStatusStep.setOpened(false);
           break;
         case DEPOSIT_FORM_STATE.INPUT_ADDRESSES:
+          detailsStep.setActive(true);
+          detailsStep.setOpened(true);
+
           inputAddressesStep.setActive(true);
           inputAddressesStep.setOpened(true);
           inputAddressesStep.updateActionBtnState('confirm_addresses', {
@@ -156,7 +180,23 @@ export class DepositFormManager {
           tradeStatusStep.setOpened(false);
           break;
         case DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER:
-          // @TODO_3003 implement state
+          detailsStep.updateActionBtnState('select_manual_flow', { active: false });
+          detailsStep.updateActionBtnState('select_via_wallet', { active: false });
+
+          inputAddressesStep.setActive(true);
+          inputAddressesStep.setOpened(true);
+          inputAddressesStep.updateActionBtnState('confirm_addresses', {
+            invisible: true
+          });
+          inputAddressesStep.updateActionBtnState('change_addresses', {
+            invisible: true
+          });
+
+          tradeInfoStep.setActive(true);
+          tradeInfoStep.setOpened(true);
+
+          tradeStatusStep.setActive(false);
+          tradeStatusStep.setOpened(false);
           break;
         case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
           inputAddressesStep.setOpened(false);
@@ -195,11 +235,22 @@ export class DepositFormManager {
     });
   }
 
+  public setInitialFormState(): void {
+    const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
+    const srcChain = detailsStep.depositDetails.srcToken.blockchain;
+
+    if (BlockchainsInfo.isEvmBlockchainName(srcChain)) {
+      this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
+    } else {
+      this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
+    }
+  }
+
   public cleanup(): void {
     this.depositFormSteps.forEach(step => {
       if (isStepWithHooks(step)) step.onDestroy();
     });
-    this.setDepositFormState(DEPOSIT_FORM_STATE.IDLE);
+    this.setInitialFormState();
     this.depositService.cleanup();
   }
 

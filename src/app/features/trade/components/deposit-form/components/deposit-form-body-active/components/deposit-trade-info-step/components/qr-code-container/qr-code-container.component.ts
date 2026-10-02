@@ -9,7 +9,7 @@ import {
 import { QR_CODE_CONTAINER_ID } from '@app/features/trade/components/deposit-form/constants/qr-code-id';
 import { DEPOSIT_STEP_ORDER } from '@app/features/trade/components/deposit-form/models/deposit-step-order';
 import { QrCodesType } from '@app/features/trade/components/deposit-form/models/step-types';
-import { DepositFormManager } from '@app/features/trade/components/deposit-form/services/deposit-form-manager';
+import { DepositFormManager } from '@app/features/trade/components/deposit-form/services/injectable/deposit-form-manager';
 import { find, map, shareReplay, startWith } from 'rxjs';
 
 @Component({

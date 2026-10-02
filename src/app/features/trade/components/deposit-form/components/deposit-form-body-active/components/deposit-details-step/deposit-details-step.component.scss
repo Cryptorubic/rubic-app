@@ -27,7 +27,27 @@
 
     &-content {
       @include accordion-content();
-      @include flex(row, center, space-between);
+      @include flex(column, normal, normal);
+
+      &__assets {
+        @include flex(row, center, space-between);
+        width: 100%;
+      }
+
+      &__buttons {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        width: 100%;
+
+        app-rubic-button-new {
+          width: 100%;
+          max-width: 250px;
+        }
+
+        .or {
+          color: var(--tui-text-secondary);
+        }
+      }
     }
   }
 }
