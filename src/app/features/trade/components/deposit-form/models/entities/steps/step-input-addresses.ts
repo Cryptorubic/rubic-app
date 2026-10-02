@@ -11,7 +11,7 @@ import { DepositService } from '@app/features/trade/services/deposit/deposit.ser
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
+import { BlockchainsInfo, CHAIN_TYPE, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { InputAddressesStepAction } from '../../deposit-form-step-actions';
 import { IWithHooks } from '../abstracts/interfaces';
@@ -22,6 +22,7 @@ import { isRefundAddressRequired } from '@app/features/trade/services/refund-ser
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -42,6 +43,8 @@ export class InputAddressesStep
   private readonly _tradeState: SelectedTrade;
 
   constructor(
+    depositStepParams: DepositStepParams,
+    actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState>,
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
     swapsStateService: SwapsStateService,
@@ -49,19 +52,9 @@ export class InputAddressesStep
     private readonly modalService: ModalService,
     private readonly tradePageService: TradePageService,
     private readonly headerStore: HeaderStore,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
-    const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
-    const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
-      confirm_addresses: {
-        active: false,
-        text: 'Confirm'
-      },
-      change_addresses: {
-        active: false,
-        text: 'Change Addresses'
-      }
-    };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
 
     this._tradeState = { ...swapsStateService.tradeState };
@@ -77,7 +70,15 @@ export class InputAddressesStep
 
   public onInit(): void {
     this.initValidators();
-    this.inputsForm.patchValue({ receiverAddr: this.targetNetworkAddressService.address });
+
+    const srcChain = this._tradeState.trade.from.blockchain;
+    const srcChainType = BlockchainsInfo.getChainType(srcChain);
+    const receiverAddr =
+      srcChainType === CHAIN_TYPE.EVM
+        ? this.targetNetworkAddressService.address || this.walletConnectorService.address
+        : this.targetNetworkAddressService.address;
+
+    this.inputsForm.patchValue({ receiverAddr });
 
     /**
      * hack to update button state after async validation of this.targetNetworkAddressService.address
@@ -203,7 +204,6 @@ export class InputAddressesStep
     if (this.isRefundAddressRequired()) {
       this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
     }
-    this.inputsForm.controls.refundAddr.hasValidator(Validators.required);
     this.inputsForm.updateValueAndValidity();
   }
 }

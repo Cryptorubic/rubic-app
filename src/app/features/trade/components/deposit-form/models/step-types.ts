@@ -11,19 +11,32 @@ export interface InputAddressesStepForm {
   refundAddr: FormControl<string>;
 }
 
-export interface ActionBtnState {
-  text: string;
-  active: boolean;
-  loading?: boolean;
-}
+export type ActionBtnState =
+  | {
+      text: string;
+      active: boolean;
+      invisible: false;
+      loading?: boolean;
+    }
+  | {
+      invisible: true;
+    };
 
 export interface DepositStepParams {
   active: boolean;
   loading: boolean;
   opened: boolean;
+  title: string;
 }
 
 export interface QrCodesType {
   receiverOnly: HTMLCanvasElement;
   receiverWithAmount: HTMLCanvasElement | null;
 }
+
+export const DEPOSIT_FLOW = {
+  TX: 'TX',
+  MANUAL: 'MANUAL'
+} as const;
+
+export type DepositFlow = (typeof DEPOSIT_FLOW)[keyof typeof DEPOSIT_FLOW];

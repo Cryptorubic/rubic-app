@@ -22,6 +22,10 @@ import { CHAIN_SUPPORTED_WALLETS } from '@app/core/services/wallets/constants/ch
 import { QrCodeGenerator } from '../../../utils/qr-code-generator';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { IWithHooks } from '../abstracts/interfaces';
+import { TransferTrade } from '../../deposit-form-info';
+import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
+import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
+import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 
 export class TradeInfoStep
   extends DepositStepWithAction<TradeInfoStepAction>
@@ -43,6 +47,8 @@ export class TradeInfoStep
   private readonly _subs: Subscription[] = [];
 
   constructor(
+    depositStepParams: DepositStepParams,
+    actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState>,
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
     private readonly injector: Injector,
@@ -50,24 +56,10 @@ export class TradeInfoStep
     private readonly swapsControllerService: SwapsControllerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly depositService: DepositService,
+    private readonly tradePageService: TradePageService
   ) {
-    const depositStepParams: DepositStepParams = { active: false, loading: false, opened: false };
-
-    const srcChain = swapsStateService.tradeState.trade.from.blockchain;
-    let sendViaWalletBtnText: string = '';
-    if (!walletConnectorService.network) {
-      sendViaWalletBtnText = 'Connect Wallet & Send';
-    } else if (srcChain !== walletConnectorService.network) {
-      sendViaWalletBtnText = 'Change Wallet & Send';
-    } else {
-      sendViaWalletBtnText = 'Send';
-    }
-
-    const actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState> = {
-      confirm_deposit: { active: true, text: 'Deposit sent' },
-      send_via_wallet: { active: true, text: sendViaWalletBtnText }
-    };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
 
     this._tradeState = { ...swapsStateService.tradeState };
@@ -152,10 +144,10 @@ export class TradeInfoStep
       return;
     }
 
-    this.updateActionBtnState('confirm_deposit', { active: false });
-    this.updateActionBtnState('send_via_wallet', { active: false, loading: true });
     inputAddrStep.setActive(false);
     inputAddrStep.setOpened(false);
+
+    this.updateActionBtnState('send_via_wallet', { active: false, loading: true });
     this.triggerStepsUpdate();
 
     if (
@@ -174,7 +166,6 @@ export class TradeInfoStep
           throw new WalletError();
         }
       } catch {
-        this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
         inputAddrStep.setActive(true);
         this.triggerStepsUpdate();
@@ -186,7 +177,6 @@ export class TradeInfoStep
     if (this.walletConnectorService.network !== srcChain) {
       const switched = await this.walletConnectorService.switchChain(srcChain);
       if (!switched) {
-        this.updateActionBtnState('confirm_deposit', { active: true });
         this.updateActionBtnState('send_via_wallet', {
           active: true,
           text: 'Change Wallet & Send'
@@ -199,33 +189,51 @@ export class TradeInfoStep
     const receiverAddress = inputAddrStep.inputsForm.controls.receiverAddr.value.trim();
     const refundAddress = inputAddrStep.inputsForm.controls.refundAddr.value.trim();
 
-    await this.swapsControllerService.swap(
-      this._tradeState,
-      true,
-      {
-        onSwap: () => {
-          tradeStatusStep.setActive(true);
-          tradeStatusStep.setOpened(true);
-          this.setOpened(false);
+    try {
+      const selectedTrade = this._tradeState.trade as TransferTrade;
+      const paymentInfo = await selectedTrade.getTransferTrade(receiverAddress, refundAddress);
 
-          this.updateActionBtnState('send_via_wallet', { loading: false });
+      await this.depositService.updateTrade(paymentInfo, receiverAddress);
 
-          this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
-          this.triggerStepsUpdate();
+      await this.swapsControllerService.swap(
+        this._tradeState,
+        true,
+        {
+          onSwap: () => {
+            tradeStatusStep.setActive(true);
+            tradeStatusStep.setOpened(true);
+
+            this.setOpened(false);
+            this.updateActionBtnState('send_via_wallet', { loading: false });
+
+            this.depositService.setupUpdate();
+            this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
+            this.triggerStepsUpdate();
+          },
+          onError: () => {
+            inputAddrStep.setActive(true);
+
+            this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
+
+            this.triggerStepsUpdate();
+          }
         },
-        onError: () => {
-          this.updateActionBtnState('confirm_deposit', { active: true });
-          this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
-          inputAddrStep.setActive(true);
-          this.triggerStepsUpdate();
+        {
+          receiverAddress,
+          refundAddress,
+          useCacheData: true, // needs to reuse same deposit address from previous /swap response
+          skipAmountCheck: false
         }
-      },
-      {
-        receiverAddress,
-        refundAddress,
-        useCacheData: true, // needs to reuse same deposit address from previous /swap response
-        skipAmountCheck: false
+      );
+    } catch {
+      const backToForm = await this.modalService.openDepositTradeRateChangedModal(
+        this._tradeState.tradeType as CrossChainTradeType
+      );
+      if (backToForm) {
+        this.tradePageService.setState('form');
+      } else {
+        this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
       }
-    );
+    }
   }
 }

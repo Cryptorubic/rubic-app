@@ -1,6 +1,9 @@
 @let step = step$ | async;
 @let fromAsset = fromAsset$ | async;
 @let toAsset = toAsset$ | async;
+@let isStepHighlighted = isStepHighlighted$ | async;
+@let viaWalletBtnState = getViaWalletBtnState();
+@let manualBtnState = getManualBtnState();
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -10,7 +13,7 @@
     [size]="'s'"
     [(open)]="step.opened"
   >
-    <span class="step-counter">1</span>
+    <span class="step-counter" [class.step-counter__active]="isStepHighlighted">1</span>
     <span class="step-title">SWAP DETAILS</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>
@@ -20,17 +23,51 @@
 
     <ng-template tuiAccordionItemContent>
       <div class="step-content">
-        <app-asset-details
-          [asset]="fromAsset"
-          [tokenAmount]="step.depositDetails.srcToken.stringTokenAmount"
-        ></app-asset-details>
+        <div class="step-content__assets">
+          <app-asset-details
+            [asset]="fromAsset"
+            [tokenAmount]="step.depositDetails.srcToken.stringTokenAmount"
+          ></app-asset-details>
 
-        <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
+          <img src="assets/images/icons/arrow/arrow-right.png" width="16" height="16" />
 
-        <app-asset-details
-          [asset]="toAsset"
-          [tokenAmount]="step.depositDetails.dstToken.stringTokenAmount"
-        ></app-asset-details>
+          <app-asset-details
+            [asset]="toAsset"
+            [tokenAmount]="step.depositDetails.dstToken.stringTokenAmount"
+          ></app-asset-details>
+        </div>
+
+        @if (!viaWalletBtnState.invisible || !manualBtnState.invisible) {
+          <div class="step-content__buttons">
+            @if (!viaWalletBtnState.invisible) {
+              <app-rubic-button-new
+                appearance="primary"
+                size="m"
+                [disabled]="!viaWalletBtnState.active"
+                [loading]="viaWalletBtnState.loading"
+                (onClick)="selectViaWalletFlow()"
+              >
+                {{ viaWalletBtnState.text }}
+              </app-rubic-button-new>
+            }
+
+            @if (!viaWalletBtnState.invisible && !manualBtnState.invisible) {
+              <span class="or">or</span>
+            }
+
+            @if (!manualBtnState.invisible) {
+              <app-rubic-button-new
+                appearance="primary"
+                size="m"
+                [disabled]="!manualBtnState.active"
+                [loading]="manualBtnState.loading"
+                (onClick)="selectManualFlow()"
+              >
+                {{ manualBtnState.text }}
+              </app-rubic-button-new>
+            }
+          </div>
+        }
       </div>
     </ng-template>
   </tui-accordion-item>

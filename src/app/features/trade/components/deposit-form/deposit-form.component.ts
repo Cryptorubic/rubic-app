@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
-import { DepositFormManager } from './services/deposit-form-manager';
-import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
+import { DepositFormManager } from './services/injectable/deposit-form-manager';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -70,6 +69,6 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   }
 
   public handleTradeExpired(): void {
-    this.depositFormManager.setDepositFormState(DEPOSIT_FORM_STATE.IDLE);
+    this.depositFormManager.setInitialFormState();
   }
 }

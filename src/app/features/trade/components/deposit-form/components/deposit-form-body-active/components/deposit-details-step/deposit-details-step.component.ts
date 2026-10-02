@@ -2,9 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { first, map, startWith, switchMap } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { DepositFormManager } from '../../../../services/deposit-form-manager';
+import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
+import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
+import { ActionBtnState } from '../../../../models/step-types';
 
 @Component({
   selector: 'app-deposit-details-step',
@@ -16,6 +18,10 @@ import { getTokenAsset } from '../../../../utils/get-token-asset';
 export class DepositDetailsStepComponent {
   public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
     map(steps => steps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS])
+  );
+
+  public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
+    map(state => state === DEPOSIT_FORM_STATE.IDLE)
   );
 
   public readonly details$ = this.step$.pipe(
@@ -59,4 +65,26 @@ export class DepositDetailsStepComponent {
     private readonly swapsFormService: SwapsFormService,
     private readonly depositFormManager: DepositFormManager
   ) {}
+
+  public getViaWalletBtnState(): ActionBtnState {
+    return this.depositFormManager.getActionBtnState(
+      DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS,
+      'select_via_wallet'
+    );
+  }
+
+  public getManualBtnState(): ActionBtnState {
+    return this.depositFormManager.getActionBtnState(
+      DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS,
+      'select_manual_flow'
+    );
+  }
+
+  public selectViaWalletFlow(): void {
+    this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS, 'select_via_wallet');
+  }
+
+  public selectManualFlow(): void {
+    this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS, 'select_manual_flow');
+  }
 }
