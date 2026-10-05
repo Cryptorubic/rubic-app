@@ -1,3 +1,26 @@
-@if (title(); as title) {
-  <p class="rewards__title">{{ title }}</p>
+@if (!isWalletConnected()) {
+  <section class="rewards">
+    <h1 class="rewards__title">Turn Your Swaps Into Free Subscriptions!</h1>
+    <p class="rewards__subtitle">Your first private swap earns 2x points</p>
+
+    <ul class="rewards__cards">
+      @for (card of cards(); track $index) {
+        <li class="rewards__card">
+          <span class="rewards__card-title">{{ card.title }}</span>
+          <img class="rewards__card-image" [src]="card.image" [alt]="card.title" />
+        </li>
+      }
+    </ul>
+
+    <button
+      class="rewards__connect"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="connectWallet()"
+    >
+      Connect Wallet
+    </button>
+  </section>
 }
