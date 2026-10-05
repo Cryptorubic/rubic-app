@@ -13,58 +13,31 @@
       [noFrameLink]="noFrameLink"
     ></app-logo>
 
-    <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
+    <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe" #menuToggler>
       <app-rubic-menu
         [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
         [crossChainActive]="
           rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
         "
         (swapClick)="navigateToSwaps()"
+        (onClose)="menuToggler.closeMenu()"
       ></app-rubic-menu>
     </app-rubic-menu-toggler>
 
-    <button
-      *ngIf="!useLargeIframe && !isMobile"
-      class="swap-button"
-      routerLink="/"
-      routerLinkActive="active-router-link"
-      [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
-      (click)="onHeaderModeSwitch('regular')"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-    >
-      {{ !isTablet ? 'Regular Mode' : 'Regular' }}
-    </button>
-
-    <button
-      routerLink="/privacy"
-      routerLinkActive="active-router-link"
-      (click)="onHeaderModeSwitch('private')"
-      class="private-mode-button"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-    >
-      <div class="private-mode-button__content">
-        <span>{{ !isTablet ? 'Private Mode' : 'Private' }}</span>
-        <span class="icon" inlineSVG="assets/images/private-swaps/common/lock-white.svg"></span>
-      </div>
-    </button>
-
-    <button
-      *ngIf="!useLargeIframe && !isMobile"
-      class="testnets-button"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-      (click)="navigateToTestnets()"
-    >
-      Testnets
-    </button>
+    @if (!useLargeIframe) {
+      <button
+        class="rewards-button"
+        routerLink="/rewards"
+        routerLinkActive="active-router-link"
+        [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+        tuiButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        Rewards
+      </button>
+    }
   </div>
 
   <div class="rubic-header__right">

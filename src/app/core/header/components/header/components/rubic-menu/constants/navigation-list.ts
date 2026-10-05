@@ -7,6 +7,21 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
+    translateKey: 'Regular Mode',
+    type: 'internal',
+    link: ROUTE_PATH.NONE
+  },
+  {
+    translateKey: 'Private Mode',
+    type: 'internal',
+    link: ROUTE_PATH.PRIVACY
+  },
+  {
+    translateKey: 'Testnets',
+    type: 'external',
+    link: EXTERNAL_LINKS.TESTNET_APP
+  },
+  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,

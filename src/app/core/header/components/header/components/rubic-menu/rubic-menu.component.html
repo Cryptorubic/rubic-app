@@ -5,36 +5,43 @@
     <tui-data-list class="data-list" size="m" role="menu" [emptyContent]="empty">
       <tui-opt-group>
         <ng-container *ngFor="let item of navigationList">
-          <button
-            tuiButton
-            appearance="secondary"
-            type="button"
-            size="m"
-            *ngIf="item.type === 'internal'"
-            class="data-list__element"
-            (click)="handleButtonClick(item)"
-          >
-            <div class="data-list__element-container">
-              <div class="image" [inlineSVG]="item.imagePath"></div>
-              {{ item.translateKey | translate }}
-            </div>
-          </button>
+          @if (item.type === 'internal') {
+            <button
+              tuiButton
+              appearance="secondary"
+              type="button"
+              size="m"
+              class="data-list__element"
+              (click)="handleButtonClick(item)"
+            >
+              <div class="data-list__element-container">
+                @if (item.imagePath) {
+                  <div class="image" [inlineSVG]="item.imagePath"></div>
+                }
+                {{ item.translateKey | translate }}
+              </div>
+            </button>
+          }
 
-          <a
-            tuiButton
-            *ngIf="item.type === 'external'"
-            appearance="secondary"
-            class="data-list__element"
-            type="button"
-            size="m"
-            [href]="item.link"
-            target="_blank"
-          >
-            <div class="data-list__element-container">
-              <div class="image" [inlineSVG]="item.imagePath"></div>
-              {{ item.translateKey | translate }}
-            </div>
-          </a>
+          @if (item.type === 'external') {
+            <a
+              tuiButton
+              appearance="secondary"
+              class="data-list__element"
+              type="button"
+              size="m"
+              [href]="item.link"
+              target="_blank"
+              (click)="handleExternalClick(item)"
+            >
+              <div class="data-list__element-container">
+                @if (item.imagePath) {
+                  <div class="image" [inlineSVG]="item.imagePath"></div>
+                }
+                {{ item.translateKey | translate }}
+              </div>
+            </a>
+          }
         </ng-container>
       </tui-opt-group>
     </tui-data-list>
@@ -65,9 +72,9 @@
                 [href]="menu.link"
                 target="_blank"
                 rel="noopener noreferrer"
-                (click)="handleSwitchMode(menu)"
+                (click)="handleExternalClick(menu)"
               >
-                <button class="data-list__option" (click)="handleButtonClick()">
+                <button class="data-list__option">
                   {{ menu.translateKey | translate }}
                 </button>
               </a>

@@ -25,18 +25,6 @@
   }
 }
 
-.private-mode-button {
-  &__content {
-    @include flex(row, center, center);
-    gap: 8px;
-
-    .icon {
-      width: 20px;
-      height: 20px;
-    }
-  }
-}
-
 .active-router-link {
   color: black !important;
   background: var(--tui-background-accent-1);
@@ -48,12 +36,6 @@
   }
 }
 
-/* .testnets-button,
-.birthday-button,
-.private-swaps-button {
-  margin-right: auto;
-} */
-
 .image {
   display: flex;
   align-items: center;
@@ -62,25 +44,11 @@
   height: 100%;
 }
 
-@include b($laptop) {
-  .testnets-button {
-    display: none;
-  }
-}
-
 @include b($tablet) {
   .rubic-header {
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  .swap-button,
-  .private-mode-button {
-    height: 40px !important;
-
-    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-  }
-
-  app-rubic-menu-toggler,
   app-language-selector,
   app-history-button {
     display: none;
@@ -94,24 +62,16 @@
   }
 }
 
-.large-iframe-header {
-  justify-content: space-between;
+@include b($mobile-md) {
+  app-rubic-menu-toggler {
+    display: none;
+  }
+  
+  .rewards-button {
+    font-size: 12px !important;
+  }
 }
 
-@include b($mobile-sm-middle) {
-  .swap-button,
-  .private-mode-button {
-    font-size: 12px !important;
-
-    .icon {
-      position: relative;
-      top: 2px;
-
-      ::ng-deep {
-        svg {
-          height: 20px;
-        }
-      }
-    }
-  }
+.large-iframe-header {
+  justify-content: space-between;
 }

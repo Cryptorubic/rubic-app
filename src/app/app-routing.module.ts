@@ -14,6 +14,10 @@ const routes: Routes = [
     loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
   },
   {
+    path: ROUTE_PATH.REWARDS,
+    loadChildren: () => import('./features/rewards/rewards.routes').then(m => m.REWARDS_ROUTES)
+  },
+  {
     path: ROUTE_PATH.NONE,
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
