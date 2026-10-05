@@ -24,14 +24,7 @@ export abstract class DepositStepWithAction<T extends string = string> extends D
   public abstract doAction(action: T): Promise<void>;
 
   public updateActionBtnState(btnName: T, state: Partial<ActionBtnState>): void {
-    if (state.invisible) {
-      this._actionButtonsMap[btnName] = { invisible: true };
-    } else {
-      this._actionButtonsMap[btnName] = {
-        ...this._actionButtonsMap[btnName],
-        ...(state as ActionBtnState)
-      };
-    }
+    this._actionButtonsMap[btnName] = { ...this._actionButtonsMap[btnName], ...state };
   }
 }
 

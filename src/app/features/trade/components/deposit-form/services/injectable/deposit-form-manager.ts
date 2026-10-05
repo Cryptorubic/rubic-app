@@ -10,7 +10,7 @@ import { TradeInfoStep } from '../../models/entities/steps/step-trade-info';
 import { TradeStatusStep } from '../../models/entities/steps/step-trade-status';
 import { SwapsStateService } from '@app/features/trade/services/swaps-state/swaps-state.service';
 import { ActionBtnState, DepositFormDetails } from '../../models/step-types';
-import { BlockchainsInfo, TokenAmount } from '@cryptorubic/core';
+import { TokenAmount } from '@cryptorubic/core';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
@@ -26,6 +26,7 @@ import { TargetNetworkAddressService } from '@app/features/trade/services/target
 import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { DepositStepParamsFactory } from '../factory/deposit-step-params-factory';
 import { DepositActionButtonsFactory } from '../factory/deposit-action-buttons-factory';
+import { pairSupportsDepositFlowViaTxSign } from '../../utils/pair-supports-tx-flow';
 
 @Injectable()
 export class DepositFormManager {
@@ -81,7 +82,11 @@ export class DepositFormManager {
         actionButtonsMap[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS],
         this._depositFormState$,
         this._depositFormSteps$,
-        depositDetails
+        depositDetails,
+        injector,
+        errorsService,
+        walletConnectorService,
+        modalService
       ),
       new InputAddressesStep(
         initialStepsParams[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES],
@@ -101,7 +106,6 @@ export class DepositFormManager {
         actionButtonsMap[DEPOSIT_STEP_ORDER.TRADE_INFO],
         this._depositFormState$,
         this._depositFormSteps$,
-        injector,
         swapsStateService,
         swapsControllerService,
         walletConnectorService,
@@ -145,14 +149,8 @@ export class DepositFormManager {
           detailsStep.setActive(true);
           detailsStep.setOpened(true);
 
-          inputAddressesStep.setActive(true);
-          inputAddressesStep.setOpened(true);
-          inputAddressesStep.updateActionBtnState('confirm_addresses', {
-            active: inputAddressesStep.inputsForm.valid
-          });
-          inputAddressesStep.updateActionBtnState('change_addresses', {
-            active: true
-          });
+          inputAddressesStep.setActive(false);
+          inputAddressesStep.setOpened(false);
 
           tradeInfoStep.setActive(false);
           tradeInfoStep.setOpened(false);
@@ -167,9 +165,11 @@ export class DepositFormManager {
           inputAddressesStep.setActive(true);
           inputAddressesStep.setOpened(true);
           inputAddressesStep.updateActionBtnState('confirm_addresses', {
+            invisible: false,
             active: inputAddressesStep.inputsForm.valid
           });
           inputAddressesStep.updateActionBtnState('change_addresses', {
+            invisible: false,
             active: true
           });
 
@@ -205,8 +205,15 @@ export class DepositFormManager {
 
           tradeInfoStep.setActive(true);
           tradeInfoStep.setOpened(true);
-          tradeInfoStep.updateActionBtnState('confirm_deposit', { active: true });
-          tradeInfoStep.updateActionBtnState('send_via_wallet', { active: true, loading: false });
+          tradeInfoStep.updateActionBtnState('confirm_deposit', {
+            invisible: false,
+            active: true
+          });
+          tradeInfoStep.updateActionBtnState('send_via_wallet', {
+            invisible: false,
+            active: true,
+            loading: false
+          });
 
           tradeStatusStep.setActive(false);
           tradeStatusStep.setOpened(false);
@@ -239,7 +246,7 @@ export class DepositFormManager {
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
     const srcChain = detailsStep.depositDetails.srcToken.blockchain;
 
-    if (BlockchainsInfo.isEvmBlockchainName(srcChain)) {
+    if (pairSupportsDepositFlowViaTxSign(srcChain)) {
       this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
     } else {
       this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);

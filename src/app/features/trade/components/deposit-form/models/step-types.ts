@@ -11,16 +11,12 @@ export interface InputAddressesStepForm {
   refundAddr: FormControl<string>;
 }
 
-export type ActionBtnState =
-  | {
-      text: string;
-      active: boolean;
-      invisible: false;
-      loading?: boolean;
-    }
-  | {
-      invisible: true;
-    };
+export interface ActionBtnState {
+  text: string;
+  active: boolean;
+  invisible: boolean;
+  loading?: boolean;
+}
 
 export interface DepositStepParams {
   active: boolean;

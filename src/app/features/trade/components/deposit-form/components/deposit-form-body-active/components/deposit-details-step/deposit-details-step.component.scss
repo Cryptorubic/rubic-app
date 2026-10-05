@@ -28,6 +28,7 @@
     &-content {
       @include accordion-content();
       @include flex(column, normal, normal);
+      gap: 12px;
 
       &__assets {
         @include flex(row, center, space-between);
@@ -41,11 +42,17 @@
 
         app-rubic-button-new {
           width: 100%;
-          max-width: 250px;
+          max-width: 200px;
+          max-height: 40px;
+
+          button {
+            max-height: 40px;
+          }
         }
 
         .or {
           color: var(--tui-text-secondary);
+          font-weight: 600;
         }
       }
     }

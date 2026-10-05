@@ -4,6 +4,8 @@
 @let isMobile = isMobile$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
 @let depositFlow = depositFlow$ | async;
+@let confirmBtnState = confirmBtnState$ | async;
+@let sendBtnState = sendBtnState$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -22,7 +24,7 @@
     }
 
     <ng-template tuiAccordionItemContent>
-      @if (depositFlow === 'MANUAL') {
+      @if (depositFlow === 'MANUAL' && depositTrade) {
         <div class="step-content">
           <div class="step-content__main">
             <div class="step-content__info">
@@ -84,7 +86,6 @@
           </div>
 
           <div class="step-content__footer">
-            @let confirmBtnState = getConfirmBtnState();
             @if (!confirmBtnState.invisible) {
               <app-rubic-button-new
                 appearance="primary"
@@ -99,7 +100,6 @@
         </div>
       } @else {
         <div class="step-content">
-          @let sendBtnState = getSendBtnState();
           @if (!sendBtnState.invisible) {
             <app-rubic-button-new
               appearance="primary"

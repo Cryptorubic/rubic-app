@@ -96,6 +96,8 @@ export class InputAddressesStep
   }
 
   private validateInputs(): void {
+    if (this.inputsForm.disabled) return;
+
     const receiverCtrl = this.inputsForm.controls.receiverAddr;
     const refundCtrl = this.inputsForm.controls.refundAddr;
 
@@ -141,12 +143,10 @@ export class InputAddressesStep
     const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
-    this.setOpened(false);
     tradeInfoStep.setLoading(true);
     this.updateActionBtnState('confirm_addresses', { active: false });
-    for (const ctrl in this.inputsForm.controls) {
-      this.inputsForm.get(ctrl).disable();
-    }
+    this.inputsForm.disable();
+
     this.triggerStepsUpdate();
 
     try {
@@ -185,7 +185,7 @@ export class InputAddressesStep
       this.inputsForm.get(ctrl).enable();
     }
     this.depositService.cleanup();
-    this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
+    this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
   }
 
   public isRefundAddressRequired(): boolean {

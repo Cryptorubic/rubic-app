@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
 import { first, map, Observable, share, switchMap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
-import { ActionBtnState, DepositFlow } from '../../../../models/step-types';
+import { DepositFlow } from '../../../../models/step-types';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
@@ -59,6 +59,18 @@ export class DepositTradeInfoStepComponent {
       map(detailsStep => detailsStep.depositFlow)
     );
 
+  public readonly confirmBtnState$ = this.step$.pipe(
+    map(() =>
+      this.depositFormManager.getActionBtnState(DEPOSIT_STEP_ORDER.TRADE_INFO, 'confirm_deposit')
+    )
+  );
+
+  public readonly sendBtnState$ = this.step$.pipe(
+    map(() =>
+      this.depositFormManager.getActionBtnState(DEPOSIT_STEP_ORDER.TRADE_INFO, 'send_via_wallet')
+    )
+  );
+
   constructor(
     private readonly depositFormManager: DepositFormManager,
     private readonly swapsFormService: SwapsFormService,
@@ -76,19 +88,5 @@ export class DepositTradeInfoStepComponent {
 
   public connectWalletAndSend(): void {
     this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.TRADE_INFO, 'send_via_wallet');
-  }
-
-  public getSendBtnState(): ActionBtnState {
-    return this.depositFormManager.getActionBtnState(
-      DEPOSIT_STEP_ORDER.TRADE_INFO,
-      'send_via_wallet'
-    );
-  }
-
-  public getConfirmBtnState(): ActionBtnState {
-    return this.depositFormManager.getActionBtnState(
-      DEPOSIT_STEP_ORDER.TRADE_INFO,
-      'confirm_deposit'
-    );
   }
 }

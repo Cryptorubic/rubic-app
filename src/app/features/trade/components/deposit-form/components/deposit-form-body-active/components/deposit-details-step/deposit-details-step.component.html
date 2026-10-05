@@ -2,8 +2,8 @@
 @let fromAsset = fromAsset$ | async;
 @let toAsset = toAsset$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
-@let viaWalletBtnState = getViaWalletBtnState();
-@let manualBtnState = getManualBtnState();
+@let viaWalletBtnState = viaWalletBtnState$ | async;
+@let manualBtnState = manualBtnState$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item

@@ -1,7 +1,7 @@
 @let step = step$ | async;
 @let showRefundInput = showRefundInput$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
-@let actionBtnState = getActionBtnState();
+@let actionBtnState = actionBtnState$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item

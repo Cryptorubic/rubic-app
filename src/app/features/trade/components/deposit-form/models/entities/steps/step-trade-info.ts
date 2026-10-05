@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, firstValueFrom, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import {
   DEPOSIT_STEP_NAME,
   DepositFormSteps,
@@ -13,12 +13,9 @@ import { SwapsStateService } from '@app/features/trade/services/swaps-state/swap
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { Injector } from '@angular/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
-import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { BlockchainsInfo, TokenAmount } from '@cryptorubic/core';
 import { NotSupportedNetworkForDepositError } from '@app/core/errors/models/provider/not-supported-network-for-deposit-error';
-import { CHAIN_SUPPORTED_WALLETS } from '@app/core/services/wallets/constants/chaintype-supported-wallets';
 import { QrCodeGenerator } from '../../../utils/qr-code-generator';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { IWithHooks } from '../abstracts/interfaces';
@@ -26,6 +23,7 @@ import { TransferTrade } from '../../deposit-form-info';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
 import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
+import { pairSupportsDepositFlowViaTxSign } from '../../../utils/pair-supports-tx-flow';
 
 export class TradeInfoStep
   extends DepositStepWithAction<TradeInfoStepAction>
@@ -51,7 +49,6 @@ export class TradeInfoStep
     actionButtonsMap: Record<TradeInfoStepAction, ActionBtnState>,
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
-    private readonly injector: Injector,
     swapsStateService: SwapsStateService,
     private readonly swapsControllerService: SwapsControllerService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -130,16 +127,16 @@ export class TradeInfoStep
 
     this.setOpened(false);
     this.updateActionBtnState('confirm_deposit', { active: false });
+
     this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
   }
 
   private async sendTransferViaWallet(): Promise<void> {
     const srcChain = this._tradeState.trade.from.blockchain;
-    const srcChainType = BlockchainsInfo.getChainType(srcChain);
     const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
     const tradeStatusStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_STATUS];
 
-    if (!BlockchainsInfo.isEvmBlockchainName(srcChain)) {
+    if (!pairSupportsDepositFlowViaTxSign(srcChain)) {
       this.errorsService.catch(new NotSupportedNetworkForDepositError(srcChain));
       return;
     }
@@ -151,43 +148,26 @@ export class TradeInfoStep
     this.triggerStepsUpdate();
 
     if (
-      !this.walletConnectorService.address ||
-      this.walletConnectorService.chainType !== srcChainType
+      this.walletConnectorService.network !== srcChain &&
+      BlockchainsInfo.isEvmBlockchainName(srcChain)
     ) {
-      try {
-        await firstValueFrom(
-          this.modalService.openWalletModal(this.injector, {
-            direction: 'row',
-            providers: CHAIN_SUPPORTED_WALLETS[srcChainType]
-          })
-        );
-
-        if (this.walletConnectorService.chainType !== srcChainType) {
-          throw new WalletError();
-        }
-      } catch {
-        this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
-        inputAddrStep.setActive(true);
-        this.triggerStepsUpdate();
-        this.errorsService.catch(new WalletError());
-        return;
-      }
-    }
-
-    if (this.walletConnectorService.network !== srcChain) {
       const switched = await this.walletConnectorService.switchChain(srcChain);
       if (!switched) {
         this.updateActionBtnState('send_via_wallet', {
           active: true,
-          text: 'Change Wallet & Send'
+          text: 'Change network & Send'
         });
         this.triggerStepsUpdate();
         return;
       }
     }
 
-    const receiverAddress = inputAddrStep.inputsForm.controls.receiverAddr.value.trim();
-    const refundAddress = inputAddrStep.inputsForm.controls.refundAddr.value.trim();
+    const receiverAddress =
+      inputAddrStep.inputsForm.controls.receiverAddr.value.trim() ||
+      this.walletConnectorService.address;
+    const refundAddress =
+      inputAddrStep.inputsForm.controls.refundAddr.value.trim() ||
+      this.walletConnectorService.address;
 
     try {
       const selectedTrade = this._tradeState.trade as TransferTrade;
@@ -204,14 +184,16 @@ export class TradeInfoStep
             tradeStatusStep.setOpened(true);
 
             this.setOpened(false);
-            this.updateActionBtnState('send_via_wallet', { loading: false });
+            this.updateActionBtnState('send_via_wallet', { active: false, loading: false });
 
             this.depositService.setupUpdate();
             this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);
+
             this.triggerStepsUpdate();
           },
           onError: () => {
             inputAddrStep.setActive(true);
+            inputAddrStep.setOpened(true);
 
             this.updateActionBtnState('send_via_wallet', { active: true, loading: false });
 
