@@ -1,5 +1,5 @@
 import { DestroyRef, Inject, Injectable, Injector } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../models/deposit-form-states';
 import { DepositFormSteps } from '../../models/deposit-form-step-types';
 import { isDepositStepWithAction } from '../../models/entities/abstracts/deposit-step-with-action';
@@ -30,11 +30,9 @@ import { pairSupportsDepositFlowViaTxSign } from '../../utils/pair-supports-tx-f
 
 @Injectable()
 export class DepositFormManager {
-  private readonly _depositFormState$ = new BehaviorSubject<DepositFormState>(
-    DEPOSIT_FORM_STATE.IDLE
-  );
+  private readonly _depositFormState$: BehaviorSubject<DepositFormState>;
 
-  public readonly depositFormState$ = this._depositFormState$.asObservable();
+  public readonly depositFormState$: Observable<DepositFormState>;
 
   public get depositFormState(): DepositFormState {
     return this._depositFormState$.value;
@@ -72,6 +70,13 @@ export class DepositFormManager {
       dstToken: new TokenAmount(swapsStateService.tradeState.trade.to)
     };
     const srcChain = depositDetails.srcToken.blockchain;
+
+    this._depositFormState$ = new BehaviorSubject<DepositFormState>(
+      pairSupportsDepositFlowViaTxSign(srcChain)
+        ? DEPOSIT_FORM_STATE.IDLE
+        : DEPOSIT_FORM_STATE.INPUT_ADDRESSES
+    );
+    this.depositFormState$ = this._depositFormState$.asObservable();
 
     const initialStepsParams = DepositStepParamsFactory.create(srcChain);
     const actionButtonsMap = DepositActionButtonsFactory.create(srcChain);

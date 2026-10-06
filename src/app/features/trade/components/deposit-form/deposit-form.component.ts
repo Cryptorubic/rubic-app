@@ -6,12 +6,13 @@ import {
   inject,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject, map, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/injectable/deposit-form-manager';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
 
 @Component({
   selector: 'app-deposit-form',
@@ -32,6 +33,13 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   public readonly formTitle$ = this.depositFormState$.pipe(
     map(depositFormState => DEPOSIT_FORM_TITLE[depositFormState]),
     startWith(DEPOSIT_FORM_TITLE.IDLE)
+  );
+
+  public readonly showTradeId$ = this.depositFormState$.pipe(
+    combineLatestWith(this.tradeId$),
+    map(([depositFormState, tradeId]) => {
+      return !!tradeId && depositFormState !== DEPOSIT_FORM_STATE.COMPLETED;
+    })
   );
 
   private readonly _durationMs$ = new BehaviorSubject<number>(0);

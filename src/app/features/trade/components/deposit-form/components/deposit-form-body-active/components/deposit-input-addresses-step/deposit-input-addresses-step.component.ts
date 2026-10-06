@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
-import { map, share, startWith, switchMap } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { BlockchainName } from '@cryptorubic/core';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
@@ -16,8 +16,7 @@ import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 })
 export class DepositInputAddressesStepComponent {
   public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
-    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES]),
-    share()
+    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES])
   );
 
   public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(

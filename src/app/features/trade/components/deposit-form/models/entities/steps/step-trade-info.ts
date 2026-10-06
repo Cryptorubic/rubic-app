@@ -63,13 +63,23 @@ export class TradeInfoStep
   }
 
   public onInit(): void {
+    const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
+
+    /**
+     * hack to update button state after async validation of this.targetNetworkAddressService.address
+     */
+    setTimeout(() => this.validateInputs(), 10);
+    const formStatusSub = inputAddrStep.inputsForm.statusChanges.subscribe(() => {
+      this.validateInputs();
+    });
+
     const walletSub = combineLatest([
       this.walletConnectorService.addressChange$,
       this.walletConnectorService.networkChange$
     ]).subscribe(([userAddr, userChain]) => {
       const srcTokenChain = this._tradeState.trade.from.blockchain;
       const srcChainType = BlockchainsInfo.getChainType(srcTokenChain);
-      const userChainType = BlockchainsInfo.getChainType(userChain);
+      const userChainType = userChain ? BlockchainsInfo.getChainType(userChain) : null;
 
       if (userAddr && srcChainType === userChainType) {
         this.updateActionBtnState('send_via_wallet', { active: true, text: 'Send' });
@@ -83,11 +93,54 @@ export class TradeInfoStep
       this.triggerStepsUpdate();
     });
 
-    this._subs.push(walletSub);
+    this._subs.push(formStatusSub, walletSub);
   }
 
   public onDestroy(): void {
     this._subs.forEach(sub => sub.unsubscribe());
+  }
+
+  private validateInputs(): void {
+    const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
+    if (inputAddrStep.inputsForm.disabled) return;
+
+    const receiverCtrl = inputAddrStep.inputsForm.controls.receiverAddr;
+    const refundCtrl = inputAddrStep.inputsForm.controls.refundAddr;
+
+    if (inputAddrStep.inputsForm.valid) {
+      this.updateActionBtnState('send_via_wallet', {
+        active: true,
+        text: 'Send'
+      });
+    } else {
+      if (receiverCtrl.invalid) {
+        if (receiverCtrl.hasError('incorrectAddress')) {
+          this.updateActionBtnState('send_via_wallet', {
+            active: false,
+            text: 'Invalid receiver address'
+          });
+        } else if (receiverCtrl.hasError('required')) {
+          this.updateActionBtnState('send_via_wallet', {
+            active: false,
+            text: 'Enter receiver address'
+          });
+        }
+      } else if (refundCtrl.invalid) {
+        if (refundCtrl.hasError('incorrectAddress')) {
+          this.updateActionBtnState('send_via_wallet', {
+            active: false,
+            text: 'Invalid refund address'
+          });
+        } else if (refundCtrl.hasError('required')) {
+          this.updateActionBtnState('send_via_wallet', {
+            active: false,
+            text: 'Enter refund address'
+          });
+        }
+      }
+    }
+
+    this.triggerStepsUpdate();
   }
 
   public async createQrCodeCanvases(
@@ -180,11 +233,11 @@ export class TradeInfoStep
         true,
         {
           onSwap: () => {
+            this.setOpened(false);
+            this.setActive(false);
+
             tradeStatusStep.setActive(true);
             tradeStatusStep.setOpened(true);
-
-            this.setOpened(false);
-            this.updateActionBtnState('send_via_wallet', { active: false, loading: false });
 
             this.depositService.setupUpdate();
             this._depositFormState$.next(DEPOSIT_FORM_STATE.STATUS_TRACKING);

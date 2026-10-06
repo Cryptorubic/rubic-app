@@ -11,7 +11,7 @@ import { DepositService } from '@app/features/trade/services/deposit/deposit.ser
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { BlockchainsInfo, CHAIN_TYPE, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
+import { BlockchainsInfo, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { InputAddressesStepAction } from '../../deposit-form-step-actions';
 import { IWithHooks } from '../abstracts/interfaces';
@@ -56,7 +56,6 @@ export class InputAddressesStep
     private readonly walletConnectorService: WalletConnectorService
   ) {
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
-
     this._tradeState = { ...swapsStateService.tradeState };
   }
 
@@ -72,13 +71,18 @@ export class InputAddressesStep
     this.initValidators();
 
     const srcChain = this._tradeState.trade.from.blockchain;
+    const dstChain = this._tradeState.trade.to.blockchain;
     const srcChainType = BlockchainsInfo.getChainType(srcChain);
+    const dstChainType = BlockchainsInfo.getChainType(dstChain);
+    const userChainType = this.walletConnectorService.chainType;
+
     const receiverAddr =
-      srcChainType === CHAIN_TYPE.EVM
+      srcChainType === dstChainType && srcChainType === userChainType
         ? this.targetNetworkAddressService.address || this.walletConnectorService.address
         : this.targetNetworkAddressService.address;
+    const refundAddr = this.walletConnectorService.address || '';
 
-    this.inputsForm.patchValue({ receiverAddr });
+    this.inputsForm.patchValue({ receiverAddr, refundAddr });
 
     /**
      * hack to update button state after async validation of this.targetNetworkAddressService.address

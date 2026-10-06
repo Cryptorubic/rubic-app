@@ -10,7 +10,7 @@ import {
   DepositFormDetails,
   DepositStepParams
 } from '../../step-types';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../deposit-form-states';
 import { DepositStepWithAction } from '../abstracts/deposit-step-with-action';
 import { ExchangeDetailsStepAction } from '../../deposit-form-step-actions';
@@ -23,22 +23,24 @@ import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { Injector } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { pairSupportsDepositFlowViaTxSign } from '../../../utils/pair-supports-tx-flow';
-import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
-import { Validators } from '@angular/forms';
 
 export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsStepAction> {
   public readonly name: DepositStepName = DEPOSIT_STEP_NAME.EXCHANGE_DETAILS;
 
-  private _depositFlow: DepositFlow = DEPOSIT_FLOW.MANUAL;
+  private readonly _depositFlow$ = new BehaviorSubject<DepositFlow>(DEPOSIT_FLOW.MANUAL);
+
+  public readonly depositFlow$ = this._depositFlow$.asObservable();
 
   public get depositFlow(): DepositFlow {
-    return this._depositFlow;
+    return this._depositFlow$.value;
   }
 
-  private _depositDetails: DepositFormDetails;
+  private readonly _depositDetails$: BehaviorSubject<DepositFormDetails>;
+
+  public readonly depositDetails$: Observable<DepositFormDetails>;
 
   public get depositDetails(): DepositFormDetails {
-    return this._depositDetails;
+    return this._depositDetails$.value;
   }
 
   constructor(
@@ -54,7 +56,8 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
   ) {
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
 
-    this._depositDetails = depositDetails;
+    this._depositDetails$ = new BehaviorSubject(depositDetails);
+    this.depositDetails$ = this._depositDetails$.asObservable();
   }
 
   public async doAction(action: ExchangeDetailsStepAction): Promise<void> {
@@ -63,13 +66,12 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
         this.updateActionBtnState('select_via_wallet', { active: false });
         this.updateActionBtnState('select_manual_flow', { active: false });
 
-        this._depositFlow = DEPOSIT_FLOW.MANUAL;
+        this._depositFlow$.next(DEPOSIT_FLOW.MANUAL);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
         break;
       case 'select_via_wallet':
         const srcChain = this.depositDetails.srcToken.blockchain;
         const srcChainType = BlockchainsInfo.getChainType(srcChain);
-        const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
 
         if (!pairSupportsDepositFlowViaTxSign(srcChain)) {
           this.errorsService.catch(new NotSupportedNetworkForDepositError(srcChain));
@@ -102,17 +104,13 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
           }
         }
 
-        inputAddrStep.inputsForm.controls.receiverAddr.removeValidators(Validators.required);
-        inputAddrStep.inputsForm.controls.refundAddr.removeValidators(Validators.required);
-        inputAddrStep.inputsForm.updateValueAndValidity();
-
-        this._depositFlow = DEPOSIT_FLOW.TX;
+        this._depositFlow$.next(DEPOSIT_FLOW.TX);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER);
         break;
     }
   }
 
   public updateDepositDetails(newDepositDetails: Partial<DepositFormDetails>): void {
-    this._depositDetails = { ...this._depositDetails, ...newDepositDetails };
+    this._depositDetails$.next({ ...this.depositDetails, ...newDepositDetails });
   }
 }
