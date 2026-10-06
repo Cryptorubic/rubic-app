@@ -6,3 +6,8 @@ export interface SubscriptionItem {
   isActive: boolean;
   canClaim?: boolean | null;
 }
+
+export interface UserPoints {
+  pending: number;
+  confirmed: number;
+}
