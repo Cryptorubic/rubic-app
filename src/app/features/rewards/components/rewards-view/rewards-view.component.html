@@ -4,7 +4,7 @@
     <p class="rewards__subtitle">Your first private swap earns 2x points</p>
 
     <ul class="rewards__cards">
-      @for (card of cards(); track $index) {
+      @for (card of cards(); track card.id) {
         <li class="rewards__card">
           <span class="rewards__card-title">{{ card.title }}</span>
           <img class="rewards__card-image" [src]="card.image" [alt]="card.title" />
