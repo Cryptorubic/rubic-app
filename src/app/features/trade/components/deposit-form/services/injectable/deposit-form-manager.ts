@@ -273,7 +273,9 @@ export class DepositFormManager {
     stepAction: (typeof STEP_ACTION)[K][number]
   ): Promise<void> {
     const depositStep = this.depositFormSteps[stepOrder];
-    if (!isDepositStepWithAction(depositStep)) return;
+    if (!isDepositStepWithAction(depositStep)) {
+      throw new Error(`${depositStep.name} doesn't have an action!`);
+    }
 
     // @ts-ignore
     await depositStep.doAction(stepAction as RubicAny);
