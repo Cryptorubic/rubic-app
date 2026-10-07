@@ -7,6 +7,45 @@
   <ul class="rewards__cards rewards__cards_grid">
     @for (card of visibleCards(); track card.id) {
       <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
+        <div class="card__head">
+          <span class="card__title">{{ card.title }}</span>
+          @if (card.description) {
+            <button
+              class="card__info"
+              type="button"
+              aria-label="Subscription details"
+              (click)="card.isDetailsOpened = true"
+            >
+              <img
+                src="/assets/images/icons/info.svg"
+                alt="Subscription details"
+                width="15"
+                height="15"
+              />
+            </button>
+          }
+        </div>
+        @if (card.imageUrl) {
+          <img
+            class="card__image"
+            [src]="card.imageUrl"
+            [alt]="card.title"
+            width="242"
+            height="150"
+          />
+        }
+        @if (card.price) {
+          <div class="card__meta">
+            <span
+              class="card__price"
+              [class.card__price_affordable]="card.canClaim"
+              (click)="openRedeem(card)"
+            >
+              {{ card.price }} Points
+            </span>
+            <span class="card__period">{{ period }}</span>
+          </div>
+        }
         @if (card.isDetailsOpened) {
           <div class="card__details card-details">
             <button
@@ -17,48 +56,13 @@
             >
               &times;
             </button>
-            <p>{{ card.description }}</p>
+
+            <tui-scrollbar>
+              <div class="card-details__description">
+                {{ card.description }}
+              </div>
+            </tui-scrollbar>
           </div>
-        } @else {
-          <div class="card__head">
-            <span class="card__title">{{ card.title }}</span>
-            @if (card.description) {
-              <button
-                class="card__info"
-                type="button"
-                aria-label="Subscription details"
-                (click)="card.isDetailsOpened = true"
-              >
-                <img
-                  src="/assets/images/icons/info.svg"
-                  alt="Subscription details"
-                  width="15"
-                  height="15"
-                />
-              </button>
-            }
-          </div>
-          @if (card.imageUrl) {
-            <img
-              class="card__image"
-              [src]="card.imageUrl"
-              [alt]="card.title"
-              width="242"
-              height="150"
-            />
-          }
-          @if (card.price) {
-            <div class="card__meta">
-              <span
-                class="card__price"
-                [class.card__price_affordable]="card.canClaim"
-                (click)="openRedeem(card)"
-              >
-                {{ card.price }} Points
-              </span>
-              <span class="card__period">{{ period }}</span>
-            </div>
-          }
         }
       </li>
     }

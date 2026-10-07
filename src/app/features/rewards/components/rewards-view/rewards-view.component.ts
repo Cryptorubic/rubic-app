@@ -7,7 +7,7 @@ import {
   signal
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TuiButton } from '@taiga-ui/core';
+import { TuiButton, TuiScrollbar } from '@taiga-ui/core';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -28,7 +28,7 @@ const SUBSCRIPTION_PERIOD = '1Y';
 
 @Component({
   selector: 'app-rewards-view',
-  imports: [TuiButton, TuiPagination, InlineSVGModule],
+  imports: [TuiButton, TuiPagination, InlineSVGModule, TuiScrollbar],
   templateUrl: './rewards-view.component.html',
   styleUrl: './rewards-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
