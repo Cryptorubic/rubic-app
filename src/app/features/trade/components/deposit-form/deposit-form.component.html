@@ -17,13 +17,11 @@
 
       @if (showTradeId) {
         <app-field-with-copy-btn
-          [visibleText]="
-            isMobile ? (tradeId | shortAddress: 3 : 3) : (tradeId | shortAddress: 6 : 6)
-          "
+          [visibleText]="tradeId | shortAddress: 3 : 3"
           [textToCopy]="tradeId"
           [bgColor]="'var(--tui-background-base)'"
           [borderColor]="'var(--tui-background-base)'"
-          [padding]="isMobile ? '6px' : '8px 12px'"
+          [padding]="isMobile ? '6px' : '8px'"
         ></app-field-with-copy-btn>
       }
     </div>

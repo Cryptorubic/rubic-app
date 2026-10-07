@@ -96,7 +96,9 @@ export class InputAddressesStep
           const userChainType = this.walletConnectorService.chainType;
 
           const receiverAddr =
-            srcChainType === dstChainType && srcChainType === userChainType
+            srcChainType === dstChainType &&
+            srcChainType === userChainType &&
+            !this._tradeState.private
               ? this.targetNetworkAddressService.address || this.walletConnectorService.address
               : this.targetNetworkAddressService.address;
 

@@ -63,8 +63,8 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
   public async doAction(action: ExchangeDetailsStepAction): Promise<void> {
     switch (action) {
       case 'select_manual_flow':
-        this.updateActionBtnState('select_via_wallet', { active: false });
-        this.updateActionBtnState('select_manual_flow', { active: false });
+        this.updateActionBtnState('select_via_wallet', { invisible: true });
+        this.updateActionBtnState('select_manual_flow', { invisible: true });
 
         this._depositFlow$.next(DEPOSIT_FLOW.MANUAL);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
@@ -77,9 +77,6 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
           this.errorsService.catch(new NotSupportedNetworkForDepositError(srcChain));
           return;
         }
-
-        this.updateActionBtnState('select_via_wallet', { active: false });
-        this.updateActionBtnState('select_manual_flow', { active: false });
 
         if (
           !this.walletConnectorService.address ||
@@ -96,13 +93,13 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
               throw new WalletError();
             }
           } catch {
-            this.updateActionBtnState('select_via_wallet', { active: true });
-            this.updateActionBtnState('select_manual_flow', { active: true });
-            this.triggerStepsUpdate();
             this.errorsService.catch(new WalletError());
             return;
           }
         }
+
+        this.updateActionBtnState('select_via_wallet', { invisible: true });
+        this.updateActionBtnState('select_manual_flow', { invisible: true });
 
         this._depositFlow$.next(DEPOSIT_FLOW.TX);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER);

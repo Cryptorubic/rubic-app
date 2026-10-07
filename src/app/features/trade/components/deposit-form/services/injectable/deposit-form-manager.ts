@@ -246,7 +246,7 @@ export class DepositFormManager {
       this._depositFormSteps$.next(this.depositFormSteps);
     });
 
-    this._depositFormSteps$.next(this._depositFormSteps$.value);
+    setTimeout(() => this._depositFormSteps$.next(this._depositFormSteps$.value), 10);
   }
 
   public setInitialFormState(): void {

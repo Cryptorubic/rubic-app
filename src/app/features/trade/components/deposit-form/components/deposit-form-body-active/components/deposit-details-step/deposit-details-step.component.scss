@@ -33,6 +33,10 @@
       &__assets {
         @include flex(row, center, space-between);
         width: 100%;
+
+        app-asset-details {
+          flex: 1;
+        }
       }
 
       &__buttons {
@@ -42,7 +46,6 @@
 
         app-rubic-button-new {
           width: 100%;
-          max-width: 200px;
           max-height: 40px;
 
           button {
