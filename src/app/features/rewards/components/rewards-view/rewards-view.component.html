@@ -1,54 +1,28 @@
-@if (!isWalletConnected()) {
-  <section class="rewards">
+<section class="rewards" [class.rewards_connected]="isWalletConnected()">
+  @if (!isWalletConnected()) {
     <h1 class="rewards__title">Turn Your Swaps Into Free Subscriptions!</h1>
     <p class="rewards__subtitle">Your first private swap earns 2x points</p>
+  }
 
-    <ul class="rewards__cards">
-      @for (card of guestCards(); track card.id) {
-        <li class="rewards__card card">
-          <span class="card__title">{{ card.title }}</span>
-          <img
-            class="card__image"
-            [src]="card.imageUrl"
-            [alt]="card.title"
-            width="242"
-            height="150"
-          />
-        </li>
-      }
-    </ul>
-
-    <button
-      class="rewards__connect"
-      tuiButton
-      type="button"
-      size="m"
-      appearance="primary"
-      (click)="connectWallet()"
-    >
-      Connect Wallet
-    </button>
-  </section>
-} @else {
-  <section class="rewards rewards_connected">
-    <ul class="rewards__cards rewards__cards_grid">
-      @for (card of visibleCards(); track card.id) {
-        <li class="rewards__card card">
-          @if (card.isDetailsOpened) {
-            <div class="card__details card-details">
-              <button
-                class="card-details__close"
-                type="button"
-                aria-label="Close description"
-                (click)="card.isDetailsOpened = false"
-              >
-                &times;
-              </button>
-              <p>{{ card.description }}</p>
-            </div>
-          } @else {
-            <div class="card__head">
-              <span class="card__title">{{ card.title }}</span>
+  <ul class="rewards__cards rewards__cards_grid">
+    @for (card of visibleCards(); track card.id) {
+      <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
+        @if (card.isDetailsOpened) {
+          <div class="card__details card-details">
+            <button
+              class="card-details__close"
+              type="button"
+              aria-label="Close description"
+              (click)="card.isDetailsOpened = false"
+            >
+              &times;
+            </button>
+            <p>{{ card.description }}</p>
+          </div>
+        } @else {
+          <div class="card__head">
+            <span class="card__title">{{ card.title }}</span>
+            @if (card.description) {
               <button
                 class="card__info"
                 type="button"
@@ -62,7 +36,9 @@
                   height="15"
                 />
               </button>
-            </div>
+            }
+          </div>
+          @if (card.imageUrl) {
             <img
               class="card__image"
               [src]="card.imageUrl"
@@ -70,6 +46,8 @@
               width="242"
               height="150"
             />
+          }
+          @if (card.price) {
             <div class="card__meta">
               <span
                 class="card__price"
@@ -81,42 +59,49 @@
               <span class="card__period">{{ period }}</span>
             </div>
           }
-        </li>
-      }
-
-      @if (visibleCards().length < 6) {
-        @for (i of [].constructor(6 - visibleCards().length); track i) {
-          <li class="rewards__card card card_empty"></li>
         }
-      }
-    </ul>
-
-    @if (showPagination()) {
-      <tui-pagination
-        [index]="currentPage()"
-        [length]="pageCount()"
-        (indexChange)="selectPage($event)"
-      ></tui-pagination>
+      </li>
     }
+  </ul>
 
-    @if (points(); as balance) {
-      <p class="rewards__balance">{{ balance.confirmed }} Points</p>
-      @if (balance.pending !== 0) {
-        <p class="rewards__balance-note">+{{ balance.pending }} Pending</p>
-      } @else {
-        <p class="rewards__balance-note">Your balance</p>
-      }
-    }
-
+  @if (!isWalletConnected()) {
     <button
-      class="rewards__help"
+      class="rewards__connect"
       tuiButton
       type="button"
       size="m"
-      appearance="outline"
-      (click)="openHowItWorks()"
+      appearance="primary"
+      (click)="connectWallet()"
     >
-      How does it work?
+      Connect Wallet
     </button>
-  </section>
-}
+  }
+
+  @if (showPagination()) {
+    <tui-pagination
+      [index]="currentPage()"
+      [length]="pageCount()"
+      (indexChange)="selectPage($event)"
+    ></tui-pagination>
+  }
+
+  @if (points(); as balance) {
+    <p class="rewards__balance">{{ balance.confirmed }} Points</p>
+    @if (balance.pending !== 0) {
+      <p class="rewards__balance-note">+{{ balance.pending }} Pending</p>
+    } @else {
+      <p class="rewards__balance-note">Your balance</p>
+    }
+  }
+
+  <button
+    class="rewards__help"
+    tuiButton
+    type="button"
+    size="m"
+    appearance="outline"
+    (click)="openHowItWorks()"
+  >
+    How does it work?
+  </button>
+</section>

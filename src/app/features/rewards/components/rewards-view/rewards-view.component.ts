@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiButton } from '@taiga-ui/core';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, of, switchMap, tap } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
@@ -19,8 +19,9 @@ import { TuiPagination } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { SubscriptionItem } from '@app/core/services/backend/loyalty-api/models/subscription-item';
 import { RewardCard } from '../../models/reward-card';
+import { PLACEHOLDER_CARD } from '../../constants/placeholder-card';
+import { EMPTY_CARD } from '../../constants/empty-card';
 
-// const CARD_IMAGE = 'assets/images/rewards/more-rewards-on-the-way.svg';
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
 const SUBSCRIPTION_PERIOD = '1Y';
@@ -42,20 +43,24 @@ export class RewardsViewComponent {
 
   private readonly page = signal(0);
 
+  private readonly catalogLoading = signal(true);
+
   protected readonly period = SUBSCRIPTION_PERIOD;
 
   protected readonly isWalletConnected = computed(() => !!this.currentUser()?.address);
 
   private readonly catalog = toSignal<SubscriptionItem[], SubscriptionItem[]>(
     this.authService.currentUser$.pipe(
-      switchMap(user =>
-        this.loyaltyApiService.getSubscriptions(user?.address).pipe(catchError(() => of([])))
-      )
+      switchMap(user => {
+        this.catalogLoading.set(true);
+        return this.loyaltyApiService.getSubscriptions(user?.address).pipe(
+          catchError(() => of([])),
+          tap(() => this.catalogLoading.set(false))
+        );
+      })
     ),
     { initialValue: [] }
   );
-
-  protected readonly guestCards = computed(() => this.catalog().slice(0, GUEST_CARDS_COUNT));
 
   protected readonly pageCount = computed(() => Math.ceil(this.catalog().length / PAGE_SIZE));
 
@@ -69,14 +74,32 @@ export class RewardsViewComponent {
   );
 
   protected readonly visibleCards = computed<RewardCard[]>(() => {
-    const start = this.currentPage() * PAGE_SIZE;
+    let cardsToShow = 0;
+    let catalogToShow: SubscriptionItem[] = [];
 
-    return this.catalog()
-      .slice(start, start + PAGE_SIZE)
-      .map(card => ({
-        ...card,
-        isDetailsOpened: false
-      }));
+    if (this.isWalletConnected()) {
+      const start = this.currentPage() * PAGE_SIZE;
+      cardsToShow = PAGE_SIZE;
+      catalogToShow = this.catalog().slice(start, start + cardsToShow);
+    } else {
+      cardsToShow = GUEST_CARDS_COUNT;
+      catalogToShow = this.catalog().slice(0, cardsToShow);
+    }
+
+    const cards = catalogToShow.map(card => ({
+      ...card,
+      isDetailsOpened: false
+    }));
+
+    if (!this.catalogLoading() && cards.length === 0) {
+      cards.push(PLACEHOLDER_CARD);
+    }
+
+    if (cards.length < cardsToShow) {
+      cards.push(...Array(cardsToShow - cards.length).fill(EMPTY_CARD));
+    }
+
+    return cards;
   });
 
   protected readonly points = toSignal(
