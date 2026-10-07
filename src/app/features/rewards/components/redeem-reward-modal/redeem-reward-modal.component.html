@@ -1,0 +1,20 @@
+<div class="redeem-reward">
+  <h2 class="redeem-reward__title">Redeem this reward?</h2>
+  <p>{{ title }}</p>
+  <p>{{ price }} Points</p>
+  <p>Your reward will appear in "My Collection" with step-by-step instructions.</p>
+  <label class="redeem-reward__confirm">
+    <input tuiCheckbox type="checkbox" [formControl]="accepted" />
+    <span>I understand that this reward can't be returned for points.</span>
+  </label>
+  <button
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    [disabled]="!canRedeem()"
+    (click)="redeem()"
+  >
+    Redeem reward
+  </button>
+</div>

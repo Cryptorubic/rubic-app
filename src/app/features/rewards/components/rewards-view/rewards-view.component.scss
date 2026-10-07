@@ -60,6 +60,10 @@
   &__help {
     margin-top: 36px;
     --t-bs: var(--tui-background-accent-1);
+
+    &:hover {
+      --t-bs: var(--tui-background-accent-1) !important;
+    }
   }
 }
 
@@ -108,6 +112,7 @@
     &_affordable {
       color: white;
       border-color: var(--tui-background-accent-1);
+      cursor: pointer;
     }
   }
 

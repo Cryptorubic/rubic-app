@@ -15,6 +15,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
 import { HowRewardsWorkModalComponent } from '@features/rewards/components/how-rewards-work-modal/how-rewards-work-modal.component';
+import { RedeemRewardModalComponent } from '@features/rewards/components/redeem-reward-modal/redeem-reward-modal.component';
 import { RewardCard } from '../../models';
 import { TuiPagination } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -154,6 +155,21 @@ export class RewardsViewComponent {
         size: 'm',
         dismissible: true,
         label: ''
+      })
+      .subscribe();
+  }
+
+  protected openRedeem(card: RewardCard): void {
+    if (!card.affordable) {
+      return;
+    }
+
+    this.modalService
+      .openClosableDialog(RedeemRewardModalComponent, {
+        size: 'm',
+        dismissible: true,
+        label: '',
+        data: { title: card.title, price: card.price }
       })
       .subscribe();
   }

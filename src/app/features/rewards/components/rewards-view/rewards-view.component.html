@@ -71,7 +71,11 @@
               height="150"
             />
             <div class="card__meta">
-              <span class="card__price" [class.card__price_affordable]="card.affordable">
+              <span
+                class="card__price"
+                [class.card__price_affordable]="card.affordable"
+                (click)="openRedeem(card)"
+              >
                 {{ card.price }} Points
               </span>
               <span class="card__period">{{ period }}</span>
