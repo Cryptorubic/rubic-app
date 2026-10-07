@@ -6,9 +6,14 @@ import {
   DepositFormSteps,
   DepositStepName
 } from '../../deposit-form-step-types';
-import { ActionBtnState, DepositStepParams, InputAddressesStepForm } from '../../step-types';
+import {
+  ActionBtnState,
+  DEPOSIT_FLOW,
+  DepositStepParams,
+  InputAddressesStepForm
+} from '../../step-types';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subscription, takeWhile, tap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { BlockchainsInfo, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
@@ -70,29 +75,39 @@ export class InputAddressesStep
   public onInit(): void {
     this.initValidators();
 
-    const srcChain = this._tradeState.trade.from.blockchain;
-    const dstChain = this._tradeState.trade.to.blockchain;
-    const srcChainType = BlockchainsInfo.getChainType(srcChain);
-    const dstChainType = BlockchainsInfo.getChainType(dstChain);
-    const userChainType = this.walletConnectorService.chainType;
+    const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
-    const receiverAddr =
-      srcChainType === dstChainType && srcChainType === userChainType
-        ? this.targetNetworkAddressService.address || this.walletConnectorService.address
-        : this.targetNetworkAddressService.address;
-    const refundAddr = this.walletConnectorService.address || '';
+    const formStatusSub = combineLatest([
+      this.inputsForm.statusChanges,
+      detailsStep.depositFlow$
+    ]).subscribe(() => this.validateInputs());
 
-    this.inputsForm.patchValue({ receiverAddr, refundAddr });
+    const depositFlowSub = detailsStep.depositFlow$
+      .pipe(
+        tap(depositFlow => {
+          const srcChain = this._tradeState.trade.from.blockchain;
+          const dstChain = this._tradeState.trade.to.blockchain;
+          const srcChainType = BlockchainsInfo.getChainType(srcChain);
+          const dstChainType = BlockchainsInfo.getChainType(dstChain);
+          const userChainType = this.walletConnectorService.chainType;
 
-    /**
-     * hack to update button state after async validation of this.targetNetworkAddressService.address
-     */
-    setTimeout(() => this.validateInputs(), 10);
-    const formStatusSub = this.inputsForm.statusChanges.subscribe(() => {
-      this.validateInputs();
-    });
+          const receiverAddr =
+            srcChainType === dstChainType && srcChainType === userChainType
+              ? this.targetNetworkAddressService.address || this.walletConnectorService.address
+              : this.targetNetworkAddressService.address;
 
-    this._subs.push(formStatusSub);
+          this.inputsForm.patchValue({ receiverAddr });
+
+          if (depositFlow === DEPOSIT_FLOW.TX) {
+            const refundAddr = this.walletConnectorService.address || '';
+            this.inputsForm.patchValue({ refundAddr });
+          }
+        }),
+        takeWhile(depositFlow => depositFlow !== DEPOSIT_FLOW.TX)
+      )
+      .subscribe();
+
+    this._subs.push(formStatusSub, depositFlowSub);
   }
 
   public onDestroy(): void {
@@ -208,6 +223,9 @@ export class InputAddressesStep
     if (this.isRefundAddressRequired()) {
       this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
     }
-    this.inputsForm.updateValueAndValidity();
+
+    for (const ctrl in this.inputsForm.controls) {
+      this.inputsForm.get(ctrl).updateValueAndValidity();
+    }
   }
 }

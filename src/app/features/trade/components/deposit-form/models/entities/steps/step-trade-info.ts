@@ -63,15 +63,13 @@ export class TradeInfoStep
   }
 
   public onInit(): void {
+    const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
     const inputAddrStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES];
 
-    /**
-     * hack to update button state after async validation of this.targetNetworkAddressService.address
-     */
-    setTimeout(() => this.validateInputs(), 10);
-    const formStatusSub = inputAddrStep.inputsForm.statusChanges.subscribe(() => {
-      this.validateInputs();
-    });
+    const formStatusSub = combineLatest([
+      inputAddrStep.inputsForm.statusChanges,
+      detailsStep.depositFlow$
+    ]).subscribe(() => this.validateInputs());
 
     const walletSub = combineLatest([
       this.walletConnectorService.addressChange$,
