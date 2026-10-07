@@ -1,13 +1,10 @@
 export interface SubscriptionItem {
-  id: number;
+  id: string;
   title: string;
+  subTitle: string;
   description: string;
+  imageUrl: string;
   price: number;
   isActive: boolean;
-  canClaim?: boolean | null;
-}
-
-export interface UserPoints {
-  pending: number;
-  confirmed: number;
+  canClaim: boolean | null;
 }
