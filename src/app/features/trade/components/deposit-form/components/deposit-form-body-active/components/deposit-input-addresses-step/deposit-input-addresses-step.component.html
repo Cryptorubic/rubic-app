@@ -12,7 +12,7 @@
     [(open)]="step.opened"
   >
     <span class="step-counter" [class.step-counter__active]="isStepHighlighted">2</span>
-    <span class="step-title">RECEIVER & REFUND ADDRESSES</span>
+    <span class="step-title">{{ step.title }}</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>
     } @else if (!step.active) {

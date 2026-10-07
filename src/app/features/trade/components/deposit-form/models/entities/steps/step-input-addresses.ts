@@ -75,6 +75,10 @@ export class InputAddressesStep
   public onInit(): void {
     this.initValidators();
 
+    if (!this.isRefundAddressRequired()) {
+      this.setTitle('RECEIVER ADDRESS');
+    }
+
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
     const formStatusSub = combineLatest([

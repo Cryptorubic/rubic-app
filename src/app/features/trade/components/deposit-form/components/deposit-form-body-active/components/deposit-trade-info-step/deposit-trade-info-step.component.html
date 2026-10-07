@@ -16,7 +16,7 @@
     [(open)]="step.opened"
   >
     <span class="step-counter" [class.step-counter__active]="isStepHighlighted">3</span>
-    <span class="step-title">SEND DEPOSIT</span>
+    <span class="step-title">{{ step.title }}</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>
     } @else if (!step.active) {
