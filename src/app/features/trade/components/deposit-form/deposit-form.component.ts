@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
@@ -54,14 +55,15 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
     private readonly tradePageService: TradePageService,
     private readonly depositFormManager: DepositFormManager,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activateDepositPage();
   }
 
   ngAfterViewInit(): void {
-    this.depositFormManager.init(this.destroyRef);
+    this.depositFormManager.init(this.destroyRef, this.cdr);
   }
 
   ngOnDestroy(): void {

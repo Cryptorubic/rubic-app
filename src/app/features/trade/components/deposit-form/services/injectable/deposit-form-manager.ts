@@ -1,4 +1,4 @@
-import { DestroyRef, Inject, Injectable, Injector } from '@angular/core';
+import { ChangeDetectorRef, DestroyRef, Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../models/deposit-form-states';
 import { DepositFormSteps } from '../../models/deposit-form-step-types';
@@ -129,7 +129,7 @@ export class DepositFormManager {
     this._depositFormSteps$.next(steps);
   }
 
-  public init(destroyRef: DestroyRef): void {
+  public init(destroyRef: DestroyRef, cdr: ChangeDetectorRef): void {
     this.depositFormSteps.forEach(step => {
       if (isStepWithHooks(step)) step.onInit();
     });
@@ -244,9 +244,8 @@ export class DepositFormManager {
       }
 
       this._depositFormSteps$.next(this.depositFormSteps);
+      cdr.detectChanges();
     });
-
-    setTimeout(() => this._depositFormSteps$.next(this._depositFormSteps$.value), 10);
   }
 
   public setInitialFormState(): void {
