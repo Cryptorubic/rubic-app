@@ -234,7 +234,7 @@ export class TradeInfoStep
       inputAddrStep.inputsForm.controls.receiverAddr.updateValueAndValidity();
 
       this.updateActionBtnState('send_via_wallet', {
-        active: true,
+        active: false,
         loading: false,
         text: 'Enter receiver address'
       });
