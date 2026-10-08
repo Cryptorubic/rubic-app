@@ -32,8 +32,12 @@
   backdrop-filter: blur(44px);
   inset: 0;
 
+  &__head {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__close {
-    align-self: flex-end;
     width: 12px;
     height: 12px;
     margin-right: 16px;

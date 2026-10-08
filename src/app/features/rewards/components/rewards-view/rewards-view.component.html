@@ -9,7 +9,7 @@
       <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
         <div class="card__head">
           <span class="card__title">{{ card.title }}</span>
-          @if (card.description) {
+          @if (card.description && isWalletConnected()) {
             <button
               class="card__info"
               type="button"
@@ -34,7 +34,7 @@
             height="150"
           />
         }
-        @if (card.price) {
+        @if (card.price && isWalletConnected()) {
           <div class="card__meta">
             <span
               class="card__price"
@@ -48,14 +48,18 @@
         }
         @if (card.isDetailsOpened) {
           <div class="card__details card-details">
-            <button
-              class="card-details__close"
-              type="button"
-              aria-label="Close description"
-              (click)="card.isDetailsOpened = false"
-            >
-              &times;
-            </button>
+            <div class="card-details__head">
+              <span class="card-details__title">{{ card.subTitle }}</span>
+
+              <button
+                class="card-details__close"
+                type="button"
+                aria-label="Close description"
+                (click)="card.isDetailsOpened = false"
+              >
+                &times;
+              </button>
+            </div>
 
             <tui-scrollbar>
               <div class="card-details__description">
@@ -98,14 +102,16 @@
     }
   }
 
-  <button
-    class="rewards__help"
-    tuiButton
-    type="button"
-    size="m"
-    appearance="outline"
-    (click)="openHowItWorks()"
-  >
-    How does it work?
-  </button>
+  @if (isWalletConnected()) {
+    <button
+      class="rewards__help"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="outline"
+      (click)="openHowItWorks()"
+    >
+      How does it work?
+    </button>
+  }
 </section>
