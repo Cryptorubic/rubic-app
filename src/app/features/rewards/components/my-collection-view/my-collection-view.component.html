@@ -1,0 +1,64 @@
+@if (state() === 'connect') {
+  <section class="rewards">
+    <button
+      class="rewards__connect"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="connectWallet()"
+    >
+      Connect Wallet
+    </button>
+  </section>
+} @else if (state() === 'prompt') {
+  <section class="rewards">
+    <p class="rewards__hint">Sign with your wallet to see your collection.</p>
+    <button
+      class="rewards__connect"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="signWallet()"
+    >
+      Sign Wallet
+    </button>
+  </section>
+} @else if (state() === 'loading') {
+  <section class="rewards">
+    <tui-loader class="rewards__loader" [showLoader]="true"></tui-loader>
+  </section>
+} @else {
+  <section class="rewards">
+    <ul class="rewards__cards">
+      @for (card of visibleCards(); track card.id) {
+        <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
+          <div class="card__head">
+            <span class="card__title">{{ card.title }}</span>
+          </div>
+          @if (card.imageUrl) {
+            <img class="card__image" [src]="card.imageUrl" alt="" width="242" height="150" />
+          }
+          @if (!card.isEmpty && !card.isPlaceholder) {
+            <div class="card__meta">
+              <button class="card__view-reward" ype="button">View reward</button>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+
+    @if (showPagination()) {
+      <tui-pagination
+        [index]="currentPage()"
+        [length]="pageCount()"
+        (indexChange)="selectPage($event)"
+      ></tui-pagination>
+    }
+
+    <p class="rewards__hint">Earn points on eligible swaps, then redeem them for a reward.</p>
+
+    <a class="rewards__cta" routerLink="/" tuiButton appearance="outline" size="m">Swap now</a>
+  </section>
+}

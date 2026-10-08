@@ -1,10 +1,10 @@
-<section class="rewards" [class.rewards_connected]="isWalletConnected()">
+<section class="rewards" [class.rewards_not-connected]="!isWalletConnected()">
   @if (!isWalletConnected()) {
     <h1 class="rewards__title">Turn Your Swaps Into Free Subscriptions!</h1>
     <p class="rewards__subtitle">Your first private swap earns 2x points</p>
   }
 
-  <ul class="rewards__cards rewards__cards_grid">
+  <ul class="rewards__cards">
     @for (card of visibleCards(); track card.id) {
       <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
         <div class="card__head">
@@ -38,7 +38,7 @@
           <div class="card__meta">
             <span
               class="card__price"
-              [class.card__price_affordable]="card.canClaim"
+              [class.card__price_highlighted]="card.canClaim"
               (click)="openRedeem(card)"
             >
               {{ card.price }} Points

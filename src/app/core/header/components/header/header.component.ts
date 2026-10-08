@@ -11,11 +11,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { IsActiveMatchOptions, Router } from '@angular/router';
+import { IsActiveMatchOptions, NavigationEnd, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
@@ -91,6 +91,8 @@ export class HeaderComponent {
     map(theme => theme === 'dark')
   );
 
+  public showMyCollection$: Observable<boolean>;
+
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
@@ -116,6 +118,20 @@ export class HeaderComponent {
         };
       });
     }
+
+    this.showMyCollection$ = combineLatest([
+      this.authService.currentUser$,
+      this.router.events.pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        map(() => this.router.url),
+        startWith(this.router.url)
+      )
+    ]).pipe(
+      map(([user, url]) => {
+        const path = url.split(/[?#]/)[0];
+        return !!user?.address && (path === '/rewards' || path.startsWith('/rewards/'));
+      })
+    );
   }
 
   /**

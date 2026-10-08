@@ -30,7 +30,7 @@ const SUBSCRIPTION_PERIOD = '1Y';
   selector: 'app-rewards-view',
   imports: [TuiButton, TuiPagination, InlineSVGModule, TuiScrollbar],
   templateUrl: './rewards-view.component.html',
-  styleUrl: './rewards-view.component.scss',
+  styleUrls: ['../../styles/rewards.scss', './rewards-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RewardsViewComponent {
@@ -73,6 +73,8 @@ export class RewardsViewComponent {
     Array.from({ length: this.pageCount() }, (_, index) => index)
   );
 
+  protected readonly showPagination = computed(() => this.catalog().length > PAGE_SIZE);
+
   protected readonly visibleCards = computed<RewardCard[]>(() => {
     let cardsToShow = 0;
     let catalogToShow: SubscriptionItem[] = [];
@@ -96,7 +98,12 @@ export class RewardsViewComponent {
     }
 
     if (cards.length < cardsToShow) {
-      cards.push(...Array(cardsToShow - cards.length).fill(EMPTY_CARD));
+      cards.push(
+        ...Array.from({ length: cardsToShow - cards.length }, (_, index) => ({
+          ...EMPTY_CARD,
+          id: `empty-${this.currentPage()}-${index}`
+        }))
+      );
     }
 
     return cards;
@@ -112,8 +119,6 @@ export class RewardsViewComponent {
     ),
     { initialValue: null }
   );
-
-  protected readonly showPagination = computed(() => this.catalog().length > PAGE_SIZE);
 
   constructor() {}
 

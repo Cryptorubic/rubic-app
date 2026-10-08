@@ -45,6 +45,21 @@
 
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
+    @if (showMyCollection$ | async) {
+      <button
+        routerLink="/rewards/my-collection"
+        routerLinkActive="active-router-link"
+        [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+        class="rewards-button"
+        tuiButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        My Collection
+      </button>
+    }
+
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">
         <app-login-button

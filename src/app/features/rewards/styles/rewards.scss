@@ -1,0 +1,124 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: block;
+}
+
+.rewards {
+  @include flex(column, center, flex-start);
+  margin-top: 36px;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: 3%;
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 266px);
+    gap: 36px;
+    justify-content: center;
+  }
+
+  &_not-connected {
+    .card {
+      height: 266px;
+    }
+  }
+
+  &__connect {
+    width: 266px;
+    margin-top: 36px;
+  }
+
+  tui-pagination {
+    margin-top: 36px;
+  }
+
+  &__balance {
+    margin: 36px 0 0;
+    color: var(--tui-background-accent-1);
+    font-size: 21px;
+  }
+
+  &__help,
+  &__cta {
+    margin-top: 36px;
+    text-decoration: none;
+    --t-bs: var(--tui-background-accent-1);
+
+    &:hover {
+      --t-bs: var(--tui-background-accent-1) !important;
+    }
+  }
+}
+
+.card {
+  @include flex(column, stretch, flex-start);
+  position: relative;
+  width: 266px;
+  height: 266px;
+  padding: 12px;
+  overflow: hidden;
+  background: var(--tui-background-elevation-1);
+  border-radius: 17px;
+
+  &_dark-bg {
+    background: var(--io-background);
+  }
+
+  &__head,
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__head {
+    height: 21px;
+  }
+
+  &__title {
+    padding-left: 18px;
+    font-size: 15px;
+  }
+
+  &__image {
+    display: block;
+    margin-top: 15px;
+    border-radius: 17px;
+  }
+
+  &__meta {
+    margin-top: 12px;
+  }
+
+  &__price,
+  &__view-reward {
+    padding: 11px 16px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    background: var(--tui-background-base);
+    border: 1px solid transparent;
+    border-radius: 17px;
+
+    &_highlighted {
+      color: white;
+      border-color: var(--tui-background-accent-1);
+      cursor: pointer;
+    }
+  }
+
+  &__period {
+    font-size: 15px;
+    line-height: 15px;
+  }
+}
+
+@include b($mobile-md) {
+  .rewards {
+    &__cards {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
