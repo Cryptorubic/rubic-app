@@ -104,13 +104,14 @@ export class InputAddressesStep
             srcChainType === dstChainType &&
             srcChainType === userChainType &&
             !this._tradeState.private
-              ? this.targetNetworkAddressService.address || this.walletConnectorService.address
-              : this.targetNetworkAddressService.address;
+              ? this.targetNetworkAddressService.address.trim() ||
+                this.walletConnectorService.address
+              : this.targetNetworkAddressService.address.trim();
 
           this.inputsForm.patchValue({ receiverAddr });
 
           if (depositFlow === DEPOSIT_FLOW.TX) {
-            const refundAddr = this.walletConnectorService.address || '';
+            const refundAddr = this.walletConnectorService.address.trim() || '';
             this.inputsForm.patchValue({ refundAddr });
           }
         }),
