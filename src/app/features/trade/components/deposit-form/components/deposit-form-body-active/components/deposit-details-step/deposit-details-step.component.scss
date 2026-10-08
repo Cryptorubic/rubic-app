@@ -50,9 +50,9 @@
           width: 100%;
           max-height: 40px;
 
-          button {
+          ::ng-deep button {
             max-height: 40px;
-            white-space: notmal;
+            white-space: normal;
           }
         }
 
