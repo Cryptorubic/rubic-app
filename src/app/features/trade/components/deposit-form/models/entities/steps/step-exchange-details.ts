@@ -66,8 +66,8 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
         this.updateActionBtnState('select_via_wallet', { invisible: true });
         this.updateActionBtnState('select_manual_flow', { invisible: true });
 
-        this._depositFlow$.next(DEPOSIT_FLOW.MANUAL);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
+        this._depositFlow$.next(DEPOSIT_FLOW.MANUAL);
         break;
       case 'select_via_wallet':
         const srcChain = this.depositDetails.srcToken.blockchain;
@@ -101,8 +101,8 @@ export class ExchangeDetailsStep extends DepositStepWithAction<ExchangeDetailsSt
         this.updateActionBtnState('select_via_wallet', { invisible: true });
         this.updateActionBtnState('select_manual_flow', { invisible: true });
 
-        this._depositFlow$.next(DEPOSIT_FLOW.TX);
         this._depositFormState$.next(DEPOSIT_FORM_STATE.WAITING_FOR_SIGNING_TRANSFER);
+        this._depositFlow$.next(DEPOSIT_FLOW.TX);
         break;
     }
   }

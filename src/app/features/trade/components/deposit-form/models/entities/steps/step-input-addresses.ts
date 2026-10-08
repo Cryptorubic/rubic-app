@@ -13,7 +13,7 @@ import {
   InputAddressesStepForm
 } from '../../step-types';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
-import { BehaviorSubject, combineLatest, Subscription, takeWhile, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, Subscription, takeWhile, tap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { BlockchainsInfo, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
@@ -82,9 +82,14 @@ export class InputAddressesStep
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
     const formStatusSub = combineLatest([
-      this.inputsForm.statusChanges,
+      this.inputsForm.statusChanges.pipe(
+        filter(status => status === 'VALID' || status === 'INVALID')
+      ),
       detailsStep.depositFlow$
-    ]).subscribe(() => this.validateInputs());
+    ]).subscribe(val => {
+      console.log('status ==>', val);
+      this.validateInputs();
+    });
 
     const depositFlowSub = detailsStep.depositFlow$
       .pipe(
@@ -121,10 +126,11 @@ export class InputAddressesStep
   }
 
   private validateInputs(): void {
-    if (this.inputsForm.disabled) return;
-
     const receiverCtrl = this.inputsForm.controls.receiverAddr;
     const refundCtrl = this.inputsForm.controls.refundAddr;
+    console.log('validateInputs ==>', {
+      valid: this.inputsForm.valid
+    });
 
     if (this.inputsForm.valid) {
       this.updateActionBtnState('confirm_addresses', {
@@ -233,5 +239,6 @@ export class InputAddressesStep
     for (const ctrl in this.inputsForm.controls) {
       this.inputsForm.get(ctrl).updateValueAndValidity();
     }
+    this.inputsForm.updateValueAndValidity();
   }
 }

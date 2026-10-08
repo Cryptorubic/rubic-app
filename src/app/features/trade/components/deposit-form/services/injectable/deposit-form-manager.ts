@@ -166,6 +166,7 @@ export class DepositFormManager {
         case DEPOSIT_FORM_STATE.INPUT_ADDRESSES:
           detailsStep.setActive(true);
           detailsStep.setOpened(true);
+          console.log('INIT_MANAGER ==>', { valid: inputAddressesStep.inputsForm.valid });
 
           inputAddressesStep.setActive(true);
           inputAddressesStep.setOpened(true);
