@@ -11,9 +11,14 @@ import { BehaviorSubject, combineLatestWith, map, startWith } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/injectable/deposit-form-manager';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
-import { DEPOSIT_FORM_TITLE } from './constants/deposit-form-titles';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
+import { pairSupportsDepositFlowViaTxSign } from './utils/pair-supports-tx-flow';
+import {
+  DEPOSIT_FORM_TITLE_WITH_FLOWS,
+  DEPOSIT_FORM_TITLE_WITHOUT_FLOWS
+} from './constants/deposit-form-titles';
+import { DEPOSIT_STEP_ORDER } from './models/deposit-step-order';
 
 @Component({
   selector: 'app-deposit-form',
@@ -32,8 +37,15 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   );
 
   public readonly formTitle$ = this.depositFormState$.pipe(
-    map(depositFormState => DEPOSIT_FORM_TITLE[depositFormState]),
-    startWith(DEPOSIT_FORM_TITLE.IDLE)
+    map(depositFormState => {
+      const detailsStep =
+        this.depositFormManager.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
+      const srcChain = detailsStep.depositDetails.srcToken.blockchain;
+      return pairSupportsDepositFlowViaTxSign(srcChain)
+        ? DEPOSIT_FORM_TITLE_WITH_FLOWS[depositFormState]
+        : DEPOSIT_FORM_TITLE_WITHOUT_FLOWS[depositFormState];
+    }),
+    startWith(DEPOSIT_FORM_TITLE_WITHOUT_FLOWS.IDLE)
   );
 
   public readonly showTradeId$ = this.depositFormState$.pipe(

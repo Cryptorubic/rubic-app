@@ -100,7 +100,8 @@
     "walletNotInstalled": "未安装钱包",
     "crossChainSwapUnavailable": "不幸的是，使用計算出的提供者的這種交換目前不可用。 Rubic 將重新計算您的交換路線。",
     "noSelectedToken": "选择令牌",
-    "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
+    "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。",
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",

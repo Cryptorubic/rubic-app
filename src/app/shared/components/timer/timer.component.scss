@@ -3,7 +3,7 @@
 :host {
   .timer {
     @include flex(row, center, center);
-    gap: 6px;
+    gap: 3px;
     width: fit-content;
     height: fit-content;
     padding: 10px 12px;

@@ -79,7 +79,7 @@ export class DepositFormManager {
     this.depositFormState$ = this._depositFormState$.asObservable();
 
     const initialStepsParams = DepositStepParamsFactory.create(srcChain);
-    const actionButtonsMap = DepositActionButtonsFactory.create(srcChain);
+    const actionButtonsMap = DepositActionButtonsFactory.create(srcChain, headerStore.isMobile);
 
     const steps: DepositFormSteps = [
       new ExchangeDetailsStep(
@@ -112,6 +112,7 @@ export class DepositFormManager {
         this._depositFormState$,
         this._depositFormSteps$,
         swapsStateService,
+        injector,
         swapsControllerService,
         walletConnectorService,
         modalService,

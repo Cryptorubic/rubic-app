@@ -99,7 +99,8 @@
     "walletNotInstalled": "La billetera no está instalada.",
     "crossChainSwapUnavailable": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
     "noSelectedToken": "Seleccionar Token",
-    "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
+    "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n",
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",
