@@ -86,10 +86,7 @@ export class InputAddressesStep
         filter(status => status === 'VALID' || status === 'INVALID')
       ),
       detailsStep.depositFlow$
-    ]).subscribe(val => {
-      console.log('status ==>', val);
-      this.validateInputs();
-    });
+    ]).subscribe(() => this.validateInputs());
 
     const depositFlowSub = detailsStep.depositFlow$
       .pipe(
@@ -129,9 +126,6 @@ export class InputAddressesStep
   private validateInputs(): void {
     const receiverCtrl = this.inputsForm.controls.receiverAddr;
     const refundCtrl = this.inputsForm.controls.refundAddr;
-    console.log('validateInputs ==>', {
-      valid: this.inputsForm.valid
-    });
 
     if (this.inputsForm.valid) {
       this.updateActionBtnState('confirm_addresses', {
