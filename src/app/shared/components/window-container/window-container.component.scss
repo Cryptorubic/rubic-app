@@ -12,7 +12,7 @@
 }
 
 header {
-  padding: 8px var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+  padding: 8px 0 var(--tui-padding-m) 0;
 
   &:has(> *:empty) {
     display: none;

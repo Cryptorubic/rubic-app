@@ -8,7 +8,6 @@
     &__main {
       @include flex(column, center, stretch);
       gap: 16px;
-      margin-top: 16px;
     }
 
     &__header {
@@ -24,6 +23,7 @@
       .deposit-form__title {
         position: absolute;
         left: 50%;
+        white-space: nowrap;
         transform: translateX(-50%);
       }
     }
