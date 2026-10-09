@@ -23,6 +23,7 @@
       .deposit-form__title {
         position: absolute;
         left: 50%;
+        white-space: nowrap;
         transform: translateX(-50%);
       }
     }

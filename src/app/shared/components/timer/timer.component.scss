@@ -18,6 +18,10 @@
 
     .time-counter {
       min-width: 37px;
+
+      @include b($mobile-md) {
+        margin-right: 2px;
+      }
     }
   }
 }
