@@ -1,22 +1,7 @@
-@let showWalletBtn = showWalletBtn$ | async;
-@let actionBtnState = actionBtnState$ | async;
-
 <div class="qr-container">
   <b class="qr-container__label">Scan to send</b>
 
   <div class="qr-container__main">
     <div class="qr-code" [id]="QR_CODE_CONTAINER_ID"></div>
-
-    @if (showWalletBtn) {
-      <app-rubic-button-new
-        appearance="secondary"
-        size="m"
-        [disabled]="!actionBtnState.active"
-        [loading]="actionBtnState.loading"
-        (onClick)="btnClicked.emit()"
-      >
-        {{ actionBtnState.text }}
-      </app-rubic-button-new>
-    }
   </div>
 </div>

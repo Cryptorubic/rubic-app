@@ -1,6 +1,7 @@
 @let step = step$ | async;
 @let showRefundInput = showRefundInput$ | async;
 @let isStepHighlighted = isStepHighlighted$ | async;
+@let actionBtnState = actionBtnState$ | async;
 
 <tui-accordion class="step">
   <tui-accordion-item
@@ -11,7 +12,7 @@
     [(open)]="step.opened"
   >
     <span class="step-counter" [class.step-counter__active]="isStepHighlighted">2</span>
-    <span class="step-title">RECEIVER & REFUND ADDRESSES</span>
+    <span class="step-title">{{ step.title }}</span>
     @if (step.loading) {
       <app-step-loading-label></app-step-loading-label>
     } @else if (!step.active) {
@@ -56,23 +57,24 @@
 
         <div class="step-content__note">
           <b>
-            I confirm that both addresses belong to the wallets I control, these are not CEX
+            I confirm that specified adress(es) belong to the wallets I control, these are not CEX
             accounts
           </b>
         </div>
 
-        <button
-          *ngLet="getActionBtnState() as actionBtnState"
-          tuiButton
-          class="step-content__btn"
-          appearance="primary"
-          type="button"
-          size="m"
-          [disabled]="!actionBtnState.active"
-          (click)="doAction()"
-        >
-          {{ actionBtnState.text }}
-        </button>
+        @if (!actionBtnState.invisible) {
+          <button
+            tuiButton
+            class="step-content__btn"
+            appearance="primary"
+            type="button"
+            size="m"
+            [disabled]="!actionBtnState.active"
+            (click)="doAction()"
+          >
+            {{ actionBtnState.text }}
+          </button>
+        }
       </div>
     </ng-template>
   </tui-accordion-item>

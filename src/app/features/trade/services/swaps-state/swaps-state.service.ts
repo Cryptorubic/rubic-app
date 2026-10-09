@@ -375,7 +375,6 @@ export class SwapsStateService {
 
     if (privateOnly) {
       if (privateTrades.length > 0) return privateTrades[0];
-
       return nonPrivateTrades[0] ?? null;
     }
 
@@ -383,7 +382,7 @@ export class SwapsStateService {
 
     if (privateTrades[0] && isCalculationEnd) return privateTrades[0];
 
-    return null;
+    return tradesWithQuote[0] ?? null;
   }
 
   private sortCrossChainTrades(
@@ -465,6 +464,8 @@ export class SwapsStateService {
     if (!trade) return;
 
     this.userSelectedTradeType = !automaticSelection ? trade.tradeType : null;
+    this.applySelectedTrade(this._tradesStore$.value, false);
+
     this.currentTrade = {
       ...trade,
       selectedByUser: !automaticSelection,

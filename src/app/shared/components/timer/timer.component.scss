@@ -3,7 +3,6 @@
 :host {
   .timer {
     @include flex(row, center, center);
-    gap: 6px;
     width: fit-content;
     height: fit-content;
     padding: 10px 12px;
@@ -13,8 +12,16 @@
     border: 1px solid var(--tui-background-accent-1);
     border-radius: 20px;
 
+    img {
+      margin-right: 6px;
+    }
+
     .time-counter {
       min-width: 37px;
+
+      @include b($mobile-md) {
+        margin-right: 2px;
+      }
     }
   }
 }

@@ -31,6 +31,12 @@ export abstract class DepositStep {
     this._opened = value;
   }
 
+  private _title: string;
+
+  public get title(): string {
+    return this._title;
+  }
+
   protected get depositFormState(): DepositFormState {
     return this._depositFormState$.value;
   }
@@ -47,6 +53,7 @@ export abstract class DepositStep {
     this._active = params.active;
     this._loading = params.loading;
     this._opened = params.opened;
+    this._title = params.title;
   }
 
   public setActive(active: boolean): void {
@@ -59,6 +66,10 @@ export abstract class DepositStep {
 
   public setOpened(opened: boolean): void {
     this._opened = opened;
+  }
+
+  public setTitle(title: string): void {
+    this._title = title;
   }
 
   protected triggerStepsUpdate(): void {

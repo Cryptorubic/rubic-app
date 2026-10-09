@@ -99,7 +99,8 @@
     "walletNotInstalled": "Cüzdan yüklü değil.",
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token Seç",
-    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
+    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir.",
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",
