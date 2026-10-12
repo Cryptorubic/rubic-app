@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DepositFormManager } from '../../../../services/deposit-form-manager';
-import { map, share, startWith } from 'rxjs';
+import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
+import { map, startWith, switchMap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { BlockchainName } from '@cryptorubic/core';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
@@ -16,18 +16,20 @@ import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 })
 export class DepositInputAddressesStepComponent {
   public readonly step$ = this.depositFormManager.depositFormSteps$.pipe(
-    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES]),
-    share()
+    map(steps => steps[DEPOSIT_STEP_ORDER.INPUT_ADDRESSES])
   );
 
   public readonly isStepHighlighted$ = this.depositFormManager.depositFormState$.pipe(
-    map(state => state === DEPOSIT_FORM_STATE.IDLE)
+    map(state => state === DEPOSIT_FORM_STATE.INPUT_ADDRESSES)
   );
 
-  public readonly showRefundInput$ = this.step$.pipe(
+  public readonly showRefundInput$ = this.depositFormManager.depositFormState$.pipe(
+    switchMap(() => this.step$),
     map(step => step.isRefundAddressRequired()),
     startWith(false)
   );
+
+  public readonly actionBtnState$ = this.step$.pipe(map(() => this.getActionBtnState()));
 
   public readonly srcChain: BlockchainName;
 
@@ -48,10 +50,11 @@ export class DepositInputAddressesStepComponent {
 
   public doAction(): void {
     switch (this.depositFormManager.depositFormState) {
+      case DEPOSIT_FORM_STATE.INPUT_ADDRESSES:
       case DEPOSIT_FORM_STATE.IDLE:
         this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.INPUT_ADDRESSES, 'confirm_addresses');
         break;
-      case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
+      default:
         this.depositFormManager.doAction(DEPOSIT_STEP_ORDER.INPUT_ADDRESSES, 'change_addresses');
         break;
     }
@@ -59,19 +62,16 @@ export class DepositInputAddressesStepComponent {
 
   public getActionBtnState(): ActionBtnState {
     switch (this.depositFormManager.depositFormState) {
+      case DEPOSIT_FORM_STATE.INPUT_ADDRESSES:
       case DEPOSIT_FORM_STATE.IDLE:
         return this.depositFormManager.getActionBtnState(
           DEPOSIT_STEP_ORDER.INPUT_ADDRESSES,
           'confirm_addresses'
         );
-      case DEPOSIT_FORM_STATE.WAITING_FOR_SENDING_DEPOSIT:
+      default:
         return this.depositFormManager.getActionBtnState(
           DEPOSIT_STEP_ORDER.INPUT_ADDRESSES,
           'change_addresses'
-        );
-      default:
-        throw new Error(
-          `[DepositInputAddressesStepComponent_getActionBtnState] Unsupported depositFormState ${this.depositFormManager.depositFormState}.`
         );
     }
   }

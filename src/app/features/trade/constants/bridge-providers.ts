@@ -200,6 +200,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}lifuel.png`,
     name: 'Li Fuel'
   },
+  lizex: {
+    averageTime: 5,
+    color: '#FFFFFF',
+    image: `${imageBasePath}lizex.svg`,
+    name: 'Lizex'
+  },
   //MMMMMMMMMMMMMMMMMMM
   maker: {
     averageTime: 5,
@@ -337,6 +343,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#000000',
     image: `${imageBasePath}retro-bridge.svg`,
     name: 'Retro Bridge'
+  },
+  rocketx_bridge: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${privateTradeImageBasePath}rocketx.png`,
+    name: 'RocketX'
   },
   router: {
     averageTime: 5,

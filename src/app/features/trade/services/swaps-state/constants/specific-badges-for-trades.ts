@@ -122,7 +122,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: showBerachainLabel
     }
   ],
-  [CROSS_CHAIN_TRADE_TYPE.CCE_CASH]: [
+  [CROSS_CHAIN_TRADE_TYPE.LIZEX]: [
     {
       fromSdk: false,
       getBgColor: () => '#00E28E',

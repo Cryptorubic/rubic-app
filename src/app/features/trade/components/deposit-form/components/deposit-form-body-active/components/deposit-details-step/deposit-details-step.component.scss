@@ -21,9 +21,46 @@
       @include accordion-counter();
     }
 
+    &-counter__active {
+      @include accordion-counter-active();
+    }
+
     &-content {
       @include accordion-content();
-      @include flex(row, center, space-between);
+      @include flex(column, normal, normal);
+      gap: 12px;
+
+      &__assets {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        width: 100%;
+
+        app-asset-details {
+          flex: 1;
+        }
+      }
+
+      &__buttons {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        width: 100%;
+
+        app-rubic-button-new {
+          flex: 1;
+          width: 100%;
+          max-height: 40px;
+
+          ::ng-deep button {
+            max-height: 40px;
+            white-space: normal;
+          }
+        }
+
+        .or {
+          color: var(--tui-text-secondary);
+          font-weight: 600;
+        }
+      }
     }
   }
 }
