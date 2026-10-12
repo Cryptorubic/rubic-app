@@ -2,9 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '@app/core/services/http/http.service';
 import { ClaimHistoryItem } from './models/claim-history-item';
-import { SubscriptionItem } from './models/subscription-item';
-import { UserPoints } from './models/user-points';
+import { LoyaltyEligibility, LoyaltyEligibilityParams } from './models/loyalty-eligibility';
 import { SignedLoyaltyRequest } from './models/signed-loyalty-request';
+import { SubscriptionItem } from './models/subscription-item';
+import { TradePoints } from './models/trade-points';
+import { UserPoints } from './models/user-points';
 
 @Injectable({ providedIn: 'root' })
 export class LoyaltyApiService {
@@ -32,5 +34,13 @@ export class LoyaltyApiService {
 
   public getClaimsHistory(body: SignedLoyaltyRequest): Observable<ClaimHistoryItem[]> {
     return this.httpService.post<ClaimHistoryItem[]>('v3/internal/loyalty/claims/history', body);
+  }
+
+  public getEligibility(params: LoyaltyEligibilityParams): Observable<LoyaltyEligibility> {
+    return this.httpService.get<LoyaltyEligibility>('v3/internal/loyalty/eligibility', params);
+  }
+
+  public getTradePoints(rubicId: string): Observable<TradePoints> {
+    return this.httpService.get<TradePoints>('v3/internal/loyalty/trade_points', { rubicId });
   }
 }

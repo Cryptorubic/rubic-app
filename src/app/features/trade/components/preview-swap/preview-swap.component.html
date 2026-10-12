@@ -197,6 +197,7 @@
           }"
           [averageTimeMins]="getAverageTimeString(state?.tradeState)"
           [time95PercentSwapsMins]="getTime95PercentsSwapsString(state?.tradeState)"
+          [earnsPoints]="(earnsPoints$ | async) === true"
         ></app-swap-data-element>
       </div>
 
@@ -223,9 +224,35 @@
         <app-transaction-details></app-transaction-details>
       </div>
 
-      <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info></app-success-swap-info>
-      </div>
+      @if (state.transaction.step === 'success') {
+        <div class="preview__success-info">
+          @let earnedPoints = earnedPoints$ | async;
+          @let points = earnedPoints?.points;
+          @if (earnedPoints?.loading) {
+            <div class="points-earned-container">
+              <tui-loader class="points-earned__loader" [showLoader]="true"></tui-loader>
+            </div>
+          } @else if (points !== null) {
+            <div class="points-earned-container">
+              <div class="points-earned">
+                <img
+                  src="assets/images/icons/earned-points-star.svg"
+                  alt="Earned Points Star"
+                  width="24"
+                  height="24"
+                />
+                <div class="points-earned__title">+{{ points }} Points Earned</div>
+                <div class="points-earned__note">
+                  Turn your points into
+                  <a routerLink="/rewards" class="points-earned__link">Rewards</a>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <app-success-swap-info></app-success-swap-info>
+          }
+        </div>
+      }
     </div>
 
     <ng-container *ngIf="state.tradeState.trade.warnings.length">

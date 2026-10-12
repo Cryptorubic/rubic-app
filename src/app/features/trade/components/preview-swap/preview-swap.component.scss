@@ -112,6 +112,45 @@
   }
 }
 
+.points-earned-container {
+  display: flex;
+  justify-content: center;
+  background: url('/assets/images/success-bg.svg');
+  background-size: cover;
+}
+
+.points-earned {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: var(--tui-padding-l) 25px;
+  text-align: center;
+  background: var(--tui-background-base);
+
+  &__title {
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  &__note {
+    color: var(--tui-text-secondary);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  &__link {
+    color: var(--tui-background-accent-1);
+    text-decoration: underline;
+  }
+
+  &__loader {
+    padding: var(--tui-padding-l);
+  }
+}
+
 app-swap-data-element ::ng-deep {
   .provider-info {
     padding: var(--tui-padding-l);

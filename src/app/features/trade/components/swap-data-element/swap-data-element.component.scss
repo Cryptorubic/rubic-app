@@ -1,6 +1,7 @@
 @use 'src/scss/core' as *;
 
 .provider-info {
+  position: relative;
   display: flex;
   gap: var(--tui-padding-l);
   justify-content: space-between;
@@ -36,6 +37,14 @@
 
     &.time {
       margin-left: auto;
+    }
+
+    &.points {
+      position: absolute;
+      left: 50%;
+      gap: 6px;
+      transform: translateX(-50%);
+      cursor: default;
     }
 
     &.gas-tokens {

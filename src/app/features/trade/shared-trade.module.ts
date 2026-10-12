@@ -5,6 +5,7 @@ import {
   TuiTagModule
 } from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -189,6 +190,7 @@ import { QrCodeContainerComponent } from './components/deposit-form/components/d
   ],
   imports: [
     CommonModule,
+    RouterModule,
     SharedModule,
     ...TuiExpand,
     TuiScrollbar,
