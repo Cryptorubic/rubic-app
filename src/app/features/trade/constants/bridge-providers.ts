@@ -344,6 +344,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}retro-bridge.svg`,
     name: 'Retro Bridge'
   },
+  rocketx_bridge: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${privateTradeImageBasePath}rocketx.png`,
+    name: 'RocketX'
+  },
   router: {
     averageTime: 5,
     color: '#000000',
