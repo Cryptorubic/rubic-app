@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
-import { DepositFormManager } from '../../services/deposit-form-manager';
+import { DepositFormManager } from '../../services/injectable/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../models/deposit-step-order';
 import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-scanner';
 import { find, first, forkJoin, map, Observable, startWith } from 'rxjs';

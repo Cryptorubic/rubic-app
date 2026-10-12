@@ -12,4 +12,6 @@ export class AssetDetailsComponent {
   @Input({ required: true }) asset: Required<AssetSelector>;
 
   @Input() tokenAmount: string;
+
+  @Input() justifyContent: 'center' | 'end' | 'start' = 'start';
 }

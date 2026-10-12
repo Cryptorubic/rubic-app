@@ -6,12 +6,17 @@ import {
   DepositFormSteps,
   DepositStepName
 } from '../../deposit-form-step-types';
-import { ActionBtnState, DepositStepParams, InputAddressesStepForm } from '../../step-types';
+import {
+  ActionBtnState,
+  DEPOSIT_FLOW,
+  DepositStepParams,
+  InputAddressesStepForm
+} from '../../step-types';
 import { DepositService } from '@app/features/trade/services/deposit/deposit.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, Subscription, takeWhile, tap } from 'rxjs';
 import { DEPOSIT_STEP_ORDER } from '../../deposit-step-order';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
+import { BlockchainsInfo, CrossChainTradeType, TokenAmount } from '@cryptorubic/core';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { InputAddressesStepAction } from '../../deposit-form-step-actions';
 import { IWithHooks } from '../abstracts/interfaces';
@@ -22,6 +27,7 @@ import { isRefundAddressRequired } from '@app/features/trade/services/refund-ser
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 export class InputAddressesStep
   extends DepositStepWithAction<InputAddressesStepAction>
@@ -42,6 +48,8 @@ export class InputAddressesStep
   private readonly _tradeState: SelectedTrade;
 
   constructor(
+    depositStepParams: DepositStepParams,
+    actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState>,
     _depositFormState$: BehaviorSubject<DepositFormState>,
     _depositFormSteps$: BehaviorSubject<DepositFormSteps>,
     swapsStateService: SwapsStateService,
@@ -49,21 +57,10 @@ export class InputAddressesStep
     private readonly modalService: ModalService,
     private readonly tradePageService: TradePageService,
     private readonly headerStore: HeaderStore,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
-    const depositStepParams: DepositStepParams = { active: true, loading: false, opened: true };
-    const actionButtonsMap: Record<InputAddressesStepAction, ActionBtnState> = {
-      confirm_addresses: {
-        active: false,
-        text: 'Confirm'
-      },
-      change_addresses: {
-        active: false,
-        text: 'Change Addresses'
-      }
-    };
     super(depositStepParams, _depositFormState$, _depositFormSteps$, actionButtonsMap);
-
     this._tradeState = { ...swapsStateService.tradeState };
   }
 
@@ -77,17 +74,49 @@ export class InputAddressesStep
 
   public onInit(): void {
     this.initValidators();
-    this.inputsForm.patchValue({ receiverAddr: this.targetNetworkAddressService.address });
 
-    /**
-     * hack to update button state after async validation of this.targetNetworkAddressService.address
-     */
-    setTimeout(() => this.validateInputs(), 10);
-    const formStatusSub = this.inputsForm.statusChanges.subscribe(() => {
-      this.validateInputs();
-    });
+    if (!this.isRefundAddressRequired()) {
+      this.setTitle('RECEIVER ADDRESS');
+    }
 
-    this._subs.push(formStatusSub);
+    const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
+
+    const formStatusSub = combineLatest([
+      this.inputsForm.statusChanges.pipe(
+        filter(status => status === 'VALID' || status === 'INVALID')
+      ),
+      detailsStep.depositFlow$
+    ]).subscribe(() => this.validateInputs());
+
+    const depositFlowSub = detailsStep.depositFlow$
+      .pipe(
+        tap(depositFlow => {
+          const srcChain = this._tradeState.trade.from.blockchain;
+          const dstChain = this._tradeState.trade.to.blockchain;
+          const srcChainType = BlockchainsInfo.getChainType(srcChain);
+          const dstChainType = BlockchainsInfo.getChainType(dstChain);
+          const userChainType = this.walletConnectorService.chainType;
+
+          const receiverAddr =
+            srcChainType === dstChainType &&
+            srcChainType === userChainType &&
+            !this._tradeState.private
+              ? this.targetNetworkAddressService.address.trim() ||
+                this.walletConnectorService.address
+              : this.targetNetworkAddressService.address.trim();
+
+          this.inputsForm.patchValue({ receiverAddr });
+
+          if (depositFlow === DEPOSIT_FLOW.TX) {
+            const refundAddr = this.walletConnectorService.address.trim() || '';
+            this.inputsForm.patchValue({ refundAddr });
+          }
+        }),
+        takeWhile(depositFlow => depositFlow !== DEPOSIT_FLOW.TX)
+      )
+      .subscribe();
+
+    this._subs.push(formStatusSub, depositFlowSub);
   }
 
   public onDestroy(): void {
@@ -140,12 +169,10 @@ export class InputAddressesStep
     const tradeInfoStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.TRADE_INFO];
     const detailsStep = this.depositFormSteps[DEPOSIT_STEP_ORDER.EXCHANGE_DETAILS];
 
-    this.setOpened(false);
     tradeInfoStep.setLoading(true);
     this.updateActionBtnState('confirm_addresses', { active: false });
-    for (const ctrl in this.inputsForm.controls) {
-      this.inputsForm.get(ctrl).disable();
-    }
+    this.inputsForm.disable();
+
     this.triggerStepsUpdate();
 
     try {
@@ -184,7 +211,7 @@ export class InputAddressesStep
       this.inputsForm.get(ctrl).enable();
     }
     this.depositService.cleanup();
-    this._depositFormState$.next(DEPOSIT_FORM_STATE.IDLE);
+    this._depositFormState$.next(DEPOSIT_FORM_STATE.INPUT_ADDRESSES);
   }
 
   public isRefundAddressRequired(): boolean {
@@ -203,7 +230,10 @@ export class InputAddressesStep
     if (this.isRefundAddressRequired()) {
       this.inputsForm.controls.refundAddr.addValidators([Validators.required]);
     }
-    this.inputsForm.controls.refundAddr.hasValidator(Validators.required);
+
+    for (const ctrl in this.inputsForm.controls) {
+      this.inputsForm.get(ctrl).updateValueAndValidity();
+    }
     this.inputsForm.updateValueAndValidity();
   }
 }

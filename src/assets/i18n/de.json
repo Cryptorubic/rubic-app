@@ -99,7 +99,8 @@
     "walletNotInstalled": "Kein Wallet installiert.",
     "crossChainSwapUnavailable": "Leider ist dieser Swap mit dem berechneten Anbieter derzeit nicht verfügbar. Rubic berechnet die Route für Ihren Tausch neu.",
     "noSelectedToken": "Token Auswählen",
-    "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt."
+    "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt.",
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",

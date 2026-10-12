@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { map, share } from 'rxjs';
-import { DepositFormManager } from '../../../../services/deposit-form-manager';
+import { DepositFormManager } from '../../../../services/injectable/deposit-form-manager';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
 
 @Component({
