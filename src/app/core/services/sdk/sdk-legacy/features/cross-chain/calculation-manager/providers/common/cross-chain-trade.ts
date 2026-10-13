@@ -159,6 +159,10 @@ export abstract class CrossChainTrade<T = unknown> {
 
   public readonly warnings: ErrorInterface[];
 
+  public get integratorAddress(): string | undefined {
+    return this.apiQuote.integratorAddress;
+  }
+
   protected constructor(
     protected readonly providerAddress: string,
     protected readonly routePath: RubicStep[],

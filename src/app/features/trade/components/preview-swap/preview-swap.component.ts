@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { combineLatestWith, firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import {
+  combineLatestWith,
+  firstValueFrom,
+  forkJoin,
+  Observable,
+  of,
+  Subscription,
+  timer
+} from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -9,6 +17,7 @@ import {
   distinctUntilChanged,
   first,
   map,
+  shareReplay,
   startWith,
   switchMap,
   takeWhile
@@ -46,7 +55,9 @@ import { TargetNetworkAddressService } from '../../services/target-network-addre
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { LoyaltyApiService } from '@app/core/services/backend/loyalty-api/loyalty-api.service';
+import { LoyaltyEligibilityParams } from '@app/core/services/backend/loyalty-api/models/loyalty-eligibility';
 import { TradePoints } from '@app/core/services/backend/loyalty-api/models/trade-points';
+import { percentAddress } from '../../services/proxy-fee-service/const/fee-type-address-mapping';
 
 interface EarnedPointsView {
   readonly loading: boolean;
@@ -93,37 +104,42 @@ export class PreviewSwapComponent implements OnDestroy {
       (previous, next) =>
         previous?.type === next?.type &&
         previous?.from.blockchain === next?.from.blockchain &&
-        previous?.to.blockchain === next?.to.blockchain
+        previous?.to.blockchain === next?.to.blockchain &&
+        this.isZeroFeeIntegrator(previous) === this.isZeroFeeIntegrator(next)
     ),
     switchMap(trade => {
       if (!trade) {
         return of(false);
       }
 
-      return this.loyaltyApiService
-        .getEligibility({
-          provider: trade.type,
-          fromBlockchain: trade.from.blockchain,
-          toBlockchain: trade.to.blockchain
-        })
-        .pipe(
-          map(response => response.eligible),
-          catchError(() => of(false))
-        );
-    })
+      return this.loyaltyApiService.getEligibility(this.getEligibilityParams(trade)).pipe(
+        map(response => response.eligible),
+        catchError(() => of(false))
+      );
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   public readonly earnedPoints$: Observable<EarnedPointsView> = this.transactionState$.pipe(
     map(state => state.step),
     distinctUntilChanged(),
-    switchMap(step =>
-      step === 'success'
-        ? this.previewSwapService.selectedTradeState$.pipe(
-            first(),
-            switchMap(tradeState => this.pollTradePoints(tradeState?.trade?.rubicId))
-          )
-        : of<EarnedPointsView>({ loading: false, points: null })
-    )
+    switchMap(step => {
+      if (step !== 'success') {
+        return of<EarnedPointsView>({ loading: false, points: null });
+      }
+
+      return this.earnsPoints$.pipe(
+        first(),
+        switchMap(eligible =>
+          eligible
+            ? this.previewSwapService.selectedTradeState$.pipe(
+                first(),
+                switchMap(tradeState => this.pollTradePoints(tradeState?.trade?.rubicId))
+              )
+            : of<EarnedPointsView>({ loading: false, points: null })
+        )
+      );
+    })
   );
 
   public readonly buttonState$ = this.transactionState$.pipe(
@@ -158,6 +174,8 @@ export class PreviewSwapComponent implements OnDestroy {
     })
   );
 
+  private eligibilitySubscription?: Subscription;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly previewSwapService: PreviewSwapService,
@@ -178,6 +196,7 @@ export class PreviewSwapComponent implements OnDestroy {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
+    this.eligibilitySubscription = this.earnsPoints$.subscribe();
   }
 
   public backToForm(): void {
@@ -382,7 +401,23 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.eligibilitySubscription?.unsubscribe();
     this.previewSwapService.deactivatePage();
+  }
+
+  private getEligibilityParams(trade: CrossChainTrade | OnChainTrade): LoyaltyEligibilityParams {
+    return {
+      provider: trade.type,
+      fromBlockchain: trade.from.blockchain,
+      toBlockchain: trade.to.blockchain,
+      ...(this.isZeroFeeIntegrator(trade) ? { isZeroFee: true } : {})
+    };
+  }
+
+  private isZeroFeeIntegrator(trade: CrossChainTrade | OnChainTrade | null): boolean {
+    const integratorAddress = trade?.integratorAddress;
+
+    return !!integratorAddress && compareAddresses(integratorAddress, percentAddress.zeroFee);
   }
 
   private pollTradePoints(rubicId: string | undefined): Observable<EarnedPointsView> {
