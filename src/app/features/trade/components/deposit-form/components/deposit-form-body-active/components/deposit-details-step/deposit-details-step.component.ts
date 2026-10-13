@@ -6,6 +6,7 @@ import { DepositFormManager } from '../../../../services/injectable/deposit-form
 import { DEPOSIT_STEP_ORDER } from '../../../../models/deposit-step-order';
 import { getTokenAsset } from '../../../../utils/get-token-asset';
 import { DEPOSIT_FORM_STATE } from '../../../../models/deposit-form-states';
+import { EarnedPointsService } from '@app/features/trade/services/earned-points/earned-points.service';
 
 @Component({
   selector: 'app-deposit-details-step',
@@ -72,7 +73,7 @@ export class DepositDetailsStepComponent {
     )
   );
 
-  public readonly earnsPoints$ = this.depositFormManager.earnsPoints$;
+  public readonly earnsPoints$ = this.earnedPointsService.earnsPoints$;
 
   public readonly manualBtnState$ = combineLatest([
     this.step$,
@@ -88,7 +89,8 @@ export class DepositDetailsStepComponent {
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
-    private readonly depositFormManager: DepositFormManager
+    private readonly depositFormManager: DepositFormManager,
+    private readonly earnedPointsService: EarnedPointsService
   ) {}
 
   public selectViaWalletFlow(): void {

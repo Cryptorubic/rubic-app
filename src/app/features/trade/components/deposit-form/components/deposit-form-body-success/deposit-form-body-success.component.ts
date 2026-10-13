@@ -4,7 +4,7 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
 import { DepositFormManager } from '../../services/injectable/deposit-form-manager';
 import { DEPOSIT_STEP_ORDER } from '../../models/deposit-step-order';
 import { blockchainScanner } from '@app/shared/constants/blockchain/blockchain-scanner';
-import { find, first, forkJoin, map, Observable, of, startWith, switchMap } from 'rxjs';
+import { find, first, forkJoin, map, Observable, startWith } from 'rxjs';
 import { CrossChainDepositData } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { DepositTrade } from '@app/features/trade/models/deposit-trade';
 import { ShortAddressPipe } from '@app/shared/pipes/short-address.pipe';
@@ -15,6 +15,7 @@ import { OnChainTradeType } from '@cryptorubic/core';
 import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { msToMinsSecs } from '@app/shared/components/timer/utils/ms-to-friendly-time';
 import { EarnedPointsView } from '@app/features/trade/models/earned-points-view';
+import { EarnedPointsService } from '@app/features/trade/services/earned-points/earned-points.service';
 
 export type RowConfig = {
   key: string;
@@ -57,21 +58,14 @@ export class DepositFormBodySuccessComponent {
   public readonly exchangeDuration$ = this.depositFormManager.exchangeDuration$;
 
   public readonly earnedPoints$: Observable<EarnedPointsView> =
-    this.depositFormManager.earnsPoints$.pipe(
-      first(),
-      switchMap(eligible =>
-        eligible
-          ? this.depositFormManager.depositTrade$.pipe(
-              first(),
-              switchMap(trade => this.depositFormManager.pollEarnedPoints(trade?.rubicId))
-            )
-          : of({ loading: false, points: null })
-      )
+    this.earnedPointsService.earnedPointsFor(
+      this.depositFormManager.depositTrade$.pipe(map(trade => trade?.rubicId))
     );
 
   constructor(
     private readonly tradePageService: TradePageService,
-    private readonly depositFormManager: DepositFormManager
+    private readonly depositFormManager: DepositFormManager,
+    private readonly earnedPointsService: EarnedPointsService
   ) {}
 
   public startNewExchange(): void {
