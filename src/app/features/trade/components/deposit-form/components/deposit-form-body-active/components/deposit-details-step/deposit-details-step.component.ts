@@ -72,6 +72,8 @@ export class DepositDetailsStepComponent {
     )
   );
 
+  public readonly earnsPoints$ = this.depositFormManager.earnsPoints$;
+
   public readonly manualBtnState$ = combineLatest([
     this.step$,
     this.depositFormManager.depositFormState$

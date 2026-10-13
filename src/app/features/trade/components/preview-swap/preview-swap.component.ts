@@ -58,11 +58,7 @@ import { LoyaltyApiService } from '@app/core/services/backend/loyalty-api/loyalt
 import { LoyaltyEligibilityParams } from '@app/core/services/backend/loyalty-api/models/loyalty-eligibility';
 import { TradePoints } from '@app/core/services/backend/loyalty-api/models/trade-points';
 import { percentAddress } from '../../services/proxy-fee-service/const/fee-type-address-mapping';
-
-interface EarnedPointsView {
-  readonly loading: boolean;
-  readonly points: number | null;
-}
+import { EarnedPointsView } from '../../models/earned-points-view';
 
 @Component({
   standalone: false,

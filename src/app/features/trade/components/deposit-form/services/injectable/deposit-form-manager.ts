@@ -1,5 +1,14 @@
 import { ChangeDetectorRef, DestroyRef, Inject, Injectable, Injector } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, timer } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeWhile
+} from 'rxjs/operators';
 import { DEPOSIT_FORM_STATE, DepositFormState } from '../../models/deposit-form-states';
 import { DepositFormSteps } from '../../models/deposit-form-step-types';
 import { isDepositStepWithAction } from '../../models/entities/abstracts/deposit-step-with-action';
@@ -27,6 +36,17 @@ import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/fe
 import { DepositStepParamsFactory } from '../factory/deposit-step-params-factory';
 import { DepositActionButtonsFactory } from '../factory/deposit-action-buttons-factory';
 import { pairSupportsDepositFlowViaTxSign } from '../../utils/pair-supports-tx-flow';
+import { PreviewSwapService } from '@app/features/trade/services/preview-swap/preview-swap.service';
+import { LoyaltyApiService } from '@app/core/services/backend/loyalty-api/loyalty-api.service';
+import { LoyaltyEligibilityParams } from '@app/core/services/backend/loyalty-api/models/loyalty-eligibility';
+import { TradePoints } from '@app/core/services/backend/loyalty-api/models/trade-points';
+import { percentAddress } from '@app/features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
+import { compareAddresses } from '@shared/utils/utils';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { EarnedPointsView } from '@app/features/trade/models/earned-points-view';
+
+const TRADE_POINTS_POLL_MS = 3_000;
 
 @Injectable()
 export class DepositFormManager {
@@ -53,8 +73,32 @@ export class DepositFormManager {
 
   public readonly exchangeDuration$ = this.depositService.exchangeDuration$;
 
+  public readonly earnsPoints$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState?.trade ?? null),
+    distinctUntilChanged(
+      (previous, next) =>
+        previous?.type === next?.type &&
+        previous?.from.blockchain === next?.from.blockchain &&
+        previous?.to.blockchain === next?.to.blockchain &&
+        this.isZeroFeeIntegrator(previous) === this.isZeroFeeIntegrator(next)
+    ),
+    switchMap(trade => {
+      if (!trade) {
+        return of(false);
+      }
+
+      return this.loyaltyApiService.getEligibility(this.getEligibilityParams(trade)).pipe(
+        map(response => response.eligible),
+        catchError(() => of(false))
+      );
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
   constructor(
     private readonly depositService: DepositService,
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly loyaltyApiService: LoyaltyApiService,
     swapsStateService: SwapsStateService,
     modalService: ModalService,
     tradePageService: TradePageService,
@@ -260,6 +304,21 @@ export class DepositFormManager {
     }
   }
 
+  public pollEarnedPoints(rubicId: string | undefined): Observable<EarnedPointsView> {
+    if (!rubicId) {
+      return of({ loading: false, points: null });
+    }
+
+    return timer(0, TRADE_POINTS_POLL_MS).pipe(
+      switchMap(() =>
+        this.loyaltyApiService.getTradePoints(rubicId).pipe(catchError(() => of(null)))
+      ),
+      map(response => this.toEarnedPoints(response)),
+      startWith<EarnedPointsView>({ loading: true, points: null }),
+      takeWhile(result => result.loading, true)
+    );
+  }
+
   public cleanup(): void {
     this.depositFormSteps.forEach(step => {
       if (isStepWithHooks(step)) step.onDestroy();
@@ -296,5 +355,32 @@ export class DepositFormManager {
       ActionBtnState
     >;
     return actionBtuttonsMap[stepAction];
+  }
+
+  private getEligibilityParams(trade: CrossChainTrade | OnChainTrade): LoyaltyEligibilityParams {
+    return {
+      provider: trade.type,
+      fromBlockchain: trade.from.blockchain,
+      toBlockchain: trade.to.blockchain,
+      ...(this.isZeroFeeIntegrator(trade) ? { isZeroFee: true } : {})
+    };
+  }
+
+  private isZeroFeeIntegrator(trade: CrossChainTrade | OnChainTrade | null): boolean {
+    const integratorAddress = trade?.integratorAddress;
+
+    return !!integratorAddress && compareAddresses(integratorAddress, percentAddress.zeroFee);
+  }
+
+  private toEarnedPoints(response: TradePoints | null): EarnedPointsView {
+    if (!response || response.pointsStatus === 'rejected') {
+      return { loading: false, points: null };
+    }
+
+    if (response.pointsStatus === 'pending' || response.pointsStatus === 'confirmed') {
+      return { loading: false, points: response.points };
+    }
+
+    return { loading: true, points: null };
   }
 }

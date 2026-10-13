@@ -7,7 +7,7 @@ import {
   inject,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject, combineLatestWith, map, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, map, startWith, Subscription } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/injectable/deposit-form-manager';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
@@ -63,6 +63,8 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
 
   private readonly destroyRef = inject(DestroyRef);
 
+  private eligibilitySubscription?: Subscription;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly depositFormManager: DepositFormManager,
@@ -72,6 +74,7 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activateDepositPage();
+    this.eligibilitySubscription = this.depositFormManager.earnsPoints$.subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -79,6 +82,7 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.eligibilitySubscription?.unsubscribe();
     this.depositFormManager.cleanup();
   }
 
