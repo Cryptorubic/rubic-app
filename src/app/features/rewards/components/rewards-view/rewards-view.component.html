@@ -26,13 +26,15 @@
           }
         </div>
 
-        <img
-          class="card__image"
-          [src]="card.imageUrl"
-          [alt]="card.title"
-          width="242"
-          height="150"
-        />
+        @if (card.imageUrl) {
+          <img
+            class="card__image"
+            [src]="card.imageUrl"
+            [alt]="card.title"
+            width="242"
+            height="150"
+          />
+        }
 
         @if (isWalletConnected()) {
           @let variant = selectedVariant(card);

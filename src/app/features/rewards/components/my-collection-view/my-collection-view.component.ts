@@ -7,6 +7,7 @@ import {
   Injector,
   signal
 } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader } from '@taiga-ui/core';
@@ -15,12 +16,14 @@ import { firstValueFrom } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
+import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
 import { ClaimHistoryItem } from '@core/services/backend/loyalty-api/models/claim-history-item';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
-import { EMPTY_CARD } from '../../constants/empty-card';
-import { PLACEHOLDER_CARD } from '../../constants/placeholder-card';
-import { RewardCard } from '../../models/reward-card';
+import { EMPTY_COLLECTION_CARD } from '../../constants/empty-card';
+import { PLACEHOLDER_COLLECTION_CARD } from '../../constants/placeholder-card';
+import { ENVIRONMENT } from 'src/environments/environment';
+import { CollectionCard } from '../../models/collection-card';
 
 const PAGE_SIZE = 6;
 
@@ -36,6 +39,7 @@ type CollectionViewState = 'connect' | 'prompt' | 'loading' | 'ready';
 export class MyCollectionViewComponent {
   private readonly authService = inject(AuthService);
   private readonly loyaltyApiService = inject(LoyaltyApiService);
+  private readonly sessionStorage = inject(LoyaltySessionStorage);
   private readonly walletConnector = inject(WalletConnectorService);
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
@@ -48,6 +52,8 @@ export class MyCollectionViewComponent {
 
   private readonly viewState = signal<CollectionViewState>('connect');
 
+  private syncedAddress: string | null | undefined = undefined;
+
   protected readonly state = this.viewState.asReadonly();
 
   protected readonly pageCount = computed(() => Math.ceil(this.collection().length / PAGE_SIZE));
@@ -59,30 +65,24 @@ export class MyCollectionViewComponent {
 
   protected readonly showPagination = computed(() => this.collection().length > PAGE_SIZE);
 
-  protected readonly visibleCards = computed<RewardCard[]>(() => {
+  protected readonly visibleCards = computed<CollectionCard[]>(() => {
     const start = this.currentPage() * PAGE_SIZE;
-    const cards: RewardCard[] = this.collection()
+    const cards: CollectionCard[] = this.collection()
       .slice(start, start + PAGE_SIZE)
-      .map((claim): RewardCard => ({
+      .map(claim => ({
+        ...claim,
         id: claim.claimId,
-        title: claim.subscriptionTitle,
-        subTitle: '',
-        description: '',
-        imageUrl: '',
-        isActive: true,
-        variants: [],
-        selectedVariantId: null,
         isDetailsOpened: false
       }));
 
     if (cards.length === 0) {
-      cards.push(PLACEHOLDER_CARD);
+      cards.push(PLACEHOLDER_COLLECTION_CARD);
     }
 
     if (cards.length < PAGE_SIZE) {
       cards.push(
         ...Array.from({ length: PAGE_SIZE - cards.length }, (_, index) => ({
-          ...EMPTY_CARD,
+          ...EMPTY_COLLECTION_CARD,
           id: `empty-${this.currentPage()}-${index}`
         }))
       );
@@ -98,9 +98,30 @@ export class MyCollectionViewComponent {
   }
 
   private syncWalletAddress(address: string | null): void {
+    if (this.syncedAddress !== undefined && this.sameAddress(this.syncedAddress, address)) {
+      return;
+    }
+
+    if (this.syncedAddress) {
+      this.sessionStorage.delete(this.syncedAddress);
+    }
+
+    this.syncedAddress = address;
     this.collection.set([]);
     this.page.set(0);
-    this.viewState.set(address ? 'prompt' : 'connect');
+
+    if (!address) {
+      this.viewState.set('connect');
+      return;
+    }
+
+    const token = this.sessionStorage.get(address);
+    if (!token) {
+      this.viewState.set('prompt');
+      return;
+    }
+
+    this.loadCollection(address, token);
   }
 
   protected connectWallet(): void {
@@ -121,28 +142,42 @@ export class MyCollectionViewComponent {
     this.viewState.set('loading');
     try {
       const { message } = await firstValueFrom(
-        this.loyaltyApiService.signMessage(address, 'history')
+        this.loyaltyApiService.createSessionMessage(
+          address,
+          !ENVIRONMENT.local ? location.hostname : undefined
+        )
+      );
+      const signature = await this.signPersonalMessage(message, address);
+      const session = await firstValueFrom(
+        this.loyaltyApiService.openSession({ userAddress: address, message, signature })
       );
 
-      const signature = await this.signPersonalMessage(message, address);
-
-      await this.getCollection(address, message, signature);
-      this.viewState.set('ready');
+      this.sessionStorage.set(address, session.token);
+      await this.loadCollection(address, session.token);
     } catch {
       this.viewState.set('prompt');
     }
   }
 
-  private async getCollection(address: string, message: string, signature: string): Promise<void> {
-    const history = await firstValueFrom(
-      this.loyaltyApiService.getClaimsHistory({
-        userAddress: address,
-        message,
-        signature
-      })
-    );
+  private async loadCollection(address: string, token: string): Promise<void> {
+    this.viewState.set('loading');
 
-    this.collection.set(history ?? []);
+    try {
+      const history = await firstValueFrom(this.loyaltyApiService.getClaimsHistory(token));
+
+      this.collection.set(history ?? []);
+      this.viewState.set('ready');
+    } catch (error: unknown) {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        this.sessionStorage.delete(address);
+      }
+
+      this.viewState.set('prompt');
+    }
+  }
+
+  private sameAddress(left: string | null | undefined, right: string | null | undefined): boolean {
+    return left?.toLowerCase() === right?.toLowerCase();
   }
 
   private signPersonalMessage(message: string, address: string): Promise<string> {

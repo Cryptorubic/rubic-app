@@ -22,8 +22,8 @@ import {
   SubscriptionVariant
 } from '@app/core/services/backend/loyalty-api/models/subscription-item';
 import { RewardCard } from '../../models/reward-card';
-import { PLACEHOLDER_CARD } from '../../constants/placeholder-card';
-import { EMPTY_CARD } from '../../constants/empty-card';
+import { PLACEHOLDER_REWARD_CARD } from '../../constants/placeholder-card';
+import { EMPTY_REWARD_CARD } from '../../constants/empty-card';
 
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
@@ -102,13 +102,13 @@ export class RewardsViewComponent {
       .filter(card => card.selectedVariantId);
 
     if (!this.catalogLoading() && cards.length === 0) {
-      cards.push(PLACEHOLDER_CARD);
+      cards.push(PLACEHOLDER_REWARD_CARD);
     }
 
     if (cards.length < cardsToShow) {
       cards.push(
         ...Array.from({ length: cardsToShow - cards.length }, (_, index) => ({
-          ...EMPTY_CARD,
+          ...EMPTY_REWARD_CARD,
           id: `empty-${this.currentPage()}-${index}`
         }))
       );

@@ -8,3 +8,20 @@
     margin-top: 36px;
   }
 }
+
+.card {
+  &_placeholder {
+    align-items: center;
+    justify-content: center;
+
+    .card__image {
+      margin-top: 0;
+    }
+
+    .card__meta {
+      color: var(--tui-text-secondary);
+      font-size: 17px;
+      text-align: center;
+    }
+  }
+}

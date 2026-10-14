@@ -33,17 +33,37 @@
   <section class="rewards">
     <ul class="rewards__cards">
       @for (card of visibleCards(); track card.id) {
-        <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
-          <div class="card__head">
-            <span class="card__title">{{ card.title }}</span>
-          </div>
+        <li
+          class="rewards__card card"
+          [class.card_dark-bg]="card.isEmpty"
+          [class.card_placeholder]="card.isPlaceholder"
+        >
+          @if (card.title) {
+            <div class="card__head">
+              <span class="card__title">{{ card.title }}</span>
+            </div>
+          }
+
           @if (card.imageUrl) {
             <img class="card__image" [src]="card.imageUrl" alt="" width="242" height="150" />
+          } @else if (card.isPlaceholder) {
+            <img
+              class="card__image"
+              src="assets/images/rewards/gift.svg"
+              alt="Gift"
+              width="56"
+              height="56"
+            />
           }
-          @if (!card.isEmpty && !card.isPlaceholder) {
-            <div class="card__meta">
-              <button class="card__view-reward" ype="button">View reward</button>
-            </div>
+
+          @if (!card.isEmpty) {
+            @if (!card.isPlaceholder) {
+              <div class="card__meta">
+                <button class="card__view-reward" ype="button">View reward</button>
+              </div>
+            } @else {
+              <div class="card__meta">Your first reward will appear here</div>
+            }
           }
         </li>
       }

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpService } from '@app/core/services/http/http.service';
 import { ClaimHistoryItem } from './models/claim-history-item';
 import { LoyaltyEligibility, LoyaltyEligibilityParams } from './models/loyalty-eligibility';
-import { SignedLoyaltyRequest } from './models/signed-loyalty-request';
+import { SessionCreateRequest, SessionCreateResponse } from './models/loyalty-session';
 import { SubscriptionItem } from './models/subscription-item';
 import { TradePoints } from './models/trade-points';
 import { UserPoints } from './models/user-points';
@@ -25,15 +25,31 @@ export class LoyaltyApiService {
     });
   }
 
-  public signMessage(userAddress: string, action: string): Observable<{ message: string }> {
-    return this.httpService.post<{ message: string }>('v3/internal/loyalty/sign_message', {
+  public createSessionMessage(
+    userAddress: string,
+    domain?: string
+  ): Observable<{ message: string }> {
+    return this.httpService.post<{ message: string }>('v3/internal/loyalty/session/message', {
       userAddress,
-      action
+      domain
     });
   }
 
-  public getClaimsHistory(body: SignedLoyaltyRequest): Observable<ClaimHistoryItem[]> {
-    return this.httpService.post<ClaimHistoryItem[]>('v3/internal/loyalty/claims/history', body);
+  public openSession(body: SessionCreateRequest): Observable<SessionCreateResponse> {
+    return this.httpService.post<SessionCreateResponse>('v3/internal/loyalty/session', body);
+  }
+
+  public getClaimsHistory(token: string): Observable<ClaimHistoryItem[]> {
+    return this.httpService.get<ClaimHistoryItem[]>(
+      'v3/internal/loyalty/claims/history',
+      undefined,
+      undefined,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        timeoutMs: 5_000,
+        retry: 1
+      }
+    );
   }
 
   public getEligibility(params: LoyaltyEligibilityParams): Observable<LoyaltyEligibility> {
