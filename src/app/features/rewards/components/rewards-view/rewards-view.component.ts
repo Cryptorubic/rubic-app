@@ -181,7 +181,7 @@ export class RewardsViewComponent {
         size: 'm',
         dismissible: true,
         label: '',
-        data: { title: card.title, price: variant.price }
+        data: { title: `${card.title} ${variant.title}`, price: variant.price }
       })
       .subscribe();
   }
