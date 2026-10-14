@@ -8,6 +8,9 @@ export const EMPTY_REWARD_CARD: Omit<RewardCard, 'id'> = {
   imageUrl: '',
   isActive: false,
   variants: [],
+  redeemDescription: '',
+  redeemNote: '',
+  deliveryType: 'delivered_value',
   selectedVariantId: null,
   isDetailsOpened: false,
   isEmpty: true

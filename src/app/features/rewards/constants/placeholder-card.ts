@@ -9,6 +9,9 @@ export const PLACEHOLDER_REWARD_CARD: RewardCard = {
   imageUrl: 'assets/images/rewards/more-rewards-on-the-way.svg',
   isActive: false,
   variants: [],
+  redeemDescription: '',
+  redeemNote: '',
+  deliveryType: 'delivered_value',
   selectedVariantId: null,
   isDetailsOpened: false,
   isPlaceholder: true

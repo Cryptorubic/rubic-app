@@ -20,6 +20,40 @@
     font-size: 15px;
   }
 
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 300px;
+    height: 50px;
+    padding: 0 16px;
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+    text-align: center;
+    background: var(--io-background);
+    border: 1px solid #fff;
+    border-radius: 20px;
+    outline: none;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+
+  &__note {
+    font-size: 14px;
+
+    ::ng-deep a {
+      text-decoration: underline;
+    }
+  }
+
   &__confirm {
     display: flex;
     gap: 12px;

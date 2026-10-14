@@ -8,6 +8,10 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 export interface RedeemRewardDialogData {
   title: string;
   price: number;
+  description: string;
+  note: string;
+  withInput: boolean;
+  inputPlaceholder?: string;
 }
 
 @Component({
@@ -23,6 +27,11 @@ export class RedeemRewardModalComponent {
 
   protected readonly title = this.context.data.title;
   protected readonly price = this.context.data.price;
+  protected readonly description = this.context.data.description;
+  protected readonly note = this.context.data.note;
+  protected readonly withInput = this.context.data.withInput;
+  protected readonly inputPlaceholder = this.context.data.inputPlaceholder ?? '';
+  protected readonly userInput = new FormControl('', { nonNullable: true });
   protected readonly accepted = new FormControl(false, { nonNullable: true });
   protected readonly canRedeem = toSignal(this.accepted.valueChanges, { initialValue: false });
 

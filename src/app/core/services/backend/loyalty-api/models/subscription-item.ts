@@ -14,4 +14,7 @@ export interface SubscriptionItem {
   imageUrl: string | null;
   isActive: boolean;
   variants: SubscriptionVariant[];
+  redeemDescription: string;
+  redeemNote: string;
+  deliveryType: 'user_input' | 'delivered_value' | 'payout';
 }

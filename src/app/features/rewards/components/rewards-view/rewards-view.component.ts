@@ -181,7 +181,14 @@ export class RewardsViewComponent {
         size: 'm',
         dismissible: true,
         label: '',
-        data: { title: `${card.title} ${variant.title}`, price: variant.price }
+        data: {
+          title: `${card.title} ${variant.title}`,
+          price: variant.price,
+          description: card.redeemDescription,
+          note: card.redeemNote,
+          withInput: card.deliveryType === 'user_input',
+          inputPlaceholder: 'Enter your XXX'
+        }
       })
       .subscribe();
   }
