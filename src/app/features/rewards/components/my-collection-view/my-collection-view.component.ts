@@ -16,14 +16,14 @@ import { firstValueFrom } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
+import { LoyaltySessionService } from '@core/services/backend/loyalty-api/loyalty-session.service';
 import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
 import { ClaimHistoryItem } from '@core/services/backend/loyalty-api/models/claim-history-item';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { EMPTY_COLLECTION_CARD } from '../../constants/empty-card';
 import { PLACEHOLDER_COLLECTION_CARD } from '../../constants/placeholder-card';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { CollectionCard } from '../../models/collection-card';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 const PAGE_SIZE = 6;
 
@@ -39,8 +39,8 @@ type CollectionViewState = 'connect' | 'prompt' | 'loading' | 'ready';
 export class MyCollectionViewComponent {
   private readonly authService = inject(AuthService);
   private readonly loyaltyApiService = inject(LoyaltyApiService);
+  private readonly loyaltySession = inject(LoyaltySessionService);
   private readonly sessionStorage = inject(LoyaltySessionStorage);
-  private readonly walletConnector = inject(WalletConnectorService);
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
 
@@ -98,7 +98,7 @@ export class MyCollectionViewComponent {
   }
 
   private syncWalletAddress(address: string | null): void {
-    if (this.syncedAddress !== undefined && this.sameAddress(this.syncedAddress, address)) {
+    if (this.syncedAddress !== undefined && compareAddresses(this.syncedAddress, address)) {
       return;
     }
 
@@ -141,19 +141,8 @@ export class MyCollectionViewComponent {
 
     this.viewState.set('loading');
     try {
-      const { message } = await firstValueFrom(
-        this.loyaltyApiService.createSessionMessage(
-          address,
-          !ENVIRONMENT.local ? location.hostname : undefined
-        )
-      );
-      const signature = await this.signPersonalMessage(message, address);
-      const session = await firstValueFrom(
-        this.loyaltyApiService.openSession({ userAddress: address, message, signature })
-      );
-
-      this.sessionStorage.set(address, session.token);
-      await this.loadCollection(address, session.token);
+      const token = await this.loyaltySession.ensureToken(address);
+      await this.loadCollection(address, token);
     } catch {
       this.viewState.set('prompt');
     }
@@ -174,21 +163,6 @@ export class MyCollectionViewComponent {
 
       this.viewState.set('prompt');
     }
-  }
-
-  private sameAddress(left: string | null | undefined, right: string | null | undefined): boolean {
-    return left?.toLowerCase() === right?.toLowerCase();
-  }
-
-  private signPersonalMessage(message: string, address: string): Promise<string> {
-    const hexMessage = `0x${Array.from(new TextEncoder().encode(message), byte =>
-      byte.toString(16).padStart(2, '0')
-    ).join('')}`;
-
-    return this.walletConnector.provider.wallet.request({
-      method: 'personal_sign',
-      params: [hexMessage, address]
-    });
   }
 
   protected selectPage(page: number): void {

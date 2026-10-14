@@ -36,7 +36,7 @@
     appearance="primary"
     type="button"
     size="m"
-    [disabled]="!canRedeem()"
+    [disabled]="!canRedeem() || submitting()"
     (click)="redeem()"
   >
     Redeem reward

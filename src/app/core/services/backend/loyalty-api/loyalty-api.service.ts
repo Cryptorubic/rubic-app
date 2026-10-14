@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '@app/core/services/http/http.service';
 import { ClaimHistoryItem } from './models/claim-history-item';
+import { ClaimSubscriptionRequest, ClaimSubscriptionResponse } from './models/claim-subscription';
 import { LoyaltyEligibility, LoyaltyEligibilityParams } from './models/loyalty-eligibility';
 import { SessionCreateRequest, SessionCreateResponse } from './models/loyalty-session';
 import { SubscriptionItem } from './models/subscription-item';
@@ -49,6 +50,19 @@ export class LoyaltyApiService {
         timeoutMs: 5_000,
         retry: 1
       }
+    );
+  }
+
+  public claimSubscription(
+    subscriptionId: string,
+    token: string,
+    body: ClaimSubscriptionRequest
+  ): Observable<ClaimSubscriptionResponse> {
+    return this.httpService.post<ClaimSubscriptionResponse>(
+      `v3/internal/loyalty/subscriptions/${subscriptionId}/claim`,
+      body,
+      undefined,
+      { headers: { Authorization: `Bearer ${token}` } }
     );
   }
 
