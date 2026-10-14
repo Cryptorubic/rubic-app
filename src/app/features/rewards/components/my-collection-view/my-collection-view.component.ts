@@ -69,9 +69,9 @@ export class MyCollectionViewComponent {
         subTitle: '',
         description: '',
         imageUrl: '',
-        price: 0,
         isActive: true,
-        canClaim: null,
+        variants: [],
+        selectedVariantId: null,
         isDetailsOpened: false
       }));
 

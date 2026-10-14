@@ -6,9 +6,9 @@ export const PLACEHOLDER_CARD: RewardCard = {
   subTitle: '',
   description: '',
   imageUrl: 'assets/images/rewards/more-rewards-on-the-way.svg',
-  price: 0,
   isActive: false,
-  canClaim: null,
+  variants: [],
+  selectedVariantId: null,
   isDetailsOpened: false,
   isPlaceholder: true
 };

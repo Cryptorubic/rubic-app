@@ -5,9 +5,9 @@ export const EMPTY_CARD: Omit<RewardCard, 'id'> = {
   subTitle: '',
   description: '',
   imageUrl: '',
-  price: 0,
   isActive: false,
-  canClaim: null,
+  variants: [],
+  selectedVariantId: null,
   isDetailsOpened: false,
   isEmpty: true
 };

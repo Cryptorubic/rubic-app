@@ -17,14 +17,16 @@ import { HowRewardsWorkModalComponent } from '@features/rewards/components/how-r
 import { RedeemRewardModalComponent } from '@features/rewards/components/redeem-reward-modal/redeem-reward-modal.component';
 import { TuiPagination } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { SubscriptionItem } from '@app/core/services/backend/loyalty-api/models/subscription-item';
+import {
+  SubscriptionItem,
+  SubscriptionVariant
+} from '@app/core/services/backend/loyalty-api/models/subscription-item';
 import { RewardCard } from '../../models/reward-card';
 import { PLACEHOLDER_CARD } from '../../constants/placeholder-card';
 import { EMPTY_CARD } from '../../constants/empty-card';
 
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
-const SUBSCRIPTION_PERIOD = '1Y';
 
 @Component({
   selector: 'app-rewards-view',
@@ -44,8 +46,6 @@ export class RewardsViewComponent {
   private readonly page = signal(0);
 
   private readonly catalogLoading = signal(true);
-
-  protected readonly period = SUBSCRIPTION_PERIOD;
 
   protected readonly isWalletConnected = computed(() => !!this.currentUser()?.address);
 
@@ -88,10 +88,18 @@ export class RewardsViewComponent {
       catalogToShow = this.catalog().slice(0, cardsToShow);
     }
 
-    const cards = catalogToShow.map(card => ({
-      ...card,
-      isDetailsOpened: false
-    }));
+    const cards: RewardCard[] = catalogToShow
+      .map(card => {
+        const variants = card.variants ?? [];
+
+        return {
+          ...card,
+          variants,
+          isDetailsOpened: false,
+          selectedVariantId: variants[0]?.id ?? null
+        };
+      })
+      .filter(card => card.selectedVariantId);
 
     if (!this.catalogLoading() && cards.length === 0) {
       cards.push(PLACEHOLDER_CARD);
@@ -153,8 +161,18 @@ export class RewardsViewComponent {
       .subscribe();
   }
 
-  protected openRedeem(card: RewardCard): void {
-    if (!card.canClaim) {
+  protected selectedVariant(card: RewardCard): SubscriptionVariant | null {
+    const variants = card.variants ?? [];
+
+    return variants.find(variant => variant.id === card.selectedVariantId) ?? variants[0] ?? null;
+  }
+
+  protected selectVariant(card: RewardCard, variantId: string): void {
+    card.selectedVariantId = variantId;
+  }
+
+  protected openRedeem(card: RewardCard, variant: SubscriptionVariant): void {
+    if (!variant.canClaim) {
       return;
     }
 
@@ -163,7 +181,7 @@ export class RewardsViewComponent {
         size: 'm',
         dismissible: true,
         label: '',
-        data: { title: card.title, price: card.price }
+        data: { title: card.title, price: variant.price }
       })
       .subscribe();
   }

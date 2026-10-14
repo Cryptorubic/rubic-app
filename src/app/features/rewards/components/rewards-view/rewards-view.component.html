@@ -25,26 +25,40 @@
             </button>
           }
         </div>
-        @if (card.imageUrl) {
-          <img
-            class="card__image"
-            [src]="card.imageUrl"
-            [alt]="card.title"
-            width="242"
-            height="150"
-          />
-        }
-        @if (card.price && isWalletConnected()) {
-          <div class="card__meta">
-            <span
-              class="card__price"
-              [class.card__price_highlighted]="card.canClaim"
-              (click)="openRedeem(card)"
-            >
-              {{ card.price }} Points
-            </span>
-            <span class="card__period">{{ period }}</span>
-          </div>
+
+        <img
+          class="card__image"
+          [src]="card.imageUrl"
+          [alt]="card.title"
+          width="242"
+          height="150"
+        />
+
+        @if (isWalletConnected()) {
+          @let variant = selectedVariant(card);
+          @if (variant?.isActive) {
+            <div class="card__meta">
+              <span
+                class="card__price"
+                [class.card__price_highlighted]="variant.canClaim"
+                (click)="openRedeem(card, variant)"
+              >
+                {{ variant.price }} Points
+              </span>
+              <div class="card__variants">
+                @for (option of card.variants; track option.id) {
+                  <button
+                    class="card__variant"
+                    type="button"
+                    [class.card__variant_selected]="option.id === variant.id"
+                    (click)="selectVariant(card, option.id)"
+                  >
+                    {{ option.title }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
         }
         @if (card.isDetailsOpened) {
           <div class="card__details card-details">
