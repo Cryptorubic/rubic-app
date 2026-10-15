@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiButton, TuiScrollbar } from '@taiga-ui/core';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { CHAIN_SUPPORTED_WALLETS } from '@core/services/wallets/constants/chaintype-supported-wallets';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
 import { HowRewardsWorkModalComponent } from '@features/rewards/components/how-rewards-work-modal/how-rewards-work-modal.component';
 import { RedeemRewardModalComponent } from '@features/rewards/components/redeem-reward-modal/redeem-reward-modal.component';
@@ -47,13 +48,21 @@ export class RewardsViewComponent {
 
   private readonly catalogLoading = signal(true);
 
-  protected readonly isWalletConnected = computed(() => !!this.currentUser()?.address);
+  protected readonly isEvmWalletConnected = computed(
+    () => this.currentUser()?.chainType === CHAIN_TYPE.EVM
+  );
+
+  protected readonly isUnsupportedWallet = computed(
+    () => !!this.currentUser()?.address && !this.isEvmWalletConnected()
+  );
 
   private readonly catalog = toSignal<SubscriptionItem[], SubscriptionItem[]>(
     this.authService.currentUser$.pipe(
-      switchMap(user => {
+      map(user => (user?.address && user.chainType === CHAIN_TYPE.EVM ? user.address : undefined)),
+      distinctUntilChanged(),
+      switchMap(address => {
         this.catalogLoading.set(true);
-        return this.loyaltyApiService.getSubscriptions(user?.address).pipe(
+        return this.loyaltyApiService.getSubscriptions(address).pipe(
           catchError(() => of([])),
           tap(() => this.catalogLoading.set(false))
         );
@@ -74,14 +83,14 @@ export class RewardsViewComponent {
   );
 
   protected readonly showPagination = computed(
-    () => this.isWalletConnected() && this.catalog().length > PAGE_SIZE
+    () => this.isEvmWalletConnected() && this.catalog().length > PAGE_SIZE
   );
 
   protected readonly visibleCards = computed<RewardCard[]>(() => {
     let cardsToShow = 0;
     let catalogToShow: SubscriptionItem[] = [];
 
-    if (this.isWalletConnected()) {
+    if (this.isEvmWalletConnected()) {
       const start = this.currentPage() * PAGE_SIZE;
       cardsToShow = PAGE_SIZE;
       catalogToShow = this.catalog().slice(start, start + cardsToShow);
@@ -135,7 +144,7 @@ export class RewardsViewComponent {
   protected connectWallet(): void {
     this.modalService
       .openWalletModal(this.injector, {
-        providers: PROVIDERS_LIST.map(provider => provider.value),
+        providers: CHAIN_SUPPORTED_WALLETS[CHAIN_TYPE.EVM],
         direction: 'column'
       })
       .subscribe();

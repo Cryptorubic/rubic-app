@@ -20,6 +20,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -129,7 +130,11 @@ export class HeaderComponent {
     ]).pipe(
       map(([user, url]) => {
         const path = url.split(/[?#]/)[0];
-        return !!user?.address && (path === '/rewards' || path.startsWith('/rewards/'));
+        return (
+          !!user?.address &&
+          user.chainType === CHAIN_TYPE.EVM &&
+          (path === '/rewards' || path.startsWith('/rewards/'))
+        );
       })
     );
   }

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader } from '@taiga-ui/core';
 import { TuiPagination } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
@@ -22,8 +22,9 @@ import {
   ClaimHistoryItem,
   ClaimStatus
 } from '@core/services/backend/loyalty-api/models/claim-history-item';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { CHAIN_SUPPORTED_WALLETS } from '@core/services/wallets/constants/chaintype-supported-wallets';
 import { ViewRewardModalComponent } from '../view-reward-modal/view-reward-modal.component';
-import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { EMPTY_COLLECTION_CARD } from '../../constants/empty-card';
 import { PLACEHOLDER_COLLECTION_CARD } from '../../constants/placeholder-card';
 import { CollectionCard } from '../../models/collection-card';
@@ -47,6 +48,7 @@ export class MyCollectionViewComponent {
   private readonly sessionStorage = inject(LoyaltySessionStorage);
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
+  private readonly router = inject(Router);
 
   private readonly currentUser = toSignal(this.authService.currentUser$);
 
@@ -57,6 +59,8 @@ export class MyCollectionViewComponent {
   private readonly viewState = signal<CollectionViewState>('connect');
 
   private syncedAddress: string | null | undefined = undefined;
+
+  private syncedUnsupported = false;
 
   protected readonly state = this.viewState.asReadonly();
 
@@ -97,12 +101,19 @@ export class MyCollectionViewComponent {
 
   constructor() {
     effect(() => {
-      this.syncWalletAddress(this.currentUser()?.address ?? null);
+      const user = this.currentUser();
+      this.syncWalletAddress(user?.address ?? null, user?.chainType);
     });
   }
 
-  private syncWalletAddress(address: string | null): void {
-    if (this.syncedAddress !== undefined && compareAddresses(this.syncedAddress, address)) {
+  private syncWalletAddress(address: string | null, chainType?: string): void {
+    const unsupported = !!address && chainType !== CHAIN_TYPE.EVM;
+
+    if (
+      this.syncedAddress !== undefined &&
+      compareAddresses(this.syncedAddress, address) &&
+      this.syncedUnsupported === unsupported
+    ) {
       return;
     }
 
@@ -111,11 +122,17 @@ export class MyCollectionViewComponent {
     }
 
     this.syncedAddress = address;
+    this.syncedUnsupported = unsupported;
     this.collection.set([]);
     this.page.set(0);
 
     if (!address) {
       this.viewState.set('connect');
+      return;
+    }
+
+    if (unsupported) {
+      void this.router.navigate(['/rewards']);
       return;
     }
 
@@ -131,7 +148,7 @@ export class MyCollectionViewComponent {
   protected connectWallet(): void {
     this.modalService
       .openWalletModal(this.injector, {
-        providers: PROVIDERS_LIST.map(provider => provider.value),
+        providers: CHAIN_SUPPORTED_WALLETS[CHAIN_TYPE.EVM],
         direction: 'column'
       })
       .subscribe();

@@ -1,4 +1,16 @@
 .rewards {
+  &__main-wrap {
+    position: relative;
+  }
+
+  &__main {
+    &_blurred {
+      filter: blur(8px);
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
   &__title {
     margin: 0;
     font-size: 21px;
@@ -15,6 +27,36 @@
   &__balance-note {
     margin: 16px 0 0;
     font-size: 15px;
+  }
+
+  &__unsupported-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  &__unsupported {
+    margin-top: 36px;
+    text-align: center;
+
+    + .rewards__connect {
+      margin-top: 20px;
+    }
+  }
+
+  &__unsupported-title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 120%;
+  }
+
+  &__unsupported-note {
+    margin: 16px 0 0;
+    font-size: 15px;
+    line-height: 21px;
   }
 }
 

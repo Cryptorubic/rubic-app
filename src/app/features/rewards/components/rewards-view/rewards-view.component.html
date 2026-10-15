@@ -1,94 +1,115 @@
-<section class="rewards" [class.rewards_not-connected]="!isWalletConnected()">
-  @if (!isWalletConnected()) {
-    <h1 class="rewards__title">Turn Your Swaps Into Free Subscriptions!</h1>
-    <p class="rewards__subtitle">Your first private swap earns 2x points</p>
-  }
+<section class="rewards" [class.rewards_not-connected]="!isEvmWalletConnected()">
+  <div class="rewards__main-wrap">
+    <div class="rewards__main" [class.rewards__main_blurred]="isUnsupportedWallet()">
+      @if (!isEvmWalletConnected()) {
+        <h1 class="rewards__title">Turn Your Swaps Into Free Subscriptions!</h1>
+        <p class="rewards__subtitle">Your first private swap earns 2x points</p>
+      }
 
-  <ul class="rewards__cards">
-    @for (card of visibleCards(); track card.id) {
-      <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
-        <div class="card__head">
-          <span class="card__title">{{ card.title }}</span>
-          @if (card.description && isWalletConnected()) {
-            <button
-              class="card__info"
-              type="button"
-              aria-label="Subscription details"
-              (click)="card.isDetailsOpened = true"
-            >
+      <ul class="rewards__cards">
+        @for (card of visibleCards(); track card.id) {
+          <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
+            <div class="card__head">
+              <span class="card__title">{{ card.title }}</span>
+              @if (card.description && isEvmWalletConnected()) {
+                <button
+                  class="card__info"
+                  type="button"
+                  aria-label="Subscription details"
+                  (click)="card.isDetailsOpened = true"
+                >
+                  <img
+                    src="/assets/images/icons/info.svg"
+                    alt="Subscription details"
+                    width="15"
+                    height="15"
+                  />
+                </button>
+              }
+            </div>
+
+            @if (card.imageUrl) {
               <img
-                src="/assets/images/icons/info.svg"
-                alt="Subscription details"
-                width="15"
-                height="15"
+                class="card__image"
+                [src]="card.imageUrl"
+                [alt]="card.title"
+                width="242"
+                height="150"
               />
-            </button>
-          }
-        </div>
+            }
 
-        @if (card.imageUrl) {
-          <img
-            class="card__image"
-            [src]="card.imageUrl"
-            [alt]="card.title"
-            width="242"
-            height="150"
-          />
-        }
-
-        @if (isWalletConnected()) {
-          @let variant = selectedVariant(card);
-          @if (variant?.isActive) {
-            <div class="card__meta">
-              <span
-                class="card__price"
-                [class.card__price_highlighted]="variant.canClaim"
-                (click)="openRedeem(card, variant)"
-              >
-                {{ variant.price }} Points
-              </span>
-              <div class="card__variants">
-                @for (option of card.variants; track option.id) {
-                  <button
-                    class="card__variant"
-                    type="button"
-                    [class.card__variant_selected]="option.id === variant.id"
-                    (click)="selectVariant(card, option.id)"
+            @if (isEvmWalletConnected()) {
+              @let variant = selectedVariant(card);
+              @if (variant?.isActive) {
+                <div class="card__meta">
+                  <span
+                    class="card__price"
+                    [class.card__price_highlighted]="variant.canClaim"
+                    (click)="openRedeem(card, variant)"
                   >
-                    {{ option.title }}
+                    {{ variant.price }} Points
+                  </span>
+                  <div class="card__variants">
+                    @for (option of card.variants; track option.id) {
+                      <button
+                        class="card__variant"
+                        type="button"
+                        [class.card__variant_selected]="option.id === variant.id"
+                        (click)="selectVariant(card, option.id)"
+                      >
+                        {{ option.title }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            }
+            @if (card.isDetailsOpened) {
+              <div class="card__details card-details">
+                <div class="card-details__head">
+                  <span class="card-details__title">{{ card.subTitle }}</span>
+
+                  <button
+                    class="card-details__close"
+                    type="button"
+                    aria-label="Close description"
+                    (click)="card.isDetailsOpened = false"
+                  >
+                    &times;
                   </button>
-                }
-              </div>
-            </div>
-          }
-        }
-        @if (card.isDetailsOpened) {
-          <div class="card__details card-details">
-            <div class="card-details__head">
-              <span class="card-details__title">{{ card.subTitle }}</span>
+                </div>
 
-              <button
-                class="card-details__close"
-                type="button"
-                aria-label="Close description"
-                (click)="card.isDetailsOpened = false"
-              >
-                &times;
-              </button>
-            </div>
-
-            <tui-scrollbar>
-              <div class="card-details__description">
-                {{ card.description }}
+                <tui-scrollbar>
+                  <div class="card-details__description">
+                    {{ card.description }}
+                  </div>
+                </tui-scrollbar>
               </div>
-            </tui-scrollbar>
-          </div>
+            }
+          </li>
         }
-      </li>
+      </ul>
+    </div>
+
+    @if (isUnsupportedWallet()) {
+      <img
+        class="rewards__unsupported-icon"
+        src="assets/images/rewards/not-supported.svg"
+        alt=""
+        width="120"
+        height="120"
+      />
     }
-  </ul>
+  </div>
 
-  @if (!isWalletConnected()) {
+  @if (!isEvmWalletConnected()) {
+    @if (isUnsupportedWallet()) {
+      <div class="rewards__unsupported">
+        <p class="rewards__unsupported-title">This address isn't supported</p>
+        <p class="rewards__unsupported-note">Rubic Rewards supports EVM addresses only.</p>
+      </div>
+    }
+
     <button
       class="rewards__connect"
       tuiButton
@@ -101,7 +122,7 @@
     </button>
   }
 
-  @if (showPagination()) {
+  @if (showPagination() && !isUnsupportedWallet()) {
     <tui-pagination
       [index]="currentPage()"
       [length]="pageCount()"
@@ -109,7 +130,7 @@
     ></tui-pagination>
   }
 
-  @if (points(); as balance) {
+  @if (!isUnsupportedWallet() && points(); as balance) {
     <p class="rewards__balance">{{ balance.confirmed }} Points</p>
     @if (balance.pending !== 0) {
       <p class="rewards__balance-note">+{{ balance.pending }} Pending</p>
@@ -118,7 +139,7 @@
     }
   }
 
-  @if (isWalletConnected()) {
+  @if (isEvmWalletConnected() && !isUnsupportedWallet()) {
     <button
       class="rewards__help"
       tuiButton
