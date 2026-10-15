@@ -63,10 +63,10 @@
                   <button
                     class="card__view-reward"
                     type="button"
-                    [class.card__view-reward_highlighted]="card.status === 'ready'"
+                    [class.card__view-reward_highlighted]="card.status !== 'requested'"
                     [class.card__view-reward_clickable]="isRewardClickable(card.status)"
-                    [class.card__view-reward_declined]="isRewardDeclined(card.status)"
-                    [disabled]="isRewardDeclined(card.status)"
+                    [class.card__view-reward_warning]="isRewardWarning(card.status)"
+                    [class.card__view-reward_declined]="isRewardDenied(card.status)"
                     (click)="openReward(card)"
                   >
                     {{ label }}

@@ -30,14 +30,12 @@
       cursor: pointer;
     }
 
+    &_warning {
+      border-color: var(--tui-status-warning);
+    }
+
     &_declined {
       border-color: var(--tui-status-negative);
-      cursor: default;
-      opacity: 1;
-
-      &:disabled {
-        opacity: 1;
-      }
     }
   }
 }

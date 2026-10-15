@@ -32,6 +32,24 @@ import { compareAddresses } from '@app/shared/utils/utils';
 
 const PAGE_SIZE = 6;
 
+const STATUS_NOTICES: Partial<Record<ClaimStatus, { title: string; description: string }>> = {
+  rejected: {
+    title: 'Your points have been returned',
+    description:
+      'We couldn’t fulfil this reward request, so we’ve returned the points to your balance.<br /><br />You can use them to choose another reward.'
+  },
+  under_review: {
+    title: 'Your reward request is under review',
+    description:
+      'Our support team is checking your request, and the points used for this reward are temporarily on hold.<br /><br />Check back here for the outcome.'
+  },
+  denied: {
+    title: 'Your reward request was denied',
+    description:
+      'After reviewing your request, we found that it did not meet the program rules.<br /><br />The points used for this reward won’t be returned.'
+  }
+};
+
 type CollectionViewState = 'connect' | 'prompt' | 'loading' | 'ready';
 
 @Component({
@@ -193,26 +211,31 @@ export class MyCollectionViewComponent {
   protected rewardLabel(status: ClaimStatus): string | null {
     switch (status) {
       case 'requested':
-        return 'Reward requested';
+        return 'Requested';
       case 'ready':
       case 'received':
         return 'View reward';
       case 'under_review':
         return 'Under review';
       case 'rejected':
+        return 'Refunded';
       case 'denied':
-        return 'Declined';
+        return 'Denied';
       default:
         return null;
     }
   }
 
   protected isRewardClickable(status: ClaimStatus): boolean {
-    return status === 'requested' || status === 'ready' || status === 'received';
+    return status !== 'awaiting_input';
   }
 
-  protected isRewardDeclined(status: ClaimStatus): boolean {
-    return status === 'rejected' || status === 'denied';
+  protected isRewardWarning(status: ClaimStatus): boolean {
+    return status === 'rejected' || status === 'under_review';
+  }
+
+  protected isRewardDenied(status: ClaimStatus): boolean {
+    return status === 'denied';
   }
 
   protected openReward(card: CollectionCard): void {
@@ -220,18 +243,28 @@ export class MyCollectionViewComponent {
       return;
     }
 
+    const notice = STATUS_NOTICES[card.status];
+
     this.modalService
       .openClosableDialog(ViewRewardModalComponent, {
         size: 'm',
         dismissible: true,
         label: '',
-        data: {
-          title: card.activationTitle ?? null,
-          description: card.activationDescription ?? null,
-          code: card.activationCode ?? null,
-          link: card.activationLink ?? null,
-          note: card.activationNote ?? null
-        }
+        data: notice
+          ? {
+              title: notice.title,
+              description: notice.description,
+              code: null,
+              link: null,
+              note: null
+            }
+          : {
+              title: card.activationTitle ?? null,
+              description: card.activationDescription ?? null,
+              code: card.activationCode ?? null,
+              link: card.activationLink ?? null,
+              note: card.activationNote ?? null
+            }
       })
       .subscribe();
   }
