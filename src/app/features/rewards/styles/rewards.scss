@@ -55,7 +55,7 @@
   @include flex(column, stretch, flex-start);
   position: relative;
   width: 266px;
-  min-height: 266px;
+  height: 266px;
   padding: 12px;
   overflow: hidden;
   background: var(--tui-background-elevation-1);

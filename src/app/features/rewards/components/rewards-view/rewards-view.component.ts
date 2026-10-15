@@ -73,7 +73,9 @@ export class RewardsViewComponent {
     Array.from({ length: this.pageCount() }, (_, index) => index)
   );
 
-  protected readonly showPagination = computed(() => this.catalog().length > PAGE_SIZE);
+  protected readonly showPagination = computed(
+    () => this.isWalletConnected() && this.catalog().length > PAGE_SIZE
+  );
 
   protected readonly visibleCards = computed<RewardCard[]>(() => {
     let cardsToShow = 0;
