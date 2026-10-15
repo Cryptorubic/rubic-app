@@ -23,8 +23,7 @@ import {
   SubscriptionVariant
 } from '@app/core/services/backend/loyalty-api/models/subscription-item';
 import { RewardCard } from '../../models/reward-card';
-import { PLACEHOLDER_REWARD_CARD } from '../../constants/placeholder-card';
-import { EMPTY_REWARD_CARD } from '../../constants/empty-card';
+import { PlaceholderCard } from '../../models/placheholder-card';
 
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
@@ -86,7 +85,7 @@ export class RewardsViewComponent {
     () => this.isEvmWalletConnected() && this.catalog().length > PAGE_SIZE
   );
 
-  protected readonly visibleCards = computed<RewardCard[]>(() => {
+  protected readonly visibleCards = computed<(RewardCard | PlaceholderCard)[]>(() => {
     let cardsToShow = 0;
     let catalogToShow: SubscriptionItem[] = [];
 
@@ -99,12 +98,13 @@ export class RewardsViewComponent {
       catalogToShow = this.catalog().slice(0, cardsToShow);
     }
 
-    const cards: RewardCard[] = catalogToShow
+    const cards: (RewardCard | PlaceholderCard)[] = catalogToShow
       .map(card => {
         const variants = card.variants ?? [];
 
         return {
           ...card,
+          type: 'reward' as const,
           variants,
           isDetailsOpened: false,
           selectedVariantId: variants[0]?.id ?? null
@@ -113,14 +113,17 @@ export class RewardsViewComponent {
       .filter(card => card.selectedVariantId);
 
     if (!this.catalogLoading() && cards.length === 0) {
-      cards.push(PLACEHOLDER_REWARD_CARD);
+      cards.push({
+        id: 'more-rewards',
+        type: 'more-rewards'
+      });
     }
 
     if (cards.length < cardsToShow) {
       cards.push(
         ...Array.from({ length: cardsToShow - cards.length }, (_, index) => ({
-          ...EMPTY_REWARD_CARD,
-          id: `empty-${this.currentPage()}-${index}`
+          id: `empty-${this.currentPage()}-${index}`,
+          type: 'empty' as const
         }))
       );
     }

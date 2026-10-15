@@ -1,20 +1,4 @@
 import { CollectionCard } from '../models/collection-card';
-import { RewardCard } from '../models/reward-card';
-
-export const EMPTY_REWARD_CARD: Omit<RewardCard, 'id'> = {
-  title: '',
-  subTitle: '',
-  description: '',
-  imageUrl: '',
-  isActive: false,
-  variants: [],
-  redeemDescription: '',
-  redeemNote: '',
-  deliveryType: 'delivered_value',
-  selectedVariantId: null,
-  isDetailsOpened: false,
-  isEmpty: true
-};
 
 export const EMPTY_COLLECTION_CARD: Omit<CollectionCard, 'id'> = {
   subscriptionId: '',

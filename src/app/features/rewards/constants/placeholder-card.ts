@@ -1,21 +1,4 @@
 import { CollectionCard } from '../models/collection-card';
-import { RewardCard } from '../models/reward-card';
-
-export const PLACEHOLDER_REWARD_CARD: RewardCard = {
-  id: 'placeholder',
-  title: '',
-  subTitle: '',
-  description: '',
-  imageUrl: 'assets/images/rewards/more-rewards-on-the-way.svg',
-  isActive: false,
-  variants: [],
-  redeemDescription: '',
-  redeemNote: '',
-  deliveryType: 'delivered_value',
-  selectedVariantId: null,
-  isDetailsOpened: false,
-  isPlaceholder: true
-};
 
 export const PLACEHOLDER_COLLECTION_CARD: CollectionCard = {
   id: 'placeholder',

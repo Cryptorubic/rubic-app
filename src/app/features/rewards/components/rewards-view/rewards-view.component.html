@@ -8,27 +8,27 @@
 
       <ul class="rewards__cards">
         @for (card of visibleCards(); track card.id) {
-          <li class="rewards__card card" [class.card_dark-bg]="card.isEmpty || card.isPlaceholder">
-            <div class="card__head">
-              <span class="card__title">{{ card.title }}</span>
-              @if (card.description && isEvmWalletConnected()) {
-                <button
-                  class="card__info"
-                  type="button"
-                  aria-label="Subscription details"
-                  (click)="card.isDetailsOpened = true"
-                >
-                  <img
-                    src="/assets/images/icons/info.svg"
-                    alt="Subscription details"
-                    width="15"
-                    height="15"
-                  />
-                </button>
-              }
-            </div>
+          @if (card.type === 'reward') {
+            <li class="rewards__card card">
+              <div class="card__head">
+                <span class="card__title">{{ card.title }}</span>
+                @if (card.description && isEvmWalletConnected()) {
+                  <button
+                    class="card__info"
+                    type="button"
+                    aria-label="Subscription details"
+                    (click)="card.isDetailsOpened = true"
+                  >
+                    <img
+                      src="/assets/images/icons/info.svg"
+                      alt="Subscription details"
+                      width="15"
+                      height="15"
+                    />
+                  </button>
+                }
+              </div>
 
-            @if (card.imageUrl) {
               <img
                 class="card__image"
                 [src]="card.imageUrl"
@@ -36,57 +36,72 @@
                 width="242"
                 height="150"
               />
-            }
 
-            @if (isEvmWalletConnected()) {
-              @let variant = selectedVariant(card);
-              @if (variant?.isActive) {
-                <div class="card__meta">
-                  <span
-                    class="card__price"
-                    [class.card__price_highlighted]="variant.canClaim"
-                    (click)="openRedeem(card, variant)"
-                  >
-                    {{ variant.price }} Points
-                  </span>
-                  <div class="card__variants">
-                    @for (option of card.variants; track option.id) {
-                      <button
-                        class="card__variant"
-                        type="button"
-                        [class.card__variant_selected]="option.id === variant.id"
-                        (click)="selectVariant(card, option.id)"
-                      >
-                        {{ option.title }}
-                      </button>
-                    }
+              @if (isEvmWalletConnected()) {
+                @let variant = selectedVariant(card);
+                @if (variant?.isActive) {
+                  <div class="card__meta">
+                    <span
+                      class="card__price"
+                      [class.card__price_highlighted]="variant.canClaim"
+                      (click)="openRedeem(card, variant)"
+                    >
+                      {{ variant.price }} Points
+                    </span>
+                    <div class="card__variants">
+                      @for (option of card.variants; track option.id) {
+                        <button
+                          class="card__variant"
+                          type="button"
+                          [class.card__variant_selected]="option.id === variant.id"
+                          (click)="selectVariant(card, option.id)"
+                        >
+                          {{ option.title }}
+                        </button>
+                      }
+                    </div>
                   </div>
+                }
+              }
+              @if (card.isDetailsOpened) {
+                <div class="card__details card-details">
+                  <div class="card-details__head">
+                    <span class="card-details__title">{{ card.subTitle }}</span>
+
+                    <button
+                      class="card-details__close"
+                      type="button"
+                      aria-label="Close description"
+                      (click)="card.isDetailsOpened = false"
+                    >
+                      &times;
+                    </button>
+                  </div>
+
+                  <tui-scrollbar>
+                    <div class="card-details__description">
+                      {{ card.description }}
+                    </div>
+                  </tui-scrollbar>
                 </div>
               }
-            }
-            @if (card.isDetailsOpened) {
-              <div class="card__details card-details">
-                <div class="card-details__head">
-                  <span class="card-details__title">{{ card.subTitle }}</span>
-
-                  <button
-                    class="card-details__close"
-                    type="button"
-                    aria-label="Close description"
-                    (click)="card.isDetailsOpened = false"
-                  >
-                    &times;
-                  </button>
-                </div>
-
-                <tui-scrollbar>
-                  <div class="card-details__description">
-                    {{ card.description }}
-                  </div>
-                </tui-scrollbar>
-              </div>
-            }
-          </li>
+            </li>
+          } @else {
+            <li
+              class="rewards__card card card_dark-bg"
+              [class.card_more-rewards]="card.type === 'more-rewards'"
+            >
+              @if (card.type === 'more-rewards') {
+                <img
+                  class="card__image"
+                  src="assets/images/rewards/more-rewards-on-the-way.svg"
+                  alt="More rewards on the way"
+                  width="242"
+                  height="150"
+                />
+              }
+            </li>
+          }
         }
       </ul>
     </div>
