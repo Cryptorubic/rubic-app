@@ -16,6 +16,7 @@ import { TradePoints } from '@app/core/services/backend/loyalty-api/models/trade
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { EarnedPointsView } from '@app/features/trade/models/earned-points-view';
+import { isDepositTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/is-deposit-trade';
 import { percentAddress } from '@app/features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
 import { compareAddresses } from '@shared/utils/utils';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
@@ -32,7 +33,7 @@ export class EarnedPointsService {
         previous?.type === next?.type &&
         previous?.from.blockchain === next?.from.blockchain &&
         previous?.to.blockchain === next?.to.blockchain &&
-        this.isZeroFeeIntegrator(previous) === this.isZeroFeeIntegrator(next)
+        this.isZeroFee(previous) === this.isZeroFee(next)
     ),
     switchMap(trade => {
       if (!trade) {
@@ -57,8 +58,16 @@ export class EarnedPointsService {
       provider: trade.type,
       fromBlockchain: trade.from.blockchain,
       toBlockchain: trade.to.blockchain,
-      ...(this.isZeroFeeIntegrator(trade) ? { isZeroFee: true } : {})
+      ...(this.isZeroFee(trade) ? { isZeroFee: true } : {})
     };
+  }
+
+  private isZeroFee(trade: CrossChainTrade | OnChainTrade | null): boolean {
+    if (isDepositTrade(trade)) {
+      return false;
+    }
+
+    return this.isZeroFeeIntegrator(trade);
   }
 
   private isZeroFeeIntegrator(trade: CrossChainTrade | OnChainTrade | null): boolean {
