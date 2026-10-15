@@ -24,4 +24,20 @@
       text-align: center;
     }
   }
+
+  &__view-reward {
+    &_clickable {
+      cursor: pointer;
+    }
+
+    &_declined {
+      border-color: var(--tui-status-negative);
+      cursor: default;
+      opacity: 1;
+
+      &:disabled {
+        opacity: 1;
+      }
+    }
+  }
 }

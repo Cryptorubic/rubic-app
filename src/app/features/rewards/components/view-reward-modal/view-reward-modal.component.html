@@ -1,0 +1,23 @@
+<div class="view-reward">
+  @if (title) {
+    <div class="view-reward__title">{{ title }}</div>
+  }
+
+  @if (description) {
+    <div class="view-reward__description">{{ description }}</div>
+  }
+
+  @if (code) {
+    <div class="view-reward__code">
+      {{ code }}
+    </div>
+  }
+
+  @if (link) {
+    <div class="view-reward__link" [innerHTML]="link"></div>
+  }
+
+  @if (note) {
+    <div class="view-reward__note">{{ note }}</div>
+  }
+</div>

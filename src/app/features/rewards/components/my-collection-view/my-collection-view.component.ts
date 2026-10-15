@@ -18,7 +18,11 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
 import { LoyaltySessionService } from '@core/services/backend/loyalty-api/loyalty-session.service';
 import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
-import { ClaimHistoryItem } from '@core/services/backend/loyalty-api/models/claim-history-item';
+import {
+  ClaimHistoryItem,
+  ClaimStatus
+} from '@core/services/backend/loyalty-api/models/claim-history-item';
+import { ViewRewardModalComponent } from '../view-reward-modal/view-reward-modal.component';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { EMPTY_COLLECTION_CARD } from '../../constants/empty-card';
 import { PLACEHOLDER_COLLECTION_CARD } from '../../constants/placeholder-card';
@@ -167,5 +171,51 @@ export class MyCollectionViewComponent {
 
   protected selectPage(page: number): void {
     this.page.set(page);
+  }
+
+  protected rewardLabel(status: ClaimStatus): string | null {
+    switch (status) {
+      case 'requested':
+        return 'Reward requested';
+      case 'ready':
+      case 'received':
+        return 'View reward';
+      case 'under_review':
+        return 'Under review';
+      case 'rejected':
+      case 'denied':
+        return 'Declined';
+      default:
+        return null;
+    }
+  }
+
+  protected isRewardClickable(status: ClaimStatus): boolean {
+    return status === 'requested' || status === 'ready' || status === 'received';
+  }
+
+  protected isRewardDeclined(status: ClaimStatus): boolean {
+    return status === 'rejected' || status === 'denied';
+  }
+
+  protected openReward(card: CollectionCard): void {
+    if (!this.isRewardClickable(card.status)) {
+      return;
+    }
+
+    this.modalService
+      .openClosableDialog(ViewRewardModalComponent, {
+        size: 'm',
+        dismissible: true,
+        label: '',
+        data: {
+          title: card.activationTitle ?? null,
+          description: card.activationDescription ?? null,
+          code: card.activationCode ?? null,
+          link: card.activationLink ?? null,
+          note: card.activationNote ?? null
+        }
+      })
+      .subscribe();
   }
 }

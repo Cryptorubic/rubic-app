@@ -58,9 +58,21 @@
 
           @if (!card.isEmpty) {
             @if (!card.isPlaceholder) {
-              <div class="card__meta">
-                <button class="card__view-reward" ype="button">View reward</button>
-              </div>
+              @if (rewardLabel(card.status); as label) {
+                <div class="card__meta">
+                  <button
+                    class="card__view-reward"
+                    type="button"
+                    [class.card__view-reward_highlighted]="card.status === 'ready'"
+                    [class.card__view-reward_clickable]="isRewardClickable(card.status)"
+                    [class.card__view-reward_declined]="isRewardDeclined(card.status)"
+                    [disabled]="isRewardDeclined(card.status)"
+                    (click)="openReward(card)"
+                  >
+                    {{ label }}
+                  </button>
+                </div>
+              }
             } @else {
               <div class="card__meta">Your first reward will appear here</div>
             }

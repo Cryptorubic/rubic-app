@@ -1,0 +1,45 @@
+.view-reward {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  padding: 44px 27px 26px;
+  line-height: 120%;
+  text-align: center;
+
+  &__title {
+    font-size: 18px;
+    line-height: 140%;
+  }
+
+  &__description {
+    font-size: 15px;
+  }
+
+  &__code {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 50px;
+    padding: 0 32px;
+    color: #fff;
+    font-size: 15px;
+    text-align: center;
+    background: var(--io-background);
+    border: 1px solid #fff;
+    border-radius: 20px;
+    outline: none;
+  }
+
+  &__link {
+    font-size: 14px;
+
+    ::ng-deep a {
+      text-decoration: underline;
+    }
+  }
+
+  &__note {
+    font-size: 14px;
+  }
+}
