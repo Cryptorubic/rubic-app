@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PATH } from '@shared/constants/common/links';
-import { privacyDisclaimerGuard$ } from '@features/privacy/guards/privacy-disclaimer.guard';
 
 const routes: Routes = [
   {
@@ -10,8 +9,12 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.PRIVACY,
-    canActivateChild: [privacyDisclaimerGuard$],
-    loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
+    redirectTo: () => {
+      window.location.assign(
+        `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`
+      );
+      return '';
+    }
   },
   {
     path: ROUTE_PATH.NONE,

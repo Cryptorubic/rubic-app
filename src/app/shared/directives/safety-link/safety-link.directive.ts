@@ -1,5 +1,4 @@
-import { Directive, HostBinding, HostListener, Inject, Input, PLATFORM_ID } from '@angular/core';
-import { Router } from '@angular/router';
+import { Directive, HostBinding, Input } from '@angular/core';
 
 @Directive({
   standalone: false,
@@ -26,20 +25,7 @@ export class SafetyLinkDirective {
 
   private _link: string;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: string,
-    private router: Router
-  ) {}
-
-  @HostListener('click', ['$event'])
-  private linkClick(event: MouseEvent): void {
-    if (!this.isLinkExternal()) {
-      event.preventDefault();
-      this.router.navigate([this._link]);
-    }
-  }
-
   private isLinkExternal(): boolean {
-    return this._link.includes(location.protocol);
+    return !this._link.includes(window.location.origin);
   }
 }

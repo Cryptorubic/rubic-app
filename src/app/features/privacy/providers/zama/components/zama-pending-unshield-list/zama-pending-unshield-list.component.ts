@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PendingUnshieldToken } from '../../services/zama-sdk/models/pending-unshield-token';
 
 @Component({
+  standalone: false,
   selector: 'app-zama-pending-unshield-list',
   templateUrl: './zama-pending-unshield-list.component.html',
   styleUrls: ['./zama-pending-unshield-list.component.scss'],

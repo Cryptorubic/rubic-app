@@ -12,7 +12,6 @@ import { TuiScrollbar, TuiScrollable, TuiButton, TuiHint } from '@taiga-ui/core'
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
 import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
-import { PrivacyAuthWindowComponent } from './components/privacy-auth-window/privacy-auth-window.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderModule } from '@app/core/header/header.module';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
@@ -28,11 +27,8 @@ import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-p
     PrivacyPageViewComponent,
     TabBarComponent,
     PrivateProvidersListGeneralComponent,
-    PrivateProvidersListComponent,
-    PrivateProviderElementComponent,
     LastPrivateActivityComponent,
     LastPrivateActivityElementComponent,
-    PrivacyAuthWindowComponent,
     PrivatePageSwapComponent
   ],
   imports: [
@@ -49,7 +45,9 @@ import { PrivacyMainPageToPrivateAssetsService } from './services/privacy-main-p
     SharedTradeModule,
     SharedPrivacyProvidersModule,
     ...TuiHint,
-    TuiSwitch
+    TuiSwitch,
+    PrivateProvidersListComponent,
+    PrivateProviderElementComponent
   ],
   providers: [
     PrivateSwapWindowService,

@@ -78,7 +78,6 @@ import { SmallBlockchainButtonComponent } from './components/small-blockchain-bu
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
-import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-button-new.component';
 
@@ -136,7 +135,6 @@ import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-but
     MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    PrivacyDisclaimerModalComponent,
     TimerComponent,
     RubicButtonNewComponent
   ],

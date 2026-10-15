@@ -3,6 +3,7 @@ import { ApiBanner } from '@app/core/header/models/banners';
 import { BannersService } from '@app/core/header/services/banners.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
+import { map } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -12,7 +13,19 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannersComponent {
-  public readonly banners$ = this.bannersService.banners$;
+  public readonly banners$ = this.bannersService.banners$.pipe(
+    map(banners =>
+      banners.map(b => {
+        if (b.linkUrl.includes('app.rubic.exchange')) {
+          return {
+            ...b,
+            linkUrl: b.linkUrl.replace('app.rubic.exchange', 'local.rubic.exchange:4224')
+          };
+        }
+        return b;
+      })
+    )
+  );
 
   public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
@@ -21,6 +34,10 @@ export class BannersComponent {
     private readonly bannersService: BannersService,
     private readonly gtmService: GoogleTagManagerService
   ) {}
+
+  public isPrivacyBanner(banner: ApiBanner): boolean {
+    return banner.text.toLowerCase().includes('stay safe, break the link between wallets');
+  }
 
   public getBannerText(banner: ApiBanner, mobile: boolean): string {
     return mobile ? banner.textMobile : banner.text;

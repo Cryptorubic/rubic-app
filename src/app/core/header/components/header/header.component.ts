@@ -20,7 +20,6 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/google-tag-manager';
 
 @Component({
   standalone: false,
@@ -148,14 +147,6 @@ export class HeaderComponent {
     this.gtmService.fireSwitchModeEvent('testnets');
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
-
-  public onHeaderModeSwitch(selectedMode: SwitchModeEvent): void {
-    this.gtmService.fireSwitchModeEvent(selectedMode);
-  }
-
-  // public navigateToPrivateSwaps(): void {
-  //   this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
-  // }
 
   public switchTheme(): void {
     this.themeService.switchTheme();

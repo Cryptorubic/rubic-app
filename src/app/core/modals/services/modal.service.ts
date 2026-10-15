@@ -1,15 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import {
-  BehaviorSubject,
-  catchError,
-  defaultIfEmpty,
-  finalize,
-  first,
-  firstValueFrom,
-  Observable,
-  of
-} from 'rxjs';
+import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -58,10 +49,8 @@ import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-p
 import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
-import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
-import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 
@@ -550,24 +539,6 @@ export class ModalService {
         fitContent: true,
         data: { walletName, walletsToHide }
       })
-    );
-  }
-
-  public async openPrivacyAuthModal(): Promise<{ valid: boolean; forceClosed: boolean }> {
-    return firstValueFrom(
-      this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
-        PrivacyAuthWindowComponent,
-        { size: 'page' }
-      )
-    );
-  }
-
-  public showDisclaimer(): Promise<boolean> {
-    this.setOpenedModalName('privacy-disclaimer');
-    return firstValueFrom(
-      this.showDialog(PrivacyDisclaimerModalComponent, {
-        size: 's'
-      }).pipe(defaultIfEmpty(false)) as Observable<boolean>
     );
   }
 }
