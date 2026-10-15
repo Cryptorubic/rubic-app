@@ -15,6 +15,7 @@ export interface SubscriptionItem {
   isActive: boolean;
   variants: SubscriptionVariant[];
   redeemDescription: string;
+  redeemInputPlaceholder: string;
   redeemNote: string;
   deliveryType: 'user_input' | 'delivered_value' | 'payout';
 }

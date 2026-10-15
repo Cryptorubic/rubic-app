@@ -198,7 +198,7 @@ export class RewardsViewComponent {
           description: card.redeemDescription,
           note: card.redeemNote,
           withInput: card.deliveryType === 'user_input',
-          inputPlaceholder: 'Enter your XXX',
+          inputPlaceholder: card.redeemInputPlaceholder,
           subscriptionId: card.id,
           variantId: variant.id
         }
