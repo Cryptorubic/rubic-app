@@ -3,7 +3,6 @@ import { ApiBanner } from '@app/core/header/models/banners';
 import { BannersService } from '@app/core/header/services/banners.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
-import { map } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -13,19 +12,7 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannersComponent {
-  public readonly banners$ = this.bannersService.banners$.pipe(
-    map(banners =>
-      banners.map(b => {
-        if (b.linkUrl.includes('app.rubic.exchange')) {
-          return {
-            ...b,
-            linkUrl: b.linkUrl.replace('app.rubic.exchange', 'local.rubic.exchange:4224')
-          };
-        }
-        return b;
-      })
-    )
-  );
+  public readonly banners$ = this.bannersService.banners$;
 
   public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
