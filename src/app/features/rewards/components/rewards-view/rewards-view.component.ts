@@ -17,7 +17,6 @@ import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-ap
 import { HowRewardsWorkModalComponent } from '@features/rewards/components/how-rewards-work-modal/how-rewards-work-modal.component';
 import { RedeemRewardModalComponent } from '@features/rewards/components/redeem-reward-modal/redeem-reward-modal.component';
 import { TuiPagination } from '@taiga-ui/kit';
-import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   SubscriptionItem,
   SubscriptionVariant
@@ -30,7 +29,7 @@ const PAGE_SIZE = 6;
 
 @Component({
   selector: 'app-rewards-view',
-  imports: [TuiButton, TuiPagination, InlineSVGModule, TuiScrollbar],
+  imports: [TuiButton, TuiPagination, TuiScrollbar],
   templateUrl: './rewards-view.component.html',
   styleUrls: ['../../styles/rewards.scss', './rewards-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

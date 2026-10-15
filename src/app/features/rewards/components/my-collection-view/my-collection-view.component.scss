@@ -26,8 +26,11 @@
   }
 
   &__view-reward {
-    &_clickable {
-      cursor: pointer;
+    color: white;
+    cursor: pointer;
+
+    &_success {
+      border-color: var(--tui-status-positive);
     }
 
     &_warning {

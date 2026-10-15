@@ -229,10 +229,6 @@ export class MyCollectionViewComponent {
     }
   }
 
-  protected isRewardClickable(status: ClaimStatus): boolean {
-    return status !== 'awaiting_input';
-  }
-
   protected isRewardWarning(status: ClaimStatus): boolean {
     return status === 'rejected' || status === 'under_review';
   }
@@ -241,11 +237,11 @@ export class MyCollectionViewComponent {
     return status === 'denied';
   }
 
-  protected openReward(card: CollectionCard): void {
-    if (!this.isRewardClickable(card.status)) {
-      return;
-    }
+  protected isRewardSuccess(status: ClaimStatus): boolean {
+    return status === 'ready';
+  }
 
+  protected openReward(card: CollectionCard): void {
     const notice = STATUS_NOTICES[card.status];
 
     this.modalService
@@ -256,17 +252,17 @@ export class MyCollectionViewComponent {
         data: notice
           ? {
               title: notice.title,
-              description: notice.description,
-              code: null,
-              link: null,
-              note: null
+              description: notice.description
             }
           : {
-              title: card.activationTitle ?? null,
-              description: card.activationDescription ?? null,
-              code: card.activationCode ?? null,
-              link: card.activationLink ?? null,
-              note: card.activationNote ?? null
+              title: card.statusText.title,
+              description: card.statusText.description,
+              inputLabel: card.statusText.inputLabel,
+              link: card.statusText.link,
+              note: card.statusText.note,
+              activationCode: card.activationCode,
+              activationLink: card.activationLink,
+              userInput: card.userInput
             }
       })
       .subscribe();

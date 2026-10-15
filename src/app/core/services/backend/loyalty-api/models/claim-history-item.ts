@@ -26,4 +26,11 @@ export interface ClaimHistoryItem {
   activationNote?: string | null;
   activatedAt?: string | null;
   createdAt: string;
+  statusText: {
+    description: string;
+    inputLabel: string;
+    note: string;
+    title: string;
+    link: string;
+  };
 }

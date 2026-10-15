@@ -16,7 +16,19 @@
     font-size: 15px;
   }
 
-  &__code {
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__input-label {
+    margin-bottom: 6px;
+    color: #9a9a9a;
+    font-size: 14px;
+  }
+
+  &__activation-code {
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -25,17 +37,56 @@
     color: #fff;
     font-size: 15px;
     text-align: center;
-    background: var(--io-background);
+    background: var(--tui-background-base);
     border: 1px solid #fff;
     border-radius: 20px;
-    outline: none;
+  }
+
+  &__activation-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 42px;
+    padding: 0 22px;
+    color: #fff;
+    font-size: 15px;
+    text-align: center;
+    background: var(--tui-background-base);
+    border-radius: 17px;
+  }
+
+  &__activation-link-subtext {
+    color: var(--tui-text-secondary);
+    font-size: 14px;
+  }
+
+  &__activation-link-explorer {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 18px;
+    font-size: 15px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+
+    ::ng-deep svg {
+      width: 16px;
+      height: 16px;
+
+      path {
+        fill: var(--tui-text-secondary);
+      }
+    }
   }
 
   &__link {
-    font-size: 14px;
+    font-size: 15px;
 
     ::ng-deep a {
       text-decoration: underline;
+      text-underline-offset: 4px;
     }
   }
 

@@ -35,13 +35,13 @@
     color: #fff;
     font-size: 15px;
     text-align: center;
-    background: var(--io-background);
+    background: var(--tui-background-base);
     border: 1px solid #fff;
     border-radius: 20px;
     outline: none;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.45);
+      color: #9a9a9a;
     }
   }
 
