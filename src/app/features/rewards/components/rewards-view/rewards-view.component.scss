@@ -60,6 +60,17 @@
   }
 }
 
+.card {
+  &_more-rewards {
+    align-items: center;
+    justify-content: center;
+  
+    .card__image {
+      margin-top: 0;
+    }
+  }
+}
+
 .card-details {
   position: absolute;
   display: flex;
@@ -89,14 +100,5 @@
 
   &__description {
     padding-right: 16px;
-  }
-}
-
-.card_more-rewards {
-  align-items: center;
-  justify-content: center;
-
-  .card__image {
-    margin-top: 0;
   }
 }

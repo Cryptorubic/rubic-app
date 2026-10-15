@@ -33,51 +33,50 @@
   <section class="rewards">
     <ul class="rewards__cards">
       @for (card of visibleCards(); track card.id) {
-        <li
-          class="rewards__card card"
-          [class.card_dark-bg]="card.isEmpty"
-          [class.card_placeholder]="card.isPlaceholder"
-        >
-          @if (card.title) {
-            <div class="card__head">
-              <span class="card__title">{{ card.title }}</span>
-            </div>
-          }
+        @if (card.type === 'reward') {
+          <li class="rewards__card card">
+            @if (card.title) {
+              <div class="card__head">
+                <span class="card__title">{{ card.title }}</span>
+              </div>
+            }
 
-          @if (card.imageUrl) {
             <img class="card__image" [src]="card.imageUrl" alt="" width="242" height="150" />
-          } @else if (card.isPlaceholder) {
-            <img
-              class="card__image"
-              src="assets/images/rewards/gift.svg"
-              alt="Gift"
-              width="56"
-              height="56"
-            />
-          }
 
-          @if (!card.isEmpty) {
-            @if (!card.isPlaceholder) {
-              @if (rewardLabel(card.status); as label) {
-                <div class="card__meta">
-                  <button
-                    class="card__view-reward"
-                    type="button"
-                    [class.card__view-reward_highlighted]="card.status !== 'requested'"
-                    [class.card__view-reward_clickable]="isRewardClickable(card.status)"
-                    [class.card__view-reward_warning]="isRewardWarning(card.status)"
-                    [class.card__view-reward_declined]="isRewardDenied(card.status)"
-                    (click)="openReward(card)"
-                  >
-                    {{ label }}
-                  </button>
-                </div>
-              }
-            } @else {
+            @if (rewardLabel(card.status); as label) {
+              <div class="card__meta">
+                <button
+                  class="card__view-reward"
+                  type="button"
+                  [class.card__view-reward_highlighted]="card.status !== 'requested'"
+                  [class.card__view-reward_clickable]="isRewardClickable(card.status)"
+                  [class.card__view-reward_warning]="isRewardWarning(card.status)"
+                  [class.card__view-reward_declined]="isRewardDenied(card.status)"
+                  (click)="openReward(card)"
+                >
+                  {{ label }}
+                </button>
+              </div>
+            }
+          </li>
+        } @else {
+          <li
+            class="rewards__card card"
+            [class.card_first-reward]="card.type === 'first-reward'"
+            [class.card_dark-bg]="card.type === 'empty'"
+          >
+            @if (card.type === 'first-reward') {
+              <img
+                class="card__image"
+                src="assets/images/rewards/gift.svg"
+                alt="Gift"
+                width="56"
+                height="56"
+              />
               <div class="card__meta">Your first reward will appear here</div>
             }
-          }
-        </li>
+          </li>
+        }
       }
     </ul>
 

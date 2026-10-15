@@ -25,9 +25,8 @@ import {
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { CHAIN_SUPPORTED_WALLETS } from '@core/services/wallets/constants/chaintype-supported-wallets';
 import { ViewRewardModalComponent } from '../view-reward-modal/view-reward-modal.component';
-import { EMPTY_COLLECTION_CARD } from '../../constants/empty-card';
-import { PLACEHOLDER_COLLECTION_CARD } from '../../constants/placeholder-card';
 import { CollectionCard } from '../../models/collection-card';
+import { PlaceholderCard } from '../../models/placheholder-card';
 import { compareAddresses } from '@app/shared/utils/utils';
 
 const PAGE_SIZE = 6;
@@ -91,25 +90,29 @@ export class MyCollectionViewComponent {
 
   protected readonly showPagination = computed(() => this.collection().length > PAGE_SIZE);
 
-  protected readonly visibleCards = computed<CollectionCard[]>(() => {
+  protected readonly visibleCards = computed<(CollectionCard | PlaceholderCard)[]>(() => {
     const start = this.currentPage() * PAGE_SIZE;
-    const cards: CollectionCard[] = this.collection()
+    const cards: (CollectionCard | PlaceholderCard)[] = this.collection()
       .slice(start, start + PAGE_SIZE)
       .map(claim => ({
         ...claim,
         id: claim.claimId,
+        type: 'reward' as const,
         isDetailsOpened: false
       }));
 
     if (cards.length === 0) {
-      cards.push(PLACEHOLDER_COLLECTION_CARD);
+      cards.push({
+        id: 'first-reward',
+        type: 'first-reward'
+      });
     }
 
     if (cards.length < PAGE_SIZE) {
       cards.push(
         ...Array.from({ length: PAGE_SIZE - cards.length }, (_, index) => ({
-          ...EMPTY_COLLECTION_CARD,
-          id: `empty-${this.currentPage()}-${index}`
+          id: `empty-${this.currentPage()}-${index}`,
+          type: 'empty' as const
         }))
       );
     }
