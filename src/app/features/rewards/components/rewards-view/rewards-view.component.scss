@@ -25,6 +25,9 @@
   }
 
   &__balance-note {
+    display: flex;
+    gap: 4px;
+    align-items: center;
     margin: 16px 0 0;
     font-size: 15px;
   }

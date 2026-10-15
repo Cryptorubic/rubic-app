@@ -133,7 +133,7 @@ export class RewardsViewComponent {
   protected readonly points = toSignal(
     this.authService.currentUser$.pipe(
       switchMap(user =>
-        user?.address
+        user?.address && this.isEvmWalletConnected()
           ? this.loyaltyApiService.getUserPoints(user.address).pipe(catchError(() => of(null)))
           : of(null)
       )

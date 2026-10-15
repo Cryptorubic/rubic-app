@@ -148,7 +148,15 @@
   @if (!isUnsupportedWallet() && points(); as balance) {
     <p class="rewards__balance">{{ balance.confirmed }} Points</p>
     @if (balance.pending !== 0) {
-      <p class="rewards__balance-note">+{{ balance.pending }} Pending</p>
+      <p class="rewards__balance-note">
+        +{{ balance.pending }} Pending
+        <img
+          src="assets/images/rewards/pending-points-star.svg"
+          alt="Pending points star"
+          width="16"
+          height="16"
+        />
+      </p>
     } @else {
       <p class="rewards__balance-note">Your balance</p>
     }
