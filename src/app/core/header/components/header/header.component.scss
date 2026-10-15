@@ -25,29 +25,6 @@
   }
 }
 
-.private-mode-button {
-  &__content {
-    @include flex(row, center, center);
-    gap: 8px;
-
-    .icon {
-      width: 20px;
-      height: 20px;
-    }
-  }
-}
-
-.active-router-link {
-  color: black !important;
-  background: var(--tui-background-accent-1);
-
-  .icon {
-    ::ng-deep svg path {
-      fill: black;
-    }
-  }
-}
-
 /* .testnets-button,
 .birthday-button,
 .private-swaps-button {
@@ -73,10 +50,8 @@
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  .swap-button,
-  .private-mode-button {
+  .swap-button {
     height: 40px !important;
-
     padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
   }
 
@@ -99,8 +74,7 @@
 }
 
 @include b($mobile-sm-middle) {
-  .swap-button,
-  .private-mode-button {
+  .swap-button {
     font-size: 12px !important;
 
     .icon {
