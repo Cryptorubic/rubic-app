@@ -1,3 +1,6 @@
+export type SubscriptionType =
+  'CLAUDE' | 'TRADINGVIEW' | 'IVPN' | 'NOTESNOOK' | 'TELEGRAM' | 'COOKIE';
+
 export interface SubscriptionVariant {
   id: string;
   title: string;
@@ -18,4 +21,5 @@ export interface SubscriptionItem {
   redeemInputPlaceholder: string;
   redeemNote: string;
   deliveryType: 'user_input' | 'delivered_value' | 'payout';
+  subscriptionType: SubscriptionType;
 }

@@ -7,32 +7,56 @@
     <div class="view-reward__description" [innerHTML]="description"></div>
   }
 
-  <div class="view-reward__input-container">
-    @if (inputLabel) {
-      <div class="view-reward__input-label">{{ inputLabel }}</div>
-    }
+  @if (isTelegram && userInput && activatedAtLabel) {
+    <div class="view-reward__telegram">
+      @if (userInput) {
+        <div class="view-reward__telegram-block">
+          @if (inputLabel) {
+            <div class="view-reward__telegram-label">{{ inputLabel }}</div>
+          }
+          <div class="view-reward__telegram-value">{{ userInput }}</div>
+        </div>
+      }
 
-    @if (activationCode || userInput) {
-      <div class="view-reward__activation-code">
-        {{ activationCode || userInput }}
-      </div>
-    } @else if (activationLink) {
-      <div class="view-reward__activation-link">
-        {{ shortenedActivationLink }}
-        <span class="view-reward__activation-link-subtext">Tx hash</span>
-      </div>
+      @if (userInput && activatedAtLabel) {
+        <div class="view-reward__telegram-divider"></div>
+      }
 
-      <a
-        [href]="activationLink"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="view-reward__activation-link-explorer"
-      >
-        View transaction in explorer
-        <div [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
-      </a>
-    }
-  </div>
+      @if (activatedAtLabel) {
+        <div class="view-reward__telegram-block">
+          <div class="view-reward__telegram-label">Active since</div>
+          <div class="view-reward__telegram-value">{{ activatedAtLabel }}</div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="view-reward__input-container">
+      @if (inputLabel) {
+        <div class="view-reward__input-label">{{ inputLabel }}</div>
+      }
+
+      @if (activationCode || userInput) {
+        <div class="view-reward__activation-code">
+          {{ activationCode || userInput }}
+        </div>
+      } @else if (activationLink) {
+        <div class="view-reward__activation-link">
+          {{ shortenedActivationLink }}
+          <span class="view-reward__activation-link-subtext">Tx hash</span>
+        </div>
+
+        <a
+          [href]="activationLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="view-reward__activation-link-explorer"
+        >
+          View transaction in explorer
+          <div [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+        </a>
+      }
+    </div>
+  }
 
   @if (link) {
     <div class="view-reward__link" [innerHTML]="link"></div>

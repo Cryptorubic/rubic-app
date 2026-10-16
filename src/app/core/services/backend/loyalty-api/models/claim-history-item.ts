@@ -1,3 +1,5 @@
+import { SubscriptionType } from './subscription-item';
+
 export type ClaimStatus =
   'awaiting_input' | 'requested' | 'ready' | 'received' | 'rejected' | 'under_review' | 'denied';
 
@@ -25,6 +27,7 @@ export interface ClaimHistoryItem {
   activationLink?: string | null;
   activationNote?: string | null;
   activatedAt?: string | null;
+  subscriptionType: SubscriptionType;
   createdAt: string;
   statusText: {
     description: string;

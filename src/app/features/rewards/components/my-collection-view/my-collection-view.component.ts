@@ -262,7 +262,9 @@ export class MyCollectionViewComponent {
               note: card.statusText.note,
               activationCode: card.activationCode,
               activationLink: card.activationLink,
-              userInput: card.userInput
+              userInput: card.userInput,
+              subscriptionType: card.subscriptionType,
+              activatedAt: card.activatedAt
             }
       })
       .subscribe();
