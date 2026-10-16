@@ -36,8 +36,12 @@ export class ViewRewardModalComponent {
   protected readonly activationCode = this.context.data.activationCode;
   protected readonly activationLink = this.context.data.activationLink;
   protected readonly userInput = this.context.data.userInput;
-  protected readonly isTelegram = this.context.data.subscriptionType === 'TELEGRAM';
+  protected readonly isTradingView = this.context.data.subscriptionType === 'TRADINGVIEW';
   protected readonly activatedAtLabel = this.formatActivatedAt(this.context.data.activatedAt);
+  protected readonly showsSubscriptionCard =
+    (this.context.data.subscriptionType === 'TELEGRAM' || this.isTradingView) &&
+    !!this.userInput &&
+    !!this.activatedAtLabel;
 
   get shortenedActivationLink(): string {
     const splitLink = this.activationLink?.split('/');

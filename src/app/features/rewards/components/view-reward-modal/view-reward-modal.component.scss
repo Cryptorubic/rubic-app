@@ -88,6 +88,22 @@
       text-decoration: underline;
       text-underline-offset: 4px;
     }
+
+    &_external {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+
+      ::ng-deep a {
+        color: var(--tui-background-accent-1);
+      }
+
+      ::ng-deep svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
   }
 
   &__note {

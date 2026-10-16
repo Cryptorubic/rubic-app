@@ -7,7 +7,7 @@
     <div class="view-reward__description" [innerHTML]="description"></div>
   }
 
-  @if (isTelegram && userInput && activatedAtLabel) {
+  @if (showsSubscriptionCard) {
     <div class="view-reward__telegram">
       @if (userInput) {
         <div class="view-reward__telegram-block">
@@ -59,7 +59,12 @@
   }
 
   @if (link) {
-    <div class="view-reward__link" [innerHTML]="link"></div>
+    <div class="view-reward__link" [class.view-reward__link_external]="isTradingView">
+      <div [innerHTML]="link"></div>
+      @if (isTradingView) {
+        <div [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+      }
+    </div>
   }
 
   @if (note) {
