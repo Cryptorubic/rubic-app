@@ -20,6 +20,7 @@ import { isDepositTrade } from '@app/core/services/sdk/sdk-legacy/features/on-ch
 import { percentAddress } from '@app/features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
 import { compareAddresses } from '@shared/utils/utils';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
+import { TO_BACKEND_CROSS_CHAIN_PROVIDERS, TO_BACKEND_ON_CHAIN_PROVIDERS } from '@cryptorubic/core';
 
 const TRADE_POINTS_POLL_MS = 3_000;
 const HIDDEN_POINTS: EarnedPointsView = { loading: false, points: null };
@@ -55,7 +56,10 @@ export class EarnedPointsService {
 
   private getEligibilityParams(trade: CrossChainTrade | OnChainTrade): LoyaltyEligibilityParams {
     return {
-      provider: trade.type,
+      provider:
+        trade instanceof CrossChainTrade
+          ? TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type]
+          : TO_BACKEND_ON_CHAIN_PROVIDERS[trade.type],
       fromBlockchain: trade.from.blockchain,
       toBlockchain: trade.to.blockchain,
       ...(this.isZeroFee(trade) ? { isZeroFee: true } : {})
