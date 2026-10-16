@@ -7,7 +7,25 @@
     <div class="view-reward__description" [innerHTML]="description"></div>
   }
 
-  @if (showsSubscriptionCard) {
+  @if (awaitsUsername) {
+    <input
+      class="view-reward__username"
+      type="text"
+      [formControl]="username"
+      [placeholder]="inputLabel ?? ''"
+      autocomplete="off"
+    />
+    <button
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      [disabled]="submitting()"
+      (click)="submitUsername()"
+    >
+      Submit username
+    </button>
+  } @else if (showsSubscriptionCard) {
     <div class="view-reward__telegram">
       @if (userInput) {
         <div class="view-reward__telegram-block">
@@ -29,7 +47,7 @@
         </div>
       }
     </div>
-  } @else {
+  } @else if (activationCode || userInput || activationLink) {
     <div class="view-reward__input-container">
       @if (inputLabel) {
         <div class="view-reward__input-label">{{ inputLabel }}</div>

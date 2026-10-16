@@ -43,7 +43,7 @@
 
             <img class="card__image" [src]="card.imageUrl" alt="" width="242" height="150" />
 
-            @if (rewardLabel(card.status); as label) {
+            @if (rewardLabel(card); as label) {
               <div class="card__meta">
                 <button
                   class="card__view-reward"

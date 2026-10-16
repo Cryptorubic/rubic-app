@@ -1,7 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TuiDialogContext } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TuiButton, TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '@core/services/auth/auth.service';
+import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
+import { LoyaltySessionService } from '@core/services/backend/loyalty-api/loyalty-session.service';
+import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
+import { ClaimStatus } from '@app/core/services/backend/loyalty-api/models/claim-history-item';
 import { SubscriptionType } from '@app/core/services/backend/loyalty-api/models/subscription-item';
 
 export interface ViewRewardDialogData {
@@ -15,18 +23,24 @@ export interface ViewRewardDialogData {
   userInput?: string | null;
   subscriptionType?: SubscriptionType;
   activatedAt?: string | null;
+  status?: ClaimStatus;
+  claimId?: string;
 }
 
 @Component({
   selector: 'app-view-reward-modal',
-  imports: [InlineSVGModule],
+  imports: [InlineSVGModule, ReactiveFormsModule, TuiButton],
   templateUrl: './view-reward-modal.component.html',
   styleUrl: './view-reward-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewRewardModalComponent {
   private readonly context =
-    inject<TuiDialogContext<void, ViewRewardDialogData>>(POLYMORPHEUS_CONTEXT);
+    inject<TuiDialogContext<boolean, ViewRewardDialogData>>(POLYMORPHEUS_CONTEXT);
+  private readonly authService = inject(AuthService);
+  private readonly loyaltyApiService = inject(LoyaltyApiService);
+  private readonly loyaltySession = inject(LoyaltySessionService);
+  private readonly sessionStorage = inject(LoyaltySessionStorage);
 
   protected readonly title = this.context.data.title;
   protected readonly description = this.context.data.description;
@@ -42,6 +56,12 @@ export class ViewRewardModalComponent {
     (this.context.data.subscriptionType === 'TELEGRAM' || this.isTradingView) &&
     !!this.userInput &&
     !!this.activatedAtLabel;
+  protected readonly awaitsUsername =
+    this.context.data.status === 'awaiting_input' &&
+    (this.context.data.subscriptionType === 'TELEGRAM' || this.isTradingView);
+  protected readonly username = new FormControl('', { nonNullable: true });
+  protected readonly submitting = signal(false);
+  private readonly claimId = this.context.data.claimId;
 
   get shortenedActivationLink(): string {
     const splitLink = this.activationLink?.split('/');
@@ -72,5 +92,40 @@ export class ViewRewardModalComponent {
       parts.find(item => item.type === type)?.value ?? '';
 
     return `${part('month')} ${part('day')}, ${part('year')} · ${part('hour')}:${part('minute')} UTC`;
+  }
+
+  protected async submitUsername(): Promise<void> {
+    const address = this.authService.userAddress;
+    if (this.submitting() || !address || !this.claimId) {
+      return;
+    }
+
+    this.submitting.set(true);
+    try {
+      await this.sendUsername(address, this.claimId, false);
+      this.context.completeWith(true);
+    } catch {
+      this.submitting.set(false);
+    }
+  }
+
+  private async sendUsername(address: string, claimId: string, retried: boolean): Promise<void> {
+    const token = await this.loyaltySession.ensureToken(address);
+
+    try {
+      await firstValueFrom(
+        this.loyaltyApiService.submitClaimUserInput(claimId, token, {
+          userInput: this.username.value.trim()
+        })
+      );
+    } catch (error: unknown) {
+      if (!retried && error instanceof HttpErrorResponse && error.status === 401) {
+        this.sessionStorage.delete(address);
+        await this.sendUsername(address, claimId, true);
+        return;
+      }
+
+      throw error;
+    }
   }
 }

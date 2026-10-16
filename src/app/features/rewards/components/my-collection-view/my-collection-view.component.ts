@@ -211,8 +211,15 @@ export class MyCollectionViewComponent {
     this.page.set(page);
   }
 
-  protected rewardLabel(status: ClaimStatus): string | null {
-    switch (status) {
+  protected rewardLabel(card: CollectionCard): string | null {
+    if (
+      card.status === 'awaiting_input' &&
+      (card.subscriptionType === 'TELEGRAM' || card.subscriptionType === 'TRADINGVIEW')
+    ) {
+      return 'Enter username';
+    }
+
+    switch (card.status) {
       case 'requested':
         return 'Requested';
       case 'ready':
@@ -230,7 +237,7 @@ export class MyCollectionViewComponent {
   }
 
   protected isRewardWarning(status: ClaimStatus): boolean {
-    return status === 'rejected' || status === 'under_review';
+    return status === 'rejected' || status === 'under_review' || status === 'awaiting_input';
   }
 
   protected isRewardDenied(status: ClaimStatus): boolean {
@@ -264,9 +271,21 @@ export class MyCollectionViewComponent {
               activationLink: card.activationLink,
               userInput: card.userInput,
               subscriptionType: card.subscriptionType,
-              activatedAt: card.activatedAt
+              activatedAt: card.activatedAt,
+              status: card.status,
+              claimId: card.id
             }
       })
-      .subscribe();
+      .subscribe(submitted => {
+        if (!submitted) {
+          return;
+        }
+
+        const address = this.currentUser()?.address;
+        const token = address ? this.sessionStorage.get(address) : null;
+        if (address && token) {
+          void this.loadCollection(address, token);
+        }
+      });
   }
 }

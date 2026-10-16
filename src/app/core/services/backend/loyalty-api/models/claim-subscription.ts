@@ -10,3 +10,11 @@ export interface ClaimSubscriptionResponse {
   status: ClaimStatus;
   confirmedBalance: number;
 }
+
+export interface SubmitUserInputRequest {
+  userInput: string;
+}
+
+export interface SubmitUserInputResponse {
+  status: ClaimStatus;
+}
