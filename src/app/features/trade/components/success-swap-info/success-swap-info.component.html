@@ -6,6 +6,12 @@
     </div>
   } @else if (points !== null) {
     <div class="points-earned-container">
+      <div
+        class="points-earned-container__info-icon"
+        [inlineSVG]="'/assets/images/icons/info.svg'"
+        tuiHint="Your points stay pending while your provider confirms the swap details. The final total may be slightly lower than the amount shown."
+      ></div>
+
       <div class="points-earned">
         <img
           src="assets/images/icons/earned-points-star.svg"
@@ -13,7 +19,7 @@
           width="24"
           height="24"
         />
-        <div class="points-earned__title">+{{ points }} Points Earned</div>
+        <div class="points-earned__title">Up to {{ points }} Points Earned</div>
         <div class="points-earned__note">
           Turn your points into
           <a routerLink="/rewards" class="points-earned__link">Rewards</a>

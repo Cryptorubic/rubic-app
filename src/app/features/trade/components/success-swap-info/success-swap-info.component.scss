@@ -4,12 +4,28 @@
   border-radius: var(--tui-radius-m);
 }
 
-
 .points-earned-container {
+  position: relative;
   display: flex;
   justify-content: center;
   background: url('/assets/images/success-bg.svg');
   background-size: cover;
+
+  &__info-icon {
+    position: absolute;
+    top: 9px;
+    right: 6px;
+    width: 15px;
+    height: 15px;
+    cursor: help;
+
+    &::ng-deep {
+      path,
+      rect {
+        stroke: var(--tui-text-secondary);
+      }
+    }
+  }
 }
 
 .points-earned {
