@@ -160,6 +160,11 @@ export class HeaderComponent {
     this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
+  public navigateToTestnets(): void {
+    this.gtmService.fireSwitchModeEvent('testnets');
+    this.window.open('https://testnet.rubic.exchange', '_blank');
+  }
+
   public switchTheme(): void {
     this.themeService.switchTheme();
   }

@@ -11,6 +11,7 @@ import { EvmBlockchainName, Token } from '@cryptorubic/core';
 import { ZamaHideTokensFacadeService } from '../../../services/zama-hide-tokens-facade.service';
 
 @Component({
+  standalone: false,
   selector: 'app-pending-unshield-element',
   templateUrl: './pending-unshield-element.component.html',
   styleUrls: ['./pending-unshield-element.component.scss'],

@@ -7,6 +7,7 @@ import {
   Optional,
   Output
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { Router } from '@angular/router';
 import { PolymorpheusInput } from '@app/shared/decorators/polymorpheus-input';
@@ -15,9 +16,11 @@ import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { PrivateProviderElementComponent } from '../private-provider-element/private-provider-element.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, PrivateProviderElementComponent],
   selector: 'app-private-providers-list',
   templateUrl: './private-providers-list.component.html',
   styleUrls: ['./private-providers-list.component.scss'],
