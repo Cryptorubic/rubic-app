@@ -73,35 +73,3 @@
     }
   }
 }
-
-.card-details {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px 0 16px 16px;
-  overflow: auto;
-  font-size: 15px;
-  overflow-wrap: break-word;
-  background: color-mix(in srgb, var(--io-background) 55%, transparent);
-  border-radius: inherit;
-  backdrop-filter: blur(44px);
-  inset: 0;
-
-  &__head {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  &__close {
-    width: 12px;
-    height: 12px;
-    margin-right: 16px;
-    font-size: 30px;
-    line-height: 12px;
-  }
-
-  &__description {
-    padding-right: 16px;
-  }
-}

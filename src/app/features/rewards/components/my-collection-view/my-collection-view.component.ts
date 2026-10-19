@@ -10,7 +10,7 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { TuiButton, TuiLoader } from '@taiga-ui/core';
+import { TuiButton, TuiLoader, TuiScrollbar } from '@taiga-ui/core';
 import { TuiPagination } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -53,7 +53,7 @@ type CollectionViewState = 'connect' | 'prompt' | 'loading' | 'ready';
 
 @Component({
   selector: 'app-my-collection-view',
-  imports: [RouterLink, TuiButton, TuiLoader, TuiPagination],
+  imports: [RouterLink, TuiButton, TuiLoader, TuiPagination, TuiScrollbar],
   templateUrl: './my-collection-view.component.html',
   styleUrls: ['../../styles/rewards.scss', './my-collection-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

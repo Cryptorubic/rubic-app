@@ -12,6 +12,7 @@
             <li class="rewards__card card">
               <div class="card__head">
                 <span class="card__title">{{ card.title }}</span>
+
                 @if (card.description && isEvmWalletConnected()) {
                   <button
                     class="card__info"
@@ -64,6 +65,7 @@
                   </div>
                 }
               }
+
               @if (card.isDetailsOpened) {
                 <div class="card__details card-details">
                   <div class="card-details__head">
