@@ -23,6 +23,7 @@ import {
 } from '@app/core/services/backend/loyalty-api/models/subscription-item';
 import { RewardCard } from '../../models/reward-card';
 import { PlaceholderCard } from '../../models/placheholder-card';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
@@ -39,6 +40,7 @@ export class RewardsViewComponent {
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
   private readonly loyaltyApiService = inject(LoyaltyApiService);
+  private readonly headerStore = inject(HeaderStore);
 
   private readonly currentUser = toSignal(this.authService.currentUser$);
 
@@ -127,6 +129,15 @@ export class RewardsViewComponent {
       );
     }
 
+    if (this.isTablet && !this.isEvmWalletConnected()) {
+      for (let i = 0; i < 2; i++) {
+        cards.push({
+          id: `rubic-cube-${i}`,
+          type: 'rubic-cube' as const
+        });
+      }
+    }
+
     return cards;
   });
 
@@ -140,6 +151,10 @@ export class RewardsViewComponent {
     ),
     { initialValue: null }
   );
+
+  public get isTablet(): boolean {
+    return this.headerStore.isTablet;
+  }
 
   constructor() {}
 

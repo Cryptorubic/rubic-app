@@ -89,7 +89,7 @@
                 </div>
               }
             </li>
-          } @else {
+          } @else if (card.type === 'more-rewards') {
             <li
               class="rewards__card card card_dark-bg"
               [class.card_more-rewards]="card.type === 'more-rewards'"
@@ -103,6 +103,14 @@
                   height="150"
                 />
               }
+            </li>
+          } @else if (card.type === 'rubic-cube') {
+            <li class="rewards__card card">
+              <img
+                class="card__image"
+                src="assets/images/rewards/rubic-cube.png"
+                alt="Rubic cube"
+              />
             </li>
           }
         }

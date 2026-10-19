@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .rewards {
   &__main-wrap {
     position: relative;
@@ -70,6 +72,126 @@
   
     .card__image {
       margin-top: 0;
+    }
+  }
+}
+
+@include b($laptop) {
+  .rewards_not-connected {
+    .rewards {
+      &__title {
+        margin-bottom: 28px;
+        font-size: 34px;
+        line-height: 37px;
+        letter-spacing: 0;
+      }
+  
+      &__subtitle {
+        display: none;
+      }
+      
+      &__cards {
+        position: relative;
+        display: block;
+        width: 316px;
+        height: 307px;
+        margin: auto;
+      }
+    }
+
+    .card {
+      --bacground-gradient: linear-gradient(169deg, #3b3d4f 10%, #30224e 53%, #3b3d4f 93%);
+
+      position: absolute;
+      box-sizing: border-box;
+      width: 176px;
+      height: 156px;
+      padding: 10px;
+      background: 
+        var(--bacground-gradient) padding-box,
+        linear-gradient(214deg, #fff 0%, rgb(255 255 255 / 0) 15%) border-box,
+        #6a7181 border-box;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      box-shadow:
+        8.31px 15.93px 32.56px rgb(30 26 36 / 65%),
+        inset 0 0.76px 2.28px rgb(255 255 255 / 51%),
+        inset 16.74px 0 53.25px -6.85px rgb(56 41 96 / 47%);
+
+      &__title {
+        padding-left: 0;
+      }
+
+      &__image {
+        width: 100%;
+        height: auto;
+        margin-top: 5px;
+      }
+
+      &:nth-child(1) {
+        --bacground-gradient: linear-gradient(169deg, #3b3d4f 10%, #30224e 53%, #3b3d4f 93%);
+        
+        top: 8px;
+        left: 1px;
+        z-index: 1;
+        box-shadow:
+          inset 0 4px 4px #362c52,
+          8.31px 15.93px 32.56px rgb(30 26 36 / 65%),
+          inset 0 0.76px 2.28px rgb(255 255 255 / 51%),
+          inset 16.74px 0 53.25px -6.85px rgb(56 41 96 / 47%);
+        transform: rotate(-9deg);
+      }
+
+      &:nth-child(2) {
+        --bacground-gradient: linear-gradient(161deg, #66687d 10%, #30224e 53%, #3b3d4f 93%);
+
+        top: 42px;
+        right: 5px;
+        z-index: 2;
+        transform: rotate(11deg);
+      }
+
+      &:nth-child(3) {
+        --bacground-gradient: linear-gradient(169deg, #3b3d4f 10%, #333a47 53%, #3b3d4f 93%);
+
+        top: 147px;
+        left: 50%;
+        z-index: 3;
+        height: 144px;
+        transform: translateX(-50%) rotate(-3deg);
+      }
+
+      &:nth-child(4) {
+        top: 157px;
+        left: 1px;
+        width: 120px;
+        height: 112px;
+        padding: 7px;
+        transform: rotate(-12deg);
+        opacity: 0.5;
+
+        .card__image {
+          width: 96px;
+          height: 96px;
+          margin-top: 0;
+        }
+      }
+
+      &:nth-child(5) {
+        top: 192px;
+        right: -1px;
+        width: 84px;
+        height: 78px;
+        padding: 5px;
+        transform: rotate(12deg);
+        opacity: 0.5;
+
+        .card__image {
+          width: 67px;
+          height: 67px;
+          margin-top: 0;
+        }
+      }
     }
   }
 }

@@ -162,13 +162,3 @@
     padding-right: 16px;
   }
 }
-
-@include b($mobile-md) {
-  .rewards {
-    &__cards {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  }
-}
