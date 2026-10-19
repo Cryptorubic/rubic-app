@@ -190,8 +190,10 @@ export class MyCollectionViewComponent {
     }
   }
 
-  private async loadCollection(address: string, token: string): Promise<void> {
-    this.viewState.set('loading');
+  private async loadCollection(address: string, token: string, withLoading = true): Promise<void> {
+    if (withLoading) {
+      this.viewState.set('loading');
+    }
 
     try {
       const history = await firstValueFrom(this.loyaltyApiService.getClaimsHistory(token));
@@ -249,6 +251,10 @@ export class MyCollectionViewComponent {
   }
 
   protected openReward(card: CollectionCard): void {
+    if (card.status === 'ready') {
+      void this.markRewardReceived(card.id);
+    }
+
     const notice = STATUS_NOTICES[card.status];
 
     this.modalService
@@ -277,15 +283,35 @@ export class MyCollectionViewComponent {
             }
       })
       .subscribe(submitted => {
-        if (!submitted) {
-          return;
-        }
-
-        const address = this.currentUser()?.address;
-        const token = address ? this.sessionStorage.get(address) : null;
-        if (address && token) {
-          void this.loadCollection(address, token);
+        if (submitted) {
+          this.reloadCollection();
         }
       });
+  }
+
+  private async markRewardReceived(claimId: string, retried = false): Promise<void> {
+    const address = this.currentUser()?.address;
+    if (!address) {
+      return;
+    }
+
+    try {
+      const token = await this.loyaltySession.ensureToken(address);
+      await firstValueFrom(this.loyaltyApiService.receiveClaim(claimId, token));
+      this.reloadCollection();
+    } catch (error: unknown) {
+      if (!retried && error instanceof HttpErrorResponse && error.status === 401) {
+        this.sessionStorage.delete(address);
+        await this.markRewardReceived(claimId, true);
+      }
+    }
+  }
+
+  private reloadCollection(): void {
+    const address = this.currentUser()?.address;
+    const token = address ? this.sessionStorage.get(address) : null;
+    if (address && token) {
+      this.loadCollection(address, token, false);
+    }
   }
 }

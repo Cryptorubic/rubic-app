@@ -18,3 +18,7 @@ export interface SubmitUserInputRequest {
 export interface SubmitUserInputResponse {
   status: ClaimStatus;
 }
+
+export interface ReceiveClaimResponse {
+  status: ClaimStatus;
+}

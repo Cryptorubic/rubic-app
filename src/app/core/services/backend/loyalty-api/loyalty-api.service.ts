@@ -6,7 +6,8 @@ import {
   ClaimSubscriptionRequest,
   ClaimSubscriptionResponse,
   SubmitUserInputRequest,
-  SubmitUserInputResponse
+  SubmitUserInputResponse,
+  ReceiveClaimResponse
 } from './models/claim-subscription';
 import { LoyaltyEligibility, LoyaltyEligibilityParams } from './models/loyalty-eligibility';
 import { SessionCreateRequest, SessionCreateResponse } from './models/loyalty-session';
@@ -79,6 +80,15 @@ export class LoyaltyApiService {
     return this.httpService.post<SubmitUserInputResponse>(
       `v3/internal/loyalty/claims/${claimId}/user_input`,
       body,
+      undefined,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  }
+
+  public receiveClaim(claimId: string, token: string): Observable<ReceiveClaimResponse> {
+    return this.httpService.post<ReceiveClaimResponse>(
+      `v3/internal/loyalty/claims/${claimId}/receive`,
+      undefined,
       undefined,
       { headers: { Authorization: `Bearer ${token}` } }
     );
