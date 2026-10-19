@@ -155,16 +155,6 @@ export class HeaderComponent {
     this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
   }
 
-  public navigateToSwaps(): void {
-    this.gtmService.fireSwitchModeEvent('regular');
-    this.router.navigate(['/'], { queryParamsHandling: 'merge' });
-  }
-
-  public navigateToTestnets(): void {
-    this.gtmService.fireSwitchModeEvent('testnets');
-    this.window.open('https://testnet.rubic.exchange', '_blank');
-  }
-
   public switchTheme(): void {
     this.themeService.switchTheme();
   }

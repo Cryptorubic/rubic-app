@@ -19,7 +19,6 @@
         [crossChainActive]="
           rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
         "
-        (swapClick)="navigateToSwaps()"
         (onClose)="menuToggler.closeMenu()"
       ></app-rubic-menu>
     </app-rubic-menu-toggler>

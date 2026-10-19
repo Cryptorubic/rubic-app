@@ -44,8 +44,6 @@ export class RubicMenuComponent implements AfterViewInit {
 
   @Input() public crossChainActive: boolean;
 
-  @Output() public readonly swapClick = new EventEmitter<void>();
-
   @Output() public readonly onClose = new EventEmitter<void>();
 
   public isOpened = false;
