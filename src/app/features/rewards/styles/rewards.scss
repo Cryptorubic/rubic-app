@@ -99,12 +99,21 @@
     background: var(--tui-background-base);
     border: 1px solid transparent;
     border-radius: 17px;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
 
     &_highlighted {
       color: white;
       border-color: var(--tui-background-accent-1);
       cursor: pointer;
     }
+  }
+
+  &__price_highlighted:hover {
+    color: #000;
+    background: var(--tui-background-accent-1);
   }
 
   &__variants {

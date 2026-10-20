@@ -42,13 +42,13 @@
                 @let variant = selectedVariant(card);
                 @if (variant?.isActive) {
                   <div class="card__meta">
-                    <span
+                    <button
                       class="card__price"
                       [class.card__price_highlighted]="variant.canClaim"
                       (click)="openRedeem(card, variant)"
                     >
                       {{ variant.price }} Points
-                    </span>
+                    </button>
 
                     <div class="card__variants">
                       @for (option of card.variants; track option.id) {
