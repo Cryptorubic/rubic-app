@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .view-reward {
   display: flex;
   flex-direction: column;
@@ -158,5 +160,13 @@
     height: 1px;
     margin: 14px 0;
     background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+@include b($laptop) {
+  .view-reward {
+    &__description {
+      line-height: 16px;
+    }
   }
 }

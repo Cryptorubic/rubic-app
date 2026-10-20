@@ -60,6 +60,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       type: 'internal',
       link: ROUTE_PATH.PRIVACY,
       active: false
+    },
+    {
+      translateKey: 'Rewards',
+      type: 'internal',
+      link: ROUTE_PATH.REWARDS,
+      active: false
     }
   ],
   ['More']: [

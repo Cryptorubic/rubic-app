@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .redeem-reward {
   display: flex;
   flex-direction: column;
@@ -46,6 +48,7 @@
   }
 
   &__note {
+    max-width: 395px;
     font-size: 14px;
 
     ::ng-deep a {
@@ -61,5 +64,13 @@
     font-size: 15px;
     text-align: left;
     cursor: pointer;
+  }
+}
+
+@include b($laptop) {
+  .redeem-reward {
+    &__description {
+      line-height: 16px;
+    }
   }
 }
