@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { FOOTER_LINKS } from '@core/rubic-footer/models/footer-links';
 import { ThemeService } from '@core/services/theme/theme.service';
+import { HeaderStore } from '../header/services/header.store';
 
 @Component({
   standalone: false,
@@ -17,6 +18,8 @@ export class RubicFooterComponent {
 
   public readonly theme$ = this.themeService.theme$;
 
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
+
   /**
    * Returns landing domain address.
    */
@@ -24,5 +27,8 @@ export class RubicFooterComponent {
     return EXTERNAL_LINKS.LANDING;
   }
 
-  constructor(private readonly themeService: ThemeService) {}
+  constructor(
+    private readonly themeService: ThemeService,
+    private readonly headerStore: HeaderStore
+  ) {}
 }

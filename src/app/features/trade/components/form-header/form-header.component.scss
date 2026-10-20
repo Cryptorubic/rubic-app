@@ -12,18 +12,24 @@
 
   &__links {
     display: flex;
-    gap: 12px;
+    gap: 2px;
     color: var(--tui-text-tertiary);
   }
 
   &__link {
     position: relative;
+    padding: 5px 10px;
+    border-radius: 30px;
     cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--tui-background-neutral-1-hover);
+    }
 
     &_active {
       color: var(--tui-text-primary);
-      text-decoration-color: #00e28d;
-      text-decoration-line: underline;
+      background-color: var(--tui-background-base);
     }
 
     &-new {

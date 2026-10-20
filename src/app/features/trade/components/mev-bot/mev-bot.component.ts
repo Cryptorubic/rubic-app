@@ -31,7 +31,8 @@ export class MevBotComponent {
   public displayMev: boolean = false;
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 1000;
+    // @TODO_3089
+    const minDollarAmountToDisplay = 0;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     if (trade?.from.blockchain !== trade?.to.blockchain) {
