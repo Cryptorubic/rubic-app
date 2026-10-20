@@ -32,7 +32,18 @@
             <span class="collection__variant">{{ claim.variantTitle }}</span>
           </div>
 
-          <button class="collection__view" type="button" (click)="open(claim)">View</button>
+          @if (rewardLabel(claim); as label) {
+            <button
+              class="collection__view"
+              type="button"
+              [class.collection__view_success]="isRewardSuccess(claim.status)"
+              [class.collection__view_warning]="isRewardWarning(claim.status)"
+              [class.collection__view_declined]="isRewardDenied(claim.status)"
+              (click)="open(claim)"
+            >
+              {{ label }}
+            </button>
+          }
         </li>
       }
     </ul>

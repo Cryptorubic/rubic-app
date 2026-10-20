@@ -11,6 +11,7 @@ import {
   ClaimStatus
 } from '@core/services/backend/loyalty-api/models/claim-history-item';
 import { ViewRewardModalComponent } from '../components/view-reward-modal/view-reward-modal.component';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 const STATUS_NOTICES: Partial<Record<ClaimStatus, { title: string; description: string }>> = {
   rejected: {
@@ -48,6 +49,48 @@ export class CollectionRewardService {
   private readonly loyaltyApiService = inject(LoyaltyApiService);
   private readonly loyaltySession = inject(LoyaltySessionService);
   private readonly sessionStorage = inject(LoyaltySessionStorage);
+  private readonly headerStore = inject(HeaderStore);
+
+  get isTablet(): boolean {
+    return this.headerStore.isTablet;
+  }
+
+  public rewardLabel(card: Pick<ClaimHistoryItem, 'status' | 'subscriptionType'>): string | null {
+    if (
+      card.status === 'awaiting_input' &&
+      (card.subscriptionType === 'TELEGRAM' || card.subscriptionType === 'TRADINGVIEW')
+    ) {
+      return 'Enter username';
+    }
+
+    switch (card.status) {
+      case 'requested':
+        return 'Requested';
+      case 'ready':
+      case 'received':
+        return !this.isTablet ? 'View reward' : 'View';
+      case 'under_review':
+        return 'Under review';
+      case 'rejected':
+        return 'Refunded';
+      case 'denied':
+        return 'Denied';
+      default:
+        return null;
+    }
+  }
+
+  public isRewardWarning(status: ClaimStatus): boolean {
+    return status === 'rejected' || status === 'under_review' || status === 'awaiting_input';
+  }
+
+  public isRewardDenied(status: ClaimStatus): boolean {
+    return status === 'denied';
+  }
+
+  public isRewardSuccess(status: ClaimStatus): boolean {
+    return status === 'ready';
+  }
 
   public open(card: CollectionReward, reload: () => void): void {
     if (card.status === 'ready') {

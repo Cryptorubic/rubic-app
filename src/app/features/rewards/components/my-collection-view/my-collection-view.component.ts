@@ -197,40 +197,19 @@ export class MyCollectionViewComponent {
   }
 
   protected rewardLabel(card: CollectionCard): string | null {
-    if (
-      card.status === 'awaiting_input' &&
-      (card.subscriptionType === 'TELEGRAM' || card.subscriptionType === 'TRADINGVIEW')
-    ) {
-      return 'Enter username';
-    }
-
-    switch (card.status) {
-      case 'requested':
-        return 'Requested';
-      case 'ready':
-      case 'received':
-        return 'View reward';
-      case 'under_review':
-        return 'Under review';
-      case 'rejected':
-        return 'Refunded';
-      case 'denied':
-        return 'Denied';
-      default:
-        return null;
-    }
+    return this.collectionReward.rewardLabel(card);
   }
 
   protected isRewardWarning(status: ClaimStatus): boolean {
-    return status === 'rejected' || status === 'under_review' || status === 'awaiting_input';
+    return this.collectionReward.isRewardWarning(status);
   }
 
   protected isRewardDenied(status: ClaimStatus): boolean {
-    return status === 'denied';
+    return this.collectionReward.isRewardDenied(status);
   }
 
   protected isRewardSuccess(status: ClaimStatus): boolean {
-    return status === 'ready';
+    return this.collectionReward.isRewardSuccess(status);
   }
 
   protected openReward(card: CollectionCard): void {

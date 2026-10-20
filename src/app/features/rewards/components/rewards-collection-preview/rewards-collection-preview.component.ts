@@ -14,7 +14,10 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-api.service';
 import { LoyaltySessionService } from '@core/services/backend/loyalty-api/loyalty-session.service';
 import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
-import { ClaimHistoryItem } from '@core/services/backend/loyalty-api/models/claim-history-item';
+import {
+  ClaimHistoryItem,
+  ClaimStatus
+} from '@core/services/backend/loyalty-api/models/claim-history-item';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { CollectionRewardService } from '../../services/collection-reward.service';
 
@@ -91,6 +94,22 @@ export class RewardsCollectionPreviewComponent {
     } finally {
       this.signing.set(false);
     }
+  }
+
+  protected rewardLabel(claim: ClaimHistoryItem): string | null {
+    return this.collectionReward.rewardLabel(claim);
+  }
+
+  protected isRewardWarning(status: ClaimStatus): boolean {
+    return this.collectionReward.isRewardWarning(status);
+  }
+
+  protected isRewardDenied(status: ClaimStatus): boolean {
+    return this.collectionReward.isRewardDenied(status);
+  }
+
+  protected isRewardSuccess(status: ClaimStatus): boolean {
+    return this.collectionReward.isRewardSuccess(status);
   }
 
   protected open(claim: ClaimHistoryItem): void {
