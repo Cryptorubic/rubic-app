@@ -24,30 +24,12 @@ import {
 } from '@core/services/backend/loyalty-api/models/claim-history-item';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { CHAIN_SUPPORTED_WALLETS } from '@core/services/wallets/constants/chaintype-supported-wallets';
-import { ViewRewardModalComponent } from '../view-reward-modal/view-reward-modal.component';
+import { CollectionRewardService } from '../../services/collection-reward.service';
 import { CollectionCard } from '../../models/collection-card';
 import { PlaceholderCard } from '../../models/placheholder-card';
 import { compareAddresses } from '@app/shared/utils/utils';
 
 const PAGE_SIZE = 6;
-
-const STATUS_NOTICES: Partial<Record<ClaimStatus, { title: string; description: string }>> = {
-  rejected: {
-    title: 'Your points have been returned',
-    description:
-      'We couldn’t fulfil this reward request, so we’ve returned the points to your balance.<br /><br />You can use them to choose another reward.'
-  },
-  under_review: {
-    title: 'Your reward request is under review',
-    description:
-      'Our support team is checking your request, and the points used for this reward are temporarily on hold.<br /><br />Check back here for the outcome.'
-  },
-  denied: {
-    title: 'Your reward request was denied',
-    description:
-      'After reviewing your request, we found that it did not meet the program rules.<br /><br />The points used for this reward won’t be returned.'
-  }
-};
 
 type CollectionViewState = 'connect' | 'prompt' | 'loading' | 'ready';
 
@@ -66,6 +48,7 @@ export class MyCollectionViewComponent {
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
+  private readonly collectionReward = inject(CollectionRewardService);
 
   private readonly currentUser = toSignal(this.authService.currentUser$);
 
@@ -251,60 +234,7 @@ export class MyCollectionViewComponent {
   }
 
   protected openReward(card: CollectionCard): void {
-    if (card.status === 'ready') {
-      void this.markRewardReceived(card.id);
-    }
-
-    const notice = STATUS_NOTICES[card.status];
-
-    this.modalService
-      .openClosableDialog(ViewRewardModalComponent, {
-        size: 'm',
-        dismissible: true,
-        label: '',
-        data: notice
-          ? {
-              title: notice.title,
-              description: notice.description
-            }
-          : {
-              title: card.statusText.title,
-              description: card.statusText.description,
-              inputLabel: card.statusText.inputLabel,
-              link: card.statusText.link,
-              note: card.statusText.note,
-              activationCode: card.activationCode,
-              activationLink: card.activationLink,
-              userInput: card.userInput,
-              subscriptionType: card.subscriptionType,
-              activatedAt: card.activatedAt,
-              status: card.status,
-              claimId: card.id
-            }
-      })
-      .subscribe(submitted => {
-        if (submitted) {
-          this.reloadCollection();
-        }
-      });
-  }
-
-  private async markRewardReceived(claimId: string, retried = false): Promise<void> {
-    const address = this.currentUser()?.address;
-    if (!address) {
-      return;
-    }
-
-    try {
-      const token = await this.loyaltySession.ensureToken(address);
-      await firstValueFrom(this.loyaltyApiService.receiveClaim(claimId, token));
-      this.reloadCollection();
-    } catch (error: unknown) {
-      if (!retried && error instanceof HttpErrorResponse && error.status === 401) {
-        this.sessionStorage.delete(address);
-        await this.markRewardReceived(claimId, true);
-      }
-    }
+    this.collectionReward.open(card, () => this.reloadCollection());
   }
 
   private reloadCollection(): void {

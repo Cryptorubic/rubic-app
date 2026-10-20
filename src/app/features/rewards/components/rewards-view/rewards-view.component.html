@@ -171,6 +171,10 @@
           <p class="rewards__swipe">Swipe to discover your next reward</p>
         </div>
       }
+
+      @if (isEvmWalletConnected() && !isUnsupportedWallet()) {
+        <app-rewards-collection-preview />
+      }
     </div>
 
     @if (isUnsupportedWallet()) {

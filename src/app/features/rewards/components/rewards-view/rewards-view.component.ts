@@ -26,13 +26,14 @@ import {
 import { RewardCard } from '../../models/reward-card';
 import { PlaceholderCard } from '../../models/placheholder-card';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { RewardsCollectionPreviewComponent } from '../rewards-collection-preview/rewards-collection-preview.component';
 
 const GUEST_CARDS_COUNT = 3;
 const PAGE_SIZE = 6;
 
 @Component({
   selector: 'app-rewards-view',
-  imports: [TuiButton, TuiPagination, TuiScrollbar],
+  imports: [RewardsCollectionPreviewComponent, TuiButton, TuiPagination, TuiScrollbar],
   templateUrl: './rewards-view.component.html',
   styleUrls: ['../../styles/rewards.scss', './rewards-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

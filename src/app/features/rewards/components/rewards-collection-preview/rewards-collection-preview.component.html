@@ -1,0 +1,46 @@
+@if (signing()) {
+  <tui-loader class="collection__loader" [showLoader]="true"></tui-loader>
+} @else if (needsSign()) {
+  <section class="collection">
+    <h2 class="collection__title">My Collection</h2>
+    <p class="collection__note">Sign with your wallet to see your collection.</p>
+    <button
+      class="collection__sign"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="signWallet()"
+    >
+      Sign Wallet
+    </button>
+  </section>
+} @else if (visibleClaims().length > 0) {
+  <section class="collection">
+    <h2 class="collection__title">My Collection</h2>
+    <p class="collection__note">Rewards you've already claimed. View details anytime.</p>
+
+    <ul class="collection__list">
+      @for (claim of visibleClaims(); track claim.claimId) {
+        <li class="collection__item">
+          @if (claim.imageUrl) {
+            <img class="collection__image" [src]="claim.imageUrl" alt="" width="44" height="44" />
+          }
+
+          <div class="collection__text">
+            <span class="collection__name">{{ claim.title }}</span>
+            <span class="collection__variant">{{ claim.variantTitle }}</span>
+          </div>
+
+          <button class="collection__view" type="button" (click)="open(claim)">View</button>
+        </li>
+      }
+    </ul>
+
+    @if (showAll()) {
+      <button class="collection__all" type="button" (click)="showAllClaims()">
+        Show all Rewards
+      </button>
+    }
+  </section>
+}
