@@ -48,6 +48,24 @@
     padding: 12px;
     background: var(--io-background);
     border-radius: 20px;
+
+    &_empty {
+      flex-direction: column;
+      gap: 8px;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  &__gift {
+    width: 56px;
+    height: 56px;
+  }
+
+  &__empty {
+    color: var(--tui-text-secondary);
+    font-size: 15px;
+    line-height: 21px;
   }
 
   &__image {

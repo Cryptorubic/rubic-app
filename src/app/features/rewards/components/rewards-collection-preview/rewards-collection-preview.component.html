@@ -22,29 +22,42 @@
 
     <ul class="collection__list">
       @for (claim of visibleClaims(); track claim.claimId) {
-        <li class="collection__item">
-          @if (claim.imageUrl) {
-            <img class="collection__image" [src]="claim.imageUrl" alt="" width="44" height="44" />
-          }
+        @if (isFirstReward(claim)) {
+          <li class="collection__item collection__item_empty">
+            <img
+              class="collection__gift"
+              src="assets/images/rewards/gift.svg"
+              alt=""
+              width="56"
+              height="56"
+            />
+            <div class="collection__empty">Your first reward will appear here</div>
+          </li>
+        } @else {
+          <li class="collection__item">
+            @if (claim.imageUrl) {
+              <img class="collection__image" [src]="claim.imageUrl" alt="" width="44" height="44" />
+            }
 
-          <div class="collection__text">
-            <span class="collection__name">{{ claim.title }}</span>
-            <span class="collection__variant">{{ claim.variantTitle }}</span>
-          </div>
+            <div class="collection__text">
+              <span class="collection__name">{{ claim.title }}</span>
+              <span class="collection__variant">{{ claim.variantTitle }}</span>
+            </div>
 
-          @if (rewardLabel(claim); as label) {
-            <button
-              class="collection__view"
-              type="button"
-              [class.collection__view_success]="isRewardSuccess(claim.status)"
-              [class.collection__view_warning]="isRewardWarning(claim.status)"
-              [class.collection__view_declined]="isRewardDenied(claim.status)"
-              (click)="open(claim)"
-            >
-              {{ label }}
-            </button>
-          }
-        </li>
+            @if (rewardLabel(claim); as label) {
+              <button
+                class="collection__view"
+                type="button"
+                [class.collection__view_success]="isRewardSuccess(claim.status)"
+                [class.collection__view_warning]="isRewardWarning(claim.status)"
+                [class.collection__view_declined]="isRewardDenied(claim.status)"
+                (click)="open(claim)"
+              >
+                {{ label }}
+              </button>
+            }
+          </li>
+        }
       }
     </ul>
 

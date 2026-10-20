@@ -23,6 +23,13 @@ import { CollectionRewardService } from '../../services/collection-reward.servic
 
 const PREVIEW_COUNT = 2;
 
+const FIRST_REWARD = {
+  claimId: 'first-reward',
+  type: 'first-reward'
+} as const;
+
+type FirstRewardCard = typeof FIRST_REWARD;
+
 @Component({
   selector: 'app-rewards-collection-preview',
   imports: [TuiButton, TuiLoader],
@@ -41,15 +48,22 @@ export class RewardsCollectionPreviewComponent {
 
   private readonly claims = signal<ClaimHistoryItem[]>([]);
 
+  private readonly claimsLoaded = signal(false);
+
   protected readonly needsSign = signal(false);
 
   protected readonly signing = signal(false);
 
   protected readonly expanded = signal(false);
 
-  protected readonly visibleClaims = computed(() =>
-    this.expanded() ? this.claims() : this.claims().slice(0, PREVIEW_COUNT)
-  );
+  protected readonly visibleClaims = computed((): Array<ClaimHistoryItem | FirstRewardCard> => {
+    const claims = this.claims();
+    if (claims.length === 0) {
+      return this.claimsLoaded() ? [FIRST_REWARD] : [];
+    }
+
+    return this.expanded() ? claims : claims.slice(0, PREVIEW_COUNT);
+  });
 
   protected readonly showAll = computed(
     () => !this.expanded() && this.claims().length > PREVIEW_COUNT
@@ -61,6 +75,7 @@ export class RewardsCollectionPreviewComponent {
       const address = user?.address;
       if (!address || user.chainType !== CHAIN_TYPE.EVM) {
         this.claims.set([]);
+        this.claimsLoaded.set(false);
         this.needsSign.set(false);
         return;
       }
@@ -69,6 +84,7 @@ export class RewardsCollectionPreviewComponent {
       this.expanded.set(false);
       if (!token) {
         this.claims.set([]);
+        this.claimsLoaded.set(false);
         this.needsSign.set(true);
         return;
       }
@@ -90,10 +106,15 @@ export class RewardsCollectionPreviewComponent {
       await this.loadClaims(address, token);
     } catch {
       this.claims.set([]);
+      this.claimsLoaded.set(false);
       this.needsSign.set(true);
     } finally {
       this.signing.set(false);
     }
+  }
+
+  protected isFirstReward(claim: ClaimHistoryItem | FirstRewardCard): claim is FirstRewardCard {
+    return 'type' in claim && claim.type === 'first-reward';
   }
 
   protected rewardLabel(claim: ClaimHistoryItem): string | null {
@@ -132,6 +153,7 @@ export class RewardsCollectionPreviewComponent {
     try {
       const history = await firstValueFrom(this.loyaltyApiService.getClaimsHistory(token));
       this.claims.set(history ?? []);
+      this.claimsLoaded.set(true);
       this.needsSign.set(false);
     } catch (error: unknown) {
       if (error instanceof HttpErrorResponse && error.status === 401) {
@@ -139,6 +161,7 @@ export class RewardsCollectionPreviewComponent {
       }
 
       this.claims.set([]);
+      this.claimsLoaded.set(false);
       this.needsSign.set(true);
     }
   }
