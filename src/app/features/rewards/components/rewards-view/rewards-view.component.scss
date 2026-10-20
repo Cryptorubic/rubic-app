@@ -65,6 +65,11 @@
   }
 }
 
+.rewards__screen,
+.rewards__pager {
+  display: none;
+}
+
 .card {
   &_more-rewards {
     align-items: center;
@@ -192,6 +197,136 @@
           margin-top: 0;
         }
       }
+    }
+  }
+  
+  .rewards {
+    &__balance,
+    &__balance-note,
+    &__help {
+      display: none;
+    }
+
+    &__screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 20px;
+
+      > * {
+        width: 100%;
+      }
+    }
+
+    &__screen-title {
+      margin: 0;
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 35px;
+      letter-spacing: 0;
+      text-align: left;
+    }
+
+    &__summary {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding: 10px 16px;
+      background: var(--io-background);
+      border-radius: 20px;
+    }
+
+    &__summary-label {
+      margin: 0;
+      color: var(--tui-text-secondary);
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    &__summary-points {
+      margin: 2px 0 0;
+      color: var(--tui-background-accent-1);
+      font-size: 21px;
+      line-height: 29px;
+      letter-spacing: 0;
+    }
+
+    &__summary-pending {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin: 4px 0 0;
+      font-size: 15px;
+    }
+
+    &__summary-help {
+      font-size: 14px;
+      line-height: 20px;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      cursor: pointer;
+    }
+
+    &__explore {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      max-width: 600px;
+      margin-top: 32px;
+    }
+
+    &__explore-title {
+      margin: 0;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 25px;
+      letter-spacing: 0;
+    }
+
+    &__explore-count {
+      color: #a9a9b8;
+      font-size: 12px;
+    }
+
+    &__pager {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    &__dots {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &__dot {
+      width: 6px;
+      height: 6px;
+      padding: 0;
+      background: #6a7181;
+      border: 0;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &_active {
+        width: 18px;
+        background: var(--tui-background-accent-1);
+      }
+    }
+
+    &__swipe {
+      margin: 17px 0 0;
+      color: var(--tui-text-secondary);
+      font-size: 12px;
+      line-height: 17px;
+      text-align: center;
     }
   }
 }

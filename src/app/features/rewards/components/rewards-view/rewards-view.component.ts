@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
   Injector,
-  signal
+  signal,
+  viewChild
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiButton, TuiScrollbar } from '@taiga-ui/core';
@@ -48,6 +50,10 @@ export class RewardsViewComponent {
 
   private readonly catalogLoading = signal(true);
 
+  private readonly cardsList = viewChild<ElementRef<HTMLElement>>('cardsList');
+
+  protected readonly activeSlide = signal(0);
+
   protected readonly isEvmWalletConnected = computed(
     () => this.currentUser()?.chainType === CHAIN_TYPE.EVM
   );
@@ -83,7 +89,7 @@ export class RewardsViewComponent {
   );
 
   protected readonly showPagination = computed(
-    () => this.isEvmWalletConnected() && this.catalog().length > PAGE_SIZE
+    () => this.isEvmWalletConnected() && this.catalog().length > PAGE_SIZE && !this.isTablet
   );
 
   protected readonly visibleCards = computed<(RewardCard | PlaceholderCard)[]>(() => {
@@ -91,9 +97,13 @@ export class RewardsViewComponent {
     let catalogToShow: SubscriptionItem[] = [];
 
     if (this.isEvmWalletConnected()) {
-      const start = this.currentPage() * PAGE_SIZE;
-      cardsToShow = PAGE_SIZE;
-      catalogToShow = this.catalog().slice(start, start + cardsToShow);
+      if (!this.isTablet) {
+        const start = this.currentPage() * PAGE_SIZE;
+        cardsToShow = PAGE_SIZE;
+        catalogToShow = this.catalog().slice(start, start + cardsToShow);
+      } else {
+        catalogToShow = this.catalog();
+      }
     } else {
       cardsToShow = GUEST_CARDS_COUNT;
       catalogToShow = this.catalog().slice(0, cardsToShow);
@@ -113,20 +123,22 @@ export class RewardsViewComponent {
       })
       .filter(card => card.selectedVariantId);
 
-    if (!this.catalogLoading() && cards.length === 0) {
-      cards.push({
-        id: 'more-rewards',
-        type: 'more-rewards'
-      });
-    }
+    if (!this.isTablet) {
+      if (!this.catalogLoading() && cards.length === 0) {
+        cards.push({
+          id: 'more-rewards',
+          type: 'more-rewards'
+        });
+      }
 
-    if (cards.length < cardsToShow) {
-      cards.push(
-        ...Array.from({ length: cardsToShow - cards.length }, (_, index) => ({
-          id: `empty-${this.currentPage()}-${index}`,
-          type: 'empty' as const
-        }))
-      );
+      if (cards.length < cardsToShow) {
+        cards.push(
+          ...Array.from({ length: cardsToShow - cards.length }, (_, index) => ({
+            id: `empty-${this.currentPage()}-${index}`,
+            type: 'empty' as const
+          }))
+        );
+      }
     }
 
     if (this.isTablet && !this.isEvmWalletConnected()) {
@@ -139,6 +151,11 @@ export class RewardsViewComponent {
     }
 
     return cards;
+  });
+
+  protected readonly slideIndex = computed(() => {
+    const last = Math.max(this.visibleCards().length - 1, 0);
+    return Math.min(this.activeSlide(), last);
   });
 
   protected readonly points = toSignal(
@@ -169,6 +186,35 @@ export class RewardsViewComponent {
 
   protected selectPage(page: number): void {
     this.page.set(page);
+  }
+
+  protected onCardsScroll(event: Event): void {
+    const list = event.target as HTMLElement;
+    const card = list.querySelector<HTMLElement>('.rewards__card:not(.card_dark-bg)');
+    if (!card) {
+      return;
+    }
+
+    const gap = Number.parseFloat(getComputedStyle(list).columnGap) || 0;
+    const step = card.offsetWidth + gap;
+    if (step <= 0) {
+      return;
+    }
+
+    const last = Math.max(this.visibleCards().length - 1, 0);
+    const index = Math.min(Math.max(Math.round(list.scrollLeft / step), 0), last);
+    this.activeSlide.set(index);
+  }
+
+  protected scrollToSlide(index: number): void {
+    const list = this.cardsList()?.nativeElement;
+    const card = list?.querySelector<HTMLElement>('.rewards__card:not(.card_dark-bg)');
+    if (!list || !card) {
+      return;
+    }
+
+    const gap = Number.parseFloat(getComputedStyle(list).columnGap) || 0;
+    list.scrollTo({ left: index * (card.offsetWidth + gap), behavior: 'smooth' });
   }
 
   protected previousPage(): void {

@@ -171,3 +171,62 @@
     padding-right: 16px;
   }
 }
+
+@include b($laptop) {
+  .rewards:not(.rewards_not-connected) {
+    align-items: stretch;
+
+    .rewards__main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .rewards__cards {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-start;
+      width: 100%;
+      max-width: 600px;
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+      list-style: none;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .card {
+      scroll-snap-align: start;
+      flex: 0 0 calc(100% - 36px);
+      width: calc(100% - 36px);
+      height: auto;
+      padding: 16px 16px 20px;
+
+      &__title {
+        padding-left: 0;
+      }
+
+      &__info {
+        img {
+          width: 19px;
+          height: 19px;
+        }
+      }
+
+      &__image {
+        width: 100%;
+        height: auto;
+        margin-top: 16px;
+      }
+
+      &__meta {
+        margin-top: 16px;
+      }
+    }
+  }
+}

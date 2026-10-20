@@ -1,4 +1,43 @@
 <section class="rewards" [class.rewards_not-connected]="!isEvmWalletConnected()">
+  @if (isEvmWalletConnected()) {
+    <div class="rewards__screen">
+      <h1 class="rewards__screen-title">Rewards</h1>
+
+      <div class="rewards__summary">
+        @if (points(); as balance) {
+          <div class="rewards__summary-balance">
+            <p class="rewards__summary-label">Your balance</p>
+            <p class="rewards__summary-points">{{ balance.confirmed }} Points</p>
+            @if (balance.pending !== 0) {
+              <p class="rewards__summary-pending">
+                +{{ balance.pending }} Pending
+                <img
+                  src="assets/images/rewards/pending-points-star.svg"
+                  alt="Pending points star"
+                  width="16"
+                  height="16"
+                />
+              </p>
+            }
+          </div>
+        }
+
+        <button class="rewards__summary-help" type="button" (click)="openHowItWorks()">
+          How does it work?
+        </button>
+      </div>
+
+      <div class="rewards__explore">
+        <h2 class="rewards__explore-title">Explore Rewards</h2>
+        @if (visibleCards().length > 0) {
+          <span class="rewards__explore-count"
+            >{{ slideIndex() + 1 }}/{{ visibleCards().length }}</span
+          >
+        }
+      </div>
+    </div>
+  }
+
   <div class="rewards__main-wrap">
     <div class="rewards__main" [class.rewards__main_blurred]="isUnsupportedWallet()">
       @if (!isEvmWalletConnected()) {
@@ -6,7 +45,7 @@
         <p class="rewards__subtitle">Your first private swap earns 2x points</p>
       }
 
-      <ul class="rewards__cards">
+      <ul #cardsList class="rewards__cards" (scroll)="onCardsScroll($event)">
         @for (card of visibleCards(); track card.id) {
           @if (card.type === 'reward') {
             <li class="rewards__card card">
@@ -115,6 +154,23 @@
           }
         }
       </ul>
+
+      @if (isEvmWalletConnected() && visibleCards().length > 0) {
+        <div class="rewards__pager">
+          <div class="rewards__dots">
+            @for (card of visibleCards(); track card.id; let index = $index) {
+              <button
+                class="rewards__dot"
+                [class.rewards__dot_active]="index === slideIndex()"
+                type="button"
+                [attr.aria-label]="'Reward ' + (index + 1)"
+                (click)="scrollToSlide(index)"
+              ></button>
+            }
+          </div>
+          <p class="rewards__swipe">Swipe to discover your next reward</p>
+        </div>
+      }
     </div>
 
     @if (isUnsupportedWallet()) {
