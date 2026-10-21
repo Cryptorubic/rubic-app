@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { EarnedPointsView } from '../../models/earned-points-view';
 
 @Component({
   standalone: false,
@@ -9,6 +10,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class SuccessSwapInfoComponent {
   @Input() title = 'Yahoo!';
+
+  @Input() earnedPoints: EarnedPointsView | null = null;
 
   constructor() {}
 }

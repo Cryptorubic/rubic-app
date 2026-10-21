@@ -6,6 +6,7 @@ export enum ROUTE_PATH {
   ABOUT = 'about',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
   PRIVACY = 'privacy',
+  REWARDS = 'rewards',
   REST = '**'
 }
 

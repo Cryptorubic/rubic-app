@@ -8,6 +8,7 @@ interface GetRequestOptions {
   timeoutMs?: number;
   retry?: number;
   external?: boolean;
+  headers?: Record<string, string>;
 }
 const defaultGetRequestOptions: GetRequestOptions = {
   timeoutMs: 5_000,
@@ -31,7 +32,8 @@ export class HttpService {
   ): Observable<T> {
     const fullUrl = (path || SERVER_REST_URL) + (url || '');
     const request$ = this.http.get<T>(fullUrl, {
-      params: data || {}
+      params: data || {},
+      ...(options.headers ? { headers: options.headers } : {})
     });
 
     if (path && !options.external) return request$;

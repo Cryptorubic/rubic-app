@@ -132,6 +132,8 @@ export class SwapDataElementComponent {
     this.selectGasToken(this.gasTokenAssets[0].token, 0);
   }
 
+  @Input() earnsPoints = false;
+
   @Input() averageTimeMins: string | number;
 
   @Input() time95PercentSwapsMins: string | number;

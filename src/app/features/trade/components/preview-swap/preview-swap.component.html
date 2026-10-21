@@ -197,6 +197,7 @@
           }"
           [averageTimeMins]="getAverageTimeString(state?.tradeState)"
           [time95PercentSwapsMins]="getTime95PercentsSwapsString(state?.tradeState)"
+          [earnsPoints]="(earnsPoints$ | async) === true"
         ></app-swap-data-element>
       </div>
 
@@ -223,9 +224,9 @@
         <app-transaction-details></app-transaction-details>
       </div>
 
-      <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info></app-success-swap-info>
-      </div>
+      @if (state.transaction.step === 'success') {
+        <app-success-swap-info [earnedPoints]="earnedPoints$ | async"></app-success-swap-info>
+      }
     </div>
 
     <ng-container *ngIf="state.tradeState.trade.warnings.length">
