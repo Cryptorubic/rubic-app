@@ -37,6 +37,19 @@
         Rewards
       </button>
     }
+
+    @if (isMobile && !useLargeIframe) {
+      <button
+        class="rewards-button-mobile"
+        routerLink="/rewards"
+        tuiIconButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        <img src="assets/images/rewards/gift-menu.svg" alt="Rewards" />
+      </button>
+    }
   </div>
 
   <div class="rubic-header__right">
