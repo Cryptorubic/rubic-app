@@ -11,7 +11,6 @@ export interface IMobileNativeOptions {
   forceClose$?: Observable<void>;
   nextModal$?: Observable<INextModal>;
   previousComponent?: boolean;
-  showMobileMenu?: boolean;
 }
 
 export interface INextModal extends IMobileNativeOptions {

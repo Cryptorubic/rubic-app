@@ -1,34 +1,23 @@
 import { NavigationItem } from '@core/header/components/header/components/rubic-menu/models/navigation-item';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
-const defaultSrc = 'assets/images/icons/navigation/';
-
 type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'Token Claim',
-    type: 'external',
-    link: EXTERNAL_LINKS.AIRDROP,
-    imagePath: `assets/images/rbc.svg`
+    translateKey: 'Private Mode',
+    type: 'internal',
+    link: `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`
   },
-  // {
-  //   translateKey: 'navigation.sdk',
-  //   type: 'external',
-  //   link: EXTERNAL_LINKS.LANDING_SDK,
-  //   imagePath: `${defaultSrc}sdk.svg`
-  // },
-  // {
-  //   translateKey: 'navigation.setupWidget',
-  //   type: 'external',
-  //   link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
-  //   imagePath: `${defaultSrc}widget.svg`
-  // },
+  {
+    translateKey: 'Testnet App',
+    type: 'external',
+    link: EXTERNAL_LINKS.TESTNET_APP
+  },
   {
     translateKey: 'navigation.about',
     type: 'external',
-    link: EXTERNAL_LINKS.LANDING,
-    imagePath: `${defaultSrc}team.svg`
+    link: EXTERNAL_LINKS.LANDING
   }
 ] as NavigationItem[];
 

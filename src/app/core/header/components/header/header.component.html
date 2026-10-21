@@ -1,3 +1,5 @@
+@let isMobile = mobile$ | async;
+
 <app-banners *ngIf="!hideUnusedUI && !isMobile"></app-banners>
 
 <header
@@ -13,15 +15,17 @@
       [noFrameLink]="noFrameLink"
     ></app-logo>
 
-    <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
-      <app-rubic-menu
-        [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-        [crossChainActive]="
-          rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-        "
-        (swapClick)="navigateToSwaps()"
-      ></app-rubic-menu>
-    </app-rubic-menu-toggler>
+    @if (!isMobile) {
+      <app-rubic-menu-toggler *ngIf="!useLargeIframe">
+        <app-rubic-menu
+          [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+          [crossChainActive]="
+            rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          "
+          (swapClick)="navigateToSwaps()"
+        ></app-rubic-menu>
+      </app-rubic-menu-toggler>
+    }
 
     <button
       *ngIf="!useLargeIframe && !isMobile"
@@ -37,41 +41,20 @@
   </div>
 
   <div class="rubic-header__right">
-    <app-language-selector *ngIf="!useLargeIframe"></app-language-selector>
-
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
     <div class="rubic-header__profile">
-      <ng-container *ngIf="!currentUser?.address; else loggedIn">
+      @if (!currentUser?.address) {
         <app-login-button
           class="rubic-header__login"
           [buttonHierarchy]="'header'"
         ></app-login-button>
-      </ng-container>
-      <ng-template #loggedIn>
+      } @else {
         <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-      </ng-template>
+      }
+      @if (isMobile) {
+        <app-rubic-menu-toggler-mobile (click)="openMobileMenu()"></app-rubic-menu-toggler-mobile>
+      }
     </div>
   </div>
-
-  <!-- Uncomment when light theme ready -->
-  <!--  <button-->
-  <!--    class="theme-switcher"-->
-  <!--    tuiIconButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="switchTheme()"-->
-  <!--  >-->
-  <!--    <div-->
-  <!--      class="image"-->
-  <!--      [inlineSVG]="-->
-  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
-  <!--      "-->
-  <!--    ></div>-->
-  <!--  </button>-->
-
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
-  </ng-container>
 </header>

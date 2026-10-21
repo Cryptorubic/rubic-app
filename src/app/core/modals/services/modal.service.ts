@@ -107,10 +107,7 @@ export class ModalService {
       {
         title: '',
         size: 'l',
-        showMobileMenu: true,
-        data: {
-          formType
-        }
+        data: { formType }
       },
       injector
     );

@@ -15,7 +15,9 @@
             (click)="handleButtonClick(item)"
           >
             <div class="data-list__element-container">
-              <div class="image" [inlineSVG]="item.imagePath"></div>
+              @if (item.imagePath) {
+                <div class="image" [inlineSVG]="item.imagePath"></div>
+              }
               {{ item.translateKey | translate }}
             </div>
           </button>
@@ -31,7 +33,9 @@
             target="_blank"
           >
             <div class="data-list__element-container">
-              <div class="image" [inlineSVG]="item.imagePath"></div>
+              @if (item.imagePath) {
+                <div class="image" [inlineSVG]="item.imagePath"></div>
+              }
               {{ item.translateKey | translate }}
             </div>
           </a>

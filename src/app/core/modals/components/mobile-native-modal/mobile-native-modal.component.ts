@@ -31,8 +31,6 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
   public title: string = this.context.title;
 
-  public showMobileMenu: boolean = this.context.showMobileMenu;
-
   public state: ModalStates;
 
   public readonly isIframe$ = this.iframeService.isIframe$;

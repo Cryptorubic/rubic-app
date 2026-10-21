@@ -25,12 +25,6 @@
   }
 }
 
-/* .testnets-button,
-.birthday-button,
-.private-swaps-button {
-  margin-right: auto;
-} */
-
 .image {
   display: flex;
   align-items: center;
@@ -50,42 +44,12 @@
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  .swap-button {
-    height: 40px !important;
-    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-  }
-
   app-rubic-menu-toggler,
-  app-language-selector,
   app-history-button {
     display: none;
-  }
-
-  button {
-    &.theme-switcher,
-    &.staking-button {
-      display: none;
-    }
   }
 }
 
 .large-iframe-header {
   justify-content: space-between;
-}
-
-@include b($mobile-sm-middle) {
-  .swap-button {
-    font-size: 12px !important;
-
-    .icon {
-      position: relative;
-      top: 2px;
-
-      ::ng-deep {
-        svg {
-          height: 20px;
-        }
-      }
-    }
-  }
 }

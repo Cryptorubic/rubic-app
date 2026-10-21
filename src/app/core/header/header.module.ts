@@ -31,12 +31,12 @@ import { MobileUserProfileComponent } from './components/header/components/mobil
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { LogoComponent } from './components/header/components/logo/logo.component';
-import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
 import { BannersService } from './services/banners.service';
+import { RubicMenuTogglerMobileComponent } from './components/header/components/rubic-menu-toggler-mobile/rubic-menu-toggler-mobile.component';
 
 @NgModule({
   declarations: [
@@ -53,11 +53,11 @@ import { BannersService } from './services/banners.service';
     SettingsComponent,
     ProfileMenuTogglerComponent,
     HistoryButtonComponent,
-    BannersComponent
+    BannersComponent,
+    RubicMenuTogglerMobileComponent
   ],
   imports: [
     CommonModule,
-    LanguageSelectorComponent,
     SharedModule,
     TranslateModule,
     RouterModule,

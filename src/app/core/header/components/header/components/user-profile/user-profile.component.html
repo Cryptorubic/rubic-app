@@ -22,7 +22,22 @@
       <tui-opt-group>
         <button
           tuiButton
-          class="data-list__element user-profile__logout"
+          class="data-list__element"
+          appearance="secondary"
+          type="button"
+          size="m"
+          (click)="navigateToHistory()"
+        >
+          <div class="data-list__link-container">
+            {{ 'navigation.recentTrades' | translate }}
+          </div>
+        </button>
+      </tui-opt-group>
+
+      <tui-opt-group>
+        <button
+          tuiButton
+          class="data-list__element"
           appearance="secondary"
           type="button"
           size="m"

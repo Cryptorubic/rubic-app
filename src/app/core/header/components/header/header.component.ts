@@ -20,6 +20,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   standalone: false,
@@ -60,6 +61,8 @@ export class HeaderComponent {
 
   public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
 
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
@@ -82,10 +85,6 @@ export class HeaderComponent {
     );
   }
 
-  public get isMobile(): boolean {
-    return this.headerStore.isMobile;
-  }
-
   public get isTablet(): boolean {
     return this.headerStore.isTablet;
   }
@@ -106,7 +105,8 @@ export class HeaderComponent {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly modalService: ModalService
   ) {
     this.advertisementType = 'default';
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
@@ -150,5 +150,9 @@ export class HeaderComponent {
 
   public switchTheme(): void {
     this.themeService.switchTheme();
+  }
+
+  public openMobileMenu(): void {
+    this.modalService.openRubicMenu().subscribe();
   }
 }
