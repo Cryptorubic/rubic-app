@@ -43,6 +43,7 @@ export class RewardsViewComponent {
   private readonly modalService = inject(ModalService);
   private readonly injector = inject(Injector);
   private readonly loyaltyApiService = inject(LoyaltyApiService);
+  private readonly collectionPreview = viewChild(RewardsCollectionPreviewComponent);
   private readonly headerStore = inject(HeaderStore);
 
   private readonly currentUser = toSignal(this.authService.currentUser$);
@@ -267,6 +268,10 @@ export class RewardsViewComponent {
           variantId: variant.id
         }
       })
-      .subscribe();
+      .subscribe(claimed => {
+        if (claimed && this.isTablet) {
+          this.collectionPreview()?.reload();
+        }
+      });
   }
 }

@@ -12,6 +12,7 @@ import { LoyaltyApiService } from '@core/services/backend/loyalty-api/loyalty-ap
 import { LoyaltySessionService } from '@core/services/backend/loyalty-api/loyalty-session.service';
 import { LoyaltySessionStorage } from '@core/services/backend/loyalty-api/loyalty-session-storage';
 import { ClaimSubscriptionRequest } from '@core/services/backend/loyalty-api/models/claim-subscription';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 export interface RedeemRewardDialogData {
   title: string;
@@ -33,12 +34,13 @@ export interface RedeemRewardDialogData {
 })
 export class RedeemRewardModalComponent {
   private readonly context =
-    inject<TuiDialogContext<void, RedeemRewardDialogData>>(POLYMORPHEUS_CONTEXT);
+    inject<TuiDialogContext<boolean, RedeemRewardDialogData>>(POLYMORPHEUS_CONTEXT);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly loyaltyApiService = inject(LoyaltyApiService);
   private readonly loyaltySession = inject(LoyaltySessionService);
   private readonly sessionStorage = inject(LoyaltySessionStorage);
+  private readonly headerStore = inject(HeaderStore);
 
   protected readonly title = this.context.data.title;
   protected readonly price = this.context.data.price;
@@ -62,8 +64,10 @@ export class RedeemRewardModalComponent {
     this.submitting.set(true);
     try {
       await this.claimReward(address, false);
-      await this.router.navigate(['/rewards/my-collection']);
-      this.context.completeWith();
+      if (!this.headerStore.isTablet) {
+        await this.router.navigate(['/rewards/my-collection']);
+      }
+      this.context.completeWith(true);
     } catch {
       this.submitting.set(false);
     }

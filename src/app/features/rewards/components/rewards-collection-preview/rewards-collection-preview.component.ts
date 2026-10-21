@@ -141,7 +141,7 @@ export class RewardsCollectionPreviewComponent {
     this.expanded.set(true);
   }
 
-  private reload(): void {
+  public reload(): void {
     const address = this.currentUser()?.address;
     const token = address ? this.sessionStorage.get(address) : null;
     if (address && token) {
