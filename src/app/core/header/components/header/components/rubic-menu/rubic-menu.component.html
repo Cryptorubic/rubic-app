@@ -29,7 +29,7 @@
             class="data-list__element"
             type="button"
             size="m"
-            [href]="item.link"
+            [href]="item.getLink()"
             target="_blank"
           >
             <div class="data-list__element-container">
@@ -47,13 +47,15 @@
   <ng-template #mobileMenu>
     <tui-accordion [closeOthers]="false" [rounded]="false">
       <tui-accordion-item
-        *ngFor="let item of mobileNavigationList | keyvalue: keepOriginalOrder; index as i"
-        [open]="i === 0"
+        *ngFor="let section of mobileNavigationList | keyvalue: keepOriginalOrder; index as i"
+        [open]="i === 0 && section.value.children.length > 0"
+        [showArrow]="section.value.children.length > 0"
+        (click)="section.value.onClick?.(sectionServices)"
       >
-        <div class="data-list__title">{{ item.key }}</div>
+        <div class="data-list__title">{{ section.key }}</div>
 
         <ng-template tuiAccordionItemContent>
-          <ng-container *ngFor="let menu of item.value">
+          <ng-container *ngFor="let menu of section.value.children">
             <div class="data-list__option-container">
               <ng-container
                 *ngIf="menu.type === 'internal'; then internal; else external"
@@ -66,12 +68,12 @@
                 appearance="secondary"
                 type="button"
                 size="m"
-                [href]="menu.link"
-                target="_blank"
+                [href]="menu.getLink()"
+                [target]="menu.target || '_blank'"
                 rel="noopener noreferrer"
                 (click)="handleSwitchMode(menu)"
               >
-                <button class="data-list__option" (click)="handleButtonClick()">
+                <button class="data-list__option">
                   {{ menu.translateKey | translate }}
                 </button>
               </a>
@@ -84,7 +86,7 @@
                 type="button"
                 size="m"
                 (click)="mobileClose(menu)"
-                [routerLink]="menu.link"
+                [routerLink]="menu.getLink()"
                 routerLinkActive="data-list__element_active"
               >
                 <button class="data-list__option">

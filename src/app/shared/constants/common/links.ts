@@ -15,3 +15,7 @@ export enum EXTERNAL_LINKS {
   GO_PLUS_LABS = 'https://gopluslabs.io/token-security',
   TESTNET_APP = 'https://testnet.rubic.exchange/'
 }
+
+export enum INTERNAL_LINKS {
+  TRANSFER = 'https://rubic.exchange'
+}

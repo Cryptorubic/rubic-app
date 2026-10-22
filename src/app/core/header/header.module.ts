@@ -19,7 +19,6 @@ import {
 } from '@taiga-ui/core';
 import { TuiAccordion, TuiCarousel, TuiBadge, TuiSwitch } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
-import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
@@ -29,7 +28,6 @@ import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { LogoComponent } from './components/header/components/logo/logo.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
@@ -42,13 +40,11 @@ import { RubicMenuTogglerMobileComponent } from './components/header/components/
   declarations: [
     HeaderComponent,
     UserProfileComponent,
-    MobileMenuTogglerComponent,
     RubicMenuComponent,
     ThemeSwitcherComponent,
     BannerDirective,
     RubicMenuTogglerComponent,
     MobileUserProfileComponent,
-    MobileNavigationMenuComponent,
     LogoComponent,
     SettingsComponent,
     ProfileMenuTogglerComponent,
