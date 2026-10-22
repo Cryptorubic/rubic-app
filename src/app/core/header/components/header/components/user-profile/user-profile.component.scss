@@ -58,14 +58,13 @@
     height: 40px;
 
     &[tuiButtonV] {
-      gap: 0;
+      gap: 8px;
     }
   }
 
   .user-profile {
     &__avatar {
       width: 16px;
-      margin-right: 8px;
 
       img {
         width: 16px;

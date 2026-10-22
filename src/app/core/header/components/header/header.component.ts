@@ -153,6 +153,7 @@ export class HeaderComponent {
   }
 
   public openMobileMenu(): void {
-    this.modalService.openRubicMenu().subscribe();
+    // @TODO_3282 remove log
+    this.modalService.openRubicMenu().subscribe(() => console.log('SUB openMobileMenu ==>'));
   }
 }

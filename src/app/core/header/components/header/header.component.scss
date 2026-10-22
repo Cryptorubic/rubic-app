@@ -22,6 +22,19 @@
   &__right {
     @include flex(row, center, start);
     gap: 12px;
+
+    .rubic-header__profile {
+      @include flex(row, center, start);
+      gap: 12px;
+
+      app-rubic-menu-toggler-mobile {
+        ::ng-deep {
+          button {
+            height: 40px;
+          }
+        }
+      }
+    }
   }
 }
 

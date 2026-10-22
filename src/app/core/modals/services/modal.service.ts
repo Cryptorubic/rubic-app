@@ -177,7 +177,9 @@ export class ModalService {
     this.setOpenedModalName('rubic-menu');
     return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
       title: 'Menu',
-      scrollableContent: true
+      scrollableContent: true,
+      closeable: true,
+      dismissible: true
     });
   }
 

@@ -1,3 +1,5 @@
+@let isMobile = isMobile$ | async;
+
 <ng-container>
   <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="dropdownIsOpened">
     <div tuiGroup>
@@ -20,21 +22,21 @@
   <ng-template #dropdown>
     <tui-data-list class="data-list" size="m" role="menu">
       <tui-opt-group>
-        <button
-          tuiButton
-          class="data-list__element"
-          appearance="secondary"
-          type="button"
-          size="m"
-          (click)="navigateToHistory()"
-        >
-          <div class="data-list__link-container">
-            {{ 'navigation.recentTrades' | translate }}
-          </div>
-        </button>
-      </tui-opt-group>
+        @if (isMobile) {
+          <button
+            tuiButton
+            class="data-list__element"
+            appearance="secondary"
+            type="button"
+            size="m"
+            (click)="navigateToHistory()"
+          >
+            <div class="data-list__link-container">
+              {{ 'navigation.recentTrades' | translate }}
+            </div>
+          </button>
+        }
 
-      <tui-opt-group>
         <button
           tuiButton
           class="data-list__element"
