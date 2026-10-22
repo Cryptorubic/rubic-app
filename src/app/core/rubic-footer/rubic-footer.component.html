@@ -18,7 +18,12 @@
   </nav>
 
   <div class="rubic-footer__copyright">
-    © Copyright Rubic {{ year }},
+    © Copyright Rubic {{ year }}
+    @if (isMobile) {
+      <br />
+    } @else {
+      ,
+    }
     <a
       [href]="landingDomain + '/pdf/privacy-policy.pdf'"
       rel="noopener"

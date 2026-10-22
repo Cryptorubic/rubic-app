@@ -1,3 +1,34 @@
-<div class="info">
-  <div class="info__title">{{ title }}</div>
+<div class="success-container">
+  @let points = earnedPoints?.points;
+  @if (earnedPoints?.loading) {
+    <div class="points-earned-container">
+      <tui-loader class="points-earned__loader" [showLoader]="true"></tui-loader>
+    </div>
+  } @else if (points !== null) {
+    <div class="points-earned-container">
+      <div
+        class="points-earned-container__info-icon"
+        [inlineSVG]="'/assets/images/icons/info.svg'"
+        tuiHint="Your points stay pending while your provider confirms the swap details. The final total may be slightly lower than the amount shown."
+      ></div>
+
+      <div class="points-earned">
+        <img
+          src="assets/images/icons/earned-points-star.svg"
+          alt="Earned Points Star"
+          width="24"
+          height="24"
+        />
+        <div class="points-earned__title">Up to {{ points }} Points Earned</div>
+        <div class="points-earned__note">
+          Turn your points into
+          <a routerLink="/rewards" class="points-earned__link">Rewards</a>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="info">
+      <div class="info__title">{{ title }}</div>
+    </div>
+  }
 </div>

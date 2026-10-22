@@ -27,7 +27,7 @@ export function copyObject<T>(object: T): T {
  * @param address0 First address.
  * @param address1 Second address.
  */
-export function compareAddresses(address0: string, address1: string): boolean {
+export function compareAddresses(address0?: string | null, address1?: string | null): boolean {
   return address0?.toLowerCase() === address1?.toLowerCase();
 }
 

@@ -25,11 +25,16 @@
   }
 }
 
-/* .testnets-button,
-.birthday-button,
-.private-swaps-button {
-  margin-right: auto;
-} */
+.active-router-link {
+  color: black !important;
+  background: var(--tui-background-accent-1);
+
+  .icon {
+    ::ng-deep svg path {
+      fill: black;
+    }
+  }
+}
 
 .image {
   display: flex;
@@ -39,9 +44,45 @@
   height: 100%;
 }
 
-@include b($laptop) {
-  .testnets-button {
-    display: none;
+.large-iframe-header {
+  justify-content: space-between;
+}
+
+.rewards-button {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  padding-left: 6px;
+
+  &__icon {
+    position: relative;
+    top: -1px;
+    width: 40px;
+    height: 40px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &.active-router-link {
+    .rewards-button__icon {
+      ::ng-deep svg path {
+        stroke: black;
+      }
+    }
+  }
+}
+
+.rewards-button-mobile {
+  width: 40px;
+  height: 40px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -50,12 +91,6 @@
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  .swap-button {
-    height: 40px !important;
-    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-  }
-
-  app-rubic-menu-toggler,
   app-language-selector,
   app-history-button {
     display: none;
@@ -69,23 +104,8 @@
   }
 }
 
-.large-iframe-header {
-  justify-content: space-between;
-}
-
-@include b($mobile-sm-middle) {
-  .swap-button {
-    font-size: 12px !important;
-
-    .icon {
-      position: relative;
-      top: 2px;
-
-      ::ng-deep {
-        svg {
-          height: 20px;
-        }
-      }
-    }
+@include b($mobile-md) {
+  app-rubic-menu-toggler {
+    display: none;
   }
 }

@@ -12,7 +12,7 @@ import { HeaderStore } from '../header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicFooterComponent {
-  public readonly footerLinks = FOOTER_LINKS;
+  public readonly footerLinks = this.isMobile ? FOOTER_LINKS.slice(0, 5) : FOOTER_LINKS;
 
   public readonly year = new Date().getFullYear();
 
@@ -25,6 +25,10 @@ export class RubicFooterComponent {
    */
   public get landingDomain(): string {
     return EXTERNAL_LINKS.LANDING;
+  }
+
+  public get isMobile(): boolean {
+    return this.headerStore.isMobile;
   }
 
   constructor(

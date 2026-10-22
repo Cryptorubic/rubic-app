@@ -20,14 +20,12 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-
-    @include b($mobile-sm-plus) {
-      max-width: 320px;
-    }
   }
 
   &__link {
-    margin-right: 21px;
+    display: flex;
+    justify-content: center;
+    width: 44px;
     margin-bottom: 16px;
     transition: 0.1s ease-in-out;
 
@@ -50,5 +48,11 @@
   &__policy {
     color: var(--primary-color);
     white-space: nowrap;
+  }
+}
+
+@include b($mobile-md) {
+  app-rubic-volume {
+    display: none;
   }
 }

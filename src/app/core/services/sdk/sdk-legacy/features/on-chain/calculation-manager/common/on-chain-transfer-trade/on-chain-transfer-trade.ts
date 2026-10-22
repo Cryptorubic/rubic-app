@@ -49,10 +49,6 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
 
   protected actualTokenAmount: BigNumber;
 
-  protected readonly apiQuote: QuoteRequestInterface;
-
-  protected readonly apiResponse: QuoteResponseInterface;
-
   constructor(
     from: PriceTokenAmount,
     to: PriceTokenAmount,
@@ -64,14 +60,12 @@ export abstract class OnChainTransferTrade extends OnChainTrade<OnChainTransferC
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(apiResponse, sdkLegacyService, rubicApiService);
+    super(apiQuote, apiResponse, sdkLegacyService, rubicApiService);
     this.from = from;
     this.to = to;
     this.feeInfo = feeInfo;
     this.path = path;
     this.slippageTolerance = slippageTolerance;
-    this.apiQuote = apiQuote;
-    this.apiResponse = apiResponse;
     this.actualTokenAmount = to.tokenAmount;
   }
 

@@ -1,10 +1,4 @@
-import {
-  PriceTokenAmount,
-  QuoteRequestInterface,
-  QuoteResponseInterface,
-  SuiBlockchainName,
-  SwapRequestInterface
-} from '@cryptorubic/core';
+import { PriceTokenAmount, SuiBlockchainName, SwapRequestInterface } from '@cryptorubic/core';
 import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
@@ -71,16 +65,12 @@ export abstract class SuiOnChainTrade extends OnChainTrade {
 
   public abstract readonly dexContractAddress: string; // not static because https://github.com/microsoft/TypeScript/issues/34516
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
-
-  private readonly apiResponse: QuoteResponseInterface | null = null;
-
   protected constructor(
     tradeStruct: SuiOnChainTradeStruct,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiQuote ?? null, tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
@@ -92,9 +82,6 @@ export abstract class SuiOnChainTrade extends OnChainTrade {
 
     this.useProxy = tradeStruct.useProxy;
     this.fromWithoutFee = tradeStruct.fromWithoutFee;
-
-    this.apiQuote = tradeStruct?.apiQuote || null;
-    this.apiResponse = tradeStruct?.apiResponse || null;
 
     this.feeInfo = {
       rubicProxy: {

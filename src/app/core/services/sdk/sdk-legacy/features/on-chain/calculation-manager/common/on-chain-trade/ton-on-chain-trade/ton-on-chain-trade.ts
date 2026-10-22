@@ -1,10 +1,4 @@
-import {
-  PriceTokenAmount,
-  QuoteRequestInterface,
-  QuoteResponseInterface,
-  SwapRequestInterface,
-  TonBlockchainName
-} from '@cryptorubic/core';
+import { PriceTokenAmount, SwapRequestInterface, TonBlockchainName } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
@@ -43,10 +37,6 @@ export abstract class TonOnChainTrade extends OnChainTrade {
 
   public readonly additionalInfo: TonTradeAdditionalInfo;
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
-
-  private readonly apiResponse: QuoteResponseInterface | null = null;
-
   protected get spenderAddress(): string {
     throw new RubicSdkError('No spender address!');
   }
@@ -60,7 +50,7 @@ export abstract class TonOnChainTrade extends OnChainTrade {
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiQuote, tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
     this.slippageTolerance = tradeStruct.slippageTolerance;
@@ -70,9 +60,6 @@ export abstract class TonOnChainTrade extends OnChainTrade {
       isMultistep: this.routingPath.length > 1,
       isChangedSlippage: tradeStruct.isChangedSlippage
     };
-
-    this.apiQuote = tradeStruct?.apiQuote || null;
-    this.apiResponse = tradeStruct?.apiResponse || null;
   }
 
   public override async needApprove(): Promise<boolean> {
