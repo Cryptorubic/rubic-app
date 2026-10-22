@@ -19,6 +19,11 @@
       <app-step-loading-label></app-step-loading-label>
     } @else if (!step.active) {
       <app-step-locked-label></app-step-locked-label>
+    } @else if (earnsPoints$ | async) {
+      <div class="earns-points">
+        <img src="assets/images/icons/earn-points-preview.svg" alt="" width="18" height="18" />
+        <span>Earns Points</span>
+      </div>
     }
 
     <ng-template tuiAccordionItemContent>

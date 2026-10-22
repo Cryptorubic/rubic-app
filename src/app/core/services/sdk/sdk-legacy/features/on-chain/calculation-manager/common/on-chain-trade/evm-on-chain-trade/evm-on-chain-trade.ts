@@ -3,8 +3,6 @@ import {
   blockchainId,
   EvmBlockchainName,
   PriceTokenAmount,
-  QuoteRequestInterface,
-  QuoteResponseInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -87,16 +85,17 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
       : this.dexContractAddress;
   }
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
-
-  private readonly apiResponse: QuoteResponseInterface | null = null;
-
   protected constructor(
     evmOnChainTradeStruct: EvmOnChainTradeStruct,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(evmOnChainTradeStruct.apiResponse, sdkLegacyService, rubicApiService);
+    super(
+      evmOnChainTradeStruct.apiQuote,
+      evmOnChainTradeStruct.apiResponse,
+      sdkLegacyService,
+      rubicApiService
+    );
 
     this.from = evmOnChainTradeStruct.from;
     this.to = evmOnChainTradeStruct.to;
@@ -108,9 +107,6 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
 
     this.useProxy = evmOnChainTradeStruct.useProxy;
     this.fromWithoutFee = evmOnChainTradeStruct.fromWithoutFee;
-
-    this.apiQuote = evmOnChainTradeStruct?.apiQuote || null;
-    this.apiResponse = evmOnChainTradeStruct?.apiResponse || null;
 
     if (evmOnChainTradeStruct.permit2ApproveAddress) {
       this.permit2ApproveConfig = {

@@ -10,7 +10,7 @@ type Section = 'TRADE' | 'REWARDS' | 'SOCIAL' | 'LEGAL & PRIVACY' | 'ABOUT' | 'S
 export const NAVIGATION_LIST = [
   {
     translateKey: 'Private Mode',
-    type: 'internal',
+    type: 'external',
     getLink: () =>
       `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`
   },

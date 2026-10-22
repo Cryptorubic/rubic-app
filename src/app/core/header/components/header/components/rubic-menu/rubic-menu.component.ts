@@ -48,8 +48,6 @@ export class RubicMenuComponent implements AfterViewInit {
 
   @Input() public crossChainActive: boolean;
 
-  @Output() public readonly swapClick = new EventEmitter<void>();
-
   @Output() public readonly onClose = new EventEmitter<void>();
 
   public isOpened = false;
@@ -94,12 +92,6 @@ export class RubicMenuComponent implements AfterViewInit {
       });
   }
 
-  public menuClickHandler(): void {
-    this.handleButtonClick();
-    this.onClose.emit();
-    this.swapClick.emit();
-  }
-
   public logout(): void {
     this.authService.disconnectWallet();
   }
@@ -107,7 +99,21 @@ export class RubicMenuComponent implements AfterViewInit {
   public handleButtonClick(item?: NavigationItem): void {
     this.onClose.emit();
     if (!item) return;
-    this.window.open(item.getLink(), item?.target || '_blank');
+
+    this.handleSwitchMode(item);
+
+    if (item.type === 'internal') {
+      const path = item.getLink() === ROUTE_PATH.NONE ? '/' : `/${item.getLink()}`;
+      this.router.navigateByUrl(path);
+      return;
+    }
+
+    this.window.open(item.getLink(), item.target || '_blank');
+  }
+
+  public handleExternalClick(item: NavigationItem): void {
+    this.onClose.emit();
+    this.handleSwitchMode(item);
   }
 
   public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
@@ -122,7 +128,7 @@ export class RubicMenuComponent implements AfterViewInit {
   }
 
   public handleSwitchMode(item: NavigationItem): void {
-    if (item.getLink() === ROUTE_PATH.PRIVACY) {
+    if (item.getLink().includes('privateOnly=true')) {
       this.gtmService.fireSwitchModeEvent('private');
     } else if (item.getLink() === ROUTE_PATH.NONE) {
       this.gtmService.fireSwitchModeEvent('regular');

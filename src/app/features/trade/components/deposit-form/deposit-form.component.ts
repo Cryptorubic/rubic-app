@@ -7,10 +7,11 @@ import {
   inject,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject, combineLatestWith, map, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, map, startWith, Subscription } from 'rxjs';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { DepositFormManager } from './services/injectable/deposit-form-manager';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
+import { EarnedPointsService } from '../../services/earned-points/earned-points.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DEPOSIT_FORM_STATE } from './models/deposit-form-states';
 import { pairSupportsDepositFlowViaTxSign } from './utils/pair-supports-tx-flow';
@@ -63,15 +64,19 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
 
   private readonly destroyRef = inject(DestroyRef);
 
+  private eligibilitySubscription?: Subscription;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly depositFormManager: DepositFormManager,
     private readonly previewSwapService: PreviewSwapService,
+    private readonly earnedPointsService: EarnedPointsService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activateDepositPage();
+    this.eligibilitySubscription = this.earnedPointsService.earnsPoints$.subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -79,6 +84,7 @@ export class DepositFormComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.eligibilitySubscription?.unsubscribe();
     this.depositFormManager.cleanup();
   }
 

@@ -1,0 +1,76 @@
+@use 'src/scss/core' as *;
+
+.redeem-reward {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+  padding: 44px 27px 26px;
+  line-height: 120%;
+  text-align: center;
+
+  &__header {
+    font-size: 18px;
+    line-height: 140%;
+  }
+
+  &__title {
+    font-size: 18px;
+  }
+
+  &__description {
+    font-size: 15px;
+  }
+
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 300px;
+    height: 50px;
+    padding: 0 16px;
+    color: #fff;
+    font-size: 15px;
+    text-align: center;
+    background: var(--tui-background-base);
+    border: 1px solid #fff;
+    border-radius: 20px;
+    outline: none;
+
+    &::placeholder {
+      color: #9a9a9a;
+    }
+  }
+
+  &__note {
+    max-width: 395px;
+    font-size: 14px;
+
+    ::ng-deep a {
+      text-decoration: underline;
+    }
+  }
+
+  &__confirm {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-top: 10px;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+  }
+}
+
+@include b($laptop) {
+  .redeem-reward {
+    &__description {
+      line-height: 16px;
+    }
+  }
+}

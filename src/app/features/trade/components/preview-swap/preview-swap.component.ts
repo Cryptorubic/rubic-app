@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { combineLatestWith, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
@@ -37,6 +37,8 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
+import { EarnedPointsView } from '../../models/earned-points-view';
+import { EarnedPointsService } from '../../services/earned-points/earned-points.service';
 
 @Component({
   standalone: false,
@@ -70,6 +72,24 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
+  public readonly earnsPoints$ = this.earnedPointsService.earnsPoints$;
+
+  public readonly earnedPoints$: Observable<EarnedPointsView> = this.transactionState$.pipe(
+    map(state => state.step),
+    distinctUntilChanged(),
+    switchMap(step => {
+      if (step !== 'success') {
+        return of<EarnedPointsView>({ loading: false, points: null });
+      }
+
+      return this.earnedPointsService.earnedPointsFor(
+        this.previewSwapService.selectedTradeState$.pipe(
+          map(tradeState => tradeState?.trade?.rubicId)
+        )
+      );
+    })
+  );
+
   public readonly buttonState$ = this.transactionState$.pipe(
     combineLatestWith(this.tradeState$.pipe(first()), this.swapsStateService.notEnoughBalance$),
     switchMap(states => this.getState(...states)),
@@ -102,6 +122,8 @@ export class PreviewSwapComponent implements OnDestroy {
     })
   );
 
+  private eligibilitySubscription?: Subscription;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly previewSwapService: PreviewSwapService,
@@ -117,10 +139,12 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly swapsStateService: SwapsStateService,
     private readonly tradeInfoManager: TradeInfoManager,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly earnedPointsService: EarnedPointsService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
+    this.eligibilitySubscription = this.earnsPoints$.subscribe();
   }
 
   public backToForm(): void {
@@ -325,6 +349,7 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.eligibilitySubscription?.unsubscribe();
     this.previewSwapService.deactivatePage();
   }
 

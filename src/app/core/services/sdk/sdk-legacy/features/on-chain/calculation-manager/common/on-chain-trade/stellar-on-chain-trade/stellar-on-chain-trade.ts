@@ -1,10 +1,4 @@
-import {
-  PriceTokenAmount,
-  QuoteRequestInterface,
-  QuoteResponseInterface,
-  StellarBlockchainName,
-  SwapRequestInterface
-} from '@cryptorubic/core';
+import { PriceTokenAmount, StellarBlockchainName, SwapRequestInterface } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
@@ -69,16 +63,12 @@ export abstract class StellarOnChainTrade extends OnChainTrade {
 
   public abstract readonly dexContractAddress: string; // not static because https://github.com/microsoft/TypeScript/issues/34516
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
-
-  private readonly apiResponse: QuoteResponseInterface | null = null;
-
   protected constructor(
     tradeStruct: StellarOnChainTradeStruct,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiQuote ?? null, tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
@@ -90,9 +80,6 @@ export abstract class StellarOnChainTrade extends OnChainTrade {
 
     this.useProxy = tradeStruct.useProxy;
     this.fromWithoutFee = tradeStruct.from;
-
-    this.apiQuote = tradeStruct?.apiQuote || null;
-    this.apiResponse = tradeStruct?.apiResponse || null;
 
     this.feeInfo = {
       rubicProxy: {

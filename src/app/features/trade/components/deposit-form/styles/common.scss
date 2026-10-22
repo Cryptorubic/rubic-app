@@ -24,6 +24,11 @@
     position: absolute;
     right: 16px;
   }
+
+  .earns-points {
+    position: absolute;
+    right: 48px;
+  }
 }
 
 @mixin tui-accordion-item-disabled {

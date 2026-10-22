@@ -5,6 +5,7 @@ import {
   Cache as Memo,
   OnChainTradeType,
   PriceTokenAmount,
+  QuoteRequestInterface,
   QuoteResponseInterface,
   SwapPrivateRequestInterface,
   SwapRequestInterface
@@ -126,8 +127,13 @@ export abstract class OnChainTrade<T = unknown> {
 
   public readonly warnings: ErrorInterface[];
 
+  public get integratorAddress(): string | undefined {
+    return this.apiQuote?.integratorAddress;
+  }
+
   protected constructor(
-    apiResponse: QuoteResponseInterface,
+    protected readonly apiQuote: QuoteRequestInterface | null,
+    protected readonly apiResponse: QuoteResponseInterface,
     protected readonly sdkLegacyService: SdkLegacyService,
     protected readonly rubicApiService: RubicApiService
   ) {
