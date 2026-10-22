@@ -67,6 +67,16 @@
     position: relative;
     z-index: 999999;
     max-height: 90vh;
+
+    &__close {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+
+      button {
+        background: var(--tui-background-neutral-1-hover);
+      }
+    }
   }
 
   &-backdrop {
@@ -78,7 +88,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 1rem 8px;
+    padding: 1.2rem;
 
     &--rotated {
       transform: rotate(180deg);

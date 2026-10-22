@@ -53,8 +53,6 @@ export class HeaderComponent {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
-  public settingsOpened = false;
-
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
   public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
@@ -153,7 +151,6 @@ export class HeaderComponent {
   }
 
   public openMobileMenu(): void {
-    // @TODO_3282 remove log
-    this.modalService.openRubicMenu().subscribe(() => console.log('SUB openMobileMenu ==>'));
+    this.modalService.openRubicMenu().subscribe();
   }
 }

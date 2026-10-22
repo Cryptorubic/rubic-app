@@ -7,7 +7,8 @@ import {
   OnDestroy,
   OnInit,
   DestroyRef,
-  inject
+  inject,
+  HostListener
 } from '@angular/core';
 import { TuiSwipeEvent, TuiPopover } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
@@ -19,6 +20,7 @@ import { IMobileNativeOptions } from '../../models/mobile-native-options';
 import { animationTimeout } from '../../utils/animation-timeout';
 import { DOCUMENT } from '@angular/common';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { getAbsoluteOffsetTop } from '../../utils/get-absolute-offset-top';
 
 @Component({
   standalone: false,
@@ -29,11 +31,25 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
+  @HostListener('window:click', ['$event'])
+  private onClick(event: MouseEvent): void {
+    if (!(event.target instanceof HTMLElement)) return;
+
+    const backdrop = event.target.closest('.mobile-native-backdrop') as HTMLElement;
+    const content = this.el.nativeElement.querySelector('.mobile-native-content') as HTMLElement;
+    if (!backdrop || !content) return;
+
+    const contentOffsetTop = getAbsoluteOffsetTop(content);
+    if (event.pageY < contentOffsetTop) this.close();
+  }
+
   public title: string = this.context.title;
 
   public state: ModalStates;
 
   public readonly isIframe$ = this.iframeService.isIframe$;
+
+  public readonly destroyRef = inject(DestroyRef);
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -121,6 +137,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
   }
 
   public close(): void {
+    console.log('CLOSED!');
     this.hide();
     animationTimeout(this.context.completeWith);
   }
@@ -178,6 +195,4 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     this.el.nativeElement.classList.remove('collapsed');
     this.el.nativeElement.classList.add('opened');
   }
-
-  readonly destroyRef = inject(DestroyRef);
 }

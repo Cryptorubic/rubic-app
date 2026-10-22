@@ -5,7 +5,7 @@
   <tui-carousel [duration]="banners.length > 1 ? 15000 : 0" [draggable]="false">
     @for (banner of banners; track idx; let idx = $index) {
       @let privacyBanner = isPrivacyBanner(banner);
-      @if (!mobile || !privacyBanner) {
+      @if (true) {
         <ng-container *tuiItem>
           <a
             (click)="clickOnBanner(banner, mobile)"
