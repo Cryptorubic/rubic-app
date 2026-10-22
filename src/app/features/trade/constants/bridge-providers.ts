@@ -404,6 +404,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}stealthex.png`,
     name: 'Stealthex'
   },
+  swapspace: {
+    averageTime: 5,
+    color: '#FBFF2D',
+    image: `${imageBasePath}spaceswap.ico`,
+    name: 'SwapSpace'
+  },
   symbiosis: {
     averageTime: 5,
     color: '#0dc449',
