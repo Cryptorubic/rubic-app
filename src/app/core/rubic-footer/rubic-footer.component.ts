@@ -18,6 +18,8 @@ export class RubicFooterComponent {
 
   public readonly theme$ = this.themeService.theme$;
 
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
+
   /**
    * Returns landing domain address.
    */

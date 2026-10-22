@@ -1,5 +1,10 @@
+@let mobile = mobile$ | async;
+
 <footer class="rubic-footer">
-  <app-rubic-volume></app-rubic-volume>
+  @if (mobile) {
+    <app-rubic-volume></app-rubic-volume>
+  }
+
   <nav class="rubic-footer__nav">
     <a
       *ngFor="let link of footerLinks"
@@ -11,6 +16,7 @@
       <img [src]="link[theme$ | async]" width="22" height="20" [alt]="link.altText" />
     </a>
   </nav>
+
   <div class="rubic-footer__copyright">
     © Copyright Rubic {{ year }}
     @if (isMobile) {

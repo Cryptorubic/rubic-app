@@ -6,24 +6,26 @@
   justify-content: space-between;
   width: 100%;
 
-  padding: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+  padding: var(--tui-padding-s);
   font-weight: 600;
   font-size: 15px;
 
   &__links {
     display: flex;
-    gap: 12px;
+    gap: 5px;
     color: var(--tui-text-tertiary);
   }
 
   &__link {
     position: relative;
+    padding: 5px 10px;
+    border-radius: 30px;
     cursor: pointer;
+    transition: background-color 0.2s;
 
     &_active {
       color: var(--tui-text-primary);
-      text-decoration-color: #00e28d;
-      text-decoration-line: underline;
+      background-color: var(--tui-background-base);
     }
 
     &-new {
@@ -48,9 +50,26 @@
   }
 }
 
+@media (min-width: '1023px') {
+  .form-header {
+    &__link {
+      &:hover {
+        background-color: var(--tui-background-neutral-1-hover);
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .form-header {
     background: var(--tui-background-base);
     border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+
+    &__link {
+      &_active,
+      &:active {
+        background-color: var(--io-background);
+      }
+    }
   }
 }
