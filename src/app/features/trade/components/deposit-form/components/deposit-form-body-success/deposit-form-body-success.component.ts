@@ -14,6 +14,8 @@ import { ON_CHAIN_PROVIDERS } from '@app/features/trade/constants/on-chain-provi
 import { OnChainTradeType } from '@cryptorubic/core';
 import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { msToMinsSecs } from '@app/shared/components/timer/utils/ms-to-friendly-time';
+import { EarnedPointsView } from '@app/features/trade/models/earned-points-view';
+import { EarnedPointsService } from '@app/features/trade/services/earned-points/earned-points.service';
 
 export type RowConfig = {
   key: string;
@@ -55,9 +57,15 @@ export class DepositFormBodySuccessComponent {
 
   public readonly exchangeDuration$ = this.depositFormManager.exchangeDuration$;
 
+  public readonly earnedPoints$: Observable<EarnedPointsView> =
+    this.earnedPointsService.earnedPointsFor(
+      this.depositFormManager.depositTrade$.pipe(map(trade => trade?.rubicId))
+    );
+
   constructor(
     private readonly tradePageService: TradePageService,
-    private readonly depositFormManager: DepositFormManager
+    private readonly depositFormManager: DepositFormManager,
+    private readonly earnedPointsService: EarnedPointsService
   ) {}
 
   public startNewExchange(): void {

@@ -1,0 +1,44 @@
+<div class="redeem-reward">
+  <div class="redeem-reward__header">Redeem this reward?</div>
+
+  <div class="redeem-reward__title">
+    <b>{{ title }}</b> for <b>{{ price }} Points</b>
+  </div>
+  <div class="redeem-reward__description">
+    {{ description }}
+  </div>
+
+  @if (withInput || note) {
+    <div class="redeem-reward__input-container">
+      @if (withInput) {
+        <input
+          class="redeem-reward__input"
+          type="text"
+          [formControl]="userInput"
+          [placeholder]="inputPlaceholder"
+          autocomplete="off"
+        />
+      }
+
+      @if (note) {
+        <div class="redeem-reward__note" [innerHtml]="note"></div>
+      }
+    </div>
+  }
+
+  <label class="redeem-reward__confirm">
+    <input tuiCheckbox type="checkbox" [formControl]="accepted" />
+    <span>I understand that this reward can't be returned for points.</span>
+  </label>
+
+  <button
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    [disabled]="!canRedeem() || submitting()"
+    (click)="redeem()"
+  >
+    Redeem reward
+  </button>
+</div>

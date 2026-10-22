@@ -1,0 +1,48 @@
+.rewards {
+  &__hint {
+    margin: 36px 0 0;
+    font-size: 21px;
+  }
+
+  &__loader {
+    margin-top: 36px;
+  }
+}
+
+.card {
+  &_first-reward {
+    align-items: center;
+    justify-content: center;
+
+    .card__image {
+      margin-top: 0;
+    }
+
+    .card__meta {
+      color: var(--tui-text-secondary);
+      font-size: 17px;
+      text-align: center;
+    }
+  }
+
+  &__view-reward {
+    color: white;
+    cursor: pointer;
+
+    &_success {
+      border-color: var(--tui-status-positive);
+    }
+
+    &_warning {
+      border-color: var(--tui-status-warning);
+    }
+
+    &_declined {
+      border-color: var(--tui-status-negative);
+    }
+  }
+
+  &__variant {
+    color: white;
+  }
+}

@@ -2,6 +2,7 @@
   isSelectable ||
   gasInfo?.amountInUsd?.gt(0) ||
   displayAmount ||
+  earnsPoints ||
   (averageTimeMins && time95PercentSwapsMins)
 ) {
   <div
@@ -118,6 +119,18 @@
             </div>
           </tui-scrollbar>
         }
+      </div>
+    }
+
+    @if (earnsPoints) {
+      <div class="provider-info__element points">
+        <img
+          src="assets/images/icons/earn-points-preview.svg"
+          alt="Earns Points"
+          width="18"
+          height="18"
+        />
+        <div>Earns Points</div>
       </div>
     }
 

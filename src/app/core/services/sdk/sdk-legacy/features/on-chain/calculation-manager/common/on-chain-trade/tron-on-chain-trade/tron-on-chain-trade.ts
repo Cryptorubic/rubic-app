@@ -32,19 +32,13 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
   }
 
-  private readonly apiQuote: QuoteRequestInterface;
-
-  private readonly apiResponse: QuoteResponseInterface;
-
   constructor(
     apiQuote: QuoteRequestInterface,
     apiResponse: QuoteResponseInterface,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(apiResponse, sdkLegacyService, rubicApiService);
-    this.apiQuote = apiQuote || null;
-    this.apiResponse = apiResponse || null;
+    super(apiQuote, apiResponse, sdkLegacyService, rubicApiService);
   }
 
   public async approve(

@@ -1,0 +1,135 @@
+@if (state() === 'connect') {
+  <section class="rewards">
+    <button
+      class="rewards__connect"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="connectWallet()"
+    >
+      Connect EVM Wallet
+    </button>
+  </section>
+} @else if (state() === 'prompt') {
+  <section class="rewards">
+    <p class="rewards__hint">Sign with your wallet to see your collection.</p>
+    <button
+      class="rewards__connect"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="signWallet()"
+    >
+      Sign Wallet
+    </button>
+  </section>
+} @else if (state() === 'loading') {
+  <section class="rewards">
+    <tui-loader class="rewards__loader" [showLoader]="true"></tui-loader>
+  </section>
+} @else {
+  <section class="rewards">
+    <ul class="rewards__cards">
+      @for (card of visibleCards(); track card.id) {
+        @if (card.type === 'reward') {
+          <li class="rewards__card card">
+            @if (card.title) {
+              <div class="card__head">
+                <span class="card__title">{{ card.title }}</span>
+
+                <button
+                  class="card__info"
+                  type="button"
+                  aria-label="Subscription details"
+                  (click)="card.isDetailsOpened = true"
+                >
+                  <img
+                    src="/assets/images/icons/info.svg"
+                    alt="Subscription details"
+                    width="15"
+                    height="15"
+                  />
+                </button>
+              </div>
+            }
+
+            <img class="card__image" [src]="card.imageUrl" alt="" width="242" height="150" />
+
+            @if (rewardLabel(card); as label) {
+              <div class="card__meta">
+                <button
+                  class="card__view-reward"
+                  type="button"
+                  [class.card__view-reward_success]="isRewardSuccess(card.status)"
+                  [class.card__view-reward_warning]="isRewardWarning(card.status)"
+                  [class.card__view-reward_declined]="isRewardDenied(card.status)"
+                  (click)="openReward(card)"
+                >
+                  {{ label }}
+                </button>
+
+                <div class="card__variant">
+                  {{ card.variantTitle }}
+                </div>
+              </div>
+            }
+
+            @if (card.isDetailsOpened) {
+              <div class="card__details card-details">
+                <div class="card-details__head">
+                  <span class="card-details__title">{{ card.subTitle }}</span>
+
+                  <button
+                    class="card-details__close"
+                    type="button"
+                    aria-label="Close description"
+                    (click)="card.isDetailsOpened = false"
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                <tui-scrollbar>
+                  <div class="card-details__description">
+                    {{ card.description }}
+                  </div>
+                </tui-scrollbar>
+              </div>
+            }
+          </li>
+        } @else {
+          <li
+            class="rewards__card card"
+            [class.card_first-reward]="card.type === 'first-reward'"
+            [class.card_dark-bg]="card.type === 'empty'"
+          >
+            @if (card.type === 'first-reward') {
+              <img
+                class="card__image"
+                src="assets/images/rewards/gift.svg"
+                alt="Gift"
+                width="56"
+                height="56"
+              />
+              <div class="card__meta">Your first reward will appear here</div>
+            }
+          </li>
+        }
+      }
+    </ul>
+
+    @if (showPagination()) {
+      <tui-pagination
+        [index]="currentPage()"
+        [length]="pageCount()"
+        (indexChange)="selectPage($event)"
+      ></tui-pagination>
+    }
+
+    <p class="rewards__hint">Earn points on eligible swaps, then redeem them for a reward.</p>
+
+    <a class="rewards__cta" routerLink="/" tuiButton appearance="outline" size="m">Swap now</a>
+  </section>
+}
