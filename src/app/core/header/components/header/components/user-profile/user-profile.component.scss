@@ -4,6 +4,11 @@
   --tui-data-list-padding: 5px;
   --tui-data-list-margin: 0px;
 
+  &__element {
+    height: 40px;
+    font-size: 12px !important;
+  }
+
   &__element:not(:last-child) {
     margin-bottom: 5px;
   }
@@ -53,14 +58,13 @@
     height: 40px;
 
     &[tuiButtonV] {
-      gap: 0;
+      gap: 8px;
     }
   }
 
   .user-profile {
     &__avatar {
       width: 16px;
-      margin-right: 8px;
 
       img {
         width: 16px;
@@ -72,15 +76,6 @@
       margin-right: 0;
       font-size: 12px;
     }
-
-    &__logout {
-      height: 40px;
-      font-size: 12px !important;
-    }
-  }
-
-  .arrow {
-    display: none;
   }
 
   ::ng-deep {

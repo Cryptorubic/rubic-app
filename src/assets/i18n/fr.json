@@ -78,7 +78,7 @@
     "chooseSupportedBridge": "Choisissez un bridge compatible",
     "InsufficientBalance": "Solde insuffisant",
     "chooseNetworkWallet": "Veuillez choisir le réseau {{blockchain}} dans votre portefeuille",
-    "noEnteredAmount": "Entrez un montant",
+    "noEnteredAmount": "0",
     "minimumAmount": "Le montant minimum est de  ≈{{amount}} {{token}}",
     "maximumAmount": "Le montant maximum est de  ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Le prix du gaz sur {{toBlockchain}} est trop élevé. Veuillez réessayer plus tard.",

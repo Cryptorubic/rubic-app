@@ -78,7 +78,7 @@
     "chooseSupportedBridge": "Desteklenen köprüyü seçin",
     "InsufficientBalance": "Yetersiz bakiye",
     "chooseNetworkWallet": "Cüzdanınızda {{blockchain}} ağını seçin",
-    "noEnteredAmount": "Miktar girin",
+    "noEnteredAmount": "0",
     "minimumAmount": "Minimum miktar ≈{{amount}} {{token}}",
     "maximumAmount": "Maksimum miktar ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "{{toBlockchain}}'deki gaz fiyatı çok yüksek. Lütfen bekleyin ve daha sonra deneyin.",

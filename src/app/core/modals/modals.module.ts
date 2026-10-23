@@ -8,6 +8,7 @@ import { AbstractModalService } from './services/abstract-modal.service';
 import { MobileNativeModalComponent } from './components/mobile-native-modal/mobile-native-modal.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { SharedModule } from '@app/shared/shared.module';
+import { TuiButton, TuiIcon } from '@taiga-ui/core';
 
 @NgModule({
   imports: [
@@ -16,7 +17,9 @@ import { SharedModule } from '@app/shared/shared.module';
     PolymorpheusTemplate,
     PolymorpheusOutlet,
     InlineSVGModule,
-    TuiSwipe
+    TuiSwipe,
+    TuiButton,
+    TuiIcon
   ],
   declarations: [MobileNativeModalComponent],
   providers: [

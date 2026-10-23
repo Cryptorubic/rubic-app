@@ -19,6 +19,30 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   providers: []
 })
 export class UserProfileComponent {
+  public readonly isConfirmModalOpened$: Observable<boolean>;
+
+  public readonly isMobile$: Observable<boolean>;
+
+  public currentBlockchainIcon: string;
+
+  public dropdownIsOpened = false;
+
+  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
+    map(user => (user?.name ? user.name : user?.address)),
+    startWith(this.authService.userAddress)
+  );
+
+  public readonly avatar$ = this.authService.currentUser$.pipe(
+    combineLatestWith(this.walletConnectorService.networkChange$),
+    map(([user, blockchainName]) => {
+      const currentBlockchainIcon = blockchainName
+        ? blockchainIcon[blockchainName]
+        : `${basePath}default-chain.svg`;
+
+      return user?.avatar ? user.avatar : currentBlockchainIcon;
+    })
+  );
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -50,29 +74,9 @@ export class UserProfileComponent {
       });
   }
 
-  public readonly isConfirmModalOpened$: Observable<boolean>;
-
-  public readonly isMobile$: Observable<boolean>;
-
-  public currentBlockchainIcon: string;
-
-  public dropdownIsOpened = false;
-
-  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
-    map(user => (user?.name ? user.name : user?.address)),
-    startWith(this.authService.userAddress)
-  );
-
-  public readonly avatar$ = this.authService.currentUser$.pipe(
-    combineLatestWith(this.walletConnectorService.networkChange$),
-    map(([user, blockchainName]) => {
-      const currentBlockchainIcon = blockchainName
-        ? blockchainIcon[blockchainName]
-        : `${basePath}default-chain.svg`;
-
-      return user?.avatar ? user.avatar : currentBlockchainIcon;
-    })
-  );
+  public navigateToHistory(): void {
+    this.router.navigate(['/history']);
+  }
 
   public logout(): void {
     this.authService.disconnectWallet();

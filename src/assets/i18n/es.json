@@ -78,7 +78,7 @@
     "chooseSupportedBridge": "Elegir puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
-    "noEnteredAmount": "Introduzca una cantidad",
+    "noEnteredAmount": "0",
     "minimumAmount": "La cantidad mínima es ≈{{amount}} {{token}}",
     "maximumAmount": "La cantidad máxima es ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "El precio de la comisión en {{toBlockchain}} es demasiado alto. Por favor, espere e inténtelo más tarde.",

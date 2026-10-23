@@ -1,0 +1,16 @@
+<button tuiIconButton appearance="secondary" type="button" size="m">
+  <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
+    <div class="burger-menu__line"></div>
+    <div class="burger-menu__line"></div>
+    <div class="burger-menu__line"></div>
+  </div>
+
+  @if (isMobile && (unreadTrades$ | async) && (currentUser$ | async) && !isOpened) {
+    <app-notification-badge
+      class="notification-counter"
+      size="xs"
+      color="red"
+      [value]="unreadTrades$ | async"
+    ></app-notification-badge>
+  }
+</button>
