@@ -137,7 +137,6 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
   }
 
   public close(): void {
-    console.log('CLOSED!');
     this.hide();
     animationTimeout(this.context.completeWith);
   }

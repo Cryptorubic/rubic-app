@@ -61,7 +61,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: SectionItem } = {
     ]
   },
   REWARDS: {
-    onClick: () => window.location.assign(`${window.location.origin}/rewards`),
+    onClick: ({ router }) => router.navigate(['/' + ROUTE_PATH.REWARDS]),
     children: []
   },
   SOCIAL: {
@@ -137,9 +137,9 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: SectionItem } = {
     children: []
   },
   SUPPORT: {
-    onClick: (services: SectionItemServices) => {
-      const action = services.liveChatService.isIframeOpened ? 'hide' : 'show';
-      services.liveChatService.toggleLiveChatContainerHeight(action);
+    onClick: ({ liveChatService }: SectionItemServices) => {
+      const action = liveChatService.isIframeOpened ? 'hide' : 'show';
+      liveChatService.toggleLiveChatContainerHeight(action);
     },
     children: []
   }

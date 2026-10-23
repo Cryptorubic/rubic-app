@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { LiveChatService } from '@app/core/services/live-chat/live-chat.service';
 
 export type NavigationItem = {
@@ -11,6 +12,7 @@ export type NavigationItem = {
 
 export interface SectionItemServices {
   liveChatService: LiveChatService;
+  router: Router;
 }
 
 export interface SectionItem {

@@ -19,6 +19,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import {
   NavigationItem,
+  SectionItem,
   SectionItemServices
 } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import {
@@ -80,7 +81,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     liveChatService: LiveChatService
   ) {
-    this.sectionServices = { liveChatService };
+    this.sectionServices = { liveChatService, router };
   }
 
   public ngAfterViewInit(): void {
@@ -96,32 +97,28 @@ export class RubicMenuComponent implements AfterViewInit {
     this.authService.disconnectWallet();
   }
 
-  public handleButtonClick(item?: NavigationItem): void {
+  public handleItemClick(item: NavigationItem, isMobile: boolean): void {
     this.onClose.emit();
-    if (!item) return;
-
     this.handleSwitchMode(item);
 
     if (item.type === 'internal') {
       const path = item.getLink() === ROUTE_PATH.NONE ? '/' : `/${item.getLink()}`;
       this.router.navigateByUrl(path);
-      return;
+      if (isMobile) this.mobileNativeService.forceClose();
+    } else {
+      this.window.open(item.getLink(), item.target || '_blank');
     }
-
-    this.window.open(item.getLink(), item.target || '_blank');
   }
 
-  public handleExternalClick(item: NavigationItem): void {
+  public handleSectionClick(section: SectionItem, isMobile: boolean): void {
+    if (!section.onClick) return;
+
     this.onClose.emit();
-    this.handleSwitchMode(item);
+    section.onClick(this.sectionServices);
+    if (isMobile) this.mobileNativeService.forceClose();
   }
 
   public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
-
-  public mobileClose(item: NavigationItem): void {
-    this.handleSwitchMode(item);
-    this.mobileNativeService.forceClose();
-  }
 
   public closeMenu(): void {
     this.isOpened = false;
