@@ -6,7 +6,6 @@
 
   &__element {
     height: 40px;
-    font-size: 12px !important;
   }
 
   &__element:not(:last-child) {
@@ -74,6 +73,12 @@
 
     &__text {
       margin-right: 0;
+      font-size: 12px;
+    }
+  }
+
+  .data-list {
+    &__element {
       font-size: 12px;
     }
   }

@@ -115,6 +115,7 @@ export class RubicMenuComponent implements AfterViewInit {
 
     this.onClose.emit();
     section.onClick(this.sectionServices);
+
     if (isMobile) this.mobileNativeService.forceClose();
   }
 

@@ -3,7 +3,7 @@ import {
   SectionItem,
   SectionItemServices
 } from '@core/header/components/header/components/rubic-menu/models/navigation-item';
-import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
+import { EXTERNAL_LINKS, getDefaultPrivacyURL, ROUTE_PATH } from '@shared/constants/common/links';
 
 type Section = 'TRADE' | 'REWARDS' | 'SOCIAL' | 'LEGAL & PRIVACY' | 'ABOUT' | 'SUPPORT';
 
@@ -11,8 +11,7 @@ export const NAVIGATION_LIST = [
   {
     translateKey: 'Private Mode',
     type: 'external',
-    getLink: () =>
-      `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`
+    getLink: () => getDefaultPrivacyURL()
   },
   {
     translateKey: 'Testnet App',
@@ -32,14 +31,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: SectionItem } = {
       {
         translateKey: 'Swap',
         type: 'internal',
-        getLink: () => ROUTE_PATH.NONE,
-        active: false
+        getLink: () => ROUTE_PATH.NONE
       },
       {
         translateKey: 'Private Mode',
-        type: 'internal',
-        getLink: () => ROUTE_PATH.PRIVACY,
-        active: false
+        type: 'external',
+        getLink: () => getDefaultPrivacyURL()
       },
       {
         translateKey: 'Transfers',
@@ -67,9 +64,9 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: SectionItem } = {
   SOCIAL: {
     children: [
       {
-        translateKey: 'Twitter',
+        translateKey: 'X',
         type: 'external',
-        getLink: () => 'https://twitter.com/CryptoRubic'
+        getLink: () => 'https://x.com/CryptoRubic'
       },
       {
         translateKey: 'Reddit',

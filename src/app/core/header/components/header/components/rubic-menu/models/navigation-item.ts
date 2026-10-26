@@ -5,7 +5,6 @@ export type NavigationItem = {
   translateKey: string;
   imagePath?: string;
   target?: '_self' | '_blank';
-  active?: boolean;
   type: 'internal' | 'external';
   getLink: () => string;
 };

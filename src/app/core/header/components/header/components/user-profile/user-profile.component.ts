@@ -75,15 +75,13 @@ export class UserProfileComponent {
   }
 
   public navigateToHistory(): void {
+    this.dropdownIsOpened = false;
     this.router.navigate(['/history']);
   }
 
   public logout(): void {
+    this.dropdownIsOpened = false;
     this.authService.disconnectWallet();
-  }
-
-  public getDropdownStatus(status: boolean): void {
-    this.dropdownIsOpened = status;
   }
 
   public openLimitOrdersModal(): void {}

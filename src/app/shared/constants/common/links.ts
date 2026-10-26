@@ -5,6 +5,7 @@ export enum ROUTE_PATH {
   BYT_CRYPTO = 'buy-crypto',
   ABOUT = 'about',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
+  /** @deprecated */
   PRIVACY = 'privacy',
   REWARDS = 'rewards',
   REST = '**'
@@ -19,4 +20,8 @@ export enum EXTERNAL_LINKS {
 
 export enum INTERNAL_LINKS {
   TRANSFER = 'https://rubic.exchange'
+}
+
+export function getDefaultPrivacyURL(): string {
+  return `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`;
 }
