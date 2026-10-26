@@ -104,7 +104,7 @@
     "@taiga-ui/styles": "4.82.0",
     "@ton/core": "^0.61.0",
     "@ton/crypto": "^3.2.0",
-    "@tonconnect/ui": "3.0.2",
+    "@tonconnect/ui": "3.1.0",
     "@wallet-standard/app": "^1.1.0",
     "@wallet-standard/base": "^1.1.0",
     "@wallet-standard/features": "^1.1.0",
