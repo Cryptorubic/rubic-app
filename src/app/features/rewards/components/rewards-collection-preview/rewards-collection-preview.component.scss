@@ -1,0 +1,138 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: none;
+}
+
+@include b($laptop) {
+  :host {
+    display: block;
+    width: 100%;
+  }
+
+  :host:empty {
+    display: none;
+  }
+}
+
+.collection {
+  margin-top: 32px;
+
+  &__title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  &__note {
+    margin: 1px 0 0;
+    color: var(--tui-text-secondary);
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    gap: 13px;
+    align-items: center;
+    padding: 12px;
+    background: var(--io-background);
+    border-radius: 20px;
+
+    &_empty {
+      flex-direction: column;
+      gap: 8px;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  &__gift {
+    width: 56px;
+    height: 56px;
+  }
+
+  &__empty {
+    color: var(--tui-text-secondary);
+    font-size: 15px;
+    line-height: 21px;
+  }
+
+  &__image {
+    flex-shrink: 0;
+    width: 77px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 15px;
+    line-height: 21px;
+  }
+
+  &__variant {
+    color: var(--tui-text-secondary);
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  &__view {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 11px 16px;
+    font-size: 15px;
+    line-height: 21px;
+    background: var(--tui-background-base);
+    border: 1px solid transparent;
+    border-radius: 17px;
+    cursor: pointer;
+
+    &_success {
+      border-color: var(--tui-status-positive);
+    }
+
+    &_warning {
+      border-color: var(--tui-status-warning);
+    }
+
+    &_declined {
+      border-color: var(--tui-status-negative);
+    }
+  }
+
+  &__sign {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  &__loader {
+    margin-top: 28px;
+  }
+
+  &__all {
+    display: block;
+    margin: 16px auto 0;
+    color: var(--tui-text-secondary);
+    font-size: 14px;
+    line-height: 17px;
+    cursor: pointer;
+  }
+}

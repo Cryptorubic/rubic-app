@@ -8,16 +8,28 @@ export const FOOTER_LINKS: FooterLink[] = [
     link: 'https://twitter.com/CryptoRubic'
   },
   {
+    dark: 'assets/images/contacts/telegram.svg',
+    light: 'assets/images/contacts/telegram_light.svg',
+    altText: 'Telegram',
+    link: 'https://telegram.me/cryptorubic_chat'
+  },
+  {
     dark: 'assets/images/contacts/reddit.svg',
     light: 'assets/images/contacts/reddit_light.svg',
     altText: 'Reddit',
     link: 'https://www.reddit.com/r/Rubic/new/'
   },
   {
-    dark: 'assets/images/contacts/telegram.svg',
-    light: 'assets/images/contacts/telegram_light.svg',
-    altText: 'Telegram',
-    link: 'https://telegram.me/cryptorubic_chat'
+    dark: 'assets/images/contacts/medium.svg',
+    light: 'assets/images/contacts/medium_light.svg',
+    altText: 'Medium',
+    link: 'https://cryptorubic.medium.com/'
+  },
+  {
+    dark: 'assets/images/contacts/docs.svg',
+    light: 'assets/images/contacts/docs_light.svg',
+    altText: 'Docs',
+    link: 'https://docs.rubic.finance/'
   },
   {
     dark: 'assets/images/contacts/dune.svg',
@@ -30,12 +42,6 @@ export const FOOTER_LINKS: FooterLink[] = [
     light: 'assets/images/contacts/mail_light.svg',
     altText: 'Email',
     link: 'mailto:support@rubic.finance'
-  },
-  {
-    dark: 'assets/images/contacts/medium.svg',
-    light: 'assets/images/contacts/medium_light.svg',
-    altText: 'Medium',
-    link: 'https://cryptorubic.medium.com/'
   },
   {
     dark: 'assets/images/contacts/discord.svg',

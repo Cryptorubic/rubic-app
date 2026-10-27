@@ -5,6 +5,7 @@ import {
   TuiTagModule
 } from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -70,6 +71,7 @@ import { OnChainService } from './services/on-chain/on-chain.service';
 import { CrossChainApiService } from './services/cross-chain-routing-api/cross-chain-api.service';
 import { RefreshService } from './services/refresh-service/refresh.service';
 import { PreviewSwapService } from './services/preview-swap/preview-swap.service';
+import { EarnedPointsService } from './services/earned-points/earned-points.service';
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
@@ -189,6 +191,7 @@ import { QrCodeContainerComponent } from './components/deposit-form/components/d
   ],
   imports: [
     CommonModule,
+    RouterModule,
     SharedModule,
     ...TuiExpand,
     TuiScrollbar,
@@ -225,6 +228,7 @@ import { QrCodeContainerComponent } from './components/deposit-form/components/d
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
+    EarnedPointsService,
     OnChainApiService,
     DepositService,
     ActionButtonService,

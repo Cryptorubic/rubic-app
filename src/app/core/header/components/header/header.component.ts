@@ -11,15 +11,16 @@ import {
   ViewChild
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { IsActiveMatchOptions, Router } from '@angular/router';
+import { IsActiveMatchOptions, NavigationEnd, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -86,14 +87,12 @@ export class HeaderComponent {
     return this.headerStore.isMobile;
   }
 
-  public get isTablet(): boolean {
-    return this.headerStore.isTablet;
-  }
-
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
   );
+
+  public showMyCollection$: Observable<boolean>;
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -120,6 +119,24 @@ export class HeaderComponent {
         };
       });
     }
+
+    this.showMyCollection$ = combineLatest([
+      this.authService.currentUser$,
+      this.router.events.pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        map(() => this.router.url),
+        startWith(this.router.url)
+      )
+    ]).pipe(
+      map(([user, url]) => {
+        const path = url.split(/[?#]/)[0];
+        return (
+          !!user?.address &&
+          user.chainType === CHAIN_TYPE.EVM &&
+          (path === '/rewards' || path.startsWith('/rewards/'))
+        );
+      })
+    );
   }
 
   /**
@@ -136,16 +153,6 @@ export class HeaderComponent {
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
-  }
-
-  public navigateToSwaps(): void {
-    this.gtmService.fireSwitchModeEvent('regular');
-    this.router.navigate(['/'], { queryParamsHandling: 'merge' });
-  }
-
-  public navigateToTestnets(): void {
-    this.gtmService.fireSwitchModeEvent('testnets');
-    this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
   public switchTheme(): void {

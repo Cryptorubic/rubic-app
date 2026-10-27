@@ -17,6 +17,10 @@ const routes: Routes = [
     }
   },
   {
+    path: ROUTE_PATH.REWARDS,
+    loadChildren: () => import('./features/rewards/rewards.routes').then(m => m.REWARDS_ROUTES)
+  },
+  {
     path: ROUTE_PATH.NONE,
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },

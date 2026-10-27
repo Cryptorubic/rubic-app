@@ -5,8 +5,11 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
-  padding: 0 20px;
+  padding: 20px 20px 0;
   font-weight: 300;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--tui-background-accent-1), transparent);
+  border-image-slice: 1;
 
   @include hide-unused-ui {
     display: none;
@@ -17,14 +20,12 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-
-    @include b($mobile-sm-plus) {
-      max-width: 320px;
-    }
   }
 
   &__link {
-    margin-right: 21px;
+    display: flex;
+    justify-content: center;
+    width: 44px;
     margin-bottom: 16px;
     transition: 0.1s ease-in-out;
 
@@ -47,5 +48,11 @@
   &__policy {
     color: var(--primary-color);
     white-space: nowrap;
+  }
+}
+
+@include b($mobile-md) {
+  app-rubic-volume {
+    display: none;
   }
 }

@@ -1,0 +1,91 @@
+<div class="view-reward">
+  @if (title) {
+    <div class="view-reward__title">{{ title }}</div>
+  }
+
+  @if (description) {
+    <div class="view-reward__description" [innerHTML]="description"></div>
+  }
+
+  @if (awaitsUsername) {
+    <input
+      class="view-reward__username"
+      type="text"
+      [formControl]="username"
+      [placeholder]="inputLabel ?? ''"
+      autocomplete="off"
+    />
+    <button
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      [disabled]="submitting()"
+      (click)="submitUsername()"
+    >
+      Submit username
+    </button>
+  } @else if (showsSubscriptionCard) {
+    <div class="view-reward__telegram">
+      @if (userInput) {
+        <div class="view-reward__telegram-block">
+          @if (inputLabel) {
+            <div class="view-reward__telegram-label">{{ inputLabel }}</div>
+          }
+          <div class="view-reward__telegram-value">{{ userInput }}</div>
+        </div>
+      }
+
+      @if (userInput && activatedAtLabel) {
+        <div class="view-reward__telegram-divider"></div>
+      }
+
+      @if (activatedAtLabel) {
+        <div class="view-reward__telegram-block">
+          <div class="view-reward__telegram-label">Active since</div>
+          <div class="view-reward__telegram-value">{{ activatedAtLabel }}</div>
+        </div>
+      }
+    </div>
+  } @else if (activationCode || userInput || activationLink) {
+    <div class="view-reward__input-container">
+      @if (inputLabel) {
+        <div class="view-reward__input-label">{{ inputLabel }}</div>
+      }
+
+      @if (activationCode || userInput) {
+        <div class="view-reward__activation-code">
+          {{ activationCode || userInput }}
+        </div>
+      } @else if (activationLink) {
+        <div class="view-reward__activation-link">
+          {{ shortenedActivationLink }}
+          <span class="view-reward__activation-link-subtext">Tx hash</span>
+        </div>
+
+        <a
+          [href]="activationLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="view-reward__activation-link-explorer"
+        >
+          View transaction in explorer
+          <div [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+        </a>
+      }
+    </div>
+  }
+
+  @if (link) {
+    <div class="view-reward__link" [class.view-reward__link_external]="isTradingView">
+      <div [innerHTML]="link"></div>
+      @if (isTradingView) {
+        <div [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+      }
+    </div>
+  }
+
+  @if (note) {
+    <div class="view-reward__note">{{ note }}</div>
+  }
+</div>
