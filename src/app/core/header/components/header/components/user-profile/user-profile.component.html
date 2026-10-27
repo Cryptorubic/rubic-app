@@ -8,10 +8,6 @@
   <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
-        @if (isMobile && unreadTrades > 0 && user) {
-          <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
-        }
-
         <div class="user-profile__avatar">
           <img [src]="img" alt="User avatar" width="24" height="24" />
         </div>
@@ -38,7 +34,10 @@
             (click)="navigateToHistory()"
           >
             <div class="data-list__link-container">
-              {{ 'navigation.recentTrades' | translate }}
+              <span>{{ 'navigation.recentTrades' | translate }}</span>
+              @if (user && unreadTrades > -1) {
+                <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
+              }
             </div>
           </button>
         }

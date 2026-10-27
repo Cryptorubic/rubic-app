@@ -13,10 +13,13 @@
   }
 
   &__link-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    @include flex(row, center, flex-start);
+    gap: 8px;
     width: 100%;
+  }
+
+  app-notification-badge {
+    margin-top: -3px;
   }
 }
 
@@ -30,10 +33,6 @@
       border-radius: 50%;
     }
   }
-}
-
-app-notification-badge {
-  margin-top: -3px;
 }
 
 .arrow {
