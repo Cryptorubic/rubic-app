@@ -13,7 +13,7 @@ export class TonConnectInstance {
   public static getInstance(): TonConnectUI {
     if (!this.tonConnectUI) {
       this.tonConnectUI = new TonConnectUI({
-        manifestUrl: `${window.location.origin}/assets/tonconnect/${ENVIRONMENT.environmentName}.json`,
+        manifestUrl: `https://${ENVIRONMENT.production ? 'app' : 'dev-api'}.rubic.exchange/assets/tonconnect/${ENVIRONMENT.environmentName}.json`,
         uiPreferences: {
           theme: THEME.DARK
         },
