@@ -17,10 +17,6 @@
     gap: 8px;
     width: 100%;
   }
-
-  app-notification-badge {
-    margin-top: -3px;
-  }
 }
 
 .user-profile {
@@ -46,6 +42,10 @@
     @include flex(row, center, space-between);
     gap: 5px;
     height: 40px;
+
+    app-notification-badge {
+      margin-top: -3px;
+    }
   }
 
   .user-profile {
