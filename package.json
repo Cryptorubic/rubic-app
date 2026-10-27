@@ -68,6 +68,8 @@
     "@cryptorubic/web3": "1.9.5",
     "@hakimio/ngx-google-analytics": "^15.0.0",
     "@hinkal/common": "0.2.33",
+    "@ledgerhq/ledger-wallet-provider": "^2.0.2",
+    "@ledgerhq/ledger-wallet-provider-evm": "^1.0.1",
     "@maskito/angular": "^3.11.1",
     "@maskito/core": "^3.11.1",
     "@maskito/kit": "^3.11.1",

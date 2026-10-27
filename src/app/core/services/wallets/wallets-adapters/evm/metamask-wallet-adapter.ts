@@ -43,12 +43,9 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       }
 
       this.wallet = provider;
-
-      const accounts = (await this.wallet.request({
-        method: 'eth_requestAccounts'
-      })) as RubicAny;
       this.checkErrors();
 
+      const accounts = (await this.wallet.request({ method: 'eth_requestAccounts' })) as RubicAny;
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
 
