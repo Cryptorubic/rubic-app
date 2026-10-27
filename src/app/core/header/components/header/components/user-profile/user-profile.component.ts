@@ -9,6 +9,7 @@ import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operator
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { UnreadTradesService } from '@app/core/services/unread-trades-service/unread-trades.service';
 
 @Component({
   standalone: false,
@@ -29,7 +30,7 @@ export class UserProfileComponent {
 
   public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
     map(user => (user?.name ? user.name : user?.address)),
-    startWith(this.authService.userAddress)
+    startWith(this.authService.userAddress ?? '')
   );
 
   public readonly avatar$ = this.authService.currentUser$.pipe(
@@ -43,13 +44,18 @@ export class UserProfileComponent {
     })
   );
 
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
+  public readonly currentUser$ = this.authService.currentUser$;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly recentTradesStoreService: UnreadTradesService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();

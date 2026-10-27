@@ -40,7 +40,8 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     if (!backdrop || !content) return;
 
     const contentOffsetTop = getAbsoluteOffsetTop(content);
-    if (event.pageY < contentOffsetTop) this.close();
+    const clickOffsetY = event.pageY - window.scrollY;
+    if (clickOffsetY < contentOffsetTop) this.close();
   }
 
   public title: string = this.context.title;

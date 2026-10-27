@@ -13,8 +13,6 @@ import { UnreadTradesService } from '@app/core/services/unread-trades-service/un
 export class RubicMenuTogglerMobileComponent {
   public readonly isMobile = this.headerStore.isMobile;
 
-  public isOpened = false;
-
   public readonly currentUser$ = this.authService.currentUser$;
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
@@ -24,8 +22,4 @@ export class RubicMenuTogglerMobileComponent {
     private readonly authService: AuthService,
     private readonly recentTradesStoreService: UnreadTradesService
   ) {}
-
-  public closeMenu(): void {
-    this.isOpened = false;
-  }
 }

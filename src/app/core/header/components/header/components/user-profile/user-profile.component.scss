@@ -32,18 +32,8 @@
   }
 }
 
-.notification-counter {
-  position: absolute;
-
-  &_profile {
-    top: 0;
-    right: 35px;
-  }
-
-  &_menu {
-    top: 0;
-    right: 0;
-  }
+app-notification-badge {
+  margin-top: -3px;
 }
 
 .arrow {
@@ -54,20 +44,18 @@
 
 @include b($mobile-sm-middle) {
   .profile-button {
+    @include flex(row, center, space-between);
+    gap: 5px;
     height: 40px;
-
-    &[tuiButtonV] {
-      gap: 8px;
-    }
   }
 
   .user-profile {
     &__avatar {
-      width: 16px;
+      width: 20px;
 
       img {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
       }
     }
 

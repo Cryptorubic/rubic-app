@@ -16,20 +16,4 @@
 
     transition-property: opacity, transform;
   }
-
-  &_opened {
-    .burger-menu__line {
-      &:first-child {
-        transform: translateY(6px) rotate(45deg);
-      }
-
-      &:nth-child(2) {
-        opacity: 0;
-      }
-
-      &:last-child {
-        transform: translateY(-6px) rotate(-45deg);
-      }
-    }
-  }
 }
