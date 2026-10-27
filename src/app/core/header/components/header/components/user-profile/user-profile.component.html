@@ -8,7 +8,7 @@
   <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
-        @if (isMobile && unreadTrades > -1 && user) {
+        @if (isMobile && unreadTrades > 0 && user) {
           <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
         }
 
@@ -39,7 +39,7 @@
           >
             <div class="data-list__link-container">
               <span>{{ 'navigation.recentTrades' | translate }}</span>
-              @if (user && unreadTrades > -1) {
+              @if (user && unreadTrades > 0) {
                 <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
               }
             </div>
