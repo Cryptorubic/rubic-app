@@ -4452,6 +4452,22 @@
     ws "^8.18.0"
     xstate "5.19.2"
 
+"@ledgerhq/device-management-kit@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/device-management-kit/-/device-management-kit-1.11.0.tgz#b5213b4b03bc3d09f05ee34b8ade7f1340626fab"
+  integrity sha512-1KAC6tmtLZz+9X0KQY0lukzEAXgIDoMM3LP0pTRh9/Rab/NmZv5+74R9coL2mYTnDQTp8EfR41uJLJ5FylRCug==
+  dependencies:
+    "@noble/hashes" "^1.8.0"
+    "@sentry/minimal" "6.19.7"
+    inversify "7.5.1"
+    isomorphic-ws "^5.0.0"
+    purify-ts "2.1.0"
+    reflect-metadata "0.2.2"
+    semver "7.7.2"
+    uuid "11.0.3"
+    ws "^8.18.0"
+    xstate "5.19.2"
+
 "@ledgerhq/device-signer-kit-ethereum@1.18.1":
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/@ledgerhq/device-signer-kit-ethereum/-/device-signer-kit-ethereum-1.18.1.tgz#ee6dc76469b979a7202a9028f7767f74657f3e61"

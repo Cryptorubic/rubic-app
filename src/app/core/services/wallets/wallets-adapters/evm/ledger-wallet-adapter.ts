@@ -11,7 +11,6 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { LedgerError } from '@app/core/errors/models/provider/ledger-error';
 import { initializeLedgerProvider } from '@ledgerhq/ledger-wallet-provider';
 import { evmBlockchainProviderFactory } from '@ledgerhq/ledger-wallet-provider-evm';
-import '@ledgerhq/ledger-wallet-provider/styles.css';
 
 export class LedgerWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.LEDGER;
@@ -27,7 +26,7 @@ export class LedgerWalletAdapter extends EvmWalletAdapter {
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
     this.cleanupFn = initializeLedgerProvider({
-      dAppIdentifier: 'rubic',
+      dAppIdentifier: 'ledger',
       environment: 'production',
       apiKey: 'ba1d03cf-e227-427c-9d03-cfe227627c4a',
       blockchainProviderFactories: [evmBlockchainProviderFactory]
@@ -43,6 +42,7 @@ export class LedgerWalletAdapter extends EvmWalletAdapter {
       this.wallet = provider;
       if (!this.wallet) throw new LedgerError();
 
+      // @TODO_3216 на вторую попытку коннекта блочится внутри сдк леджера и не показывает модалку
       const accounts = (await this.wallet.request({ method: 'eth_requestAccounts' })) as RubicAny;
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
@@ -55,6 +55,7 @@ export class LedgerWalletAdapter extends EvmWalletAdapter {
 
       this.initSubscriptionsOnChanges();
     } catch (error) {
+      this.cleanupFn();
       if (
         error.code === 4001 ||
         error.message?.toLowerCase().includes('user denied message signature')
