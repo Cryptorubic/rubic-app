@@ -31,7 +31,6 @@ export class PrivateModalsService {
       {
         title: '',
         size: 'l',
-        showMobileMenu: true,
         data: {
           formType: direction,
           assetsSelectorConfig
@@ -53,7 +52,6 @@ export class PrivateModalsService {
       {
         title: '',
         size: 'l',
-        showMobileMenu: true,
         data: {
           formType: direction,
           assetsSelectorConfig

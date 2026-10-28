@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { HeaderStore } from '@app/core/header/services/header.store';
-import { AuthService } from '@app/core/services/auth/auth.service';
-import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
   standalone: false,
@@ -10,19 +7,9 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
   styleUrls: ['./rubic-menu-toggler.component.scss']
 })
 export class RubicMenuTogglerComponent {
-  public readonly isMobile = this.headerStore.isMobile;
-
   public isOpened = false;
 
-  public readonly currentUser$ = this.authService.currentUser$;
-
-  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
-
-  constructor(
-    private readonly headerStore: HeaderStore,
-    private readonly authService: AuthService,
-    private readonly recentTradesStoreService: UnreadTradesService
-  ) {}
+  constructor() {}
 
   public closeMenu(): void {
     this.isOpened = false;

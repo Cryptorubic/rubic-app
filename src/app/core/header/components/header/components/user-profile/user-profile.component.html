@@ -1,16 +1,24 @@
+@let isMobile = isMobile$ | async;
+@let profileText = profileText$ | async;
+@let img = avatar$ | async;
+@let user = currentUser$ | async;
+@let unreadTrades = unreadTrades$ | async;
+
 <ng-container>
   <div [tuiDropdown]="dropdown" tuiDropdownAlign="right" [(tuiDropdownOpen)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton class="profile-button" appearance="secondary" type="button" size="m">
-        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
-          <div class="user-profile__avatar">
-            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
-          </div>
+        @if (isMobile && unreadTrades > 0 && user) {
+          <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
+        }
 
-          <div class="user-profile__text">
-            {{ profile.text?.length > 20 ? (profile.text | shortAddress: 5 : 3) : profile.text }}
-          </div>
-        </ng-container>
+        <div class="user-profile__avatar">
+          <img [src]="img" alt="User avatar" width="24" height="24" />
+        </div>
+
+        <div class="user-profile__text">
+          {{ profileText.length > 20 ? (profileText | shortAddress: 5 : 3) : profileText }}
+        </div>
 
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>
@@ -20,9 +28,27 @@
   <ng-template #dropdown>
     <tui-data-list class="data-list" size="m" role="menu">
       <tui-opt-group>
+        @if (isMobile) {
+          <button
+            tuiButton
+            class="data-list__element"
+            appearance="secondary"
+            type="button"
+            size="m"
+            (click)="navigateToHistory()"
+          >
+            <div class="data-list__link-container">
+              <span>{{ 'navigation.recentTrades' | translate }}</span>
+              @if (user && unreadTrades > 0) {
+                <app-notification-badge size="xs" [value]="unreadTrades"></app-notification-badge>
+              }
+            </div>
+          </button>
+        }
+
         <button
           tuiButton
-          class="data-list__element user-profile__logout"
+          class="data-list__element"
           appearance="secondary"
           type="button"
           size="m"
