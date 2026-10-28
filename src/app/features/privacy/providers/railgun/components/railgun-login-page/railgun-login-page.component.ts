@@ -112,7 +112,6 @@ export class RailgunLoginPageComponent {
       RailgunWalletImportComponent,
       {
         size: 's',
-        showMobileMenu: true,
         fitContent: true,
         title: 'Import Wallet'
       },
@@ -130,7 +129,6 @@ export class RailgunLoginPageComponent {
       RailgunWalletCreateComponent,
       {
         size: 's',
-        showMobileMenu: true,
         fitContent: true,
         title: 'Create Wallet'
       },

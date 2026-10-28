@@ -3,6 +3,7 @@
 .rubic-header {
   @include flex(row, center, space-between);
   position: relative;
+  gap: 5px;
   padding: 30px;
 
   &__logo {
@@ -16,12 +17,25 @@
 
   &__left {
     @include flex(row, center, start);
-    gap: 12px;
+    gap: clamp(5px, 2vw, 12px);
   }
 
   &__right {
     @include flex(row, center, start);
     gap: 12px;
+
+    .rubic-header__profile {
+      @include flex(row, center, start);
+      gap: 5px;
+
+      app-rubic-menu-toggler-mobile {
+        ::ng-deep {
+          button {
+            height: 40px;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -96,16 +110,11 @@
     display: none;
   }
 
-  button {
-    &.theme-switcher,
-    &.staking-button {
-      display: none;
-    }
+  app-logo {
+    max-width: 73px;
   }
 }
 
-@include b($mobile-md) {
-  app-rubic-menu-toggler {
-    display: none;
-  }
+.large-iframe-header {
+  justify-content: space-between;
 }
