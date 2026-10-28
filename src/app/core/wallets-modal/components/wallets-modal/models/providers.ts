@@ -100,5 +100,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Ledger Wallet',
+    value: WALLET_NAME.LEDGER,
+    img: './assets/images/icons/wallets/ledger.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];

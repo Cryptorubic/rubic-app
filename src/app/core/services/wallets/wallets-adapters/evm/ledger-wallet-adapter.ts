@@ -9,8 +9,14 @@ import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/co
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { LedgerError } from '@app/core/errors/models/provider/ledger-error';
+import { initializeLedgerProvider } from '@ledgerhq/ledger-wallet-provider';
+import { evmBlockchainProviderFactory } from '@ledgerhq/ledger-wallet-provider-evm';
+import '@ledgerhq/ledger-wallet-provider/styles.css';
+
 export class LedgerWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.LEDGER;
+
+  private cleanupFn: () => void = () => {};
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -20,14 +26,18 @@ export class LedgerWalletAdapter extends EvmWalletAdapter {
     window: RubicWindow
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
+    this.cleanupFn = initializeLedgerProvider({
+      dAppIdentifier: 'rubic',
+      environment: 'production',
+      apiKey: 'ba1d03cf-e227-427c-9d03-cfe227627c4a',
+      blockchainProviderFactories: [evmBlockchainProviderFactory]
+    });
   }
 
   public async activate(): Promise<void> {
     try {
-      // @TODO_3216 check EIP-6963 name of Ledger Wallet
       const provider = await this.getProvider({
-        provider: 'ledger',
-        reserveProvider: 'rabby wallet'
+        provider: 'ledger wallet'
       });
 
       this.wallet = provider;
@@ -54,5 +64,10 @@ export class LedgerWalletAdapter extends EvmWalletAdapter {
       if (error instanceof RubicError) throw error;
       throw new LedgerError();
     }
+  }
+
+  public override deactivate(): void {
+    super.deactivate();
+    this.cleanupFn();
   }
 }
