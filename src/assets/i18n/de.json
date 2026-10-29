@@ -79,7 +79,7 @@
     "chooseSupportedBridge": "Bitte wähle eine unterstützte Bridge",
     "InsufficientBalance": "Dein Guthaben reicht nicht aus",
     "chooseNetworkWallet": "Bitte wähle das {{blockchain}}-Netzwerk in Deinem Wallet",
-    "noEnteredAmount": "Betrag eingeben",
+    "noEnteredAmount": "0",
     "minimumAmount": "Das Minimum beträgt ≈{{amount}} {{token}}",
     "maximumAmount": "Das Maximum beträgt ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Die Gas-Gebühren im {{toBlockchain}}-Netzwerk sind zu hoch. Bitte warte einen Augenblick und versuche es zu einem späteren Zeitpunkt erneut.",

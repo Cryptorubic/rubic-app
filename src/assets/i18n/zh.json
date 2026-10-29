@@ -80,7 +80,7 @@
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
     "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
-    "noEnteredAmount": "Enter an Amount",
+    "noEnteredAmount": "0",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "The gas price on {{toBlockchain}} is too high. Please wait and try later.",

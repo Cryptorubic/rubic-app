@@ -5,43 +5,21 @@
     <tui-data-list class="data-list" size="m" role="menu" [emptyContent]="empty">
       <tui-opt-group>
         <ng-container *ngFor="let item of navigationList">
-          @if (item.type === 'internal') {
-            <button
-              tuiButton
-              appearance="secondary"
-              type="button"
-              size="m"
-              class="data-list__element"
-              (click)="handleButtonClick(item)"
-            >
-              <div class="data-list__element-container">
-                @if (item.imagePath) {
-                  <div class="image" [inlineSVG]="item.imagePath"></div>
-                }
-                {{ item.translateKey | translate }}
-              </div>
-            </button>
-          }
-
-          @if (item.type === 'external') {
-            <a
-              tuiButton
-              appearance="secondary"
-              class="data-list__element"
-              type="button"
-              size="m"
-              [href]="item.link"
-              target="_blank"
-              (click)="handleExternalClick(item)"
-            >
-              <div class="data-list__element-container">
-                @if (item.imagePath) {
-                  <div class="image" [inlineSVG]="item.imagePath"></div>
-                }
-                {{ item.translateKey | translate }}
-              </div>
-            </a>
-          }
+          <button
+            tuiButton
+            appearance="secondary"
+            type="button"
+            size="m"
+            class="data-list__element"
+            (click)="handleItemClick(item, isMobile)"
+          >
+            <div class="data-list__element-container">
+              @if (item.imagePath) {
+                <div class="image" [inlineSVG]="item.imagePath"></div>
+              }
+              {{ item.translateKey | translate }}
+            </div>
+          </button>
         </ng-container>
       </tui-opt-group>
     </tui-data-list>
@@ -50,52 +28,33 @@
   <ng-template #mobileMenu>
     <tui-accordion [closeOthers]="false" [rounded]="false">
       <tui-accordion-item
-        *ngFor="let item of mobileNavigationList | keyvalue: keepOriginalOrder; index as i"
-        [open]="i === 0"
+        *ngFor="let section of mobileNavigationList | keyvalue: keepOriginalOrder; index as i"
+        [open]="i === 0 && section.value.children.length > 0"
+        [showArrow]="section.value.children.length > 0"
+        (click)="handleSectionClick(section.value, isMobile)"
       >
-        <div class="data-list__title">{{ item.key }}</div>
+        <div class="data-list__title">{{ section.key }}</div>
 
         <ng-template tuiAccordionItemContent>
-          <ng-container *ngFor="let menu of item.value">
-            <div class="data-list__option-container">
-              <ng-container
-                *ngIf="menu.type === 'internal'; then internal; else external"
-              ></ng-container>
-            </div>
-
-            <ng-template #external>
-              <a
+          <div class="accordion-content">
+            <ng-container *ngFor="let item of section.value.children">
+              <button
                 tuiButton
                 appearance="secondary"
                 type="button"
                 size="m"
-                [href]="menu.link"
-                target="_blank"
-                rel="noopener noreferrer"
-                (click)="handleExternalClick(menu)"
+                class="data-list__option"
+                (click)="handleItemClick(item, isMobile)"
               >
-                <button class="data-list__option">
-                  {{ menu.translateKey | translate }}
-                </button>
-              </a>
-            </ng-template>
-
-            <ng-template #internal>
-              <a
-                tuiButton
-                appearance="secondary"
-                type="button"
-                size="m"
-                (click)="mobileClose(menu)"
-                [routerLink]="menu.link"
-                routerLinkActive="data-list__element_active"
-              >
-                <button class="data-list__option">
-                  {{ menu.translateKey | translate }}
-                </button>
-              </a>
-            </ng-template>
-          </ng-container>
+                <div class="data-list__option-container">
+                  @if (item.imagePath) {
+                    <div class="image" [inlineSVG]="item.imagePath"></div>
+                  }
+                  {{ item.translateKey | translate }}
+                </div>
+              </button>
+            </ng-container>
+          </div>
         </ng-template>
       </tui-accordion-item>
     </tui-accordion>

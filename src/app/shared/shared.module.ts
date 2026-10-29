@@ -75,7 +75,6 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
-import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { TimerComponent } from './components/timer/timer.component';
@@ -132,7 +131,6 @@ import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-but
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
     TimerComponent,
@@ -213,7 +211,6 @@ import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-but
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
     TimerComponent,

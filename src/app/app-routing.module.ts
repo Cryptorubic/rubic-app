@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ROUTE_PATH } from '@shared/constants/common/links';
+import { getDefaultPrivacyURL, ROUTE_PATH } from '@shared/constants/common/links';
 
 const routes: Routes = [
   {
@@ -10,9 +10,7 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.PRIVACY,
     redirectTo: () => {
-      window.location.assign(
-        `${window.location.origin}?from=ETH&fromChain=ETH&to=USDT&toChain=ETH&amount=1&privateOnly=true`
-      );
+      window.location.assign(getDefaultPrivacyURL());
       return '';
     }
   },
