@@ -12,9 +12,18 @@
     <div class="mobile-native-chevron-rectangle"></div>
   </div>
 
+  <div class="mobile-native-content__close">
+    <button
+      tuiIconButton
+      appearance="secondary"
+      iconStart="@tui.x"
+      size="s"
+      type="button"
+      (click)="close()"
+    ></button>
+  </div>
+
   <div class="mobile-native-content__inner">
     <div *polymorpheusOutlet="context.content; context: context"></div>
   </div>
-
-  <app-mobile-menu *ngIf="showMobileMenu"></app-mobile-menu>
 </div>

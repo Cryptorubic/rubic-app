@@ -13,7 +13,6 @@ import {
   ModalStruct
 } from '../models/mobile-native-options';
 import type { TuiDialogOptions } from '@taiga-ui/core/components/dialog';
-import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
@@ -107,10 +106,7 @@ export class ModalService {
       {
         title: '',
         size: 'l',
-        showMobileMenu: true,
-        data: {
-          formType
-        }
+        data: { formType }
       },
       injector
     );
@@ -180,7 +176,9 @@ export class ModalService {
     this.setOpenedModalName('rubic-menu');
     return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
       title: 'Menu',
-      scrollableContent: true
+      scrollableContent: true,
+      closeable: true,
+      dismissible: true
     });
   }
 
@@ -197,17 +195,6 @@ export class ModalService {
       },
       injector
     );
-  }
-
-  /**
-   * Show Mobile navigation menu dialog.
-   */
-  public openMobileNavigationMenu(): Observable<void> {
-    this.setOpenedModalName('navigation');
-    return this.showDialog<MobileNavigationMenuComponent, void>(MobileNavigationMenuComponent, {
-      title: 'Main Menu',
-      fitContent: true
-    });
   }
 
   /**

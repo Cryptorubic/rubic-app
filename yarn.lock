@@ -2289,18 +2289,18 @@
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
 
-"@cryptorubic/core@1.9.6-alpha.rub-3290.0":
-  version "1.9.6-alpha.rub-3290.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.9.6-alpha.rub-3290.0.tgz#27216b1787759fcc94e46f6c21666dbdd14364c3"
-  integrity sha512-oc5H3AC7zat6KKSSdYvXY4MwwW53vDCB+H5bzZf25kls1ExvfOEU+l+biXSUhuyFUyBcuMqJy1244hDiPhRO3w==
+"@cryptorubic/core@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.10.0.tgz#fc595ac12548c40af01a87f37dc31bb055767f16"
+  integrity sha512-O8rXgan393npYHCvwwAoJHB6poBQFKKqgWk6EG9ZbgaeoZ9K3rps5FwEYgXr3QOsRpkCro5EXDMcCgGbUNZlpA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.9.6-alpha.rub-3290.0":
-  version "1.9.6-alpha.rub-3290.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.9.6-alpha.rub-3290.0.tgz#d5bc0b1a8f44159da5757adb443996b6d026cdd5"
-  integrity sha512-CkNLIyagW6p7w95oTrptv0FG4GvLUK4aga256nxwAsoM5eFfXyD7DHHUgAkusSQmYm6cGdEzSKcRUY5uQtAddA==
+"@cryptorubic/web3@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.10.0.tgz#3bb6789341763d3404affb9e8139e0384d7a5573"
+  integrity sha512-YZHp+GBrRNRlNCbMkBdyWUkUvlsy31Zter9CFtYAtcMAgPrqSNPBlGkWSc737i/krtCnvi2kWPUdOsPvBFqK1Q==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -7623,15 +7623,6 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@tonconnect/sdk@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-4.0.2.tgz#901d5ad8632b8cf10c0e86ba96223595790c1b5d"
-  integrity sha512-BIoixBenjWLIYhJrdYw9IF20ukE/zvInxoj82McSN1IUmn2Q6fkUnrQwpnIRXW0SqTIDEJPK29btP7euFCIjTA==
-  dependencies:
-    "@tonconnect/isomorphic-eventsource" "0.0.2"
-    "@tonconnect/isomorphic-fetch" "0.0.3"
-    "@tonconnect/protocol" "3.0.0"
-
 "@tonconnect/sdk@4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-4.1.0.tgz#85b6d58b58684e3886ac0bce171d292b8a45b9f3"
@@ -7641,18 +7632,7 @@
     "@tonconnect/isomorphic-fetch" "0.0.3"
     "@tonconnect/protocol" "3.0.0"
 
-"@tonconnect/ui@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-3.0.2.tgz#9885e55237c5fbecff4868275b8bdd6a069dc1e6"
-  integrity sha512-bAOVfN3p/x40Bx7VcvAmH0DvGKwN9qNnkYUqkhUVckHOdwgfdtEMAQaE3w4Dabguse4VoXDzdmf/1rSl56wEgQ==
-  dependencies:
-    "@tonconnect/sdk" "4.0.2"
-    classnames "^2.5.1"
-    csstype "^3.1.3"
-    deepmerge "^4.3.1"
-    ua-parser-js "^1.0.35"
-
-"@tonconnect/ui@^3.0.2":
+"@tonconnect/ui@3.1.0", "@tonconnect/ui@^3.0.2":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-3.1.0.tgz#b43f8f7aec49e4a300948842656c400c2138db31"
   integrity sha512-GlT6yY8ECPiGpDlUCONOQ7UT9MwTKVX4wUo2DLy/nijVsrm/RwdiM9BXic74mOuqVVfwduDYcVh7TZGP6/w/SA==

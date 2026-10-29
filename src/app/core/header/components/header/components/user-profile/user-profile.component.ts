@@ -9,6 +9,7 @@ import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operator
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { UnreadTradesService } from '@app/core/services/unread-trades-service/unread-trades.service';
 
 @Component({
   standalone: false,
@@ -19,13 +20,42 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   providers: []
 })
 export class UserProfileComponent {
+  public readonly isConfirmModalOpened$: Observable<boolean>;
+
+  public readonly isMobile$: Observable<boolean>;
+
+  public currentBlockchainIcon: string;
+
+  public dropdownIsOpened = false;
+
+  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
+    map(user => (user?.name ? user.name : user?.address)),
+    startWith(this.authService.userAddress ?? '')
+  );
+
+  public readonly avatar$ = this.authService.currentUser$.pipe(
+    combineLatestWith(this.walletConnectorService.networkChange$),
+    map(([user, blockchainName]) => {
+      const currentBlockchainIcon = blockchainName
+        ? blockchainIcon[blockchainName]
+        : `${basePath}default-chain.svg`;
+
+      return user?.avatar ? user.avatar : currentBlockchainIcon;
+    })
+  );
+
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
+  public readonly currentUser$ = this.authService.currentUser$;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly recentTradesStoreService: UnreadTradesService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
@@ -50,36 +80,14 @@ export class UserProfileComponent {
       });
   }
 
-  public readonly isConfirmModalOpened$: Observable<boolean>;
-
-  public readonly isMobile$: Observable<boolean>;
-
-  public currentBlockchainIcon: string;
-
-  public dropdownIsOpened = false;
-
-  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
-    map(user => (user?.name ? user.name : user?.address)),
-    startWith(this.authService.userAddress)
-  );
-
-  public readonly avatar$ = this.authService.currentUser$.pipe(
-    combineLatestWith(this.walletConnectorService.networkChange$),
-    map(([user, blockchainName]) => {
-      const currentBlockchainIcon = blockchainName
-        ? blockchainIcon[blockchainName]
-        : `${basePath}default-chain.svg`;
-
-      return user?.avatar ? user.avatar : currentBlockchainIcon;
-    })
-  );
-
-  public logout(): void {
-    this.authService.disconnectWallet();
+  public navigateToHistory(): void {
+    this.dropdownIsOpened = false;
+    this.router.navigate(['/history']);
   }
 
-  public getDropdownStatus(status: boolean): void {
-    this.dropdownIsOpened = status;
+  public logout(): void {
+    this.dropdownIsOpened = false;
+    this.authService.disconnectWallet();
   }
 
   public openLimitOrdersModal(): void {}
