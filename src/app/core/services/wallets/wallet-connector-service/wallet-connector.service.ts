@@ -43,7 +43,7 @@ import {
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
-import { LedgerWalletAdapter } from '../wallets-adapters/evm/ledger-wallet-adapter';
+import { LedgerWalletAdapter } from '../wallets-adapters/evm/ledger-wallet-adapter/ledger-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
