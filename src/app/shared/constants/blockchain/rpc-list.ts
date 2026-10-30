@@ -101,8 +101,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
     'https://astar.public.blastapi.io',
-    'https://rpc.astar.network:8545',
-    'https://x-api.rubic.exchange/drpc/blast'
+    'https://rpc.astar.network:8545'
   ],
   [BLOCKCHAIN_NAME.KAVA]: [
     'https://evm.kava.io',
