@@ -43,13 +43,16 @@ export class HinkalWorkerBalanceService {
         amount: utxo.amount
       }));
 
-      const fetchedBalances = allUtxoAddresses.reduce((acc, val) => {
-        const balance = acc[val.tokenAddress.toLowerCase()];
-        const currAmount = val.amount;
-        acc[val.tokenAddress.toLowerCase()] = balance ? balance + currAmount : currAmount;
+      const fetchedBalances = allUtxoAddresses.reduce(
+        (acc, val) => {
+          const balance = acc[val.tokenAddress.toLowerCase()];
+          const currAmount = val.amount;
+          acc[val.tokenAddress.toLowerCase()] = balance ? balance + currAmount : currAmount;
 
-        return acc;
-      }, {} as Record<string, bigint>);
+          return acc;
+        },
+        {} as Record<string, bigint>
+      );
 
       return Object.entries(fetchedBalances).map(([token, amount]) => ({
         tokenAddress: token,

@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Token, nativeTokensList } from '@cryptorubic/core';
+import {
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  ON_CHAIN_TRADE_TYPE,
+  Token,
+  nativeTokensList
+} from '@cryptorubic/core';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
@@ -36,11 +42,28 @@ export class TradeInfoManager {
     averageTimeMins: number;
     time95PercentsSwapsMins: number;
   } {
-    const provider = TRADES_PROVIDERS[trade.type];
+    let tradeType = trade.type;
+    // TODO: remove after private on-chain providers will be updated in python-api config
+    if (tradeType === ON_CHAIN_TRADE_TYPE.CLEARSWAP) {
+      tradeType = CROSS_CHAIN_TRADE_TYPE.CLEARSWAP;
+    }
+    if (tradeType === ON_CHAIN_TRADE_TYPE.HOUDINI) {
+      tradeType = CROSS_CHAIN_TRADE_TYPE.HOUDINI;
+    }
+    if (tradeType === ON_CHAIN_TRADE_TYPE.ROCKETX) {
+      tradeType = CROSS_CHAIN_TRADE_TYPE.ROCKETX;
+    }
 
-    if (trade instanceof CrossChainTrade) {
+    const provider = TRADES_PROVIDERS[tradeType];
+
+    if (
+      trade instanceof CrossChainTrade ||
+      tradeType === CROSS_CHAIN_TRADE_TYPE.CLEARSWAP ||
+      tradeType === CROSS_CHAIN_TRADE_TYPE.HOUDINI ||
+      tradeType === CROSS_CHAIN_TRADE_TYPE.ROCKETX
+    ) {
       const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
-      const ccrProviderInfo = ccrProviders[trade.type];
+      const ccrProviderInfo = ccrProviders[tradeType as CrossChainTradeType];
       const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
       const betweenChainsInfo = ccrProviderInfo?.betweenNetworksStats[fromToChainKey];
 
@@ -68,8 +91,8 @@ export class TradeInfoManager {
       const time95PercentsSwapsMins = betweenChainsInfo
         ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
         : Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
-        ? Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
-        : averageTimeMins;
+          ? Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
+          : averageTimeMins;
 
       return { averageTimeMins, time95PercentsSwapsMins };
     } else {

@@ -8,9 +8,7 @@
   [tuiButton] {
     font-weight: 400 !important;
     font-size: $rubic-font-size-main;
-
     border: none;
-
     transition: 0.3s;
 
     &.full-width {
@@ -31,7 +29,6 @@
 
     &._disabled {
       color: rgba($rubic-text-disable, 0.7) !important;
-
       background-color: var(--primary-background) !important;
       border: 0;
       opacity: 1 !important;
@@ -51,7 +48,6 @@
 
     &[data-appearance='outline'] {
       font-weight: 500;
-
       border: 1px solid var(--primary-color);
     }
 

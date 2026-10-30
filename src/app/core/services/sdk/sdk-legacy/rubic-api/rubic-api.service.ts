@@ -4,6 +4,7 @@ import {
   QuoteAllInterface,
   QuoteRequestInterface,
   QuoteResponseInterface,
+  SwapPrivateRequestInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -192,6 +193,54 @@ export class RubicApiService {
     }
   }
 
+  public async fetchSwapDepositData<T>(
+    body: TransferSwapRequestInterface
+  ): Promise<SwapResponseInterface<T>> {
+    try {
+      const result = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<
+          SwapResponseInterface<T> | SwapErrorResponseInterface
+        >(`${this.apiUrl}/api/routes/swapDepositTrade`, body)
+      );
+      if ('error' in result) {
+        throw this.getApiError(result);
+      }
+      return result;
+    } catch (err: RubicAny) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+      if ('error' in err) {
+        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
+      }
+      throw this.getApiError(err);
+    }
+  }
+
+  public async fetchSwapPrivateTrade<T>(
+    body: SwapPrivateRequestInterface
+  ): Promise<SwapResponseInterface<T>> {
+    try {
+      const result = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<
+          SwapResponseInterface<T> | SwapErrorResponseInterface
+        >(`${this.apiUrl}/api/routes/swapPrivateTrade`, body)
+      );
+      if ('error' in result) {
+        throw this.getApiError(result);
+      }
+      return result;
+    } catch (err: RubicAny) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+      if ('error' in err) {
+        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
+      }
+      throw this.getApiError(err);
+    }
+  }
+
   public fetchRoutes(body: QuoteRequestInterface): Promise<QuoteAllInterface> {
     return firstValueFrom(
       this.sdkLegacyService.httpClient.post<QuoteAllInterface>(
@@ -335,11 +384,22 @@ export class RubicApiService {
           }
         >(this.client, 'events').pipe(
           concatMap(wsResponse => {
-            const { trade, total, calculated, data } = wsResponse;
+            const {
+              trade,
+              total,
+              calculated,
+              data,
+              privateCalculated,
+              privateTotal,
+              private: isPrivate
+            } = wsResponse;
+
             if (!this.latestQuoteParams) {
               return of({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade: null,
                 ...(data && { tradeType: wsResponse.type })
               });
@@ -356,19 +416,21 @@ export class RubicApiService {
               this.latestQuoteParams?.srcTokenBlockchain !==
               this.latestQuoteParams?.dstTokenBlockchain
                 ? TransformUtils.transformCrossChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   )
                 : TransformUtils.transformOnChain(
-                    trade!,
+                    trade,
                     this.latestQuoteParams!,
                     this.latestQuoteParams!.integratorAddress!,
                     this.sdkLegacyService,
                     this,
+                    isPrivate,
                     rubicApiError as RubicAny
                   );
             return from(promise).pipe(
@@ -376,6 +438,8 @@ export class RubicApiService {
               map(wrappedTrade => ({
                 total,
                 calculated,
+                privateCalculated,
+                privateTotal,
                 wrappedTrade,
                 ...(data && { tradeType: wsResponse.type })
               }))

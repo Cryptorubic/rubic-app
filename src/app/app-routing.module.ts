@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ROUTE_PATH } from '@shared/constants/common/links';
-import { privacyDisclaimerGuard$ } from '@features/privacy/guards/privacy-disclaimer.guard';
+import { getDefaultPrivacyURL, ROUTE_PATH } from '@shared/constants/common/links';
 
 const routes: Routes = [
   {
@@ -9,14 +8,15 @@ const routes: Routes = [
     loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },
   {
-    path: ROUTE_PATH.TESTNET_PROMO,
-    loadChildren: () =>
-      import('./features/testnet-promo/testnet-promo.module').then(m => m.TestnetPromoModule)
+    path: ROUTE_PATH.PRIVACY,
+    redirectTo: () => {
+      window.location.assign(getDefaultPrivacyURL());
+      return '';
+    }
   },
   {
-    path: ROUTE_PATH.PRIVACY,
-    canActivateChild: [privacyDisclaimerGuard$],
-    loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
+    path: ROUTE_PATH.REWARDS,
+    loadChildren: () => import('./features/rewards/rewards.routes').then(m => m.REWARDS_ROUTES)
   },
   {
     path: ROUTE_PATH.NONE,

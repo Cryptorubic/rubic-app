@@ -15,6 +15,8 @@ import { tuiIsPresent } from '@taiga-ui/cdk';
 import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetListType } from '@features/trade/models/asset';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '@features/trade/services/forms-toggler/models';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -31,7 +33,8 @@ export class SwapFormQueryService {
     private readonly swapsFormService: SwapsFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -41,11 +44,15 @@ export class SwapFormQueryService {
     this.swapsFormService.inputValue$
       .pipe(distinctUntilChanged((prev, curr) => compareObjects(prev, curr)))
       .subscribe(inputValue => {
+        const isTransfer = this.formsTogglerService.isTransferMode;
+        const toToken = isTransfer ? inputValue.fromToken : inputValue.toToken;
+        const toBlockchain = isTransfer ? inputValue.fromBlockchain : inputValue.toBlockchain;
+
         this.queryParamsService.patchQueryParams({
           ...(inputValue.fromToken?.symbol && { from: inputValue.fromToken.symbol }),
-          ...(inputValue.toToken?.symbol && { to: inputValue.toToken.symbol }),
+          ...(toToken?.symbol && { to: toToken.symbol }),
           ...(inputValue.fromBlockchain && { fromChain: inputValue.fromBlockchain }),
-          ...(inputValue.toBlockchain && { toChain: inputValue.toBlockchain }),
+          ...(toBlockchain && { toChain: toBlockchain }),
           ...(inputValue.fromAmount?.actualValue.gt(0) && {
             amount: inputValue.fromAmount.actualValue.toFixed()
           })
@@ -62,6 +69,7 @@ export class SwapFormQueryService {
           const protectedParams = this.getProtectedSwapParams(queryParams);
           const fromBlockchain = protectedParams.fromChain as BlockchainName;
           const toBlockchain = protectedParams.toChain;
+          const isTransferMode = protectedParams.formType === MAIN_FORM_TYPE.TRANSFER;
           const isSameToken =
             protectedParams.from === protectedParams.to && fromBlockchain === toBlockchain;
 
@@ -71,23 +79,46 @@ export class SwapFormQueryService {
             fromBlockchain,
             false
           );
-          const findToToken$ = isSameToken
-            ? of(null)
-            : this.getTokenBySymbolOrAddress(List(tokens), protectedParams.to, toBlockchain, false);
 
-          return forkJoin([findFromToken$, findToToken$]).pipe(
-            map(([fromToken, toToken]) => ({
-              fromToken,
-              toToken,
-              fromBlockchain,
-              toBlockchain,
-              amount: protectedParams.amount,
-              amountTo: protectedParams.amountTo
-            }))
+          return findFromToken$.pipe(
+            switchMap(fromToken => {
+              if (isTransferMode) {
+                return of({
+                  fromToken,
+                  toToken: fromToken,
+                  fromBlockchain,
+                  toBlockchain: fromBlockchain,
+                  amount: protectedParams.amount,
+                  amountTo: protectedParams.amountTo,
+                  isTransferMode
+                });
+              }
+
+              const findToToken$ = isSameToken
+                ? of(null)
+                : this.getTokenBySymbolOrAddress(
+                    List(tokens),
+                    protectedParams.to,
+                    toBlockchain,
+                    false
+                  );
+
+              return findToToken$.pipe(
+                map(toToken => ({
+                  fromToken,
+                  toToken,
+                  fromBlockchain,
+                  toBlockchain,
+                  amount: protectedParams.amount,
+                  amountTo: protectedParams.amountTo,
+                  isTransferMode
+                }))
+              );
+            })
           );
         })
       )
-      .subscribe(({ fromBlockchain, toToken, fromToken, toBlockchain, amount }) => {
+      .subscribe(({ fromBlockchain, toToken, fromToken, toBlockchain, amount, isTransferMode }) => {
         this.gtmService.needTrackFormEventsNow = false;
         this.swapsFormService.inputControl.patchValue({
           fromBlockchain,
@@ -101,6 +132,10 @@ export class SwapFormQueryService {
             }
           })
         });
+
+        if (isTransferMode) {
+          this.formsTogglerService.selectForm(MAIN_FORM_TYPE.TRANSFER);
+        }
 
         this._initialLoading$.next(false);
       });

@@ -5,8 +5,8 @@
       [ngClass]="{
         'state__element-icon_focus': step.status === 'pending',
         'state__element-icon_done': step.status === 'fullfilled',
-        'state__element-icon_fail': step.status === 'failed',
-    }"
+        'state__element-icon_fail': step.status === 'failed'
+      }"
     >
       <img
         *ngIf="step.status === 'fullfilled'"

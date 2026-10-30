@@ -1,25 +1,38 @@
 @use 'src/scss/core' as *;
 
 .element {
+  box-sizing: border-box;
   overflow: hidden;
-
   background: var(--primary-background);
+  border: 1px solid var(--primary-background);
   border-radius: var(--tui-radius-m);
   cursor: pointer;
+
+  &_selected {
+    border-color: #00c6c0;
+    box-shadow: 0px 4px 12px 0px #00c6c026 inset;
+  }
 
   &_disabled {
     cursor: no-drop;
     opacity: 0.75;
   }
 
+  &_private {
+    background: linear-gradient(102.34deg, #2d2967 -26.38%, #1b1a2e 58.06%);
+  }
+
+  &_private_collapsed {
+    .element__provider-container {
+      padding: 9px 15px;
+      border: 1px solid #5632a2;
+      border-radius: var(--tui-radius-m);
+    }
+  }
+
   &__provider-container {
     padding: var(--tui-padding-l);
-
     border-bottom: 1px solid var(--tui-background-neutral-1);
-
-    &_selected {
-      background: var(--io-background);
-    }
   }
 
   &__row {
@@ -33,7 +46,6 @@
     flex-wrap: wrap;
     gap: var(--tui-padding-s);
     justify-content: flex-end;
-
     opacity: 1;
   }
 
@@ -64,21 +76,19 @@
     align-items: center;
   }
 
-  &__token-provider {
-    @include font(18px, 18px, 500, var(--tui-text-tertiary), 0.54px);
-    display: none;
-  }
-
   &__token-image {
     width: 18px;
     height: 18px;
-
     border-radius: 100%;
   }
 
   &__token-amount {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 18px;
+
+    &_error {
+      color: #d48989;
+    }
   }
 
   &__token-symbol {
@@ -108,7 +118,6 @@
     width: 40px;
     height: 40px;
     margin-right: var(--tui-padding-m);
-
     border-radius: 100%;
   }
 
@@ -119,20 +128,44 @@
   &__best-badge {
     display: flex;
     align-items: center;
-
-    font-weight: 700 !important;
+    height: 24px;
+    font-weight: 600 !important;
     text-transform: uppercase;
-
     background: #05cc05;
     cursor: pointer;
   }
 
   &__warning-badge {
-    font-weight: 700 !important;
+    height: 24px;
+    font-weight: 600 !important;
     text-transform: uppercase;
-
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
     cursor: pointer;
+  }
+
+  &__private-badge {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    height: 24px;
+    padding: 0 7px;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #2c2969 0%, #1b1a2e 50%, #2c2969 100%);
+    border: 1px solid #615eaa;
+    border-radius: 4px;
+  }
+
+  &__private-badge-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__private-badge-text {
+    color: #bbb7ff;
   }
 
   ::ng-deep &__expander {
@@ -195,26 +228,9 @@ app-route-element {
 @include b($mobile-md) {
   .element {
     &_shorted {
-      .element__amounts-container {
-        align-items: end;
-      }
-
-      .element__token-info {
-        gap: var(--tui-padding-s);
-      }
-
-      .element__token {
-        gap: var(--tui-padding-m);
-      }
-
-      .element__token-provider {
-        display: block;
-      }
-
       .element__token-image {
         width: 25px;
         height: 25px;
-
         border-radius: 100%;
       }
 
@@ -222,16 +238,8 @@ app-route-element {
         @include font(18px, 18px, 500, var(--tui-text-primary), 0.54px);
       }
 
-      .element__token-amount {
-        display: none;
-      }
-
       .element__right {
         gap: var(--tui-padding-m);
-      }
-
-      .element__amount-price {
-        display: none;
       }
     }
   }

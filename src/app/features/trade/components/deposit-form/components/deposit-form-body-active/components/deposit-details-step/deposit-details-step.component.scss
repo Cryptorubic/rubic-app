@@ -1,0 +1,75 @@
+@use 'src/scss/core' as *;
+@use 'src/app/features/trade/components/deposit-form/styles/common' as *;
+
+:host {
+  .step {
+    width: 100%;
+
+    tui-accordion-item {
+      @include tui-accordion-item();
+    }
+
+    .tui-accordion-item__disabled {
+      @include tui-accordion-item-disabled();
+    }
+
+    &-title {
+      @include accordion-title();
+    }
+
+    .earns-points {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--tui-text-primary);
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    &-counter {
+      @include accordion-counter();
+    }
+
+    &-counter__active {
+      @include accordion-counter-active();
+    }
+
+    &-content {
+      @include accordion-content();
+      @include flex(column, normal, normal);
+      gap: 12px;
+
+      &__assets {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        width: 100%;
+
+        app-asset-details {
+          flex: 1;
+        }
+      }
+
+      &__buttons {
+        @include flex(row, center, space-between);
+        gap: 10px;
+        width: 100%;
+
+        app-rubic-button-new {
+          flex: 1;
+          width: 100%;
+          max-height: 40px;
+
+          ::ng-deep button {
+            max-height: 40px;
+            white-space: normal;
+          }
+        }
+
+        .or {
+          color: var(--tui-text-secondary);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

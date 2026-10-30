@@ -14,7 +14,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.BASE]: true,
   [BLOCKCHAIN_NAME.LINEA]: true,
   [BLOCKCHAIN_NAME.MANTLE]: true,
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: true,
   [BLOCKCHAIN_NAME.SCROLL]: true,
   [BLOCKCHAIN_NAME.OPTIMISM]: true,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: true,

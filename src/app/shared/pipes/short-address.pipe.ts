@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'shortAddress'
 })
 export class ShortAddressPipe implements PipeTransform {
-  transform(address: string, beforeSymbols: number = 8, afterSymbols: number = 5): unknown {
+  transform(address: string, beforeSymbols: number = 8, afterSymbols: number = 5): string {
     if (beforeSymbols + afterSymbols >= address.length) {
       return address;
     }

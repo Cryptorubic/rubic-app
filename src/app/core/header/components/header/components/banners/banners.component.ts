@@ -22,6 +22,10 @@ export class BannersComponent {
     private readonly gtmService: GoogleTagManagerService
   ) {}
 
+  public isPrivacyBanner(banner: ApiBanner): boolean {
+    return banner.text.toLowerCase().includes('stay safe, break the link between wallets');
+  }
+
   public getBannerText(banner: ApiBanner, mobile: boolean): string {
     return mobile ? banner.textMobile : banner.text;
   }

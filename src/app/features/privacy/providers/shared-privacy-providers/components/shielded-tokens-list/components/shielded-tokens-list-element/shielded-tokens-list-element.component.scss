@@ -27,14 +27,12 @@
 
   &__image-container {
     position: relative;
-
     display: flex;
     margin-right: 10px;
 
     &-token {
       width: 32px;
       height: 32px;
-
       border-radius: 25%;
     }
 
@@ -42,10 +40,8 @@
       position: absolute;
       top: -2px;
       right: -5px;
-
       width: 16px;
       height: 16px;
-
       border-radius: 25%;
     }
   }
@@ -55,7 +51,6 @@
     flex-direction: column;
     width: 95px;
     margin-right: 40px;
-
     white-space: nowrap;
 
     @include b($mobile-md) {
@@ -73,12 +68,10 @@
     @include flex(column, center, center);
     gap: 2px;
     margin-left: auto;
-
     text-align: right;
 
     @include b($mobile-md) {
       margin-left: 0;
-
       text-align: left;
     }
   }
@@ -138,7 +131,6 @@
     gap: var(--tui-padding-s);
     width: 100%;
     padding: var(--tui-padding-s);
-
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
 

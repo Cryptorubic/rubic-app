@@ -3,7 +3,7 @@
 .rubic-header {
   @include flex(row, center, space-between);
   position: relative;
-
+  gap: 5px;
   padding: 30px;
 
   &__logo {
@@ -17,30 +17,30 @@
 
   &__left {
     @include flex(row, center, start);
-    gap: 12px;
+    gap: clamp(5px, 2vw, 12px);
   }
 
   &__right {
     @include flex(row, center, start);
     gap: 12px;
-  }
-}
 
-.private-mode-button {
-  &__content {
-    @include flex(row, center, center);
-    gap: 8px;
+    .rubic-header__profile {
+      @include flex(row, center, start);
+      gap: 5px;
 
-    .icon {
-      width: 20px;
-      height: 20px;
+      app-rubic-menu-toggler-mobile {
+        ::ng-deep {
+          button {
+            height: 40px;
+          }
+        }
+      }
     }
   }
 }
 
 .active-router-link {
   color: black !important;
-
   background: var(--tui-background-accent-1);
 
   .icon {
@@ -50,12 +50,6 @@
   }
 }
 
-/* .testnets-button,
-.birthday-button,
-.private-swaps-button {
-  margin-right: auto;
-} */
-
 .image {
   display: flex;
   align-items: center;
@@ -64,9 +58,45 @@
   height: 100%;
 }
 
-@include b($laptop) {
-  .testnets-button {
-    display: none;
+.large-iframe-header {
+  justify-content: space-between;
+}
+
+.rewards-button {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  padding-left: 6px;
+
+  &__icon {
+    position: relative;
+    top: -1px;
+    width: 40px;
+    height: 40px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &.active-router-link {
+    .rewards-button__icon {
+      ::ng-deep svg path {
+        stroke: black;
+      }
+    }
+  }
+}
+
+.rewards-button-mobile {
+  width: 40px;
+  height: 40px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -75,45 +105,16 @@
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  .swap-button,
-  .private-mode-button {
-    height: 40px !important;
-
-    padding: 0 var(--tui-padding-m) 0 var(--tui-padding-l) !important;
-  }
-
-  app-rubic-menu-toggler,
   app-language-selector,
   app-history-button {
     display: none;
   }
 
-  button {
-    &.theme-switcher,
-    &.staking-button {
-      display: none;
-    }
+  app-logo {
+    max-width: 73px;
   }
 }
 
 .large-iframe-header {
   justify-content: space-between;
-}
-
-@include b($mobile-sm-middle) {
-  .swap-button,
-  .private-mode-button {
-    font-size: 12px !important;
-
-    .icon {
-      position: relative;
-      top: 2px;
-
-      ::ng-deep {
-        svg {
-          height: 20px;
-        }
-      }
-    }
-  }
 }

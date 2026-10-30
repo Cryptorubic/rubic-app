@@ -14,7 +14,6 @@ interface SolanaWalletEvents {
 export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
   publicKey?: { toBytes(): Uint8Array };
   isConnected: boolean;
-  isXDEFI?: boolean;
   signTransaction(transaction: VersionedTransaction): Promise<VersionedTransaction>;
   signAllTransactions(transactions: VersionedTransaction[]): Promise<VersionedTransaction[]>;
   signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>;

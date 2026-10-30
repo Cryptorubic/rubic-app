@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { TuiHint } from '@taiga-ui/core';
 import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { PrivateTradeType } from '../../constants/private-trade-types';
 import {
@@ -10,7 +13,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, InlineSVGModule, ...TuiHint],
   selector: 'app-private-provider-element',
   templateUrl: './private-provider-element.component.html',
   styleUrls: ['./private-provider-element.component.scss'],

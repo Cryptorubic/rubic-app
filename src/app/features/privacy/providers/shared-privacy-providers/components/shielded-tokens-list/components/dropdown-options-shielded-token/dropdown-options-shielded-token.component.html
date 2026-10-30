@@ -1,6 +1,12 @@
 <ng-container *ngLet="isMobile$ | async as isMobile">
   <!-- TODO: (Taiga UI migration) use <div ... tuiDropdown #dropdown="tuiDropdown"> and (event)="#dropdown.toggle(false)" -->
-  <div tuiDropdown #dropdown="tuiDropdown" [tuiDropdown]="content" [(tuiDropdownOpen)]="isDropdownOpen" *ngIf="showDropdown">
+  <div
+    tuiDropdown
+    #dropdown="tuiDropdown"
+    [tuiDropdown]="content"
+    [(tuiDropdownOpen)]="isDropdownOpen"
+    *ngIf="showDropdown"
+  >
     <button
       class="dropdown-button"
       appearance="flat"

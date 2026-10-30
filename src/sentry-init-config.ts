@@ -18,7 +18,6 @@ export function initSentry(): void {
     sendDefaultPii: true,
     integrations: [
       Sentry.browserTracingIntegration(),
-      Sentry.httpClientIntegration(),
       Sentry.breadcrumbsIntegration({
         console: true,
         dom: true,
@@ -42,8 +41,8 @@ export function initSentry(): void {
         blockAllMedia: true
       })
     ],
-    tracesSampleRate: 1.0,
-    replaysSessionSampleRate: 0.1,
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
     enableLogs: true,
     allowUrls: [sentryAllowUrlRegexpString],

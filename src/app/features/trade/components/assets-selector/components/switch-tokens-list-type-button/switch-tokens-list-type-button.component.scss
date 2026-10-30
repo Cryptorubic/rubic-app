@@ -5,7 +5,6 @@
 
   button {
     color: var(--tui-text-primary);
-
     background: none;
 
     @include b($mobile-md) {

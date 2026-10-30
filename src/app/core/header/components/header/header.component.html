@@ -1,4 +1,6 @@
-<app-banners *ngIf="!hideUnusedUI"></app-banners>
+@let isMobile = mobile$ | async;
+
+<app-banners *ngIf="!hideUnusedUI && !isMobile"></app-banners>
 
 <header
   class="rubic-header"
@@ -13,96 +15,77 @@
       [noFrameLink]="noFrameLink"
     ></app-logo>
 
-    <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
-      <app-rubic-menu
-        [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-        [crossChainActive]="
-          rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-        "
-        (swapClick)="navigateToSwaps()"
-      ></app-rubic-menu>
-    </app-rubic-menu-toggler>
+    @if (!isMobile && !useLargeIframe) {
+      <app-rubic-menu-toggler *ngIf="!useLargeIframe" #menuToggler>
+        <app-rubic-menu
+          [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+          [crossChainActive]="
+            rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          "
+          (onClose)="menuToggler.closeMenu()"
+        ></app-rubic-menu>
+      </app-rubic-menu-toggler>
+    }
 
-    <button
-      *ngIf="!useLargeIframe && !isMobile"
-      class="swap-button"
-      routerLink="/"
-      routerLinkActive="active-router-link"
-      [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
-      (click)="onHeaderModeSwitch('regular')"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-    >
-      {{ !isTablet ? 'Regular Mode' : 'Regular' }}
-    </button>
+    @if (!isMobile && !useLargeIframe) {
+      <button
+        class="rewards-button"
+        routerLink="/rewards"
+        routerLinkActive="active-router-link"
+        [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+        tuiButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        <div class="rewards-button__icon" inlineSVG="assets/images/rewards/gift-menu.svg"></div>
+        Rewards
+      </button>
+    }
 
-    <button
-      routerLink="/privacy"
-      routerLinkActive="active-router-link"
-      (click)="onHeaderModeSwitch('private')"
-      class="private-mode-button"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-    >
-      <div class="private-mode-button__content">
-        <span>{{ !isTablet ? 'Private Mode' : 'Private' }}</span>
-        <span class="icon" inlineSVG="assets/images/private-swaps/common/lock-white.svg"></span>
-      </div>
-    </button>
-
-    <button
-      *ngIf="!useLargeIframe && !isMobile"
-      class="testnets-button"
-      tuiButton
-      appearance="secondary"
-      type="button"
-      size="m"
-      (click)="navigateToTestnets()"
-    >
-      Testnets
-    </button>
+    @if (isMobile && !useLargeIframe) {
+      <button
+        class="rewards-button-mobile"
+        routerLink="/rewards"
+        tuiIconButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        <img src="assets/images/rewards/gift-menu.svg" alt="Rewards" />
+      </button>
+    }
   </div>
 
   <div class="rubic-header__right">
-    <app-language-selector *ngIf="!useLargeIframe"></app-language-selector>
-
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
+    @if (!isMobile && !useLargeIframe && (showMyCollection$ | async)) {
+      <button
+        routerLink="/rewards/my-collection"
+        routerLinkActive="active-router-link"
+        [routerLinkActiveOptions]="ROUTER_LINK_OPTS"
+        tuiButton
+        appearance="secondary"
+        type="button"
+        size="m"
+      >
+        My Collection
+      </button>
+    }
+
     <div class="rubic-header__profile">
-      <ng-container *ngIf="!currentUser?.address; else loggedIn">
+      @if (!currentUser?.address) {
         <app-login-button
           class="rubic-header__login"
           [buttonHierarchy]="'header'"
         ></app-login-button>
-      </ng-container>
-      <ng-template #loggedIn>
+      } @else {
         <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-      </ng-template>
+      }
+      @if (isMobile) {
+        <app-rubic-menu-toggler-mobile (click)="openMobileMenu()"></app-rubic-menu-toggler-mobile>
+      }
     </div>
   </div>
-
-  <!-- Uncomment when light theme ready -->
-  <!--  <button-->
-  <!--    class="theme-switcher"-->
-  <!--    tuiIconButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="switchTheme()"-->
-  <!--  >-->
-  <!--    <div-->
-  <!--      class="image"-->
-  <!--      [inlineSVG]="-->
-  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
-  <!--      "-->
-  <!--    ></div>-->
-  <!--  </button>-->
-
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
-  </ng-container>
 </header>

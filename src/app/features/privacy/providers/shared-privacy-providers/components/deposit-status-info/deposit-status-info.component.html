@@ -14,7 +14,7 @@
       <div class="deposit-swap-info__text">
         {{
           paymentInfo.depositAddress
-            | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
+            | shortAddress: (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
         }}
         <button
           *ngIf="status !== 'expired'"

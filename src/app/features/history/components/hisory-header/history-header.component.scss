@@ -3,7 +3,6 @@
 .tabs {
   height: var(--tui-height-m);
   margin-bottom: var(--tui-padding-s);
-
   background: var(--tui-background-base);
   border-radius: var(--tui-radius-m);
 
@@ -20,7 +19,6 @@
   button {
     margin: 0 !important;
     padding: 0 var(--tui-padding-l);
-
     font: var(--tui-font-text-m);
 
     @include b($mobile-sm-middle) {
@@ -39,7 +37,6 @@
 
     ::ng-deep svg path {
       transition: 0.3s ease-in-out;
-
       fill: var(--tui-text-tertiary);
     }
   }

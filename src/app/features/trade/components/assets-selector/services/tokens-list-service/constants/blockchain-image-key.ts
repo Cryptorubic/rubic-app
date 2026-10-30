@@ -2,13 +2,12 @@ import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainImageKey: Record<BlockchainName, string> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: null } as Record<BlockchainName, string>),
+    (acc, blockchain) => ({ ...acc, [blockchain]: null }) as Record<BlockchainName, string>,
     {} as Record<BlockchainName, string>
   ),
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: 'polygon',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
   [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
   [BLOCKCHAIN_NAME.FANTOM]: 'fantom',

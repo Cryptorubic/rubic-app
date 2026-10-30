@@ -1,11 +1,71 @@
+.success-container {
+  overflow: hidden;
+  background: var(--primary-background);
+  border-radius: var(--tui-radius-m);
+}
+
+.points-earned-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background: url('/assets/images/success-bg.svg');
+  background-size: cover;
+
+  &__info-icon {
+    position: absolute;
+    top: 9px;
+    right: 6px;
+    width: 15px;
+    height: 15px;
+    cursor: help;
+
+    &::ng-deep {
+      path,
+      rect {
+        stroke: var(--tui-text-secondary);
+      }
+    }
+  }
+}
+
+.points-earned {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: var(--tui-padding-l) 25px;
+  text-align: center;
+  background: var(--tui-background-base);
+
+  &__title {
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  &__note {
+    color: var(--tui-text-secondary);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  &__link {
+    color: var(--tui-background-accent-1);
+    text-decoration: underline;
+  }
+
+  &__loader {
+    padding: var(--tui-padding-l);
+  }
+}
+
 .info {
   display: flex;
   flex-direction: column;
   gap: var(--tui-padding-l);
   padding: var(--tui-padding-l);
-
   text-align: center;
-
   background: url('/assets/images/success-bg.svg');
   background-size: cover;
 
@@ -18,6 +78,5 @@
 
 .highlight_green {
   color: var(--tui-background-accent-1);
-
   cursor: pointer;
 }

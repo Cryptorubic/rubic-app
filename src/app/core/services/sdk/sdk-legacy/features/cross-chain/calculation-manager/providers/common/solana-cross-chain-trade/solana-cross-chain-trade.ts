@@ -149,11 +149,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
-      enableChecks: !testMode,
-      // @ts-ignore
-      sponsorGas: true,
-      // @ts-ignore
-      makeLogs: true
+      enableChecks: !testMode
     };
 
     const { transaction, estimate, warnings } = await this.fetchSwapData<{ data: string }>(

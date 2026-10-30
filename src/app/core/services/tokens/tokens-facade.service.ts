@@ -17,9 +17,6 @@ import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-
 import { BlockchainName, ChainType } from '@cryptorubic/core';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-utility-store';
-import { TrendingUtilityStore } from '@core/services/tokens/models/tranding-utility-store';
-import { GainersUtilityStore } from '@core/services/tokens/models/gainers-utility-store';
-import { LosersUtilityStore } from '@core/services/tokens/models/losers-utility-store';
 import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
 import { TokensBootstrapService } from '@core/services/tokens/tokens-bootstrap.service';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
@@ -29,6 +26,7 @@ import { TokensQueryService } from '@core/services/tokens/tokens-query.service';
 import { TokensBuilderService } from '@core/services/tokens/tokens-builder.service';
 import { TokensPaginationService } from '@core/services/tokens/tokens-pagination.service';
 import { QueryTokenParams } from './new-tokens-api.service';
+import { TransferTokensService } from './transfer-tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +45,8 @@ export class TokensFacadeService {
   protected readonly tokensBuilderService = inject(TokensBuilderService);
 
   private readonly tokensPaginationService = inject(TokensPaginationService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
 
   public get nativeToken$(): Observable<BalanceToken | null> {
     return this.tokensRegistryService.nativeToken$;
@@ -83,18 +83,6 @@ export class TokensFacadeService {
     return this.tokensCollectionFacade.allTokens;
   }
 
-  public get trending(): TrendingUtilityStore {
-    return this.tokensCollectionFacade.trending;
-  }
-
-  public get gainers(): GainersUtilityStore {
-    return this.tokensCollectionFacade.gainers;
-  }
-
-  public get losers(): LosersUtilityStore {
-    return this.tokensCollectionFacade.losers;
-  }
-
   public get favorite(): FavoriteUtilityStore {
     return this.tokensCollectionFacade.favorite;
   }
@@ -103,10 +91,15 @@ export class TokensFacadeService {
     return this.tokensBootstrapService.tier1TokensLoaded$;
   }
 
+  public get transferTokensLoaded$(): Observable<boolean> {
+    return this.transferTokensService.loaded$;
+  }
+
   constructor(private readonly tokensStore: NewTokensStoreService) {}
 
   public init(): void {
     this.tokensBootstrapService.buildTokenLists();
+    this.tokensBootstrapService.buildTransferTokenList();
     this.tokensBalanceService.initSubscribes();
     this.tokensQueryService.subscribeOnQuery();
   }
@@ -240,5 +233,9 @@ export class TokensFacadeService {
 
   public fetchNewPage(tokenState: BlockchainTokenState, skipLoading: boolean): void {
     this.tokensPaginationService.fetchNewPage(tokenState, skipLoading);
+  }
+
+  public loadChainTokens(blockchain: BlockchainName): void {
+    this.tokensBootstrapService.loadChainTokens(blockchain);
   }
 }

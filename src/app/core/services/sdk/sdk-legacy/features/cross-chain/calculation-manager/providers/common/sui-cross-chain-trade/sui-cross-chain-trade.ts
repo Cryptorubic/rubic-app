@@ -125,9 +125,8 @@ export abstract class SuiCrossChainTrade extends CrossChainTrade<SuiTransactionC
       enableChecks: !testMode
     };
 
-    const { transaction, estimate } = await this.fetchSwapData<SuiTransactionConfig>(
-      swapRequestParams
-    );
+    const { transaction, estimate } =
+      await this.fetchSwapData<SuiTransactionConfig>(swapRequestParams);
 
     const config: SuiTransactionConfig = {
       transaction: transaction.transaction!

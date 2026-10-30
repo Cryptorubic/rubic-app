@@ -7,13 +7,28 @@
 h5 {
   margin: 0 0 var(--tui-padding-l);
   padding-right: 10px;
-
   font-size: 15px;
   line-height: 15px;
 }
 
 .waiting {
   margin-bottom: var(--tui-padding-m);
+}
+
+.list-header {
+  display: flex;
+  justify-content: end;
+  padding: 8px var(--tui-padding-m) var(--tui-padding-m);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.private-switcher {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  color: white;
 }
 
 .providers-list {
@@ -27,7 +42,6 @@ h5 {
   justify-content: space-between;
   margin-top: var(--tui-padding-m);
   padding: var(--tui-padding-l);
-
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
 
@@ -39,6 +53,11 @@ h5 {
 @include b($mobile-md) {
   .waiting {
     padding: var(--tui-padding-m);
+  }
+
+  .private-switcher {
+    margin-bottom: var(--tui-padding-m);
+    padding: 0 var(--tui-padding-m);
   }
 
   .providers-list {

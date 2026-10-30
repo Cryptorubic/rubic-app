@@ -9,7 +9,7 @@ import {
   ItSettingsForm
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
+import { DepositTrade } from '@app/features/trade/models/deposit-trade';
 import BigNumber from 'bignumber.js';
 import { ShieldedBalanceToken } from '@features/privacy/providers/shared-privacy-providers/components/shielded-tokens-list/models/shielded-balance-token';
 import { SignatureInfo } from '@app/features/privacy/providers/zama/services/zama-sdk/models/signature-info';
@@ -75,9 +75,9 @@ export type Store = PrivacyLocalStorage & {
 
   RUBIC_TOKENS: StorageToken[];
 
-  RUBIC_CHANGENOW_POST_TRADE: CrossChainTransferTrade;
+  RUBIC_CHANGENOW_POST_TRADE: DepositTrade;
 
-  RUBIC_DEPOSIT_RECENT_TRADE: CrossChainTransferTrade[];
+  RUBIC_DEPOSIT_RECENT_TRADE: DepositTrade[];
 
   IS_RUSSIAN_IP: boolean;
 

@@ -51,8 +51,6 @@
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
     "noMetamaskInstalled": "Убедитесь, что у вас установлен и разблокирован плагин Metamask. Вы можете скачать его на",
     "noCoinBaseInstalled": "Убедитесь, что у вас установлен и разблокирован плагин CoinBase. Вы можете скачать его на",
-    "noTokenPocketInstalled": "Убедитесь, что у вас установлен и разблокирован плагин TokenPocket. Вы можете скачать его на",
-    "noBitKeepInstalled": "Убедитесь, что у вас установлен и разблокирован плагин BitKeep. Вы можете скачать его на",
     "removeCoinbaseExtension": "Браузерное расширение Coinbase конфликтует с расширением Метамаск. Пожалуйста, отключите или удалите расширение Coinbase чтобы продолжить, либо выберите другой кошелек для подключения.",
     "wrongNetwork": "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
     "OverQueryLimit": "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу",
@@ -67,6 +65,7 @@
     "wrongToken": "Rubic мост поддерживает только токен RBC.",
     "oneInchQuote": "Ошибка котировки 1inch",
     "notSupportedNetwork": "{{networkToChoose}} не поддерживается выбранным поставщиком кошелька.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Вы отменили вход в кошелек. Пожалуйста, подтвердите вход в Ваш кошелек для совершения транзакций на платформе.",
     "lowGas": "Газ транзакции слишком низкий. Не хватает газа, чтобы покрыть минимальную стоимость сделки. Попробуйте увеличить подачу газа",
     "noSelectedProvider": "Вы не выбрали провайдера для обмена",
@@ -80,7 +79,7 @@
     "chooseSupportedBridge": "Выберите поддерживаемый мост",
     "InsufficientBalance": "Баланс недостаточен",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке",
-    "noEnteredAmount": "Enter an Amount",
+    "noEnteredAmount": "0",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "The gas price on {{toBlockchain}} is too high. Please wait and try later.",
@@ -103,8 +102,7 @@
     "noSelectedToken": "Выберите Токен",
     "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются.",
     "fallbackSwap": "Свoп завершился с ошибкой, вам возвращены транзитные токены.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",
@@ -160,7 +158,7 @@
       },
       {
         "title": "Как связаться с поддержкой?",
-        "answer": "Если Вам нужна помощь, пожалуйста, обратитесь в нашу службу поддержки, отправив заявку на сайте в чате в правом нижнем углу, или в телеграмм <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>.\n\nLive chat - Пишите, для быстрого ответа. Мы онлайн 24/7.\n\nEmail support\n <a href='mailto:support@rubic.finance'>support@rubic.finance</a>  - Напишите нам, если вопрос сложный и нужно как следует разобраться.\n"
+        "answer": "Если Вам нужна помощь, пожалуйста, обратитесь в нашу службу поддержки, отправив заявку на сайте в чате в правом нижнем углу, или в телеграмм <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>.\n\nLive chat - Пишите, для быстрого ответа. Мы онлайн 24/7.\n\nEmail support\n <a href='mailto:support@rubic.finance'>support@rubic.finance</a>  - Напишите нам, если вопрос сложный и нужно как следует разобраться.\n"
       },
       {
         "title": "Что такое виджет Rubic Relay и как его интегрировать?",
@@ -196,7 +194,7 @@
       },
       {
         "title": "Почему статус Pending не меняется длительное время в Multi-chain транзакции?",
-        "answer": "Предположительно, цена на газ во время проведения транзакции резко возросла. \nЕсли вышеперечисленные способы не помогли, пожалуйста, свяжитесь с нашей службой поддержки через чат на сайте или Телеграм: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+        "answer": "Предположительно, цена на газ во время проведения транзакции резко возросла. \nЕсли вышеперечисленные способы не помогли, пожалуйста, свяжитесь с нашей службой поддержки через чат на сайте или Телеграм: <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>."
       },
       {
         "title": "Почему я не могу провести multi-chain транзакцию?",

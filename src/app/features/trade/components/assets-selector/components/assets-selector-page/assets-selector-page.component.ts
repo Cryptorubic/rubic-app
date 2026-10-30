@@ -18,6 +18,7 @@ import {
   filter,
   first,
   map,
+  skip,
   startWith,
   switchMap,
   tap
@@ -25,10 +26,9 @@ import {
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { combineLatestWith, Observable, of, shareReplay } from 'rxjs';
+import { combineLatestWith, connect, merge, Observable, of, shareReplay } from 'rxjs';
 import { AssetsService } from '@features/trade/components/assets-selector/services/blockchains-list-service/utils/assets.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainFilters } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import {
   AvailableBlockchain,
   BlockchainItem
@@ -98,8 +98,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public customToken$: Observable<AvailableTokenAmount | null>;
 
-  public blockchainFilter$: Observable<BlockchainFilters>;
-
   public totalBlockchains: number;
 
   public blockchainsToShow$: Observable<AvailableBlockchain[]>;
@@ -135,7 +133,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.blockchainsSearchQuery$ = this.assetsSelectorService.blockchainSearchQuery$;
     this.customToken$ = this.assetsSelectorService.customToken$;
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
-    this.blockchainFilter$ = this.assetsSelectorService.blockchainFilter$;
     this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(shareReplay(1));
     this.platformLoading$ = this.assetsSelectorConfig.platformLoading$ || of(false);
 
@@ -150,7 +147,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
         this.balanceLoading$.pipe(filter(loading => !loading)),
         this.authService.currentUser$
       ),
-      debounceTime(50), // skip many repeated updates at the same time
+      // first value immediately, then debounce bursts of repeated updates
+      connect(shared => merge(shared.pipe(first()), shared.pipe(skip(1), debounceTime(50)))),
       switchMap(([type, query, _, __]) =>
         this.tokensFacade.getTokensList(
           type,
@@ -220,9 +218,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.document.documentElement.classList.remove('is-locked');
   }
 
-  public handleBlockchainFilterSelection(chainFilter: BlockchainFilters): void {
-    this.assetsSelectorService.setFilterQuery(
-      chainFilter,
+  public openMobileBlockchainsList(): void {
+    this.assetsSelectorService.openMobileBlockchainList(
       this.totalBlockchains,
       this.blockchainsToShow$,
       query => {

@@ -11,6 +11,8 @@ import {
   PRIVATE_PROVIDERS_WALLETS_MAP
 } from '@app/features/privacy/constants/private-providers-wallets-map';
 import { HeaderStore } from '@core/header/services/header.store';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { CHAIN_SUPPORTED_WALLETS } from '@core/services/wallets/constants/chaintype-supported-wallets';
 
 @Component({
   standalone: false,
@@ -48,6 +50,11 @@ export class LoginButtonComponent {
   }
 
   private filterWallets(): WALLET_NAME[] {
+    const path = this.router.url.split(/[?#]/)[0];
+    if (path === '/rewards' || path.startsWith('/rewards/')) {
+      return CHAIN_SUPPORTED_WALLETS[CHAIN_TYPE.EVM];
+    }
+
     const walletsMap = this.headerStore.isMobile
       ? PRIVATE_PROVIDERS_MOBILE_WALLETS_MAP
       : PRIVATE_PROVIDERS_WALLETS_MAP;

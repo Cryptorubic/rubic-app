@@ -2,14 +2,12 @@
 
 .transaction-details {
   padding: var(--tui-padding-l);
-
   background: var(--primary-background);
   border-radius: var(--tui-radius-m);
 
   &__label {
     margin-top: 0;
     margin-bottom: var(--tui-padding-l);
-
     font-size: 15px;
     text-align: center;
   }

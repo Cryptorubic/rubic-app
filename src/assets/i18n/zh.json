@@ -51,8 +51,6 @@
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
     "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
-    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
-    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase 浏览器扩展与 MetaMask 扩展冲突。 请禁用或删除 Conibase 扩展以继续，或选择另一个钱包进行连接。",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
@@ -67,6 +65,7 @@
     "wrongToken": "Rubic 橋僅支持 rubic 令牌。",
     "oneInchQuote": "1inch 報價錯誤",
     "notSupportedNetwork": "{{networkToChoose}} 所選錢包提供商不支持。",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "您已拒絕使用錢包登錄。 請使用您的錢包確認登錄，以便充分利用我們的應用程序。",
     "lowGas": "交易氣體太低。 沒有足夠的氣體來支付交易的最低成本。 嘗試增加供氣",
     "noSelectedProvider": "您尚未選擇任何掉期提供者",
@@ -80,7 +79,7 @@
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
     "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
-    "noEnteredAmount": "Enter an Amount",
+    "noEnteredAmount": "0",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "The gas price on {{toBlockchain}} is too high. Please wait and try later.",
@@ -102,8 +101,7 @@
     "crossChainSwapUnavailable": "不幸的是，使用計算出的提供者的這種交換目前不可用。 Rubic 將重新計算您的交換路線。",
     "noSelectedToken": "选择令牌",
     "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",
@@ -159,7 +157,7 @@
       },
       {
         "title": "How To Contact Support?",
-        "answer": "If you need assistance, feel free to contact our support team here by submitting a ticket on our website or on our Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>\n\n Live chat - Contact Rubic team for immediate assistance using chat. Available 24/7.\n\nEmail Support - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Message Rubic Support anytime with more complex or technical questions. We're here to help."
+        "answer": "If you need assistance, feel free to contact our support team here by submitting a ticket on our website or on our Telegram: <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>\n\n Live chat - Contact Rubic team for immediate assistance using chat. Available 24/7.\n\nEmail Support - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Message Rubic Support anytime with more complex or technical questions. We're here to help."
       },
       {
         "title": "What is the Rubic Relay widget and how can we integrate it?",
@@ -171,7 +169,7 @@
       },
       {
         "title": "Why does my On-Chain swap have a long-lasting “Pending” status?",
-        "answer": "Reason:\nIt’s possible that the gas fee that was set is not enough to process your transaction.\n\n How to solve:\n If the transaction is “Pending”, it is best to accelerate the transaction manually, by changing to the desired value of gas, in order to force the completion of the transaction. It can be done via your wallet. You will be able to pay an additional gas fee.\n\nIf you still need assistance, feel free to contact our support team hereby submitting a ticket or on Telegram <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
+        "answer": "Reason:\nIt’s possible that the gas fee that was set is not enough to process your transaction.\n\n How to solve:\n If the transaction is “Pending”, it is best to accelerate the transaction manually, by changing to the desired value of gas, in order to force the completion of the transaction. It can be done via your wallet. You will be able to pay an additional gas fee.\n\nIf you still need assistance, feel free to contact our support team hereby submitting a ticket or on Telegram <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>"
       },
       {
         "title": "Why do I get the “Insufficient Balance” error?",
@@ -195,7 +193,7 @@
       },
       {
         "title": "Why do I have a long-lasting “Pending” status of a Multi-Chain transaction?",
-        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://telegram.me/RubicSupportBot' target='_blank'>https://telegram.me/RubicSupportBot</a>."
       },
       {
         "title": "Why can't I do the multi-chain swap?",

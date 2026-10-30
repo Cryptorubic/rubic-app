@@ -1,5 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
+import { combineLatestWith, debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -7,8 +8,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
-import { BlockchainsInfo } from '@cryptorubic/core';
-import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { isDepositTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/is-deposit-trade';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { getEmptySwapFormInput } from '@app/features/privacy/utils/empty-swap-form-input';
@@ -41,8 +41,8 @@ export class ActionButtonService {
     .pipe(
       debounceTime(10),
       startWith(this.getDefaultParams()),
-      share(),
-      map((params: StateOptions) => this.getState(...params))
+      map((params: StateOptions) => this.getState(...params)),
+      shareReplay(shareReplayConfig)
     );
 
   constructor(
@@ -97,9 +97,7 @@ export class ActionButtonService {
         };
       }
     }
-    const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+    const isDeposit = isDepositTrade(currentTrade.trade);
 
     if (currentTrade.error) {
       return {
@@ -108,15 +106,21 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-
-    if (!address && !isTransferFromNonEvm) {
+    if (isDeposit && !receiverAddress) {
+      return {
+        type: 'action',
+        text: 'Preview swap',
+        action: this.deposit.bind(this)
+      };
+    }
+    if (!address && !isDeposit) {
       return {
         type: 'action',
         text: 'Connect wallet',
         action: this.connectWallet.bind(this)
       };
     }
-    if (notEnoughBalance) {
+    if (notEnoughBalance && !isDeposit) {
       return {
         type: 'error',
         text: 'Insufficient balance',
@@ -129,12 +133,11 @@ export class ActionButtonService {
       currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
       (currentTrade.trade && wrongBlockchain)
     ) {
-      // Handle Non EVM trade
-      if (isAddressRequired) {
+      if (isAddressRequired && !currentTrade.private) {
         const trulyAddress = Boolean(receiverAddress);
 
         if (isReceiverValid && trulyAddress) {
-          if (isTransferFromNonEvm) {
+          if (isDeposit) {
             return {
               type: 'action',
               text: 'Preview swap',
@@ -163,7 +166,7 @@ export class ActionButtonService {
         return {
           type: 'action',
           text: 'Preview swap',
-          action: this.swap.bind(this)
+          action: isDeposit ? this.deposit.bind(this) : this.swap.bind(this)
         };
       }
     }

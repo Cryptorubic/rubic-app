@@ -5,7 +5,6 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [ON_CHAIN_TRADE_TYPE.CURVE],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [ON_CHAIN_TRADE_TYPE.CURVE],
   [BLOCKCHAIN_NAME.POLYGON]: [ON_CHAIN_TRADE_TYPE.ALGEBRA, ON_CHAIN_TRADE_TYPE.CURVE],
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [],
   [BLOCKCHAIN_NAME.HARMONY]: [],
   [BLOCKCHAIN_NAME.AVALANCHE]: [ON_CHAIN_TRADE_TYPE.CURVE],
   [BLOCKCHAIN_NAME.MOONRIVER]: [],
@@ -73,7 +72,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.PLASMA]: [],
   [BLOCKCHAIN_NAME.MONAD]: [],
   [BLOCKCHAIN_NAME.HYPER_EVM]: [],
-  [BLOCKCHAIN_NAME.MEGAETH]: []
+  [BLOCKCHAIN_NAME.MEGAETH]: [],
+  [BLOCKCHAIN_NAME.ROBINHOOD]: []
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: []
 };
 
@@ -81,7 +81,6 @@ export const onChainBlacklistProviders: OnChainTradeType[] = [
   ...new Set([
     ...Object.values(onChainBlacklist)
       .filter(providersPerChain => providersPerChain.length)
-      .flat(),
-    ON_CHAIN_TRADE_TYPE.CLEARSWAP
+      .flat()
   ])
 ];

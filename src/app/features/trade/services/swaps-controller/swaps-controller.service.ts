@@ -1,15 +1,6 @@
 import { WA_WINDOW } from '@ng-web-apis/common';
 import { inject, Inject, Injectable } from '@angular/core';
-import {
-  combineLatestWith,
-  concatMap,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject,
-  Subscription
-} from 'rxjs';
+import { concatMap, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -57,7 +48,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
-import { compareObjects } from '@app/shared/utils/utils';
+import { compareAddresses, compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
@@ -76,11 +67,11 @@ import { SimulationFailedError } from '@app/core/errors/models/common/simulation
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
-import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { DefaultSocketManager } from '@features/trade/services/swaps-controller/socket-managers/default-socket-manager';
+import { SwapMethodOptions } from './models/swap-options';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -132,16 +123,15 @@ export class SwapsControllerService {
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
-    private readonly trustlineService: TrustlineService,
+    // private readonly trustlineService: TrustlineService,
     @Inject(WA_WINDOW) private readonly window: Window
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
-    this.subscribeOnAddressChange();
-    this.subscribeOnSettings();
-    this.subscribeOnReceiverChange();
+    this.subscribeOnCcrSettings();
+    this.subscribeOnOnchainSettings();
     this.subscribeOnSwapFormFilled();
 
     this.addSentryEvent();
@@ -163,8 +153,9 @@ export class SwapsControllerService {
    */
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
-      this.startRecalculation(true);
+      this.rubicApiService.stopCalculation();
       this.swapsStateService.clearProviders(false);
+      this.startRecalculation(true);
     });
   }
 
@@ -266,6 +257,11 @@ export class SwapsControllerService {
     }
   }
 
+  /**
+   * @param options used to reassign receiver and refunds addresses
+   * from TargetNetworkAddressService and RefundService
+   * @returns
+   */
   public async swap(
     tradeState: SelectedTrade,
     checkSlippageAndPI?: boolean,
@@ -275,6 +271,10 @@ export class SwapsControllerService {
       onError?: (err: RubicError<ERROR_TYPE> | null) => void;
       onSimulationSuccess?: () => Promise<boolean>;
       onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
+    },
+    options: SwapMethodOptions = {
+      useCacheData: false,
+      skipAmountCheck: false
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -303,13 +303,15 @@ export class SwapsControllerService {
         txHash = await this.crossChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          options
         );
       } else {
         txHash = await this.onChainService.swapTrade(
           trade,
           callback.onHash,
-          callback.onSimulationSuccess
+          callback.onSimulationSuccess,
+          options
         );
       }
     } catch (err) {
@@ -331,7 +333,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             } else {
@@ -341,7 +345,9 @@ export class SwapsControllerService {
                 callback.onSimulationSuccess,
                 {
                   skipAmountCheck: true,
-                  useCacheData: true
+                  useCacheData: true,
+                  receiverAddress: options.receiverAddress,
+                  refundAddress: options.refundAddress
                 }
               );
             }
@@ -404,18 +410,6 @@ export class SwapsControllerService {
       callback.onError();
       this.errorsService.catch(err);
     }
-  }
-
-  private subscribeOnAddressChange(): void {
-    this.authService.currentUser$
-      .pipe(
-        distinctUntilChanged(),
-        switchMap(() => this.swapFormService.isFilled$),
-        filter(isFilled => isFilled)
-      )
-      .subscribe(() => {
-        this.startRecalculation(true);
-      });
   }
 
   private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
@@ -508,7 +502,7 @@ export class SwapsControllerService {
     return false;
   }
 
-  private catchSwapError(
+  public catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
     onError?: (err: RubicError<ERROR_TYPE> | null) => void
@@ -525,7 +519,8 @@ export class SwapsControllerService {
         {
           trade: null,
           error: parsedError,
-          tradeType: tradeState.tradeType
+          tradeType: tradeState.tradeType,
+          private: tradeState.private
         } as WrappedSdkTrade,
         tradeState.trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
@@ -548,19 +543,11 @@ export class SwapsControllerService {
     return error.showAlert && !(error instanceof SimulationFailedError);
   }
 
-  private subscribeOnSettings(): void {
+  private subscribeOnCcrSettings(): void {
     this.settingsService.crossChainRoutingValueChanges$
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
-        distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
-        combineLatestWith(
-          this.settingsService.instantTradeValueChanges$.pipe(
-            startWith(this.settingsService.instantTradeValue),
-            distinctUntilChanged(
-              (prev, next) => prev.useMevBotProtection !== next.useMevBotProtection
-            )
-          )
-        ),
+        distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance),
         debounceTime(10),
         pairwise(),
         filter(([prev, next]) => !compareObjects(prev, next))
@@ -570,13 +557,22 @@ export class SwapsControllerService {
       });
   }
 
-  private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.address$
-      .pipe(combineLatestWith(this.targetNetworkAddressService.isAddressValid$), debounceTime(50))
-      .subscribe(([address, isValid]) => {
-        if (address === '' || (address && isValid)) {
-          this.startRecalculation(true);
-        }
+  private subscribeOnOnchainSettings(): void {
+    this.settingsService.instantTradeValueChanges$
+      .pipe(
+        startWith(this.settingsService.instantTradeValue),
+        distinctUntilChanged(
+          (prev, next) =>
+            prev.deadline === next.deadline &&
+            prev.slippageTolerance === next.slippageTolerance &&
+            prev.disableMultihops === next.disableMultihops
+        ),
+        debounceTime(10),
+        pairwise(),
+        filter(([prev, next]) => !compareObjects(prev, next))
+      )
+      .subscribe(() => {
+        this.startRecalculation(true);
       });
   }
 
@@ -595,30 +591,27 @@ export class SwapsControllerService {
       .handleQuotesAsync()
       .pipe(
         tap(() => this.refreshService.setRefreshing()),
-        map(wrap => {
-          const { fromToken, toToken } = this.swapFormService.inputValue;
-          return {
-            value: wrap,
-            type:
-              fromToken.blockchain === toToken.blockchain
-                ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
-                : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-          };
-        }),
         catchError(err => {
           console.debug(err);
           return of(null);
         }),
         concatMap(container => {
-          const wrappedTrade = container?.value?.wrappedTrade;
-          const isCalculationEnd = container.value.total === container.value.calculated;
+          if (!container) {
+            return of(null);
+          }
+
+          const wrappedTrade = container.wrappedTrade;
+          const isCalculationEnd = container.total === container.calculated;
 
           if (wrappedTrade && this.swapFormService.isFilled) {
-            const isEqualFromAmount = this.checkIsEqualFromAmount(
-              wrappedTrade.trade.from.tokenAmount
-            );
+            if (wrappedTrade.trade && !this.isTradeRelevantToCurrentForm(wrappedTrade.trade)) {
+              return of(null);
+            }
 
-            if (!isEqualFromAmount) {
+            if (
+              wrappedTrade.trade &&
+              !this.checkIsEqualFromAmount(wrappedTrade.trade.from.tokenAmount)
+            ) {
               wrappedTrade.trade = null;
             }
 
@@ -628,22 +621,20 @@ export class SwapsControllerService {
               wrappedTrade?.error
             );
 
-            const needAddTrustline = this.trustlineService.checkTrustline(
-              wrappedTrade.trade,
-              this.authService.userAddress,
-              this.targetNetworkAddressService.address
-            );
+            // const needAddTrustline = this.trustlineService.checkTrustline(
+            //   wrappedTrade.trade,
+            //   this.authService.userAddress,
+            //   this.targetNetworkAddressService.address
+            // );
 
-            return forkJoin([
-              of(wrappedTrade),
-              needApprove$,
-              of(container.type),
-              isNotLinkedAccount$,
-              needAddTrustline
-            ])
+            return forkJoin([of(wrappedTrade), needApprove$, isNotLinkedAccount$])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount, needTrustline]) => {
+                tap(([trade, needApprove, isNotLinkedAccount]) => {
                   try {
+                    if (trade.trade && !this.isTradeRelevantToCurrentForm(trade.trade)) {
+                      return;
+                    }
+
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
@@ -651,17 +642,17 @@ export class SwapsControllerService {
                     SENTRY_CF_STATUS.didntReachQuoteEnd = false;
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
-                    this.swapsStateService.updateTrade(
-                      trade,
-                      type,
-                      needApprove,
-                      needAuthWallet,
-                      needTrustline
-                    );
+                    const type = this.getSwapProviderType(trade.trade);
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet, {
+                      needTrustlineAfterSwap: false,
+                      needTrustlineBeforeSwap: false
+                    });
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
-                      container.value.total,
-                      container.value.calculated
+                      container.total,
+                      container.calculated,
+                      container.privateTotal,
+                      container.privateCalculated
                     );
                     this.setTradeAmount();
                     if (isCalculationEnd) {
@@ -683,17 +674,19 @@ export class SwapsControllerService {
           if (isCalculationEnd) {
             this.refreshService.setStopped();
           }
-          if (!container?.value || !this.swapFormService.isFilled) {
+          if (!this.swapFormService.isFilled) {
             this.refreshService.setStopped();
             this.swapsStateService.clearProviders(true);
           } else {
             this.swapsStateService.setCalculationProgress(
-              container.value.total,
-              container.value.calculated
+              container.total,
+              container.calculated,
+              container.privateTotal,
+              container.privateCalculated
             );
           }
-          if (container.value.tradeType) {
-            this.swapsStateService.removeOldProvider(container.value.tradeType);
+          if (container.tradeType) {
+            this.swapsStateService.removeOldProvider(container.tradeType);
           }
           return of(null);
         }),
@@ -728,5 +721,47 @@ export class SwapsControllerService {
     );
 
     return fromAmount.eq(formSourceTokenNonWeiAmount);
+  }
+
+  private getCurrentSwapProviderType(): SWAP_PROVIDER_TYPE {
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    return fromToken?.blockchain === toToken?.blockchain
+      ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+      : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+  }
+
+  private getSwapProviderType(trade: CrossChainTrade | OnChainTrade | null): SWAP_PROVIDER_TYPE {
+    if (trade instanceof CrossChainTrade) {
+      return SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    }
+    if (trade instanceof OnChainTrade) {
+      return SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+    }
+    return this.getCurrentSwapProviderType();
+  }
+
+  /**
+   * Drops stale WS quotes from a previous calculation.
+   */
+  private isTradeRelevantToCurrentForm(trade: CrossChainTrade | OnChainTrade): boolean {
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    if (!fromToken || !toToken || !trade?.from || !trade?.to) {
+      return false;
+    }
+
+    const isSameChainForm = fromToken.blockchain === toToken.blockchain;
+    if (isSameChainForm && !(trade instanceof OnChainTrade)) {
+      return false;
+    }
+    if (!isSameChainForm && !(trade instanceof CrossChainTrade)) {
+      return false;
+    }
+
+    return (
+      trade.from.blockchain === fromToken.blockchain &&
+      trade.to.blockchain === toToken.blockchain &&
+      compareAddresses(trade.from.address, fromToken.address) &&
+      compareAddresses(trade.to.address, toToken.address)
+    );
   }
 }

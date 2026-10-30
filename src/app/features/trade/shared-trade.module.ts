@@ -5,6 +5,7 @@ import {
   TuiTagModule
 } from '@taiga-ui/legacy';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -20,9 +21,10 @@ import {
   TuiButton,
   TuiHint,
   TuiAppearance,
-  TuiNumberFormat
+  TuiNumberFormat,
+  TuiTextfield
 } from '@taiga-ui/core';
-import { TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
+import { TuiAccordion, TuiCarousel, TuiSwitch } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -50,8 +52,6 @@ import { ProvidersListComponent } from '@features/trade/components/providers-lis
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
-import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
-import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
@@ -64,7 +64,6 @@ import { TargetNetworkAddressService } from './services/target-network-address-s
 import { SwapsStateService } from './services/swaps-state/swaps-state.service';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from './services/refund-service/refund.service';
-import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 import { SwapsControllerService } from './services/swaps-controller/swaps-controller.service';
 import { SwapFormQueryService } from './services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from './services/cross-chain/cross-chain.service';
@@ -72,10 +71,24 @@ import { OnChainService } from './services/on-chain/on-chain.service';
 import { CrossChainApiService } from './services/cross-chain-routing-api/cross-chain-api.service';
 import { RefreshService } from './services/refresh-service/refresh.service';
 import { PreviewSwapService } from './services/preview-swap/preview-swap.service';
+import { EarnedPointsService } from './services/earned-points/earned-points.service';
 import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { ActionButtonService } from './services/action-button-service/action-button.service';
-import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
+import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
+import { DepositDetailsStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-details-step/deposit-details-step.component';
+import { DepositInputAddressesStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-input-addresses-step/deposit-input-addresses-step.component';
+import { DepositTradeInfoStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/deposit-trade-info-step.component';
+import { DepositTradeStatusStepComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/deposit-trade-status-step.component';
+import { DepositFormBodySuccessComponent } from './components/deposit-form/components/deposit-form-body-success/deposit-form-body-success.component';
+import { DepositFormBodyActiveComponent } from './components/deposit-form/components/deposit-form-body-active/deposit-form-body-active.component';
+import { FieldWithCopyBtnComponent } from './components/deposit-form/components/shared/field-with-copy-btn/field-with-copy-btn.component';
+import { AssetDetailsComponent } from './components/deposit-form/components/shared/asset-details/asset-details.component';
+import { StepLockedLabelComponent } from './components/deposit-form/components/shared/step-locked-label/step-locked-label.component';
+import { DepositInfoReadonlyDetailComponent } from './components/deposit-form/components/shared/deposit-info-readonly-detail/deposit-info-readonly-detail.component';
+import { StepLoadingLabelComponent } from './components/deposit-form/components/shared/step-loading-label/step-loading-label.component';
+import { DepositStatusBarComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-status-step/components/deposit-status-bar/deposit-status-bar.component';
+import { QrCodeContainerComponent } from './components/deposit-form/components/deposit-form-body-active/components/deposit-trade-info-step/components/qr-code-container/qr-code-container.component';
 
 @NgModule({
   declarations: [
@@ -102,8 +115,6 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -113,7 +124,21 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent,
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   exports: [
     TradeViewContainerComponent,
@@ -139,8 +164,6 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    DepositPreviewSwapComponent,
-    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -150,10 +173,25 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent
+    AllSwapBackupsFailedModalComponent,
+    DepositFormComponent,
+    DepositDetailsStepComponent,
+    DepositInputAddressesStepComponent,
+    DepositTradeInfoStepComponent,
+    DepositTradeStatusStepComponent,
+    DepositFormBodySuccessComponent,
+    DepositFormBodyActiveComponent,
+    FieldWithCopyBtnComponent,
+    StepLockedLabelComponent,
+    AssetDetailsComponent,
+    DepositInfoReadonlyDetailComponent,
+    StepLoadingLabelComponent,
+    DepositStatusBarComponent,
+    QrCodeContainerComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     SharedModule,
     ...TuiExpand,
     TuiScrollbar,
@@ -175,7 +213,9 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     TuiNotification,
     ...TuiCarousel,
     TuiAppearance,
-    TuiNumberFormat
+    TuiNumberFormat,
+    ...TuiAccordion,
+    ...TuiTextfield
   ],
   providers: [
     SettingsService,
@@ -188,13 +228,12 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
+    EarnedPointsService,
     OnChainApiService,
     DepositService,
     ActionButtonService,
     AlternativeRoutesService,
-    RefundService,
-    SolanaGaslessService,
-    SolanaGaslessStateService
+    RefundService
   ]
 })
 export class SharedTradeModule {}

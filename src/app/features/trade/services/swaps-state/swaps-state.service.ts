@@ -46,7 +46,6 @@ import {
 import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
-import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
@@ -54,12 +53,15 @@ import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable()
 export class SwapsStateService {
   private readonly defaultState: SelectedTrade = defaultTradeState;
 
-  private swapType: SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+  private swapType: SWAP_PROVIDER_TYPE | null = null;
+
+  private userSelectedTradeType: TradeState['tradeType'] | null = null;
 
   /**
    * Trade state
@@ -143,18 +145,17 @@ export class SwapsStateService {
 
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
-    current: 0
+    current: 0,
+    privateTotal: 0,
+    privateCurrent: 0
   });
 
   public readonly calculationProgress$ = this._calculationProgress$.asObservable();
 
+  public lastBestPrivateTradeType: TradeProvider | null = null;
+
   // @ts-ignore
   public readonly calculationStatus$ = this.initCalculationStatus();
-
-  /**
-   * Receiver address
-   */
-  private receiverAddress: string | null;
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
@@ -163,8 +164,8 @@ export class SwapsStateService {
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
     private readonly refundService: RefundService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -177,6 +178,7 @@ export class SwapsStateService {
     needTrustlineOptions: NeedTrustlineOptions
   ): void {
     const trade = wrappedTrade?.trade;
+    const isPrivate = Boolean(wrappedTrade?.private);
     const defaultState: TradeState = !trade
       ? {
           error: wrappedTrade.error,
@@ -191,7 +193,8 @@ export class SwapsStateService {
             needTrustlineAfterSwap: false,
             needTrustlineBeforeSwap: false
           },
-          warnings: []
+          warnings: [],
+          private: isPrivate
         }
       : {
           error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
@@ -204,7 +207,8 @@ export class SwapsStateService {
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade),
           centralizationStatus: this.setCentralizationStatus(trade),
-          warnings: trade.warnings
+          warnings: trade.warnings,
+          private: isPrivate
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -214,7 +218,7 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider?.trade?.type === wrappedTrade?.tradeType
+          provider => provider?.tradeType === wrappedTrade?.tradeType
         );
         // New or old
         if (providerIndex !== -1) {
@@ -224,26 +228,21 @@ export class SwapsStateService {
               trade: defaultState.trade!,
               needApprove: defaultState.needApprove,
               error: defaultState.error,
-              routes: defaultState.routes
+              routes: defaultState.routes,
+              private: defaultState.private
             };
           } else {
             currentTrades.splice(providerIndex, 1);
           }
-        } else {
-          if (trade) {
-            currentTrades.push(defaultState);
-          }
+        } else if (trade) {
+          currentTrades.push(defaultState);
         }
       } else {
-        if (trade) {
-          // Make a new list with one element
-          currentTrades = [defaultState];
-        }
+        // Swap mode changed — discard previous providers
+        currentTrades = trade ? [defaultState] : [];
       }
-    } else {
-      if (trade) {
-        currentTrades.push(defaultState);
-      }
+    } else if (trade) {
+      currentTrades.push(defaultState);
     }
     this.swapType = type;
     this._tradesStore$.next(currentTrades);
@@ -252,6 +251,9 @@ export class SwapsStateService {
   public clearProviders(isTradeError: boolean = false): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
+    this.swapType = null;
+    this.userSelectedTradeType = null;
+    this.lastBestPrivateTradeType = null;
     this.tradePageService.setProvidersVisibility(false);
     if (isTradeError) {
       this.setCalculationProgress(1, 1);
@@ -274,7 +276,20 @@ export class SwapsStateService {
   public pickProvider(isCalculationEnd: boolean): void {
     let currentTrades = this._tradesStore$.getValue();
 
+    const { fromToken, toToken } = this.swapsFormService.inputValue;
+    if (!fromToken || !toToken) {
+      this.swapType = null;
+      currentTrades = [];
+    } else {
+      const expectOnChain = fromToken.blockchain === toToken.blockchain;
+      this.swapType = expectOnChain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    }
+
     if (currentTrades.length) {
+      currentTrades = this.filterTradesByCurrentSwapType(currentTrades);
+
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       const isThereTokenWithoutPrice = currentTrades
@@ -287,28 +302,87 @@ export class SwapsStateService {
           : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
       }
 
-      const bestTrade = currentTrades[0];
-
-      const trade: SelectedTrade = {
-        ...bestTrade,
-        selectedByUser: false,
-        status: TRADE_STATUS.READY_TO_SWAP
-      };
-      if (trade.error) {
-        trade.status = TRADE_STATUS.DISABLED;
-      }
-      if (trade.needApprove) {
-        trade.status = TRADE_STATUS.READY_TO_APPROVE;
-      }
-
       this._tradesStore$.next(currentTrades);
-      this.currentTrade = trade;
-    } else {
+    }
+
+    this.applySelectedTrade(currentTrades, isCalculationEnd);
+  }
+
+  private applySelectedTrade(currentTrades: TradeState[], isCalculationEnd: boolean): void {
+    const userSelectedTrade =
+      this.userSelectedTradeType &&
+      currentTrades.find(tradeState => tradeState.tradeType === this.userSelectedTradeType);
+    const selectedTradeState =
+      userSelectedTrade ?? this.getDefaultSelectedTrade(currentTrades, isCalculationEnd);
+    if (!selectedTradeState) {
       this.currentTrade = {
         ...this.defaultState,
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
+      return;
     }
+
+    const trade: SelectedTrade = {
+      ...selectedTradeState,
+      selectedByUser: !!userSelectedTrade,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.currentTrade = trade;
+  }
+
+  /**
+   * Safety net: keep only trades matching current form mode.
+   */
+  private filterTradesByCurrentSwapType(currentTrades: TradeState[]): TradeState[] {
+    if (!this.swapType) {
+      return [];
+    }
+
+    const hasCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
+    const hasOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
+    if (!hasCrossChain || !hasOnChain) {
+      return currentTrades;
+    }
+
+    return currentTrades.filter(tradeState => {
+      if (!tradeState?.trade) {
+        return false;
+      }
+      return this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        ? tradeState.trade instanceof OnChainTrade
+        : tradeState.trade instanceof CrossChainTrade;
+    });
+  }
+
+  /**
+   * Default selection is the best non-private provider.
+   * When privateOnly is on (query / switcher): pick the best private as soon as it has a quote.
+   */
+  private getDefaultSelectedTrade(
+    currentTrades: TradeState[],
+    isCalculationEnd: boolean
+  ): TradeState | null {
+    const tradesWithQuote = currentTrades.filter(tradeState => tradeState.trade);
+    const privateTrades = tradesWithQuote.filter(tradeState => tradeState.private);
+    const nonPrivateTrades = tradesWithQuote.filter(tradeState => !tradeState.private);
+    const privateOnly = this.queryParamsService.queryParams?.privateOnly === 'true';
+
+    if (privateOnly) {
+      if (privateTrades.length > 0) return privateTrades[0];
+      return nonPrivateTrades[0] ?? null;
+    }
+
+    if (nonPrivateTrades.length > 0) return nonPrivateTrades[0];
+
+    if (privateTrades[0] && isCalculationEnd) return privateTrades[0];
+
+    return tradesWithQuote[0] ?? null;
   }
 
   private sortCrossChainTrades(
@@ -385,12 +459,21 @@ export class SwapsStateService {
     });
   }
 
-  public async selectTrade(tradeType: TradeProvider): Promise<void> {
+  public async selectTrade(tradeType: TradeProvider, automaticSelection: boolean): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
-    this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    if (!trade) return;
+
+    this.userSelectedTradeType = !automaticSelection ? trade.tradeType : null;
+    this.applySelectedTrade(this._tradesStore$.value, false);
+
+    this.currentTrade = {
+      ...trade,
+      selectedByUser: !automaticSelection,
+      status: this.currentTrade.status
+    };
     this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
-      toAmount: trade?.trade?.to?.tokenAmount || null
+      toAmount: trade.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
   }
@@ -446,8 +529,18 @@ export class SwapsStateService {
     });
   }
 
-  public setCalculationProgress(total: number, current: number): void {
-    this._calculationProgress$.next({ total, current });
+  public setCalculationProgress(
+    total: number,
+    current: number,
+    privateTotal: number = 0,
+    privateCurrent: number = 0
+  ): void {
+    this._calculationProgress$.next({ total, current, privateTotal, privateCurrent });
+
+    if (privateTotal > 0 && privateCurrent === privateTotal) {
+      const bestPrivate = this._tradesStore$.getValue().find(tradeState => tradeState.private);
+      this.lastBestPrivateTradeType = bestPrivate?.tradeType ?? null;
+    }
   }
 
   private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {
@@ -574,9 +667,7 @@ export class SwapsStateService {
       })
       .map(info => ({
         label: info.getLabel(trade),
-        bgColor: info?.getBgColor(trade, {
-          solanaGaslessStateService: this.solanaGaslessStateService
-        }),
+        bgColor: info?.getBgColor(trade, { solanaGaslessStateService: undefined }),
         hint: info?.getHint?.(trade),
         href: info?.getUrl?.(trade)
       }));

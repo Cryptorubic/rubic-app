@@ -34,14 +34,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
-    baseUrl: 'https://zkevm.polygonscan.com/',
-    nativeCoinUrl: 'stat/supply/',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.HARMONY]: {
     baseUrl: 'https://explorer.harmony.one/',
     nativeCoinUrl: '',
@@ -1261,6 +1253,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   },
   [BLOCKCHAIN_NAME.MEGAETH]: {
     baseUrl: 'https://mega.etherscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.ROBINHOOD]: {
+    baseUrl: 'https://robinhoodchain.blockscout.com/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',

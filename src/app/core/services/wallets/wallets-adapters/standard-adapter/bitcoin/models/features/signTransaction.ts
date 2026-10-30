@@ -32,9 +32,4 @@ export interface BitcoinSignTransactionOutput {
 }
 
 export type BitcoinSigHashFlag =
-  | 'ALL'
-  | 'NONE'
-  | 'SINGLE'
-  | 'ALL|ANYONECANPAY'
-  | 'NONE|ANYONECANPAY'
-  | 'SINGLE|ANYONECANPAY';
+  'ALL' | 'NONE' | 'SINGLE' | 'ALL|ANYONECANPAY' | 'NONE|ANYONECANPAY' | 'SINGLE|ANYONECANPAY';

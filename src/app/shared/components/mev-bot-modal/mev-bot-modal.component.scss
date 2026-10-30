@@ -9,7 +9,6 @@
 
   &__title {
     margin: 0 0 16px;
-
     font-weight: 400;
     font-size: 15px;
     letter-spacing: 1px;
@@ -22,7 +21,6 @@
 
   &__image-wrapper {
     position: relative;
-
     width: fit-content;
     max-height: 530px;
 
@@ -38,10 +36,8 @@
 
     &-text {
       position: relative;
-
       margin-bottom: var(--tui-padding-l);
       padding: 0 30px;
-
       font-weight: 400;
       font-size: 14px;
       letter-spacing: 1px;

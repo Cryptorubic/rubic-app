@@ -52,9 +52,8 @@ export class ZamaSwapService {
 
   private async getGasPriceOptions(blockchain: EvmBlockchainName): Promise<GasPrice | null> {
     try {
-      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-        blockchain
-      );
+      const { shouldCalculateGasPrice, gasPriceOptions } =
+        await this.gasService.getGasInfo(blockchain);
 
       return shouldCalculateGasPrice ? gasPriceOptions : null;
     } catch {

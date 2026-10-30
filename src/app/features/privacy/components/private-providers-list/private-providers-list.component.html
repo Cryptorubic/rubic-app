@@ -1,7 +1,8 @@
 <div class="list" [ngClass]="{ list_padding: isModal }">
-  <app-private-provider-element
-    *ngFor="let providerInfo of states"
-    [providerInfo]="providerInfo"
-    (click)="handleTradeSelection(providerInfo)"
-  ></app-private-provider-element>
+  @for (providerInfo of states; track idx; let idx = $index) {
+    <app-private-provider-element
+      [providerInfo]="providerInfo"
+      (click)="handleTradeSelection(providerInfo)"
+    ></app-private-provider-element>
+  }
 </div>

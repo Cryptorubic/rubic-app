@@ -5,7 +5,7 @@
       <span>Use this stealth address as the recipient for private transfers via Hinkal.</span>
     </div>
     <div class="info-container__text" (click)="copyToClipboard(info)">
-      <span>{{ info | shortAddress : 8 : 8 }}</span>
+      <span>{{ info | shortAddress: 8 : 8 }}</span>
     </div>
     <tui-notification size="m"
       >Reusing it lowers privacy. A new randomized address is generated after each page

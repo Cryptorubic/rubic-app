@@ -29,7 +29,7 @@
                     [alt]="item.fromToken.symbol"
                   />
                 </div>
-                {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.fromToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
                 {{ item.fromToken.symbol }}
               </div>
             </div>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="asset__asset-type">
                   <!--                {{ item.toBlockchain.label }}-->
-                  {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                  {{ item.toToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
                   {{ item.toToken.symbol }}
                 </div>
               </div>
@@ -63,14 +63,14 @@
             </div>
           </td>
           <td *tuiCell="'date'" tuiTd>
-            {{ item?.date | date : 'MMM dd, yyyy' }}
-            {{ ' at ' + (item?.date | date : 'h:mm') }}
+            {{ item?.date | date: 'MMM dd, yyyy' }}
+            {{ ' at ' + (item?.date | date: 'h:mm') }}
           </td>
           <td *tuiCell="'status'" tuiTd>
             <app-rubic-badge-with-copy-btn [item]="item"></app-rubic-badge-with-copy-btn>
           </td>
           <td *tuiCell="'receiver'" tuiTd>
-            {{ item?.receiverAddress | shortAddress : 10 : 5 }}
+            {{ item?.receiverAddress | shortAddress: 10 : 5 }}
           </td>
           <td *tuiCell="'tradeType'" tuiTd>
             <div *ngIf="item?.providerInfo?.name" class="provider-container">
@@ -125,20 +125,20 @@
           <div class="mobile-view__from-field">
             <div class="token-images" *ngIf="item?.fromBlockchain?.color">
               <div
-              class="token-images__second-container"
-              [style]="{ background: item.fromBlockchain.color }"
-            >
-              <img [src]="item.fromBlockchain.image" [alt]="item.fromBlockchain.label" />
+                class="token-images__second-container"
+                [style]="{ background: item.fromBlockchain.color }"
+              >
+                <img [src]="item.fromBlockchain.image" [alt]="item.fromBlockchain.label" />
+              </div>
+              <img
+                class="token-images__main-image"
+                [src]="item.fromToken.image"
+                [alt]="item.fromToken.symbol"
+              />
             </div>
-            <img
-              class="token-images__main-image"
-              [src]="item.fromToken.image"
-              [alt]="item.fromToken.symbol"
-            />
-            </div>
-            {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+            {{ item.fromToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
             {{ item.fromToken.symbol }}
-            </div>
+          </div>
           <div class="mobile-view__to-field">
             <div class="token-images" *ngIf="item?.toBlockchain?.color">
               <div
@@ -155,7 +155,7 @@
             </div>
             <div class="asset__asset-type">
               {{ item.toBlockchain.label }}
-              {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+              {{ item.toToken.amount | bigNumberFormat | shortenAmount: 6 : 4 : true }}
               {{ item.toToken.symbol }}
             </div>
           </div>
@@ -163,9 +163,9 @@
 
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.date' | translate }}</div>
-            <div class="mobile-view__row-value">
-              {{ item?.date | date : 'MMM dd, yyyy' }} {{ ' at ' + (item?.date | date : 'h:mm') }}
-            </div>
+          <div class="mobile-view__row-value">
+            {{ item?.date | date: 'MMM dd, yyyy' }} {{ ' at ' + (item?.date | date: 'h:mm') }}
+          </div>
         </div>
 
         <div class="mobile-view__row">

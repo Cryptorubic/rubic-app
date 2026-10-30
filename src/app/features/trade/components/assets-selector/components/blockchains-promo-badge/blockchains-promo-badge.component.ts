@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainName } from '@cryptorubic/core';
-import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { blockchainsPromoLinks } from './constants/blockchains-promo-links';
+import { BLOCKCHAIN_TAG } from '../../models/blockchain-tag';
 
 @Component({
   standalone: false,
@@ -15,7 +15,7 @@ export class BlockchainsPromoBadgeComponent {
 
   @Input({ required: true }) blockchain: BlockchainName;
 
-  public readonly blockchainTags = BlockchainTags;
+  public readonly BLOCKCHAIN_TAG = BLOCKCHAIN_TAG;
 
   public readonly blockchainPromoLinks = blockchainsPromoLinks;
 }

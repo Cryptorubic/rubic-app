@@ -19,6 +19,7 @@ import { OnChainTableService } from '@features/history/services/on-chain-table-s
 import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
 import { DepositTableService } from './services/cn-table-service/deposit-table.service';
 import { DepositTableComponent } from './components/deposit-table/deposit-table.component';
+import { SharedTradeModule } from '@features/trade/shared-trade.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     CommonModule,
     HistoryRoutingModule,
     SharedModule,
+    SharedTradeModule,
     ...TuiTabs,
     TuiIcon,
     InlineSVGModule,

@@ -38,16 +38,16 @@
             </div>
             <div class="preview__amount-container">
               <div class="preview__token-amount">
-                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6 }}&nbsp;{{
                   fromAsset.mainLabel
                 }}
               </div>
-              <div *ngIf="fromValue.fiatAmount as amount" class="preview__fiat-amount">
-                ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
               <div class="preview__token-info">
-                on
-                {{ fromAsset.secondLabel }}
+                @let amount = fromValue.fiatAmount;
+                @if (amount) {
+                  ~ ${{ amount }}&nbsp;-&nbsp;
+                }
+                on {{ fromAsset.secondLabel }}
               </div>
             </div>
           </div>
@@ -70,19 +70,17 @@
                 />
               </div>
               <div class="preview__token-amount">
-                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                {{ fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6 }}&nbsp;{{
                   fromAsset.mainLabel
                 }}
               </div>
             </div>
-            <div class="preview__fiat-container">
-              <div *ngIf="fromValue.fiatAmount as amount" class="preview__fiat-amount">
+            <div class="preview__token-info">
+              @let amount = fromValue.fiatAmount;
+              @if (amount) {
                 ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
-              <div class="preview__token-info">
-                on
-                {{ fromAsset.secondLabel }}
-              </div>
+              }
+              on {{ fromAsset.secondLabel }}
             </div>
           </div>
         </ng-template>
@@ -131,14 +129,17 @@
             </div>
             <div class="preview__amount-container">
               <div class="preview__token-amount">
-                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6 }}&nbsp;{{
                   toAsset.mainLabel
                 }}
               </div>
-              <div *ngIf="toValue.fiatAmount as amount" class="preview__fiat-amount">
-                ~ ${{ amount }}&nbsp;-&nbsp;
+              <div class="preview__token-info">
+                @let amount = toValue.fiatAmount;
+                @if (amount) {
+                  ~ ${{ amount }}&nbsp;-&nbsp;
+                }
+                on {{ toAsset.secondLabel }}
               </div>
-              <div class="preview__token-info">on {{ toAsset.secondLabel }}</div>
             </div>
           </div>
         </ng-container>
@@ -160,19 +161,17 @@
                 />
               </div>
               <div class="preview__token-amount">
-                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}&nbsp;{{
+                {{ toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6 }}&nbsp;{{
                   toAsset.mainLabel
                 }}
               </div>
             </div>
-            <div class="preview__fiat-container">
-              <div *ngIf="toValue.fiatAmount as amount" class="preview__fiat-amount">
+            <div class="preview__token-info">
+              @let amount = toValue.fiatAmount;
+              @if (amount) {
                 ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
-              <div class="preview__token-info">
-                on
-                {{ toAsset.secondLabel }}
-              </div>
+              }
+              on {{ toAsset.secondLabel }}
             </div>
           </div>
         </ng-template>

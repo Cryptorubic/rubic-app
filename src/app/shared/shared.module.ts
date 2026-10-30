@@ -71,18 +71,14 @@ import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.c
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
-import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
 import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
-import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
-import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
-import { TrustlineModalComponent } from './components/trustline-modal/trustline-modal.component';
-import { TrustlineComponent } from '@app/features/trade/components/trustline/trustline.component';
-import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
+import { TimerComponent } from './components/timer/timer.component';
+import { RubicButtonNewComponent } from './components/rubic-button-new/rubic-button-new.component';
 
 @NgModule({
   declarations: [
@@ -131,18 +127,14 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     ProgressBarComponent,
     WcChangeNetworkModalComponent,
     TonSlippageWarnModalComponent,
-    SpindleBannerComponent,
     DepositRateChangedModalComponent,
-    ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TrustlineModalComponent,
-    TrustlineComponent,
-    PrivacyDisclaimerModalComponent
+    TimerComponent,
+    RubicButtonNewComponent
   ],
   imports: [
     CommonModule,
@@ -216,15 +208,13 @@ import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disc
     SlippageFormatPipe,
     SkipDefaultDirective,
     ProgressBarComponent,
-    SpindleBannerComponent,
-    ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
     ChartTogglerComponent,
     InputNumberComponent,
-    TrustlineComponent
+    TimerComponent,
+    RubicButtonNewComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

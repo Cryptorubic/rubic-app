@@ -27,11 +27,8 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
-import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
-import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
 import { AssetsTypeAsideElementComponent } from './components/assets-type-aside-element/assets-type-aside-element.component';
-import { TokensListFiltersComponent } from './components/tokens-list/components/tokens-list-filters/tokens-list-filters.component';
 import { SearchBarBlockchainsComponent } from '@features/trade/components/assets-selector/components/search-bar-blockchains/search-bar-blockchains.component';
 
 @NgModule({
@@ -46,11 +43,8 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
     SwitchTokensListTypeButtonComponent,
     EmptyListComponent,
     AssetsSelectorPageComponent,
-    BlockchainsFilterListComponent,
-    FilterListElementComponent,
     BlockchainsPromoBadgeComponent,
     AssetsTypeAsideElementComponent,
-    TokensListFiltersComponent,
     SearchBarBlockchainsComponent
   ],
   imports: [

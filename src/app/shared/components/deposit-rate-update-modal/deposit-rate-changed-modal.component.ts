@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
 import { CrossChainTradeType } from '@cryptorubic/core';
@@ -16,9 +15,9 @@ export class DepositRateChangedModalComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, { trade: SelectedTrade }>
+    private readonly context: TuiDialogContext<boolean, { tradeType: CrossChainTradeType }>
   ) {
-    this.tradeType = context.data.trade.tradeType as CrossChainTradeType;
+    this.tradeType = context.data.tradeType;
   }
 
   public backToForm(): void {

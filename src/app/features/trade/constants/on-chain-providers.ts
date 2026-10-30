@@ -2,6 +2,7 @@ import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
+const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
@@ -303,6 +304,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
   },
+  [ON_CHAIN_TRADE_TYPE.HOUDINI]: {
+    name: 'Houdini Swap',
+    image: `${privateTradeImageBasePath}houdini.svg`,
+    color: '#a919d1'
+  },
   [ON_CHAIN_TRADE_TYPE.HYPERCAT]: {
     name: 'HyperCat',
     image: `${imageBasePath}hypercat.svg`,
@@ -423,6 +429,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: {
     name: 'NativeRouter',
     image: `${imageBasePath}native.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.NORDSTERN]: {
+    name: 'Nordstern',
+    image: `${imageBasePath}nordstern.svg`,
     color: '#34A5F5'
   },
 
@@ -572,6 +583,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'renBTC',
     image: `${imageBasePath}renbtc.svg`,
     color: 'grey'
+  },
+  [ON_CHAIN_TRADE_TYPE.ROCKETX]: {
+    name: 'RocketX',
+    image: `${privateTradeImageBasePath}rocketx.png`,
+    color: '#fff'
   },
   [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: {
     name: 'Router DEX',
@@ -882,7 +898,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.CLEARSWAP]: {
     name: 'Clearswap',
-    image: `${imageBasePath}clearswap.svg`,
+    image: `${privateTradeImageBasePath}clearswap.svg`,
     color: '#ffffff'
   }
 };

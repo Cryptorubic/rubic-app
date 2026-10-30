@@ -1,6 +1,7 @@
 @use 'src/scss/core' as *;
 
 .provider-info {
+  position: relative;
   display: flex;
   gap: var(--tui-padding-l);
   justify-content: space-between;
@@ -11,12 +12,23 @@
     padding-right: 4px !important;
   }
 
+  &.selectable {
+    min-height: 52px;
+  }
+
+  &__selected {
+    display: flex;
+    gap: var(--tui-padding-s);
+    color: #00c6c0;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
   &__element {
     display: flex;
     gap: var(--tui-padding-s);
     align-items: center;
     width: fit-content;
-
     cursor: pointer;
 
     img {
@@ -25,6 +37,14 @@
 
     &.time {
       margin-left: auto;
+    }
+
+    &.points {
+      position: absolute;
+      left: 50%;
+      gap: 6px;
+      transform: translateX(-50%);
+      cursor: default;
     }
 
     &.gas-tokens {
@@ -56,7 +76,6 @@
   &__dropdown-button {
     width: 11px;
     height: 11px;
-
     background-image: url('/assets/images/icons/arrow/arrow-down-green.svg');
     background-repeat: no-repeat;
     background-position: center;
@@ -69,7 +88,6 @@
     @include b($mobile-md) {
       width: 13px;
       height: 13px;
-
       background-image: url('/assets/images/icons/arrow/arrow-down-green-mobile.svg');
 
       &.expanded {
@@ -87,7 +105,6 @@
     &-disabled {
       cursor: not-allowed;
       opacity: 0.7;
-
       pointer-events: none;
     }
   }
@@ -103,7 +120,6 @@
     width: 45px;
     height: 100%;
     overflow: hidden;
-
     border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
 
     img {
@@ -118,7 +134,6 @@
     width: 30px;
     height: 30px !important;
     margin-left: -15px;
-
     background: var(--primary-background);
 
     border-radius: 100%;
@@ -137,7 +152,6 @@
 
   &__token-amount {
     width: 100%;
-
     color: var(--tui-text-03);
     font-weight: 500;
 
@@ -152,9 +166,9 @@
 
   @include b($mobile-md) {
     .scrollbar {
-      scrollbar-width: thin;
 
       max-height: calc(113px + 3 * var(--tui-padding-l));
+      scrollbar-width: thin;
     }
 
     &__asset {

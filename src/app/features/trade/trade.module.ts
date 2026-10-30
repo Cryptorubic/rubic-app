@@ -36,8 +36,6 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { DepositService } from './services/deposit/deposit.service';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { RefundService } from './services/refund-service/refund.service';
-import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
-import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
 
 @NgModule({
@@ -81,9 +79,7 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     DepositService,
     ActionButtonService,
     AlternativeRoutesService,
-    RefundService,
-    SolanaGaslessService,
-    SolanaGaslessStateService
+    RefundService
   ]
 })
 export class TradeModule {}

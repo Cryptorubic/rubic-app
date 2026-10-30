@@ -11,7 +11,7 @@
           />
           <span class="mobile-user-profile__card-header-address">{{
             currentUser.address.length > 20
-              ? (currentUser.address | shortAddress : 6 : 6)
+              ? (currentUser.address | shortAddress: 6 : 6)
               : currentUser.address
           }}</span>
 
@@ -33,7 +33,7 @@
             </button>
             <a
               [safetyLink]="
-                currentUser.address | scannerLink : currentUser.blockchainName : ADDRESS_TYPE.WALLET
+                currentUser.address | scannerLink: currentUser.blockchainName : ADDRESS_TYPE.WALLET
               "
             >
               <div
@@ -57,7 +57,7 @@
 
       <ng-container *ngLet="currentBalance$ | async as currentBalance">
         <div class="mobile-user-profile__card-body-balance" [class.tui-skeleton]="!currentBalance">
-          {{ currentBalance?.balance | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+          {{ currentBalance?.balance | bigNumberFormat | shortenAmount: 6 : 4 : true }}
           {{ currentBalance?.symbol }}
         </div>
       </ng-container>

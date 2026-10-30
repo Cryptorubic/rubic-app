@@ -50,11 +50,15 @@ export class SwapDataElementComponent {
 
   @Input() hintDirection: HintDirection = 'bottom-right';
 
-  @Input({ required: true }) set feeInfoChange(value: {
-    fee: FeeInfo | null;
-    nativeToken: Token;
-    displayAmount?: string | null;
-  }) {
+  @Input({ required: true }) set feeInfoChange(
+    value: {
+      fee: FeeInfo;
+      nativeToken: Token;
+      displayAmount?: string | null;
+    } | null
+  ) {
+    if (!value) return;
+
     this.feeInfo = value.fee;
     if (value.displayAmount !== undefined) {
       this.displayAmount = value.displayAmount;
@@ -128,11 +132,17 @@ export class SwapDataElementComponent {
     this.selectGasToken(this.gasTokenAssets[0].token, 0);
   }
 
+  @Input() earnsPoints = false;
+
   @Input() averageTimeMins: string | number;
 
   @Input() time95PercentSwapsMins: string | number;
 
   @Input() hideHint: boolean = false;
+
+  @Input() isSelectable = false;
+
+  @Input() isSelectedTrade = false;
 
   @Output() onGasTokenSelect = new EventEmitter<GasToken>();
 

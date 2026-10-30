@@ -1,17 +1,13 @@
-import { Token } from '@cryptorubic/core';
-import BigNumber from 'bignumber.js';
 import { CrossChainTradeType } from '../../../cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { CrossChainTransferTrade } from '../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
-import { CrossChainTransferData } from '../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
-import { CrossChainTransferConfig } from '../../../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-transfer-config';
 import { BridgeType } from '../../../cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
 import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/trade-info';
 
 import { ApiCrossChainTransferConstructor } from './api-cross-chain-transfer-constructor';
-import { TransferSwapRequestInterface } from './models/transfer-swap-request-interface';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
+import { Token } from '@cryptorubic/core';
 
 export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
   public readonly type: CrossChainTradeType;
@@ -57,37 +53,6 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
         ? this.onChainTrade.slippageTolerance * 100
         : 0,
       routePath: this.routePath
-    };
-  }
-
-  protected async getPaymentInfo(
-    receiverAddress: string,
-    testMode: boolean,
-    fromAddress?: string,
-    refundAddress?: string
-  ): Promise<CrossChainTransferData> {
-    const swapRequestData: TransferSwapRequestInterface = {
-      ...this.apiQuote,
-      receiver: receiverAddress,
-      id: this.apiResponse.id,
-      enableChecks: !testMode,
-      ...(fromAddress && { fromAddress }),
-      ...(refundAddress && { refundAddress })
-    };
-    const { estimate, transaction } = await this.fetchSwapData<CrossChainTransferConfig>(
-      swapRequestData
-    );
-
-    const amount = estimate.destinationTokenAmount;
-
-    this.actualTokenAmount = new BigNumber(amount);
-
-    return {
-      toAmount: amount,
-      id: transaction.exchangeId,
-      depositAddress: transaction.depositAddress,
-      depositExtraId: transaction.extraFields?.value,
-      depositExtraIdName: transaction.extraFields?.name
     };
   }
 }

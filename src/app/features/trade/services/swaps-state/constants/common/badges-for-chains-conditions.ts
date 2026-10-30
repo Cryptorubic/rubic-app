@@ -1,5 +1,6 @@
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
-import { transferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { crossChainTransferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { onChainTransferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/constants/on-chain-transfer-trade-supported-providers';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
@@ -25,9 +26,9 @@ export function showZkLinkPointsLabel(trade: OnChainTrade | CrossChainTrade): bo
 }
 
 export function showSolanaGaslessLabel(trade: OnChainTrade | CrossChainTrade): boolean {
-  const isTransferTrade = transferTradeSupportedProviders.some(
-    providerName => providerName === trade.type
-  );
+  const isTransferTrade =
+    crossChainTransferTradeSupportedProviders.some(providerName => providerName === trade.type) ||
+    onChainTransferTradeSupportedProviders.some(providerName => providerName === trade.type);
   if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && !isTransferTrade) {
     return true;
   }

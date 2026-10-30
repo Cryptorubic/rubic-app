@@ -6,6 +6,11 @@ import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-m
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { Observable } from 'rxjs';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { MaxAmountError, MinAmountError } from '@cryptorubic/web3';
+import { HeaderStore } from '@app/core/header/services/header.store';
+import BigNumber from 'bignumber.js';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { onChainTransferTradeSupportedProviders } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-transfer-trade/constants/on-chain-transfer-trade-supported-providers';
 
 @Component({
   standalone: false,
@@ -15,19 +20,62 @@ import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderElementComponent {
-  @Input({ required: true }) tradeState: TradeState;
+  @Input({ required: true }) tradeState!: TradeState;
 
-  @Input({ required: true }) selectedTradeType: TradeProvider;
+  @Input({ required: true }) selectedTradeType!: TradeProvider;
 
   @Input({ required: true }) isBest: boolean = false;
 
   @Input({ required: true }) shortedInfo: boolean = false;
 
-  @Input({ required: true }) hideHint$: Observable<boolean>;
+  @Input({ required: true }) hideHint$!: Observable<boolean>;
+
+  @Input() privateOnly = false;
 
   public expanded = false;
 
-  constructor(private readonly tradeInfoManager: TradeInfoManager) {}
+  public get isPrivate(): boolean {
+    return this.tradeState.private;
+  }
+
+  public get isShortedMobilePrivate(): boolean {
+    return this.shortedInfo && this.isMobile && this.isPrivate && !this.privateOnly;
+  }
+
+  public get minMaxErrorAmount(): BigNumber | null {
+    const error = this.tradeState?.error;
+    if (!error) return null;
+
+    if (error instanceof MinAmountError) {
+      return error.minAmount;
+    }
+    if (error instanceof MaxAmountError) {
+      return error.maxAmount;
+    }
+
+    return null;
+  }
+
+  public get minMaxErrorLabel(): string | null {
+    const error = this.tradeState?.error;
+    if (!error) return null;
+
+    if (error instanceof MinAmountError) {
+      return `min ${error.minAmount} ${error.tokenSymbol}`;
+    }
+    if (error instanceof MaxAmountError) {
+      return `max ${error.maxAmount} ${error.tokenSymbol}`;
+    }
+
+    return null;
+  }
+
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly headerStore: HeaderStore
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -38,6 +86,15 @@ export class ProviderElementComponent {
   public getAverageTimeString(): string {
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
+    if (
+      this.tradeState.trade instanceof OnChainTrade &&
+      // TODO: remove after private on-chain providers will be updated in python-api config
+      !onChainTransferTradeSupportedProviders.some(
+        transferTradeType => transferTradeType === this.tradeState.trade.type
+      )
+    ) {
+      return '';
+    }
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
     return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
   }
@@ -55,7 +112,7 @@ export class ProviderElementComponent {
     return this.tradeInfoManager.getProviderInfo(this.tradeState.trade);
   }
 
-  public getFeeInfo(): AppFeeInfo {
+  public getFeeInfo(): AppFeeInfo | null {
     return this.tradeInfoManager.getFeeInfo(this.tradeState.trade);
   }
 

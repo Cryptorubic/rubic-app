@@ -11,16 +11,17 @@ import {
   ViewChild
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { IsActiveMatchOptions, Router } from '@angular/router';
+import { IsActiveMatchOptions, NavigationEnd, Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { SwitchModeEvent } from '@app/core/services/google-tag-manager/models/google-tag-manager';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Component({
   standalone: false,
@@ -53,13 +54,13 @@ export class HeaderComponent {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
-  public settingsOpened = false;
-
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
   public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 
   public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
+
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
@@ -83,18 +84,12 @@ export class HeaderComponent {
     );
   }
 
-  public get isMobile(): boolean {
-    return this.headerStore.isMobile;
-  }
-
-  public get isTablet(): boolean {
-    return this.headerStore.isTablet;
-  }
-
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
   );
+
+  public showMyCollection$: Observable<boolean>;
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -107,7 +102,8 @@ export class HeaderComponent {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly modalService: ModalService
   ) {
     this.advertisementType = 'default';
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
@@ -121,6 +117,24 @@ export class HeaderComponent {
         };
       });
     }
+
+    this.showMyCollection$ = combineLatest([
+      this.authService.currentUser$,
+      this.router.events.pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        map(() => this.router.url),
+        startWith(this.router.url)
+      )
+    ]).pipe(
+      map(([user, url]) => {
+        const path = url.split(/[?#]/)[0];
+        return (
+          !!user?.address &&
+          user.chainType === CHAIN_TYPE.EVM &&
+          (path === '/rewards' || path.startsWith('/rewards/'))
+        );
+      })
+    );
   }
 
   /**
@@ -139,25 +153,11 @@ export class HeaderComponent {
     this.headerStore.setTabletDisplayStatus(this.window.innerWidth <= this.headerStore.tabletWidth);
   }
 
-  public navigateToSwaps(): void {
-    this.gtmService.fireSwitchModeEvent('regular');
-    this.router.navigate(['/'], { queryParamsHandling: 'merge' });
-  }
-
-  public navigateToTestnets(): void {
-    this.gtmService.fireSwitchModeEvent('testnets');
-    this.window.open('https://testnet.rubic.exchange', '_blank');
-  }
-
-  public onHeaderModeSwitch(selectedMode: SwitchModeEvent): void {
-    this.gtmService.fireSwitchModeEvent(selectedMode);
-  }
-
-  // public navigateToPrivateSwaps(): void {
-  //   this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
-  // }
-
   public switchTheme(): void {
     this.themeService.switchTheme();
+  }
+
+  public openMobileMenu(): void {
+    this.modalService.openRubicMenu().subscribe();
   }
 }

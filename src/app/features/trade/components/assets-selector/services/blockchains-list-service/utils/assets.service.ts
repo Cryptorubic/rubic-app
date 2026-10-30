@@ -4,11 +4,6 @@ import {
   AvailableBlockchain,
   BlockchainItem
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import {
-  BlockchainFilters,
-  BlockchainTag,
-  BlockchainTags
-} from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -25,10 +20,13 @@ import {
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, first, map, startWith } from 'rxjs/operators';
+import { debounceTime, first, map, startWith, tap } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainsInfo } from '@cryptorubic/core';
+import { BlockchainsInfo, BlockchainName } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -57,6 +55,9 @@ export abstract class AssetsService {
 
   public set assetListType(value: AssetListType) {
     this._assetListType$.next(value);
+    if (BlockchainsInfo.isBlockchainName(value)) {
+      this.tokensFacade.loadChainTokens(value);
+    }
   }
 
   public get assetListType(): AssetListType {
@@ -84,11 +85,6 @@ export abstract class AssetsService {
     this._assetsBlockchainsToShow$.next(value);
   }
 
-  // Blockchain filter
-  protected readonly _blockchainFilter$ = new BehaviorSubject<BlockchainFilters>('All');
-
-  public readonly blockchainFilter$ = this._blockchainFilter$.asObservable();
-
   // Services
 
   protected readonly queryParamsService = inject(QueryParamsService);
@@ -103,29 +99,45 @@ export abstract class AssetsService {
 
   private readonly formService = inject(SwapsFormService);
 
+  private readonly formsTogglerService = inject(FormsTogglerService);
+
+  private readonly transferTokensService = inject(TransferTokensService);
+
+  private readonly tokensFacade = inject(TokensFacadeService);
+
   // Blockchains to show
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
   public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable().pipe(
     combineLatestWith(
       this.blockchainSearchQuery$,
-      this.blockchainFilter$,
-      this.walletConnectorService.networkChange$.pipe(startWith(null))
+      this.walletConnectorService.networkChange$.pipe(startWith(null)),
+      this.formsTogglerService.isTransferMode$,
+      this.transferTokensService.transferBlockchains$
     ),
-    map(([sourceChains, query, filters, networkFromWallet]) => {
+    tap(data => {
+      const isTransferMode = data[3];
+      const transferBlockchains = data[4];
+      if (isTransferMode) {
+        this.resetAssetListTypeIfUnavailable(new Set(transferBlockchains));
+      }
+    }),
+    map(([sourceChains, query, networkFromWallet, isTransferMode, transferBlockchains]) => {
       let chains = sourceChains.filter(
-        chain =>
-          this.filterQueryBlockchain(query, chain) &&
-          this.filterByType(filters, chain) &&
-          !DISABLED_BLOCKCHAINS_MAP[chain.name]
+        chain => this.filterQueryBlockchain(query, chain) && !DISABLED_BLOCKCHAINS_MAP[chain.name]
       );
+
+      if (isTransferMode) {
+        const transferSet = new Set(transferBlockchains);
+        chains = chains.filter(chain => transferSet.has(chain.name));
+      }
 
       const input = this.formService.inputValue ?? null;
       const walletNetwork = networkFromWallet ?? null;
       const currentSelectedNetwork =
         this.type === 'from'
-          ? input?.fromToken?.blockchain ?? null
-          : input?.toToken?.blockchain ?? null;
+          ? (input?.fromToken?.blockchain ?? null)
+          : (input?.toToken?.blockchain ?? null);
       const fromTokenChain = input?.fromToken?.blockchain ?? null;
       const toTokenChain = input?.toToken?.blockchain ?? null;
 
@@ -237,6 +249,13 @@ export abstract class AssetsService {
     return null;
   }
 
+  private resetAssetListTypeIfUnavailable(transferBlockchains: Set<BlockchainName>): void {
+    const currentType = this.assetListType;
+    if (BlockchainsInfo.isBlockchainName(currentType) && !transferBlockchains.has(currentType)) {
+      this.assetListType = 'allChains';
+    }
+  }
+
   private filterQueryBlockchain(searchQuery: string, blockchain: BlockchainItem): boolean {
     return (
       blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -244,14 +263,6 @@ export abstract class AssetsService {
       (blockchain.tags.length &&
         blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
     );
-  }
-
-  private filterByType(filter: null | BlockchainTag, chain: AvailableBlockchain): boolean {
-    if (filter === BlockchainTags.ALL || !filter) {
-      return true;
-    } else {
-      return chain.tags.includes(filter);
-    }
   }
 
   private subscribeOnQueryParams(): void {
@@ -267,28 +278,22 @@ export abstract class AssetsService {
       });
   }
 
-  public setFilterQuery(
-    value: BlockchainFilters,
+  public openMobileBlockchainList(
     totalBlockchains: number,
     blockchainsToShow$: Observable<AvailableBlockchain[]>,
     handleSearchQuery?: (query: string) => void,
     handleSelection?: (selection: AssetListType) => void
   ): void {
-    if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
-      this._blockchainFilter$.next(BlockchainTags.ALL);
-    } else {
-      this._blockchainFilter$.next(value);
-      this.modalService.openMobileBlockchainList(
-        this.injector,
-        this.type,
-        this.blockchainSearchQuery,
-        false,
-        'Select blockchain',
-        totalBlockchains,
-        blockchainsToShow$,
-        handleSearchQuery,
-        handleSelection
-      );
-    }
+    this.modalService.openMobileBlockchainList(
+      this.injector,
+      this.type,
+      this.blockchainSearchQuery,
+      false,
+      'Select blockchain',
+      totalBlockchains,
+      blockchainsToShow$,
+      handleSearchQuery,
+      handleSelection
+    );
   }
 }

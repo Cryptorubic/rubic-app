@@ -7,7 +7,6 @@
   min-width: 90px;
   height: 24px;
   padding: 0 var(--tui-padding-m);
-
   border-radius: var(--tui-radius-m);
 
   &__label {
@@ -49,7 +48,6 @@
   &__dot {
     width: 6px;
     height: 6px;
-
     border-radius: 50%;
   }
 }

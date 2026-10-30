@@ -73,9 +73,11 @@ export abstract class TonCrossChainTrade extends CrossChainTrade<TonTransactionC
       enableChecks: !testMode
     };
 
-    const swapData = await this.fetchSwapData<TonTransactionConfig>(swapRequestParams);
+    const swapData = await this.fetchSwapData<TonTransactionConfig & { exchangeId: string }>(
+      swapRequestParams
+    );
 
-    this._uniqueInfo = swapData.uniqueInfo ?? {};
+    this._exchangeId = swapData.transaction.exchangeId;
     const toAmount = swapData.estimate.destinationWeiAmount;
 
     return { config: swapData.transaction, amount: toAmount };

@@ -37,7 +37,6 @@
   height: 469px;
   padding-top: 10px;
   padding-bottom: 10px;
-
   background: var(--tui-background-neutral-1);
   border-bottom-right-radius: var(--tui-radius-m);
   border-bottom-left-radius: var(--tui-radius-m);
@@ -75,7 +74,6 @@
           ::ng-deep button.filter-list-element {
             width: 51px;
             height: 51px;
-
             color: var(--tui-text-secondary);
           }
 
@@ -104,7 +102,6 @@
   &__list-element {
     width: 169px;
     height: 41px;
-
     border-radius: 8px;
   }
 
@@ -120,7 +117,6 @@
 
         app-blockchains-promo-badge {
           z-index: 1;
-
           pointer-events: auto;
         }
 
@@ -149,7 +145,6 @@
   ::ng-deep app-rubic-button {
     [tuiButton] {
       height: 68px;
-
       border-radius: var(--tui-radius-m);
 
       &._pressed,
@@ -187,14 +182,12 @@
     height: 100%;
     padding: 0;
     overflow-x: auto;
-
     background-color: unset;
     border-radius: unset;
 
     &__list-element {
       width: 80px;
       height: 62px;
-
       border-radius: 16px;
 
       ::ng-deep {

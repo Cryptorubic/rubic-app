@@ -1,15 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import {
-  BehaviorSubject,
-  catchError,
-  defaultIfEmpty,
-  finalize,
-  first,
-  firstValueFrom,
-  Observable,
-  of
-} from 'rxjs';
+import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -22,7 +13,6 @@ import {
   ModalStruct
 } from '../models/mobile-native-options';
 import type { TuiDialogOptions } from '@taiga-ui/core/components/dialog';
-import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
@@ -44,7 +34,7 @@ import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MultichainWalletModalComponent } from '@shared/components/multichain-wallet-modal/multichain-wallet-modal.component';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, CrossChainTradeType } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
 import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
@@ -55,15 +45,11 @@ import { TurnstileCheckComponent } from '@features/trade/components/turnstile-ch
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
-import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
-import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
-import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
 import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WalletsModalOptions } from '@app/core/wallets-modal/components/wallets-modal/models/wallets-modal-options';
-import { PrivacyDisclaimerModalComponent } from '@shared/components/privacy-disclaimer-modal/privacy-disclaimer-modal.component';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 
@@ -87,10 +73,14 @@ export class ModalService {
 
   public closeModal(): void {
     if (!this.openedModal) return;
-    this.openedModal.elRef.nativeElement.classList.add('hidden');
-    this.openedModal.elRef.nativeElement.classList.remove('opened');
-    this.openedModal.elRef.nativeElement.classList.remove('collapsed');
-    this.openedModal.context.completeWith(null);
+    if (this.openedModal.elRef) {
+      this.openedModal.elRef.nativeElement.classList.add('hidden');
+      this.openedModal.elRef.nativeElement.classList.remove('opened');
+      this.openedModal.elRef.nativeElement.classList.remove('collapsed');
+    }
+    if (this.openedModal.context) {
+      this.openedModal.context.completeWith(null);
+    }
   }
 
   public closeSwapRetryModal(): void {
@@ -116,10 +106,7 @@ export class ModalService {
       {
         title: '',
         size: 'l',
-        showMobileMenu: true,
-        data: {
-          formType
-        }
+        data: { formType }
       },
       injector
     );
@@ -134,7 +121,8 @@ export class ModalService {
     calculationProgress: CalculationProgress,
     isModal: true,
     injector: Injector,
-    noRoutes: boolean
+    noRoutes: boolean,
+    privateOnly: boolean
   ): Observable<TradeProvider> {
     this.setOpenedModalName('other-provider-list');
     return this.showDialog<ProvidersListComponent, TradeProvider>(
@@ -148,7 +136,8 @@ export class ModalService {
           calculationProgress,
           isModal,
           shortedInfo: false,
-          noRoutes
+          noRoutes,
+          privateOnly
         }
       },
       injector
@@ -187,7 +176,9 @@ export class ModalService {
     this.setOpenedModalName('rubic-menu');
     return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
       title: 'Menu',
-      scrollableContent: true
+      scrollableContent: true,
+      closeable: true,
+      dismissible: true
     });
   }
 
@@ -204,17 +195,6 @@ export class ModalService {
       },
       injector
     );
-  }
-
-  /**
-   * Show Mobile navigation menu dialog.
-   */
-  public openMobileNavigationMenu(): Observable<void> {
-    this.setOpenedModalName('navigation');
-    return this.showDialog<MobileNavigationMenuComponent, void>(MobileNavigationMenuComponent, {
-      title: 'Main Menu',
-      fitContent: true
-    });
   }
 
   /**
@@ -467,30 +447,30 @@ export class ModalService {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's', closeable: false });
   }
 
-  public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
+  public openDepositTradeRateChangedModal(tradeType: CrossChainTradeType): Promise<boolean> {
     this.setOpenedModalName('deposit-trade-rate-change');
     return firstValueFrom(
       this.showDialog(DepositRateChangedModalComponent, {
         size: 's',
         closeable: false,
         required: true,
-        data: { trade }
+        data: { tradeType: tradeType }
       }).pipe(catchError(() => of(false))) as Observable<boolean>
     );
   }
 
-  public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
-    this.setOpenedModalName('trustline-modal');
-    return firstValueFrom(
-      this.showDialog(TrustlineModalComponent, {
-        size: 's',
-        closeable: false,
-        dismissible: false,
-        fitContent: true,
-        data: options
-      }).pipe(catchError(() => of(false))) as Observable<boolean>
-    );
-  }
+  // public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
+  //   this.setOpenedModalName('trustline-modal');
+  //   return firstValueFrom(
+  //     this.showDialog(TrustlineModalComponent, {
+  //       size: 's',
+  //       closeable: false,
+  //       dismissible: false,
+  //       fitContent: true,
+  //       data: options
+  //     }).pipe(catchError(() => of(false))) as Observable<boolean>
+  //   );
+  // }
 
   public openRateChangedModal(rateChangeInfo: RateChangeInfo): Observable<boolean> {
     this.setOpenedModalName('rate-change');
@@ -546,24 +526,6 @@ export class ModalService {
         fitContent: true,
         data: { walletName, walletsToHide }
       })
-    );
-  }
-
-  public async openPrivacyAuthModal(): Promise<{ valid: boolean; forceClosed: boolean }> {
-    return firstValueFrom(
-      this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
-        PrivacyAuthWindowComponent,
-        { size: 'page' }
-      )
-    );
-  }
-
-  public showDisclaimer(): Promise<boolean> {
-    this.setOpenedModalName('privacy-disclaimer');
-    return firstValueFrom(
-      this.showDialog(PrivacyDisclaimerModalComponent, {
-        size: 's'
-      }).pipe(defaultIfEmpty(false)) as Observable<boolean>
     );
   }
 }

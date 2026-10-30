@@ -1,7 +1,5 @@
-import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-
-import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   EvmBasicTransactionOptions,
@@ -12,7 +10,6 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -28,7 +25,6 @@ import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chai
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
@@ -45,29 +41,27 @@ import {
   Token
 } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
-import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { SwapMethodOptions } from '../swaps-controller/models/swap-options';
 
 @Injectable()
 export class CrossChainService {
-  private readonly defaultTimeout = CALCULATION_TIMEOUT_MS;
-
   private get receiverAddress(): string | null {
-    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-      return null;
+    if (
+      this.formsTogglerService.isTransferMode ||
+      this.settingsService.crossChainRoutingValue.showReceiverAddress
+    ) {
+      return this.targetNetworkAddressService.address;
     }
-    return this.targetNetworkAddressService.address;
+    return null;
   }
 
   constructor(
-    private readonly sdkService: SdkService,
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -77,7 +71,6 @@ export class CrossChainService {
     private readonly crossChainApiService: CrossChainApiService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly dialogService: ModalService,
-    @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
@@ -85,10 +78,10 @@ export class CrossChainService {
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService,
+    // private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -186,7 +179,7 @@ export class CrossChainService {
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean; receiverAddress?: string } = {
+    params: SwapMethodOptions = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -228,13 +221,14 @@ export class CrossChainService {
 
     const blockchain = trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const referrer = this.sessionStorage.getItem('referral');
 
-    const receiverAddress = this.receiverAddress || params?.receiverAddress;
+    const receiverAddress = params?.receiverAddress || this.receiverAddress;
+    const refundAddress = params?.refundAddress || this.refundService.refundAddress;
+
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
@@ -243,22 +237,18 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
-      refundAddress: this.refundService.refundAddress,
+      ...(refundAddress && { refundAddress }),
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck,
-      solanaSponsorParams: {
-        feePayer: SOLANA_SPONSOR,
-        tradeId: trade.rubicId
-      }
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {
       await trade.swap(swapOptions);
       setTimeout(() => this.updateBalancesAfterSwap(fromToken, toToken), 5_000);
 
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
-      }
+      // if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+      //   this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+      // }
 
       return transactionHash;
     } catch (error) {
@@ -279,9 +269,8 @@ export class CrossChainService {
 
     const blockchain = trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     let swapOptions: EvmBasicTransactionOptions = {};
 
@@ -405,10 +394,7 @@ export class CrossChainService {
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
     ).includes(fromBlockchain);
 
-    let disabledProviders: CrossChainTradeType[] = [
-      ...disabledTradesTypes,
-      CROSS_CHAIN_TRADE_TYPE.HOUDINI
-    ];
+    let disabledProviders: CrossChainTradeType[] = [...disabledTradesTypes];
 
     if (isNonEvmCNChain && this.iframeService.isIframe) {
       disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];

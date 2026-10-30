@@ -1,8 +1,6 @@
 import {
   ErrorInterface,
   PriceTokenAmount,
-  QuoteRequestInterface,
-  QuoteResponseInterface,
   SolanaBlockchainName,
   SwapRequestInterface
 } from '@cryptorubic/core';
@@ -70,10 +68,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
 
   public abstract readonly dexContractAddress: string; // not static because https://github.com/microsoft/TypeScript/issues/34516
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
-
-  private readonly apiResponse: QuoteResponseInterface | null = null;
-
   private readonly shouldCalculateConsumedParams: boolean;
 
   protected constructor(
@@ -82,7 +76,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiQuote ?? null, tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
@@ -94,9 +88,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
 
     this.useProxy = tradeStruct.useProxy;
     this.fromWithoutFee = tradeStruct.fromWithoutFee;
-
-    this.apiQuote = tradeStruct?.apiQuote || null;
-    this.apiResponse = tradeStruct?.apiResponse || null;
 
     this.feeInfo = {
       rubicProxy: {
@@ -196,11 +187,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: options?.receiverAddress || this.walletAddress,
-      id: this.apiResponse.id,
-      // @ts-ignore
-      sponsorGas: true,
-      // @ts-ignore
-      makeLogs: true
+      id: this.apiResponse.id
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
 

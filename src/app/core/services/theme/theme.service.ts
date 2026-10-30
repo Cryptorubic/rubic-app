@@ -19,7 +19,10 @@ export class ThemeService {
     return this._theme$.asObservable();
   }
 
-  constructor(private readonly store: StoreService, @Inject(DOCUMENT) private document: Document) {
+  constructor(
+    private readonly store: StoreService,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     if (this._theme$.value !== 'dark') {
       this.switchDomClass();
     } else {

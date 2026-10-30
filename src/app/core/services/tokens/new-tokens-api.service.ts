@@ -8,16 +8,15 @@ import {
   NewTokensBackendResponse,
   RatedBackendToken,
   TokensBackendResponse,
-  UtilityBackendResponse
+  TransferBackendToken,
+  TransferTokensBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { Cache as Memo, Token as OldToken } from '@cryptorubic/core';
 import {
   BackendBlockchain,
-  BLOCKCHAIN_NAME,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
-  TEST_EVM_BLOCKCHAIN_NAME,
   BlockchainName
 } from '@cryptorubic/core';
 import { Observable, of } from 'rxjs';
@@ -28,6 +27,7 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import BigNumber from 'bignumber.js';
 
 export type QueryTokenParams =
   | {
@@ -46,19 +46,6 @@ export class NewTokensApiService {
   private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
 
   private readonly pageSize = 50;
-
-  private readonly topTierChains: BlockchainName[] = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.ARBITRUM,
-    BLOCKCHAIN_NAME.POLYGON,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.BASE,
-    BLOCKCHAIN_NAME.SOLANA,
-    BLOCKCHAIN_NAME.BERACHAIN,
-    BLOCKCHAIN_NAME.ZK_SYNC,
-    BLOCKCHAIN_NAME.OPTIMISM,
-    BLOCKCHAIN_NAME.BITCOIN
-  ];
 
   constructor(
     private readonly httpService: HttpService,
@@ -150,11 +137,15 @@ export class NewTokensApiService {
   }
 
   @Memo({ maxAge: 60 * 60 * 1_000 })
-  public getTopTokens(
-    chainsList = this.topTierChains
+  public getTokensByChains(
+    chainsList: BlockchainName[]
   ): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
+    if (!chainsList.length) {
+      return of({});
+    }
+
     return this.httpService
       .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
         ENDPOINTS.NEW_TOKENS,
@@ -165,42 +156,6 @@ export class NewTokensApiService {
       .pipe(
         map(response => {
           return chainsList.reduce((acc, blockchain) => {
-            // const blockchain = FROM_BACKEND_BLOCKCHAINS[chain];
-            const chainResponse = response[blockchain];
-            if (!chainResponse) return acc;
-
-            return {
-              ...acc,
-              [blockchain]: {
-                list: NewTokensApiService.prepareTokens(chainResponse.tokens),
-                total: chainResponse.count,
-                haveMore: Boolean(chainResponse.next_page)
-              }
-            };
-          }, {});
-        })
-      );
-  }
-
-  @Memo({ maxAge: 60 * 60 * 1_000 })
-  public getRestTokens(): Observable<
-    Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
-  > {
-    const excludedChains = [...Object.values(TEST_EVM_BLOCKCHAIN_NAME), ...this.topTierChains];
-    const tier2blockchains = Object.values(BLOCKCHAIN_NAME).filter(
-      chain => !excludedChains.includes(chain)
-    );
-
-    return this.httpService
-      .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
-        ENDPOINTS.NEW_TOKENS,
-        { networks: tier2blockchains.join(',') },
-        this.tokensApiUrl,
-        { retry: 2, timeoutMs: 15_000, external: true }
-      )
-      .pipe(
-        map(response => {
-          return tier2blockchains.reduce((acc, blockchain) => {
             const chainResponse = response[blockchain];
             if (!chainResponse) return acc;
 
@@ -319,29 +274,38 @@ export class NewTokensApiService {
       );
   }
 
-  public getUtilityTokenList(): Observable<{
-    gainers: Token[];
-    losers: Token[];
-    trending: Token[];
-  }> {
+  public fetchTransferTokens(): Observable<BalanceToken[]> {
     return this.httpService
-      .get<UtilityBackendResponse>('v3/tmp/tokens/utility', {}, '', {
+      .get<TransferTokensBackendResponse>(ENDPOINTS.TRANSFER_TOKENS, {}, this.tokensApiUrl, {
         retry: 2,
-        timeoutMs: 15_000
+        timeoutMs: 15_000,
+        external: true
       })
       .pipe(
-        map(resp => ({
-          gainers: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.gainers),
-          losers: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.losers),
-          trending: NewTokensApiService.prepareTokens<RatedBackendToken, Token>(resp.trending)
-        })),
-        catchError(() =>
-          of({
-            gainers: [],
-            losers: [],
-            trending: []
-          })
-        )
+        map(response => this.prepareTransferTokens(response.tokens ?? [])),
+        catchError(() => of([]))
       );
+  }
+
+  private prepareTransferTokens(tokens: TransferBackendToken[]): BalanceToken[] {
+    return tokens
+      .map(token => {
+        return {
+          blockchain: token.network,
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          rank: token.rank,
+          price: token.usdPrice,
+          networkRank: token.networkRank,
+          tokenSecurity: token.token_security,
+          type: token.type,
+          amount: new BigNumber(NaN),
+          favorite: false
+        } as BalanceToken;
+      })
+      .filter((token): token is BalanceToken => Boolean(token?.address && token.blockchain));
   }
 }

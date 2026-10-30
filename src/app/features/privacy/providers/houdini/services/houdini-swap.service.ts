@@ -48,8 +48,8 @@ import InsufficientFundsError from '@core/errors/models/instant-trade/insufficie
 import { InsufficientGasError } from '@app/core/errors/models/common/insufficient-gas-error';
 import { HoudiniErrorService } from './houdini-error.service';
 import {
-  transferTradeSupportedProviders,
-  TransferTradeType
+  crossChainTransferTradeSupportedProviders,
+  CrossChainTransferTradeType
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import {
   API_STATUS_TO_DEPOSIT_STATUS,
@@ -151,7 +151,7 @@ export class HoudiniSwapService {
       srcTokenAmount: fromToken.tokenAmount.toString(),
       dstTokenBlockchain: toToken.blockchain,
       dstTokenAddress: toToken.address,
-      preferredProvider: 'houdini',
+      preferredProvider: 'houdini_bridge',
       receiver: receiverAddress,
       showDangerousRoutes: true,
       showFailedRoutes: true,
@@ -187,7 +187,7 @@ export class HoudiniSwapService {
 
         if (failed) {
           //TODO: move it to api later
-          if ('minAmount' in failed.data.data && 'tokenSymbol' in failed.data.data) {
+          if ('minAmount' in failed.data?.data && 'tokenSymbol' in failed.data?.data) {
             const errorData = {
               minAmount: new BigNumber(failed.data.data?.minAmount as string),
               tokenSymbol: failed.data.data?.tokenSymbol as string
@@ -221,8 +221,9 @@ export class HoudiniSwapService {
     try {
       const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
       const isTransferTrade =
-        transferTradeSupportedProviders.includes(this.currentTrade.type as TransferTradeType) &&
-        chainType !== CHAIN_TYPE.EVM;
+        crossChainTransferTradeSupportedProviders.includes(
+          this.currentTrade.type as CrossChainTransferTradeType
+        ) && chainType !== CHAIN_TYPE.EVM;
 
       if (!isTransferTrade) {
         //TODO: maybe add some callback later
@@ -488,7 +489,8 @@ export class HoudiniSwapService {
       quoteRequest,
       quoteRequest.integratorAddress!,
       this.sdkLegacyService,
-      this.rubicApiService
+      this.rubicApiService,
+      quoteResponse.private
     );
 
     const tradeData: DepositTradeData = {
@@ -596,7 +598,7 @@ export class HoudiniSwapService {
           srcTxHash,
           this.currentTrade.from.blockchain
         )
-        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' } as CrossChainStatus));
+        .catch(() => ({ dstTxHash: '', dstTxStatus: 'PENDING' }) as CrossChainStatus);
       if (statusResp.dstTxHash) return statusResp.dstTxHash;
     }
     return '';

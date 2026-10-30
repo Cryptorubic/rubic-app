@@ -27,7 +27,10 @@ export class VolumeApiService {
     return this.tradeVolume$.asObservable();
   }
 
-  constructor(private httpService: HttpService, private storeService: StoreService) {
+  constructor(
+    private httpService: HttpService,
+    private storeService: StoreService
+  ) {
     this.tradeVolume$ = new BehaviorSubject(undefined);
     this.setTradeVolumeInterval();
   }

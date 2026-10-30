@@ -50,8 +50,6 @@
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
     "noMetamaskInstalled": "Por favor, asegúrese de que tiene instalado y desbloqueado la extensión de MetaMask.\nSe puede descargar en",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
-    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
-    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "La extensión de navegador de Coinbase entra en conflicto con la extensión de Metamask. Desactive o elimine la extensión de Coinbase para continuar, o elija otra billetera para conectarse.",
     "wrongNetwork": "Ha seleccionado la red equivocada. Por favor, elija {{ networkToChoose }} desde MetaMask.",
     "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del Binance bridge de un máximo de 3 operaciones en 30 minutos.\nPor favor, espere e inténtelo nuevamente más tarde, si aún tiene problemas, comuníquese con nosotros",
@@ -66,6 +64,7 @@
     "wrongToken": "El puente Rubic solo admite el token rubic.",
     "oneInchQuote": "1inch error de cotización",
     "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
+    "notSupportedNetworkForDeposit": "{{network}} is not supported for deposit. Make deposit manually on specified deposit address.",
     "signReject": "Ha rechazado un inicio de sesión con su billetera. Por favor, confirme un inicio de sesión con su billetera, para utilizar completamente nuestra aplicación.",
     "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Trate de aumentar el gas suministrado",
     "noSelectedProvider": "Seleccionar proveedor de intercambio",
@@ -79,7 +78,7 @@
     "chooseSupportedBridge": "Elegir puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
-    "noEnteredAmount": "Introduzca una cantidad",
+    "noEnteredAmount": "0",
     "minimumAmount": "La cantidad mínima es ≈{{amount}} {{token}}",
     "maximumAmount": "La cantidad máxima es ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "El precio de la comisión en {{toBlockchain}} es demasiado alto. Por favor, espere e inténtelo más tarde.",
@@ -101,8 +100,7 @@
     "crossChainSwapUnavailable": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
     "noSelectedToken": "Seleccionar Token",
     "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
-    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
+    "receiverRequired": "Receiver address is required!"
   },
   "navigation": {
     "retrodrop": "Retrodrop",
@@ -158,7 +156,7 @@
       },
       {
         "title": "¿ Cómo Ponerse En Contacto Con El Soporte?",
-        "answer": "Si necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte aquí enviando un ticket en nuestro sitio web o en nuestro Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>\n\n Chat en vivo: Póngase en contacto con el equipo de Rubic para obtener asistencia inmediata mediante el chat. Disponible 24/7.\n \nEmail soporte - <a href='mailto:support@rubic.finanzas'>soporte@rubic.finanzas</a>. Envíe un mensaje al soporte de Rubic en cualquier momento con preguntas más complejas o técnicas. Estamos aquí para ayudar."
+        "answer": "Si necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte aquí enviando un ticket en nuestro sitio web o en nuestro Telegram: <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>\n\n Chat en vivo: Póngase en contacto con el equipo de Rubic para obtener asistencia inmediata mediante el chat. Disponible 24/7.\n \nEmail soporte - <a href='mailto:support@rubic.finanzas'>soporte@rubic.finanzas</a>. Envíe un mensaje al soporte de Rubic en cualquier momento con preguntas más complejas o técnicas. Estamos aquí para ayudar."
       },
       {
         "title": "¿Qué es el widget de relé Rubic y cómo podemos integrarlo?",
@@ -170,7 +168,7 @@
       },
       {
         "title": "¿Por qué mi intercambio en cadena tiene un estado \"Pendiente\" de larga duración?",
-        "answer": "Razón:\nEs posible que la tarifa de gas que se estableció no sea suficiente para procesar su transacción.\n \n Cómo resolver:\n Si la transacción está \"Pendiente\", lo mejor es acelerar la transacción manualmente, cambiando al valor deseado de gas, para forzar la finalización de la transacción. Se puede hacer a través de su billetera. Usted podrá pagar una tarifa de gas adicional.\n \nSi aún necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte enviando un ticket o en Telegram <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>"
+        "answer": "Razón:\nEs posible que la tarifa de gas que se estableció no sea suficiente para procesar su transacción.\n \n Cómo resolver:\n Si la transacción está \"Pendiente\", lo mejor es acelerar la transacción manualmente, cambiando al valor deseado de gas, para forzar la finalización de la transacción. Se puede hacer a través de su billetera. Usted podrá pagar una tarifa de gas adicional.\n \nSi aún necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte enviando un ticket o en Telegram <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>"
       },
       {
         "title": "¿Por qué obtengo el error de \"Saldo insuficiente\"?",
@@ -194,7 +192,7 @@
       },
       {
         "title": "¿Por qué tengo un estado \"Pendiente\" de larga duración de una transacción de múltiples cadenas?",
-        "answer": "Presumiblemente, los precios de la tarifa de red aumentaron dramáticamente durante ese tiempo. \nSi los métodos anteriores no ayudaron, póngase en contacto con nuestro equipo de soporte a través del chat en el sitio web o Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>."
+        "answer": "Presumiblemente, los precios de la tarifa de red aumentaron dramáticamente durante ese tiempo. \nSi los métodos anteriores no ayudaron, póngase en contacto con nuestro equipo de soporte a través del chat en el sitio web o Telegram: <a href='https://telegram.me/RubicSupportBot' target = '_blank'>https://telegram.me/RubicSupportBot</a>."
       },
       {
         "title": "¿Por qué no puedo hacer el intercambio de cadenas múltiples?",

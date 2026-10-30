@@ -3,19 +3,11 @@ import { TokenType } from '@features/trade/services/proxy-fee-service/models/tok
 import { FeeValue } from '@features/trade/services/proxy-fee-service/models/fee-value';
 
 export type OnChainTypes =
-  | 'nativeStableSwap'
-  | 'stableSwap'
-  | 'stableTokenSwap'
-  | 'stableWnativeSwap'
-  | 'tokenSwap';
+  'nativeStableSwap' | 'stableSwap' | 'stableTokenSwap' | 'stableWnativeSwap' | 'tokenSwap';
 
 export type OnChainTokenTypes = Exclude<
   `${TokenType}_${TokenType}`,
-  | 'native_native'
-  | 'native_eth_native_eth'
-  | 'native_eth_native'
-  | 'native_native_eth'
-  | 'bridged_native_bridged_native'
+  'native_eth_native' | 'native_native_eth'
 >;
 
 export type OnChainTierFeeType = `${OnChainTypes}_${BlockchainStatus['tier']}`;

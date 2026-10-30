@@ -17,7 +17,6 @@
   flex-wrap: wrap;
   gap: 5px;
   padding: 10px;
-
   background: var(--tui-background-base);
   border-radius: var(--tui-radius-m);
 
@@ -43,7 +42,6 @@
 
   &__label {
     overflow: hidden;
-
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -72,7 +70,6 @@ app-no-result {
 
   .list {
     padding: var(--tui-padding-l);
-
     background: none;
     border-top: 3px solid var(--io-background);
     border-radius: 0;
@@ -100,7 +97,6 @@ app-no-result {
       height: 56px;
 
       padding: 0 var(--tui-padding-l) !important;
-
       background: var(--tui-background-base);
     }
   }

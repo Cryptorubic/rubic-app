@@ -1,0 +1,9 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .body {
+    @include flex(column, normal, center);
+    gap: 8px;
+    width: 100%;
+  }
+}

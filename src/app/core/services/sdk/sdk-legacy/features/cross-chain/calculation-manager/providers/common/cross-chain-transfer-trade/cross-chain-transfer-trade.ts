@@ -4,8 +4,7 @@ import {
   EvmBlockchainName,
   PriceTokenAmount,
   QuoteRequestInterface,
-  QuoteResponseInterface,
-  Token
+  QuoteResponseInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
@@ -15,22 +14,16 @@ import { GasData } from '../evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../models/fee-info';
 import { RubicStep } from '../models/rubicStep';
 import { CrossChainPaymentInfo, CrossChainTransferData } from './models/cross-chain-payment-info';
-import {
-  erc20TokenAbi,
-  EvmAdapter,
-  FailedToCheckForTransactionReceiptError,
-  RubicSdkError
-} from '@cryptorubic/web3';
+import { FailedToCheckForTransactionReceiptError, RubicSdkError } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { CrossChainTrade } from '../cross-chain-trade';
 import { CrossChainTransferConfig } from './models/cross-chain-transfer-config';
-
+import { TransferSwapRequestInterface } from '../../../../../ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
+import { TransactionInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/transaction.interface';
+import { parseExtraFields } from '../../../../../ws-api/chains/transfer-trade/utils/parse-extra-fields';
+//
 export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChainTransferConfig> {
-  public swap(): Promise<string | never> {
-    throw new Error('Method not implemented.');
-  }
-
   public encode(): Promise<unknown> {
     throw new Error('Method not implemented.');
   }
@@ -39,7 +32,11 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     throw new Error('Method not implemented.');
   }
 
-  protected paymentInfo: CrossChainTransferData | null = null;
+  protected _paymentInfo: CrossChainTransferData | null = null;
+
+  public get paymentInfo(): CrossChainTransferData | null {
+    return this._paymentInfo;
+  }
 
   public readonly onChainTrade: EvmOnChainTrade | null;
 
@@ -51,7 +48,7 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
 
   public readonly isAggregator = false;
 
-  public readonly from: PriceTokenAmount<EvmBlockchainName>;
+  public readonly from: PriceTokenAmount<BlockchainName>;
 
   public readonly to: PriceTokenAmount<BlockchainName>;
 
@@ -64,10 +61,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
   public readonly priceImpact: number | null;
 
   protected actualTokenAmount: BigNumber;
-
-  protected get chainAdapter(): EvmAdapter {
-    return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
-  }
 
   constructor(
     providerAddress: string,
@@ -130,43 +123,45 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     receiverAddress?: string,
     refundAddress?: string
   ): Promise<{ config: CrossChainTransferConfig; amount: string }> {
-    const isFromEvm = BlockchainsInfo.isEvmBlockchainName(this.from.blockchain);
+    const swapRequestData: TransferSwapRequestInterface = {
+      ...this.apiQuote,
+      id: this.rubicId,
+      enableChecks: !testMode,
+      receiver: receiverAddress ?? '',
+      ...(refundAddress && { refundAddress })
+    };
 
-    const res = await this.getPaymentInfo(
-      receiverAddress || this.walletAddress,
-      testMode,
-      isFromEvm ? this.walletAddress : '',
-      isFromEvm ? refundAddress || this.walletAddress : refundAddress
-    );
+    const isPrivateTrade = this.apiResponse.private;
+    const res = isPrivateTrade
+      ? await this.fetchSwapPrivateData<TransactionInterface>(swapRequestData)
+      : await this.fetchSwapData<CrossChainTransferConfig>(swapRequestData);
 
-    const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
-    this.paymentInfo = res;
+    const amount = res.estimate.destinationTokenAmount;
+    this.actualTokenAmount = new BigNumber(amount);
+
+    const extraFields = parseExtraFields(res.transaction);
+
+    this._paymentInfo = {
+      depositAddress: res.transaction.depositAddress,
+      id: res.transaction.exchangeId,
+      toAmount: res.estimate.destinationTokenAmount,
+      ...(extraFields && {
+        depositExtraId: extraFields.value,
+        depositExtraIdName: extraFields.name
+      })
+    };
 
     return {
-      config: {
-        amountToSend: res.toAmount,
-        depositAddress: res.depositAddress,
-        exchangeId: res.id,
-        ...(res.depositExtraId &&
-          res.depositExtraIdName && {
-            extraFields: {
-              name: res.depositExtraIdName,
-              value: res.depositExtraId
-            }
-          })
-      },
-      amount: toAmountWei
+      config: res as CrossChainTransferConfig,
+      amount: res.estimate.destinationWeiAmount
     };
   }
 
-  protected abstract getPaymentInfo(
-    receiverAddress: string,
-    testMode?: boolean,
-    fromAddress?: string,
-    refundAddress?: string
-  ): Promise<CrossChainTransferData>;
+  public swap(options: SwapTransactionOptions = {}): Promise<string | never> {
+    return this.swapDirect(options);
+  }
 
-  public async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
+  private async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
     if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
       throw new RubicSdkError("For non-evm chains use 'getTransferTrade' method");
     }
@@ -181,25 +176,18 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     const { onConfirm, gasPriceOptions } = options;
     let transactionHash: string;
     const onTransactionHash = (hash: string) => {
-      if (onConfirm) {
-        onConfirm(hash);
-      }
+      if (onConfirm) onConfirm(hash);
       transactionHash = hash;
     };
 
     try {
-      await this.setTransactionConfig(
-        false,
-        options.useCacheData || false,
-        options.testMode || false,
-        options?.receiverAddress || this.walletAddress
-      );
-      if (!this.paymentInfo) {
-        throw new Error('Deposit address is not set');
-      }
+      if (!this.paymentInfo) throw new Error('[swapDirect] this.paymentInfo is not set');
 
+      const evmAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        this.from.blockchain
+      );
       if (this.from.isNative) {
-        await this.chainAdapter.signer.trySendTransaction({
+        await evmAdapter.signer.trySendTransaction({
           txOptions: {
             to: this.paymentInfo.depositAddress,
             value: this.from.weiAmount,
@@ -208,16 +196,15 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
           }
         });
       } else {
-        await this.chainAdapter.signer.tryExecuteContractMethod(
-          this.from.address,
-          erc20TokenAbi,
-          'transfer',
-          [this.paymentInfo.depositAddress, this.from.stringWeiAmount],
-          {
+        await evmAdapter.signer.trySendTransaction({
+          txOptions: {
+            to: this.from.address,
+            data: this.lastSwapResponse.transaction.data,
+            value: '0',
             onTransactionHash,
             gasPriceOptions
           }
-        );
+        });
       }
 
       return transactionHash!;
@@ -246,9 +233,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
       refundAddress
     );
     this.lastTransactionConfig = config;
-    setTimeout(() => {
-      this.lastTransactionConfig = null;
-    }, 15_000);
 
     if (!skipAmountChangeCheck) {
       this.checkAmountChange(amount, this.to.stringWeiAmount);

@@ -9,10 +9,9 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, timer } from 'rxjs';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
-import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
@@ -38,6 +37,8 @@ export class AppComponent implements AfterViewInit {
 
   public readonly chartVisibile$ = this.chartService.chartVisibile$;
 
+  public readonly expiresAtMs$ = timer(0, 100_000).pipe(map(() => 10_000));
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
@@ -47,7 +48,6 @@ export class AppComponent implements AfterViewInit {
     @Inject(WA_WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly sdkLoaderService: SdkLoaderService,
@@ -60,7 +60,6 @@ export class AppComponent implements AfterViewInit {
     this.setupLanguage();
     this.subscribeOnWalletChanges();
     this.initApp();
-    this.spindlService.initSpindlAds();
   }
 
   ngAfterViewInit() {
@@ -148,7 +147,8 @@ export class AppComponent implements AfterViewInit {
     this.initQueryParamsSubscription().subscribe();
     forkJoin([
       this.loadPlatformConfig(),
-      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
+      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean)),
+      this.tokensFacadeService.transferTokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');

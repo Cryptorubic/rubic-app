@@ -2,6 +2,10 @@
 
 $mobile-width: 360px;
 
+app-deposit-form {
+  width: 100%;
+}
+
 :host {
   display: flex;
 
@@ -11,7 +15,6 @@ $mobile-width: 360px;
       gap: var(--tui-padding-s);
       align-items: center;
       padding: 0 5px;
-
       cursor: pointer;
 
       &__text {
@@ -28,7 +31,7 @@ $mobile-width: 360px;
   }
 }
 
-.swap-container {
+.trade-view-container {
   display: flex;
   align-items: flex-start;
   margin: 0 auto;
@@ -37,13 +40,11 @@ $mobile-width: 360px;
     @include flex(column, center, center);
 
     position: relative;
-
     gap: 10px;
 
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
-
     transition: 0.2s ease-in-out;
 
     &_tokens {
@@ -55,7 +56,6 @@ $mobile-width: 360px;
     }
   }
 
-  app-spindle-banner,
   app-token-selector-page {
     width: 100%;
   }
@@ -80,13 +80,12 @@ $mobile-width: 360px;
     display: block;
     width: $mobile-width;
     height: 510px;
-
     background: var(--secondary-background);
     border-radius: 17px;
   }
 }
 
-.large-iframe-swap-container {
+.large-iframe-trade-view-container {
   flex-direction: column;
   gap: 10px;
 
@@ -97,7 +96,7 @@ $mobile-width: 360px;
 }
 
 @include b($mobile-md) {
-  .swap-container {
+  .trade-view-container {
     display: flex;
     flex-direction: column;
     gap: var(--tui-padding-l);
@@ -115,7 +114,6 @@ $mobile-width: 360px;
       height: auto;
       margin-bottom: 10px;
       overflow: hidden;
-
       background: none;
       border-radius: 0;
     }
@@ -127,14 +125,5 @@ $mobile-width: 360px;
         width: 100%;
       }
     }
-  }
-}
-
-.banner-container {
-  width: 100%;
-
-  ::ng-deep fieldset {
-    height: fit-content;
-    padding: 0;
   }
 }

@@ -2,6 +2,7 @@ import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-cha
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
+const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   //AAAAAAAAAAAAAAAAAAAA
@@ -48,6 +49,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Avalanche Bridge'
   },
   //BBBBBBBBBBBBBBB
+  baltex: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}baltex.svg`,
+    name: 'Baltex'
+  },
   bridgers: {
     averageTime: 5,
     color: '#E6F3FF',
@@ -60,6 +67,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#008aff',
     image: `${imageBasePath}celer.svg`,
     name: 'cBridge'
+  },
+  cce_cash: {
+    averageTime: 5,
+    color: '#cfd8ee',
+    image: `${imageBasePath}cce_cash.png`,
+    name: 'CCE Cash'
   },
   celer_bridge: {
     averageTime: 5,
@@ -79,6 +92,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celerim.png`,
     name: 'Celerim'
   },
+  change_hero: {
+    averageTime: 5,
+    color: '#1682dc',
+    image: `${imageBasePath}change-hero.svg`,
+    name: 'ChangeHero'
+  },
   changelly: {
     averageTime: 5,
     color: '#8e28fe',
@@ -90,6 +109,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#8888bb',
     image: `${imageBasePath}changenow.png`,
     name: 'ChangeNOW'
+  },
+  clearswap_bridge: {
+    averageTime: 5,
+    color: '#8e28fe',
+    image: `${privateTradeImageBasePath}clearswap.svg`,
+    name: 'Clearswap'
   },
   connext: {
     averageTime: 5,
@@ -117,6 +142,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}exolix.svg`,
     name: 'Exolix'
   },
+  //FFFFFFFFFFFFFFFFF
+  fswap: {
+    averageTime: 5,
+    color: '#7F38A9',
+    image: `${imageBasePath}fswap.svg`,
+    name: 'FSwap'
+  },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
     averageTime: 5,
@@ -131,11 +163,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}hop.svg`,
     name: 'Hop'
   },
-  houdini: {
+  houdini_bridge: {
     averageTime: 5,
     color: '#a919d1',
-    image: `${imageBasePath}houdini.svg`,
-    name: 'Privacy Routing'
+    image: `${privateTradeImageBasePath}houdini.svg`,
+    name: 'Houdini Swap'
   },
   hyphen: {
     averageTime: 5,
@@ -174,6 +206,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#bf38ee',
     image: `${imageBasePath}lifuel.png`,
     name: 'Li Fuel'
+  },
+  lizex: {
+    averageTime: 5,
+    color: '#FFFFFF',
+    image: `${imageBasePath}lizex.svg`,
+    name: 'Lizex'
   },
   //MMMMMMMMMMMMMMMMMMM
   maker: {
@@ -313,6 +351,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}retro-bridge.svg`,
     name: 'Retro Bridge'
   },
+  rocketx_bridge: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${privateTradeImageBasePath}rocketx.png`,
+    name: 'RocketX'
+  },
   router: {
     averageTime: 5,
     color: '#000000',
@@ -367,6 +411,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}stealthex.png`,
     name: 'Stealthex'
   },
+  swapspace: {
+    averageTime: 5,
+    color: '#FBFF2D',
+    image: `${imageBasePath}spaceswap.ico`,
+    name: 'SwapSpace'
+  },
   symbiosis: {
     averageTime: 5,
     color: '#0dc449',
@@ -392,6 +442,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}teleswap.svg`,
     name: 'TeleSwap'
   },
+  the_change: {
+    averageTime: 5,
+    color: '#2563EB',
+    image: `${imageBasePath}the_change.svg`,
+    name: 'The Change'
+  },
   thorchain: {
     averageTime: 5,
     color: '#33FF99',
@@ -415,7 +471,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   voyager: {
     averageTime: 5,
     color: 'white',
-    image: `${imageBasePath}voyager.svg`,
+    image: `assets/images/icons/unknown.svg`,
     name: 'Voyager'
   },
   //WWWWWWWWWWWWWWWWWWWW
@@ -439,6 +495,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Xflows'
   },
   //XXXXXXXXXXXXXXXXXX
+  xgram: {
+    averageTime: 5,
+    color: '#FFFFFF',
+    image: `${imageBasePath}xgram.svg`,
+    name: 'Xgram'
+  },
   xy: {
     averageTime: 5,
     color: '#1687ee',

@@ -21,8 +21,7 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { ActivatedRoute, Router } from '@angular/router';
 
 type SupportedSwapProviderType =
-  | SWAP_PROVIDER_TYPE.INSTANT_TRADE
-  | SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+  SWAP_PROVIDER_TYPE.INSTANT_TRADE | SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
 const formStepsInitial = {
   token1: false,

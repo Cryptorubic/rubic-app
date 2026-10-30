@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { Token } from '@shared/models/tokens/token';
 import { firstValueFrom, forkJoin, from, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
@@ -12,7 +13,6 @@ import {
   NewTokensApiService,
   QueryTokenParams
 } from '@core/services/tokens/new-tokens-api.service';
-import { Token } from '@shared/models/tokens/token';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -111,7 +111,11 @@ export class TokensRegistryService {
         this.fetchQueryTokens({ query: token.address, blockchain: token.blockchain }).pipe(
           map(backendTokens => {
             return backendTokens.length
-              ? { ...backendTokens[0], amount: new BigNumber(NaN), favorite: false }
+              ? ({
+                  ...backendTokens[0],
+                  amount: new BigNumber(NaN),
+                  favorite: false
+                } as BalanceToken)
               : null;
           })
         )
@@ -123,8 +127,8 @@ export class TokensRegistryService {
 
   public fetchQueryTokens(params: QueryTokenParams): Observable<Token[]> {
     return this.apiService.fetchQueryTokens(params).pipe(
-      switchMap(backendTokens => {
-        const tokensWithoutBalance = backendTokens.filter(
+      map(backendTokens => {
+        return backendTokens.filter(
           token =>
             !(
               token.name.toLowerCase().includes('tether') &&
@@ -132,7 +136,6 @@ export class TokensRegistryService {
                 ('symbol' in params && params.symbol.toLowerCase().includes('eth')))
             )
         );
-        return this.balanceService.fetchDifferentChainsBalances(tokensWithoutBalance);
       })
     );
   }

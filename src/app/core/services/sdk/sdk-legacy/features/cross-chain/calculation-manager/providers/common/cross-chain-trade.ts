@@ -5,6 +5,7 @@ import {
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
+  SwapPrivateRequestInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -33,7 +34,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 
 /**
  * Abstract class for all cross-chain providers' trades.
@@ -41,10 +41,10 @@ import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/
 export abstract class CrossChainTrade<T = unknown> {
   protected lastTransactionConfig: T | null = null;
 
-  protected _uniqueInfo: UniqueProviderInfoInterface = {};
+  protected _exchangeId: string | undefined;
 
-  public get uniqueInfo(): UniqueProviderInfoInterface {
-    return this._uniqueInfo;
+  public get exchangeId(): string | undefined {
+    return this._exchangeId;
   }
 
   protected _lastTo: PriceTokenAmount | null = null;
@@ -147,13 +147,21 @@ export abstract class CrossChainTrade<T = unknown> {
     this._apiFromAddress = value;
   }
 
-  public readonly rubicId: string;
+  private _rubicId: string;
+
+  public get rubicId(): string {
+    return this._rubicId;
+  }
 
   public readonly useProxy: boolean;
 
   public lastSwapResponse: SwapResponseInterface<T> | null = null;
 
   public readonly warnings: ErrorInterface[];
+
+  public get integratorAddress(): string | undefined {
+    return this.apiQuote.integratorAddress;
+  }
 
   protected constructor(
     protected readonly providerAddress: string,
@@ -165,7 +173,7 @@ export abstract class CrossChainTrade<T = unknown> {
   ) {
     this.useProxy = apiResponse.useRubicContract;
     this.contractSpender = apiResponse.transaction.approvalAddress!;
-    this.rubicId = apiResponse.id;
+    this._rubicId = apiResponse.id;
     this.warnings = apiResponse.warnings;
   }
 
@@ -375,14 +383,53 @@ export abstract class CrossChainTrade<T = unknown> {
     }
   }
 
-  private refetchTrade<Data>(
+  protected async fetchSwapDepositData<Data>(
+    body: TransferSwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    try {
+      const res = await this.rubicApiService.fetchSwapDepositData<Data>(body);
+      this.lastSwapResponse = res as RubicAny;
+      return res;
+    } catch (err) {
+      if (err instanceof TradeExpiredError) {
+        return this.refetchTrade<Data>(body);
+      }
+
+      throw err;
+    }
+  }
+
+  protected async fetchSwapPrivateData<Data>(
+    body: TransferSwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
+    try {
+      const res = await this.rubicApiService.fetchSwapPrivateTrade<Data>(
+        body as SwapPrivateRequestInterface
+      );
+      this.lastSwapResponse = res as RubicAny;
+      return res;
+    } catch (err) {
+      if (err instanceof TradeExpiredError) {
+        return this.refetchTrade<Data>(body);
+      }
+
+      throw err;
+    }
+  }
+
+  private async refetchTrade<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {
-    const res = this.rubicApiService.fetchBestSwapData<Data>({
+    const res = await this.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });
     this.lastSwapResponse = res as RubicAny;
+    this._rubicId = res.quote.id;
     return res;
+  }
+
+  public clone(): CrossChainTrade {
+    return { ...this };
   }
 }

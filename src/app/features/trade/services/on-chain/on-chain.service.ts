@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { concatMap, firstValueFrom, of, timer } from 'rxjs';
-
 import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -38,9 +37,6 @@ import {
   Token
 } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
-import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -48,16 +44,20 @@ import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/featur
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
-import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
+import { SwapMethodOptions } from '../swaps-controller/models/swap-options';
 
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
-    if (!this.settingsService.instantTradeValue.showReceiverAddress) {
-      return null;
+    if (
+      this.formsTogglerService.isTransferMode ||
+      this.settingsService.instantTradeValue.showReceiverAddress
+    ) {
+      return this.targetNetworkAddressService.address;
     }
-    return this.targetNetworkAddressService.address;
+    return null;
   }
 
   constructor(
@@ -76,11 +76,10 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -125,9 +124,9 @@ export class OnChainService {
    */
   public async swapTrade(
     trade: OnChainTrade,
-    callback?: (hash: string) => void,
+    onHash?: (hash: string) => void,
     onSimulationSuccess?: () => Promise<boolean>,
-    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+    params: SwapMethodOptions = {
       useCacheData: false,
       skipAmountCheck: false
     }
@@ -142,11 +141,8 @@ export class OnChainService {
     }
     await this.handlePreSwapModal(trade);
 
-    const receiverAddress = this.receiverAddress;
-
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const referrer = this.sessionStorage.getItem('referral');
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
@@ -164,11 +160,13 @@ export class OnChainService {
     };
 
     const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+    const receiverAddress = params.receiverAddress ?? this.receiverAddress;
+    const refundAddress = params.refundAddress;
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
-        callback?.(hash);
+        onHash?.(hash);
 
         this.notifyGtmAfterSignTx(
           transactionHash,
@@ -185,14 +183,10 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
+      ...(refundAddress && { refundAddress }),
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),
-      solanaSponsorParams: {
-        feePayer: SOLANA_SPONSOR,
-        // @ts-ignore trade api type
-        tradeId: trade.apiResponse.id
-      },
       ...(gasLimitRatio && { gasLimitRatio })
     };
 
@@ -248,17 +242,16 @@ export class OnChainService {
       }
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
-        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
-          transactionHash
-        );
+        const txStatus =
+          await this.sdkService.onChainStatusManager.getStellarSwapStatus(transactionHash);
         if (txStatus.status !== TX_STATUS.SUCCESS) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
         }
       }
 
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
-      }
+      // if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+      //   this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+      // }
 
       return transactionHash;
     } catch (err) {
@@ -279,9 +272,8 @@ export class OnChainService {
     }
     const { blockchain, fromAmount, fromDecimals } = TradeParser.getItSwapParams(trade);
 
-    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-      blockchain
-    );
+    const { shouldCalculateGasPrice, gasPriceOptions } =
+      await this.gasService.getGasInfo(blockchain);
 
     const transactionOptions = {
       onTransactionHash: callback,

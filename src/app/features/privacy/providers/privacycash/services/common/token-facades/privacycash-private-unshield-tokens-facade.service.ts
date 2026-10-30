@@ -19,7 +19,7 @@ export class PrivacycashPrivateUnshieldTokensFacadeService extends PrivacycashPr
           fromAmount: revealAmount,
           toAsset: null,
           toAmount: null
-        } as PrivateSwapInfo)
+        }) as PrivateSwapInfo
     )
   );
 }

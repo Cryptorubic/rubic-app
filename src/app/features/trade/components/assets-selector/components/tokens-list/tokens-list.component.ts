@@ -27,6 +27,7 @@ import { BehaviorSubject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { AssetsSelectorConfig } from '../../models/assets-selector-layout';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 
 @Component({
   standalone: false,
@@ -100,12 +101,15 @@ export class TokensListComponent implements OnInit {
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
+  public readonly isTransferMode$ = this.formsTogglerService.isTransferMode$;
+
   constructor(
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly formsTogglerService: FormsTogglerService,
     // private readonly builder: AnimationBuilder,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
@@ -166,10 +170,10 @@ export class TokensListComponent implements OnInit {
     if (
       Boolean(
         tokensNetworkStateByAsset._pageLoading$.value ||
-          this.tokensSearchQuery ||
-          this.listType === 'favorite' ||
-          !tokensNetworkStateByAsset ||
-          !tokensNetworkStateByAsset.allowFetching
+        this.tokensSearchQuery ||
+        this.listType === 'favorite' ||
+        !tokensNetworkStateByAsset ||
+        !tokensNetworkStateByAsset.allowFetching
       )
     ) {
       return true;

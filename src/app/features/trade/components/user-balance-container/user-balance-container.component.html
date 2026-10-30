@@ -6,7 +6,7 @@
         class="user-balance-container__balance_amount"
         (click)="isMobile ? maxButtonClickEvent.emit() : null"
       >
-        {{ token?.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }}
+        {{ token?.amount | bigNumberFormat | withRound: 'fixedValue' : { decimals: 6 } }}
       </span>
     </span>
 

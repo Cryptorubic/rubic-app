@@ -45,18 +45,15 @@
             <div class="preview__amount-container">
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
               </div>
-              <div
-                *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
-                class="preview__fiat-amount"
-              >
-                ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
               <div class="preview__token-info">
-                on
-                {{ state.tradeInfo.fromAsset.secondLabel }}
+                @let amount = state.tradeInfo.fromValue.fiatAmount;
+                @if (amount) {
+                  ~ ${{ amount }}&nbsp;-&nbsp;
+                }
+                on {{ state.tradeInfo.fromAsset.secondLabel }}
               </div>
             </div>
           </div>
@@ -83,21 +80,16 @@
               </div>
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
               </div>
             </div>
-            <div class="preview__fiat-container">
-              <div
-                *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
-                class="preview__fiat-amount"
-              >
+            <div class="preview__token-info">
+              @let amount = state.tradeInfo.fromValue.fiatAmount;
+              @if (amount) {
                 ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
-              <div class="preview__token-info">
-                on
-                {{ state.tradeInfo.fromAsset.secondLabel }}
-              </div>
+              }
+              on {{ state.tradeInfo.fromAsset.secondLabel }}
             </div>
           </div>
         </ng-template>
@@ -144,16 +136,16 @@
             <div class="preview__amount-container">
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
-              <div
-                *ngIf="state.tradeInfo.toValue.fiatAmount as amount"
-                class="preview__fiat-amount"
-              >
-                ~ ${{ amount }}&nbsp;-&nbsp;
+              <div class="preview__token-info">
+                @let amount = state.tradeInfo.toValue.fiatAmount;
+                @if (amount) {
+                  ~ ${{ amount }}&nbsp;-&nbsp;
+                }
+                on {{ state.tradeInfo.toAsset.secondLabel }}
               </div>
-              <div class="preview__token-info">on {{ state.tradeInfo.toAsset.secondLabel }}</div>
             </div>
           </div>
         </ng-container>
@@ -179,21 +171,16 @@
               </div>
               <div class="preview__token-amount">
                 {{
-                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount: 8 : 6
                 }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
             </div>
-            <div class="preview__fiat-container">
-              <div
-                *ngIf="state.tradeInfo.toValue.fiatAmount as amount"
-                class="preview__fiat-amount"
-              >
+            <div class="preview__token-info">
+              @let amount = state.tradeInfo.toValue.fiatAmount;
+              @if (amount) {
                 ~ ${{ amount }}&nbsp;-&nbsp;
-              </div>
-              <div class="preview__token-info">
-                on
-                {{ state.tradeInfo.toAsset.secondLabel }}
-              </div>
+              }
+              on {{ state.tradeInfo.toAsset.secondLabel }}
             </div>
           </div>
         </ng-template>
@@ -210,6 +197,7 @@
           }"
           [averageTimeMins]="getAverageTimeString(state?.tradeState)"
           [time95PercentSwapsMins]="getTime95PercentsSwapsString(state?.tradeState)"
+          [earnsPoints]="(earnsPoints$ | async) === true"
         ></app-swap-data-element>
       </div>
 
@@ -221,7 +209,7 @@
           size="m"
           [safetyLink]="
             state.transaction.data.hash
-              | scannerLink : state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
+              | scannerLink: state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
           "
         >
           Explorer
@@ -236,9 +224,9 @@
         <app-transaction-details></app-transaction-details>
       </div>
 
-      <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info></app-success-swap-info>
-      </div>
+      @if (state.transaction.step === 'success') {
+        <app-success-swap-info [earnedPoints]="earnedPoints$ | async"></app-success-swap-info>
+      }
     </div>
 
     <ng-container *ngIf="state.tradeState.trade.warnings.length">
@@ -260,7 +248,7 @@
     ></app-mev-bot>
 
     <ng-container *ngLet="buttonState$ | async as buttonState">
-      <div class="preview__action-container" *ngIf="!buttonState.needTrustline; else trustline">
+      <div class="preview__action-container">
         <button
           class="preview__action-button"
           tuiButton
@@ -284,12 +272,12 @@
         </button>
       </div>
     </ng-container>
-    <ng-template #trustline>
+    <!--<ng-template #trustline>
       <app-trustline
         *ngIf="state.trustlineInfo"
         [options]="state.trustlineInfo"
         (onTrustlineAdd)="onTrustlineAdd()"
       ></app-trustline>
-    </ng-template>
+    </ng-template>-->
   </ng-container>
 </app-window-container>

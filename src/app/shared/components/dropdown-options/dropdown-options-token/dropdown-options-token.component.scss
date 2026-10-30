@@ -20,7 +20,6 @@
   > * {
     width: 100%;
     height: 100%;
-
     cursor: pointer;
 
     ::ng-deep * {
@@ -38,7 +37,6 @@
     gap: 16px;
     align-items: center;
     padding: 5px;
-
     color: white;
     font-size: 13px;
 
@@ -48,7 +46,6 @@
 
     &:hover {
       text-decoration: none;
-
       background: var(--tui-background-base);
       border-radius: var(--tui-radius-s);
     }
@@ -73,7 +70,6 @@
     ::ng-deep {
       .t-loader {
         left: -65%;
-
         min-width: unset;
       }
     }
@@ -88,7 +84,6 @@
     display: flex !important;
     flex-direction: column;
     justify-content: center;
-
     line-height: 1.2;
   }
 }

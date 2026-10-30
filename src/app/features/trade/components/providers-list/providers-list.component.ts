@@ -47,6 +47,10 @@ export class ProvidersListComponent {
   @Input({ required: true })
   calculationProgress: CalculationProgress = this.context?.data?.calculationProgress;
 
+  @PolymorpheusInput()
+  @Input()
+  public readonly privateOnly: boolean = this.context?.data?.privateOnly || false;
+
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
   public readonly toToken$ = this.swapsFormService.toToken$;
@@ -54,6 +58,47 @@ export class ProvidersListComponent {
   public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
+
+  public get showEmptyPrivateList(): boolean {
+    return (
+      this.privateOnly &&
+      this.states.length === 0 &&
+      this.calculationProgress?.total > 0 &&
+      this.calculationProgress.current === this.calculationProgress.total
+    );
+  }
+
+  constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<
+      TradeProvider,
+      {
+        states: TradeState[];
+        selectedTradeType: TradeProvider;
+        calculationProgress: CalculationProgress;
+        isModal: boolean;
+        shortedInfo: boolean;
+        noRoutes: boolean;
+        privateOnly: boolean;
+      }
+    >,
+    private readonly swapsFormService: SwapsFormService,
+    private readonly providerHintService: ProviderHintService,
+    private readonly tokensFacade: TokensFacadeService
+  ) {}
+
+  public isBestProvider(tradeState: TradeState): boolean {
+    if (this.privateOnly) {
+      return this.states[0]?.tradeType === tradeState.tradeType;
+    }
+
+    const nonPrivate = this.states.filter(state => !state.private);
+    if (nonPrivate.length > 0) {
+      return tradeState.tradeType === nonPrivate[0].tradeType;
+    }
+    return false;
+  }
 
   public handleTradeSelection(
     event: MouseEvent,
@@ -74,23 +119,4 @@ export class ProvidersListComponent {
       this.selectTrade.emit(tradeType);
     }
   }
-
-  constructor(
-    @Optional()
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      TradeProvider,
-      {
-        states: TradeState[];
-        selectedTradeType: TradeProvider;
-        calculationProgress: CalculationProgress;
-        isModal: boolean;
-        shortedInfo: boolean;
-        noRoutes: boolean;
-      }
-    >,
-    private readonly swapsFormService: SwapsFormService,
-    private readonly providerHintService: ProviderHintService,
-    private readonly tokensFacade: TokensFacadeService
-  ) {}
 }

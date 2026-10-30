@@ -15,24 +15,16 @@
   ></app-switch-list-type-button>
 </div>
 
-<app-tokens-list-filters
-  *ngIf="isUtility && assetsSelectorConfig.withTokensFilter"
-  [assetListType]="listType"
-  (onSelect)="selectTokenFilter($event)"
->
-</app-tokens-list-filters>
-
 <tui-scrollbar
   class="tokens-container"
   [ngClass]="{
-    'large-iframe-token-container': useLargeIframe,
-    'tokens-container__all-chains': isUtility && assetsSelectorConfig.withTokensFilter
+    'large-iframe-token-container': useLargeIframe
   }"
 >
   <tui-loader [showLoader]="loading" [overlay]="true">
     <ng-container *ngIf="customToken === null; else customTokenTmpl">
       <!--standard mode -->
-      @if(!_tokensToShow?.length) {
+      @if (!_tokensToShow?.length) {
         <div class="tokens-container__empty-list">
           <app-empty-list
             [assetListType]="listType"

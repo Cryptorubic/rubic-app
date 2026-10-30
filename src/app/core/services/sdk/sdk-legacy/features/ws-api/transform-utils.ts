@@ -24,9 +24,13 @@ import { TronApiCrossChainTrade } from './chains/tron/tron-api-cross-chain-trade
 import { TronApiOnChainTrade } from './chains/tron/tron-api-on-chain-trade';
 
 import {
-  transferTradeSupportedProviders,
-  TransferTradeType
+  crossChainTransferTradeSupportedProviders,
+  CrossChainTransferTradeType
 } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import {
+  onChainTransferTradeSupportedProviders,
+  OnChainTransferTradeType
+} from '../on-chain/calculation-manager/common/on-chain-transfer-trade/constants/on-chain-transfer-trade-supported-providers';
 import { BitcoinApiCrossChainConstructor } from './chains/bitcoin/bitcoin-api-cross-chain-constructor';
 import { BitcoinApiCrossChainTrade } from './chains/bitcoin/bitcoin-api-cross-chain-trade';
 import { EvmApiCrossChainConstructor } from './chains/evm/evm-api-cross-chain-constructor';
@@ -36,6 +40,7 @@ import { SolanaApiOnChainConstructor } from './chains/solana/solana-api-on-chain
 import { TonApiCrossChainConstructor } from './chains/ton/ton-api-cross-chain-constructor';
 import { TonApiOnChainConstructor } from './chains/ton/ton-api-on-chain-constructor';
 import { ApiCrossChainTransferTrade } from './chains/transfer-trade/api-cross-chain-transfer-trade';
+import { ApiOnChainTransferTrade } from './chains/transfer-trade/api-on-chain-transfer-trade';
 import { TronApiCrossChainConstructor } from './chains/tron/tron-api-cross-chain-constructor';
 import { TronApiOnChainConstructor } from './chains/tron/tron-api-on-chain-constructor';
 import { RubicApiError } from './models/rubic-api-error';
@@ -60,23 +65,19 @@ import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws
 
 export class TransformUtils {
   public static async transformCrossChain(
-    res: QuoteResponseInterface,
+    res: QuoteResponseInterface | null,
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    isPrivate: boolean,
     err?: RubicApiError
   ): Promise<WrappedCrossChainTrade> {
     if (!res && !err) {
       throw new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     const tradeType = (res?.providerType || err?.type) as WrappedCrossChainTrade['tradeType'];
-    const tradeParams = await RubicApiUtils.getTradeParams(
-      quote,
-      res,
-      tradeType,
-      sdkLegacyService.tokenService
-    );
+    const tradeParams = await RubicApiUtils.getTradeParams(quote, res, tradeType, err);
 
     const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
     const parsedWarnings = RubicApiParser.parseRubicApiWarnings(res?.warnings || []);
@@ -88,8 +89,9 @@ export class TransformUtils {
     let trade: CrossChainTrade | null = null;
 
     const isTransferTrade =
-      transferTradeSupportedProviders.includes(tradeType as TransferTradeType) &&
-      chainType !== CHAIN_TYPE.EVM;
+      crossChainTransferTradeSupportedProviders.includes(
+        tradeType as CrossChainTransferTradeType
+      ) || isPrivate;
 
     const needProvidePubKey =
       BITCOIN_PK_REQUIRED_PROVIDERS.includes(tradeType as BtcTradeTypeRequiringPK) &&
@@ -167,28 +169,25 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
+      private: isPrivate,
       ...(error && { error })
     };
   }
 
   public static async transformOnChain(
-    response: QuoteResponseInterface,
+    response: QuoteResponseInterface | null,
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    isPrivate: boolean,
     err?: RubicApiError
   ): Promise<WrappedOnChainTradeOrNull> {
     if (!response && !err) {
       throw new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     const tradeType = (response?.providerType || err?.type) as OnChainTradeType;
-    const tradeParams = await RubicApiUtils.getTradeParams(
-      quote,
-      response,
-      tradeType,
-      sdkLegacyService.tokenService
-    );
+    const tradeParams = await RubicApiUtils.getTradeParams(quote, response, tradeType, err);
 
     const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
     const parsedWarningsError = RubicApiParser.parseRubicApiWarnings(
@@ -201,7 +200,13 @@ export class TransformUtils {
 
     let trade: OnChainTrade | null = null;
 
-    if (chainType === CHAIN_TYPE.EVM) {
+    const isTransferTrade = onChainTransferTradeSupportedProviders.includes(
+      tradeType as OnChainTransferTradeType
+    );
+
+    if (isTransferTrade) {
+      trade = new ApiOnChainTransferTrade(tradeParams, sdkLegacyService, rubicApiService);
+    } else if (chainType === CHAIN_TYPE.EVM) {
       trade = new EvmApiOnChainTrade(
         tradeParams as EvmApiOnChainConstructor,
         sdkLegacyService,
@@ -251,6 +256,7 @@ export class TransformUtils {
     return {
       trade,
       tradeType,
+      private: isPrivate,
       ...(error && { error })
     };
   }

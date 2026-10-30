@@ -29,12 +29,7 @@ export const PRIVATE_TAB_TO_FLOW_TYPE_EVENT: Record<PrivateModeTab, PrivateFlowT
 };
 
 export type PrivateProviderNameEvent =
-  | 'hinkal'
-  | 'privacy_cash'
-  | 'clearswap'
-  | 'houdini'
-  | 'zama'
-  | 'railgun';
+  'hinkal' | 'privacy_cash' | 'clearswap' | 'houdini' | 'zama' | 'railgun';
 
 export const PRIVATE_TRADE_TYPE_TO_PROVIDER_NAME_EVENT: Record<
   PrivateTradeType,

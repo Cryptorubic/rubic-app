@@ -18,7 +18,10 @@ const DISCONNECTION_STEPS: Record<'ONE' | 'TWO' | 'THREE', { steps: number; hint
   THREE: { steps: 3, hint: 'Shield → Private Transfer → Unshield' }
 };
 
-const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProviderRawInfo> = {
+const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<
+  Exclude<PrivateTradeType, 'HINKAL'>,
+  PrivateProviderRawInfo
+> = {
   ZAMA: {
     getExecutionStepsInfo: () => ACTION_STEPS.THREE,
     getFeeInfo: () => Promise.resolve({ feeSize: 'zero fees', feeRate: 0 }),
@@ -52,24 +55,27 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
     disconnectionRate: 4,
     disconnectionSteps: DISCONNECTION_STEPS.TWO
   },
-  HINKAL: {
-    getExecutionStepsInfo: () => ACTION_STEPS.THREE,
-    getFeeInfo: (tab: PrivateModeTab) =>
-      Promise.resolve(
-        tab === PRIVATE_MODE_TAB.TRANSFER
-          ? { feeSize: '0.05%', feeRate: 1 }
-          : { feeSize: 'zero fees', feeRate: 0 }
-      ),
-    url: PRIVATE_MODE_URLS.HINKAL,
-    icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HINKAL],
-    name: PRIVATE_TRADE_TYPE.HINKAL,
-    uiName: 'Hinkal',
-    privacyType: 'ZK',
-    security: 3.55,
-    executionTimeRate: 1,
-    disconnectionRate: 3.55,
-    disconnectionSteps: DISCONNECTION_STEPS.TWO
-  },
+  /**
+   * hinkal was hacked
+   */
+  // HINKAL: {
+  //   getExecutionStepsInfo: () => ACTION_STEPS.THREE,
+  //   getFeeInfo: (tab: PrivateModeTab) =>
+  //     Promise.resolve(
+  //       tab === PRIVATE_MODE_TAB.TRANSFER
+  //         ? { feeSize: '0.05%', feeRate: 1 }
+  //         : { feeSize: 'zero fees', feeRate: 0 }
+  //     ),
+  //   url: PRIVATE_MODE_URLS.HINKAL,
+  //   icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HINKAL],
+  //   name: PRIVATE_TRADE_TYPE.HINKAL,
+  //   uiName: 'Hinkal',
+  //   privacyType: 'ZK',
+  //   security: 3.55,
+  //   executionTimeRate: 1,
+  //   disconnectionRate: 3.55,
+  //   disconnectionSteps: DISCONNECTION_STEPS.TWO
+  // },
   PRIVACY_CASH: {
     //getMinAmountUsd: (tab: PrivateModeTab) => (tab === PRIVATE_MODE_TAB.TRANSFER ? 0 : 10),
     getExecutionStepsInfo: (tab: PrivateModeTab) =>

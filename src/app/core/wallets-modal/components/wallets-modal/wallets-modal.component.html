@@ -27,7 +27,7 @@
             appearance="secondary"
             type="button"
             size="l"
-            *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
+            *ngIf="!(provider.value | functionCall: shouldRenderAsLink); else deepLink"
             [disabled]="(walletsLoading$ | async) || provider.disabled || !enableWallets"
             (click)="connectProvider(provider.value)"
             class="modal__button"

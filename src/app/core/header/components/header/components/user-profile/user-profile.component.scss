@@ -4,14 +4,17 @@
   --tui-data-list-padding: 5px;
   --tui-data-list-margin: 0px;
 
+  &__element {
+    height: 40px;
+  }
+
   &__element:not(:last-child) {
     margin-bottom: 5px;
   }
 
   &__link-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    @include flex(row, center, flex-start);
+    gap: 8px;
     width: 100%;
   }
 }
@@ -23,23 +26,8 @@
     img {
       display: block;
       height: auto;
-
       border-radius: 50%;
     }
-  }
-}
-
-.notification-counter {
-  position: absolute;
-
-  &_profile {
-    top: 0;
-    right: 35px;
-  }
-
-  &_menu {
-    top: 0;
-    right: 0;
   }
 }
 
@@ -51,39 +39,35 @@
 
 @include b($mobile-sm-middle) {
   .profile-button {
+    @include flex(row, center, space-between);
+    gap: 5px;
     height: 40px;
 
-    &[tuiButtonV] {
-      gap: 0;
+    app-notification-badge {
+      margin-top: -3px;
     }
   }
 
   .user-profile {
     &__avatar {
-      width: 16px;
-      margin-right: 8px;
+      width: 20px;
 
       img {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
       }
     }
 
     &__text {
       margin-right: 0;
-
       font-size: 12px;
-    }
-
-    &__logout {
-      height: 40px;
-
-      font-size: 12px !important;
     }
   }
 
-  .arrow {
-    display: none;
+  .data-list {
+    &__element {
+      font-size: 12px;
+    }
   }
 
   ::ng-deep {
