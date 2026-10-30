@@ -9,7 +9,7 @@ import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/e
 import { StoreService } from '@core/services/store/store.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { TUI_IS_IOS } from '@taiga-ui/cdk';
+import { TUI_IS_ANDROID, TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -43,6 +43,7 @@ import {
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
+import { DeviceType } from '../wallets-adapters/evm/common/models/device-type';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +90,7 @@ export class WalletConnectorService {
     private readonly httpService: HttpService,
     @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
+    @Inject(TUI_IS_ANDROID) private readonly isAndroid: boolean,
     private readonly zone: NgZone
   ) {}
 
@@ -125,7 +127,8 @@ export class WalletConnectorService {
     ] as const;
 
     if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
+      const device: DeviceType = this.isIos ? 'ios' : this.isAndroid ? 'android' : 'desktop';
+      return new MetamaskWalletAdapter(...defaultConstructorParameters, device);
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
