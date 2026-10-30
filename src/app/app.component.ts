@@ -2,7 +2,6 @@ import { WA_WINDOW } from '@ng-web-apis/common';
 import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -41,7 +40,6 @@ export class AppComponent implements AfterViewInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
-    private readonly cookieService: CookieService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WA_WINDOW) private window: RubicWindow,
