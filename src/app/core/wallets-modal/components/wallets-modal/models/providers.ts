@@ -30,6 +30,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
+    name: 'Oath Wallet',
+    value: WALLET_NAME.OATH,
+    img: './assets/images/icons/wallets/oath-wallet.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
     name: 'TronLink',
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',

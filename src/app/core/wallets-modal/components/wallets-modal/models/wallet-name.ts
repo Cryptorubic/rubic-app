@@ -2,6 +2,7 @@ export enum WALLET_NAME {
   METAMASK = 'metamask',
   COIN_BASE = 'coinbase',
   WALLET_CONNECT = 'walletconnect',
+  OATH = 'oath',
   TRUST_WALLET = 'trustwallet',
   TRON_LINK = 'tronlink',
   PHANTOM = 'phantom',
