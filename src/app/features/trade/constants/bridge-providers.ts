@@ -142,6 +142,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}exolix.svg`,
     name: 'Exolix'
   },
+  //FFFFFFFFFFFFFFFFF
+  fswap: {
+    averageTime: 5,
+    color: '#7F38A9',
+    image: `${imageBasePath}fswap.svg`,
+    name: 'FSwap'
+  },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
     averageTime: 5,
