@@ -6,9 +6,16 @@ import {
   TokensState
 } from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
-import { BehaviorSubject, combineLatest, combineLatestWith, firstValueFrom, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  combineLatestWith,
+  firstValueFrom,
+  Observable,
+  of
+} from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
@@ -17,6 +24,11 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { EvmAdapter } from '@cryptorubic/web3';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { shareReplayConfig } from '@app/shared/constants/common/share-replay-config';
+import {
+  getTokenKey,
+  TokenKey
+} from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +40,20 @@ export class NewTokensStoreService {
     map(([...allArrays]) => {
       const allTokens = allArrays.flat();
       return allTokens;
-    })
+    }),
+    shareReplay(shareReplayConfig)
+  );
+
+  public readonly allTokensMap$: Observable<Map<TokenKey, BalanceToken>> = this.allTokens$.pipe(
+    map(allTokens => {
+      const tokensMap = new Map<TokenKey, BalanceToken>();
+      allTokens.forEach(token => {
+        const key = getTokenKey(token);
+        if (!tokensMap.has(key)) tokensMap.set(key, token);
+      });
+      return tokensMap;
+    }),
+    shareReplay(shareReplayConfig)
   );
 
   constructor(
