@@ -19,7 +19,7 @@
   border-bottom-left-radius: var(--tui-radius-m);
 
   @include b($mobile-md) {
-    height: 67vh;
+    height: 72vh;
     padding: var(--tui-padding-l);
     background: none;
     border-radius: 0;
@@ -37,10 +37,6 @@
 
   ::ng-deep .t-content {
     height: 100%;
-
-    @include b($mobile-md-minus) {
-      height: calc(100% - 50px);
-    }
   }
 }
 

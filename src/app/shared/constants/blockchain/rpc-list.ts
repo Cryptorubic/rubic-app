@@ -236,18 +236,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://api.mainnet-beta.solana.com'
   ],
   [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: ['https://artio.rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
-    'https://rpc.ankr.com/blast_testnet_sepolia/a569c6f7d83a39592921667624975861dbc1764ce94dac1304793f5945fab681',
-    'https://sepolia.blast.io'
-  ],
-  [BLOCKCHAIN_NAME.BLAST]: [
-    'https://rpc.ankr.com/blast/a569c6f7d83a39592921667624975861dbc1764ce94dac1304793f5945fab681',
-    'https://rpc.blast.io',
-    'https://blast.din.dev/rpc',
-    'https://blastl2-mainnet.public.blastapi.io',
-    'https://blast.blockpi.network/v1/rpc/public',
-    'https://x-api.rubic.exchange/drpc/blast?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
   [BLOCKCHAIN_NAME.HOLESKY]: [
     'https://ethereum-holesky.publicnode.com',
     'https://1rpc.io/holesky',
