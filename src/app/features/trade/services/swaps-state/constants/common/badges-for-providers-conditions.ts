@@ -13,10 +13,6 @@ export function showAttentionLabelArbitrumBridge(trade: CrossChainTrade | OnChai
   );
 }
 
-export function showXyBlastPromoLabel(trade: CrossChainTrade): boolean {
-  return trade.to.blockchain === BLOCKCHAIN_NAME.BLAST && trade.bridgeType === 'ypool';
-}
-
 export function showBerachainLabel(trade: CrossChainTrade): boolean {
   const withBerachain =
     trade.to.blockchain === BLOCKCHAIN_NAME.BERACHAIN ||

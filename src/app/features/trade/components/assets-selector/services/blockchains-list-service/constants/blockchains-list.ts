@@ -303,11 +303,6 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
   },
   {
-    name: BLOCKCHAIN_NAME.BLAST,
-    rank: 0.5,
-    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
-  },
-  {
     name: BLOCKCHAIN_NAME.MANTLE,
     rank: 0.5,
     tags: ['MNT', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]

@@ -2,12 +2,10 @@ import { WA_WINDOW } from '@ng-web-apis/common';
 import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of, timer } from 'rxjs';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -42,7 +40,6 @@ export class AppComponent implements AfterViewInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
-    private readonly cookieService: CookieService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WA_WINDOW) private window: RubicWindow,
@@ -87,9 +84,7 @@ export class AppComponent implements AfterViewInit {
    * Setups list of languages and current language.
    */
   private setupLanguage(): void {
-    let userRegionLanguage = navigator.language?.split('-')[0];
-    userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
-    const lng = this.cookieService.get('lng') || userRegionLanguage;
+    const lng = 'en';
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
   }

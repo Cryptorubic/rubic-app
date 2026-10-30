@@ -1,4 +1,3 @@
-import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 import { AssetListType } from '@features/trade/models/asset';
 import { BlockchainName } from '@cryptorubic/core';
 
@@ -22,7 +21,6 @@ interface AllQueryParams {
   slippageCcr: string;
   accentColor: string; // correct format is ...&accentColor=00FFFF
   theme: string;
-  language: SupportedLanguages;
   providerAddress: string;
   feeTarget: string;
   hideUnusedUI: string;
