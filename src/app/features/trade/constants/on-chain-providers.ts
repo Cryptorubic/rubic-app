@@ -431,6 +431,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}native.svg`,
     color: '#34A5F5'
   },
+  [ON_CHAIN_TRADE_TYPE.NORDSTERN]: {
+    name: 'Nordstern',
+    image: `${imageBasePath}nordstern.svg`,
+    color: '#34A5F5'
+  },
 
   //OOOOOOOOOOOOOOOOOOOOOOO
   [ON_CHAIN_TRADE_TYPE.ODOS]: {
