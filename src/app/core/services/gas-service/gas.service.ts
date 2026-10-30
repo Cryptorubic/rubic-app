@@ -31,7 +31,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MANTLE,
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
-  BLOCKCHAIN_NAME.BLAST,
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_LINK,
@@ -82,7 +81,6 @@ export class GasService {
     [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
-    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
@@ -473,19 +471,6 @@ export class GasService {
   private fetchScrollGas(): Observable<GasPrice> {
     const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SCROLL
-    );
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
-    );
-  }
-
-  @Cacheable({
-    maxAge: GasService.requestInterval
-  })
-  private fetchBlastGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.BLAST
     );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
