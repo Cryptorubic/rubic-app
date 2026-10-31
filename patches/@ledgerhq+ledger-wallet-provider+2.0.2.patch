@@ -1,0 +1,102 @@
+diff --git a/node_modules/@ledgerhq/ledger-wallet-provider/dist/styles.css b/node_modules/@ledgerhq/ledger-wallet-provider/dist/styles.css
+index 3e1cb55..75df6dd 100644
+--- a/node_modules/@ledgerhq/ledger-wallet-provider/dist/styles.css
++++ b/node_modules/@ledgerhq/ledger-wallet-provider/dist/styles.css
+@@ -3519,81 +3519,81 @@
+   inherits: false;
+ }
+ @keyframes slide-in-from-top {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateY(calc(var(--spacing-10) * -1));
+     opacity: 0;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateY(0px);
+     opacity: 1;
+   }
+ }
+ @keyframes slide-in-from-bottom {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateY(var(--spacing-10));
+     opacity: 0;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateY(0px);
+     opacity: 1;
+   }
+ }
+ @keyframes slide-in-from-left {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateX(calc(var(--spacing-10) * -1));
+     opacity: 0;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateX(0px);
+     opacity: 1;
+   }
+ }
+ @keyframes slide-in-from-right {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateX(var(--spacing-10));
+     opacity: 0;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateX(0px);
+     opacity: 1;
+   }
+ }
+ @keyframes slide-out-to-top {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateY(0px);
+     opacity: 1;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateY(calc(var(--spacing-10) * -1));
+     opacity: 0;
+   }
+ }
+ @keyframes slide-out-to-bottom {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateY(0px);
+     opacity: 1;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateY(var(--spacing-10));
+     opacity: 0;
+   }
+ }
+ @keyframes slide-out-to-left {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateX(0px);
+     opacity: 1;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateX(calc(var(--spacing-10) * -1));
+     opacity: 0;
+   }
+ }
+ @keyframes slide-out-to-right {
+-  .ledger-wallet-provider from {
++  from {
+     transform: translateX(0px);
+     opacity: 1;
+   }
+-  .ledger-wallet-provider to {
++  to {
+     transform: translateX(var(--spacing-10));
+     opacity: 0;
+   }
