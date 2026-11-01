@@ -1,3 +1,6 @@
+import { OathWalletAdapter } from '../wallets-adapters/evm/oath-wallet-adapter';
+import { OathConnectionService } from '../oath-connection.service';
+import { OATH_BLOCKCHAINS } from '../constants/oath-wallet';
 import { WA_WINDOW } from '@ng-web-apis/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -89,7 +92,8 @@ export class WalletConnectorService {
     private readonly httpService: HttpService,
     @Inject(WA_WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
-    private readonly zone: NgZone
+    private readonly zone: NgZone,
+    private readonly oathConnection: OathConnectionService
   ) {}
 
   public checkIfSafeEnv(): boolean {
@@ -130,6 +134,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
       return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
+    }
+
+    if (walletName === WALLET_NAME.OATH) {
+      return new OathWalletAdapter(...defaultConstructorParameters, this.oathConnection);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
@@ -203,6 +211,7 @@ export class WalletConnectorService {
   }
 
   public getBlockchainsBasedOnWallet(): BlockchainName[] {
+    if (this.provider?.walletName === WALLET_NAME.OATH) return [...OATH_BLOCKCHAINS];
     if (this.chainType === CHAIN_TYPE.EVM) {
       return Object.values(EVM_BLOCKCHAIN_NAME);
     }

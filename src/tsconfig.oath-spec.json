@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "files": ["../scripts/test-oath-wallet.ts"],
+  "include": ["app/core/services/wallets/**/oath*.spec.ts", "**/*.d.ts"]
+}

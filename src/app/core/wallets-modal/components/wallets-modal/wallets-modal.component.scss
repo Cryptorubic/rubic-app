@@ -55,12 +55,12 @@
         display: block;
         height: 8px;
       }
-    
+
       &::-webkit-scrollbar-thumb {
         background-color: #626472;
         border-radius: 4px;
       }
-    
+
       &::-webkit-scrollbar-track {
         background-color: var(--io-background);
         border-radius: 4px;
@@ -95,9 +95,6 @@
   }
 
   &__button {
-      
-
-
     display: flex;
     flex-direction: column;
     gap: var(--tui-padding-s);
@@ -115,7 +112,6 @@
       background-color: var(--tui-background-neutral-1);
       scale: 1.05;
     }
-      
   }
 
   &__link {
@@ -163,5 +159,24 @@
         margin-top: 1px;
       }
     }
+  }
+}
+
+.oath-connection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  align-items: center;
+  padding: var(--tui-padding-l);
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--tui-radius-s);
+  }
+
+  a {
+    color: var(--tui-background-accent-1);
   }
 }

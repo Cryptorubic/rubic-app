@@ -3,8 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
+import { OathConnectionService } from '@core/services/wallets/oath-connection.service';
+import { OATH_APP_STORE } from '@core/services/wallets/constants/oath-wallet';
+import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { WA_WINDOW } from '@ng-web-apis/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
@@ -16,7 +20,7 @@ import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { firstValueFrom, from, of, startWith } from 'rxjs';
+import { defer, firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { FormControl } from '@angular/forms';
@@ -39,7 +43,19 @@ import { WALLETS_TO_HIDE } from './models/wallets-to-hide-map';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: []
 })
-export class WalletsModalComponent implements OnInit {
+export class WalletsModalComponent implements OnInit, OnDestroy {
+  public readonly oathAppStore = OATH_APP_STORE;
+
+  public ngOnDestroy(): void {
+    this.oathConnection.cancel();
+  }
+
+  public openOath(appLink: string): void {
+    if (this.isIos && appLink?.startsWith('oathwallet://wc?uri=')) {
+      this.window.location.assign(appLink);
+    }
+  }
+
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
 
   private readonly allProviders: ReadonlyArray<WalletProvider>;
@@ -69,9 +85,11 @@ export class WalletsModalComponent implements OnInit {
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
 
-  public enableWallets$ = this.rulesCheckbox.valueChanges.pipe(
-    startWith(this.rulesCheckbox.value),
-    tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
+  public enableWallets$ = defer(() =>
+    this.rulesCheckbox.valueChanges.pipe(
+      startWith(this.rulesCheckbox.value),
+      tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
+    )
   );
 
   public readonly modalDirection: 'column' | 'row';
@@ -88,7 +106,9 @@ export class WalletsModalComponent implements OnInit {
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
     private readonly modalService: ModalService,
-    private readonly router: Router
+    private readonly router: Router,
+    public readonly oathConnection: OathConnectionService,
+    @Inject(TUI_IS_IOS) public readonly isIos: boolean
   ) {
     this.allProviders = context.data?.providers
       ? PROVIDERS_LIST.filter(provider => context.data.providers.includes(provider.value))
@@ -166,6 +186,18 @@ export class WalletsModalComponent implements OnInit {
       }
 
       this.headerStore.setWalletsLoadingStatus(true);
+
+      if (provider === WALLET_NAME.OATH) {
+        const attempt = this.oathConnection.begin();
+        try {
+          await this.authService.connectWallet({ walletName: provider });
+          if (this.authService.userAddress) this.close();
+        } finally {
+          this.oathConnection.finish(attempt);
+          this.headerStore.setWalletsLoadingStatus(false);
+        }
+        return;
+      }
 
       const connectionTime = 15_000;
 
