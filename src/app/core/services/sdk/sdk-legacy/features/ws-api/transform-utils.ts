@@ -62,6 +62,8 @@ import {
 } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/bitcoin-pk-required-providers';
 import { SuiApiCrossChainConstructor } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-constructor';
 import { SuiApiCrossChainTrade } from '@core/services/sdk/sdk-legacy/features/ws-api/chains/sui/sui-api-cross-chain-trade';
+import { OmnistonEvmCrossChainTrade } from '../cross-chain/calculation-manager/providers/omniston/omniston-evm-cross-chain-trade';
+import { OmnistonTronCrossChainTrade } from '../cross-chain/calculation-manager/providers/omniston/omniston-tron-cross-chain-trade';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -106,6 +108,8 @@ export class TransformUtils {
         trade = new ArbitrumRbcBridgeTrade(params, sdkLegacyService, rubicApiService);
       } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE) {
         trade = new EddyBridgeTrade(params, sdkLegacyService, rubicApiService);
+      } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.OMNISTON) {
+        trade = new OmnistonEvmCrossChainTrade(params, sdkLegacyService, rubicApiService);
       } else {
         trade = new EvmApiCrossChainTrade(
           {
@@ -123,7 +127,12 @@ export class TransformUtils {
         rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.TRON) {
-      trade = new TronApiCrossChainTrade(
+      const TronTrade =
+        tradeType === CROSS_CHAIN_TRADE_TYPE.OMNISTON
+          ? OmnistonTronCrossChainTrade
+          : TronApiCrossChainTrade;
+
+      trade = new TronTrade(
         tradeParams as TronApiCrossChainConstructor,
         sdkLegacyService,
         rubicApiService

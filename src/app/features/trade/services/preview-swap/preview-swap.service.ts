@@ -354,11 +354,13 @@ export class PreviewSwapService {
         startWith(-1),
         switchMap(() => this.selectedTradeState$.pipe(first())),
         switchMap(tradeState => {
+          const trade = tradeState.trade as CrossChainTrade;
+
           return from(
             this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
-              (tradeState.trade as CrossChainTrade).rubicId,
-              srcHash,
-              tradeState.trade.from.blockchain
+              trade.rubicId,
+              trade.usesSignedOrder ? undefined : srcHash,
+              trade.from.blockchain
             )
           ).pipe(
             timeout(29_000),

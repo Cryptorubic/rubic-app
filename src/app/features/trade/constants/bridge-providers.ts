@@ -258,6 +258,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}omnibridge.png`,
     name: 'Omni Bridge'
   },
+  omniston_bridge: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}omniston.svg`,
+    name: 'Omniston'
+  },
   openocean: {
     averageTime: 5,
     color: '#15D9E1',

@@ -141,6 +141,13 @@ export abstract class CrossChainTrade<T = unknown> {
     return false;
   }
 
+  /**
+   * True, if user signs an order instead of sending a transaction, so there is no source tx hash.
+   */
+  public get usesSignedOrder(): boolean {
+    return false;
+  }
+
   private _apiFromAddress: string | null = null;
 
   public set apiFromAddress(value: string | null) {

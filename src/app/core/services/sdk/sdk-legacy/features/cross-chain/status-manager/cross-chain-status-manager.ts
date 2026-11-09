@@ -16,13 +16,16 @@ export class CrossChainStatusManager {
 
   public async getCrossChainStatusExtended(
     rubicId: string,
-    srcHash: string,
+    srcHash: string | undefined,
     fromBlockchain: BlockchainName
   ): Promise<CrossChainStatus> {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       fromBlockchain as RubicAny
     );
-    let srcTxStatus = await adapter.getSrcTxStatus(fromBlockchain, srcHash);
+    // Signed orders have no source transaction to check
+    let srcTxStatus: TxStatus = srcHash
+      ? await adapter.getSrcTxStatus(fromBlockchain, srcHash)
+      : TX_STATUS.SUCCESS;
 
     const dstTxData = await this.getDstTxDataExtended(srcTxStatus, rubicId, srcHash);
     if (dstTxData.status === TX_STATUS.FAIL && srcTxStatus === TX_STATUS.PENDING) {
@@ -40,7 +43,7 @@ export class CrossChainStatusManager {
   private async getDstTxDataExtended(
     srcTxStatus: TxStatus,
     rubicId: string,
-    srcHash: string
+    srcHash?: string
   ): Promise<TxStatusData> {
     if (srcTxStatus === TX_STATUS.FAIL) {
       return { hash: null, status: TX_STATUS.FAIL };

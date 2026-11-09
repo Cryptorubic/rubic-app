@@ -45,6 +45,8 @@ import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-
 import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
 import {
@@ -507,6 +509,42 @@ export class RubicApiService {
         }
       )
     );
+  }
+
+  /**
+   * Starts Omniston swap with order signed by user. Repeated call after success is safe.
+   * @param id Id of rubic-api trade, the same as in /routes/swap
+   * @param signature Hex signature of transaction.typedData
+   */
+  public async registerOmnistonOrder(
+    id: string,
+    signature: string
+  ): Promise<{ id: string; exchangeId: string }> {
+    try {
+      return await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<{ id: string; exchangeId: string }>(
+          `${this.apiUrl}/api/routes/omniston/registerOrder`,
+          { id, signature }
+        )
+      );
+    } catch (err: RubicAny) {
+      throw this.getOmnistonOrderError(err);
+    }
+  }
+
+  private getOmnistonOrderError(err: RubicAny): RubicError<ERROR_TYPE> {
+    const body = err?.error;
+    const reason: string = body?.error?.reason ?? body?.error?.message ?? body?.message ?? '';
+
+    if (reason.includes('Order has expired') || reason.includes('is not found')) {
+      return new RubicError('The order has expired. Please request a new quote.');
+    }
+    if (reason.includes('Order signature does not match')) {
+      return new RubicError('Your wallet is not supported by this provider.');
+    }
+
+    console.error('Failed to register Omniston order', err);
+    return new RubicError('Failed to start the swap. Please try again.');
   }
 
   public claimOrRedeemCoins(
