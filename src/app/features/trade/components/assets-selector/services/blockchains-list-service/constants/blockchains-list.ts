@@ -430,6 +430,10 @@ export const blockchainsList: RankedBlockchain[] = [
   ...notEvmChangeNowFormattedBlockchainsList
 ];
 
+export const LISTED_BLOCKCHAINS: ReadonlySet<BlockchainName> = new Set(
+  blockchainsList.map(blockchain => blockchain.name)
+);
+
 export const blockchainRanks: Record<BlockchainName, number> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
     (acc, name) => ({ ...acc, [name]: 0 }),
