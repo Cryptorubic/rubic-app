@@ -14,6 +14,8 @@ export class TransactionStateComponent {
 
   public type: 'bridge' | 'swap';
 
+  private isAsyncSwap = false;
+
   @Input({ required: true }) set state(value: TransactionStep) {
     this.setStepStates(value);
   }
@@ -23,9 +25,11 @@ export class TransactionStateComponent {
     needApprove: boolean;
     needAuthWallet: boolean;
     needTrustlineAfterSwap: boolean;
+    isAsync?: boolean;
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
+    this.isAsyncSwap = value.type === 'swap' && Boolean(value.isAsync);
     if (value.needAuthWallet) {
       steps.push(transactionStep.authWalletPending);
     }
@@ -34,6 +38,9 @@ export class TransactionStateComponent {
     }
     if (value.type === 'swap') {
       steps.push(transactionStep.swapRequest, transactionStep.sourcePending);
+      if (this.isAsyncSwap) {
+        steps.push(transactionStep.destinationPending);
+      }
     } else {
       steps.push(
         transactionStep.swapRequest,
@@ -66,7 +73,8 @@ export class TransactionStateComponent {
       swapRetry: 'Swap Retry',
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
-      destinationPending: 'Waiting for complete in target chain',
+      destinationPending:
+        type === 'swap' ? 'Waiting for funds delivery' : 'Waiting for complete in target chain',
       success: 'Success swap',
       inactive: 'Inactive'
     };
@@ -78,7 +86,7 @@ export class TransactionStateComponent {
     const stateIdx = this.steps.findIndex(el => el.key === value);
 
     const isSrcChainLastStep = (el: StepsType): boolean => {
-      return this.type === 'swap'
+      return this.type === 'swap' && !this.isAsyncSwap
         ? el.key === transactionStep.success
         : el.key === transactionStep.sourcePending;
     };

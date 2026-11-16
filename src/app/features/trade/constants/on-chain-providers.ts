@@ -3,6 +3,7 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
+const commonImageBasePath = 'assets/images/icons/providers/common/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
@@ -372,6 +373,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //LLLLLLLLLLLLLLLLLLLLLLL
+  [ON_CHAIN_TRADE_TYPE.LAYERSWAP]: {
+    name: 'Layerswap',
+    image: `${commonImageBasePath}layerswap.svg`,
+    color: '#E42575'
+  },
   [ON_CHAIN_TRADE_TYPE.LIFI]: {
     color: '#bf38ee',
     image: 'assets/images/icons/providers/bridge/lifi.svg',

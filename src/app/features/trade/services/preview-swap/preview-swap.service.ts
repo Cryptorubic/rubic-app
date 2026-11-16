@@ -65,6 +65,8 @@ import {
   OnChainTradeType
 } from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { isAsyncOnChainTradeType } from '@features/trade/constants/async-on-chain-trade-types';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradeInfo } from '../../models/trade-info';
@@ -356,7 +358,7 @@ export class PreviewSwapService {
         switchMap(tradeState => {
           return from(
             this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
-              (tradeState.trade as CrossChainTrade).rubicId,
+              (tradeState.trade as CrossChainTrade | OnChainTrade).rubicId,
               srcHash,
               tradeState.trade.from.blockchain
             )
@@ -624,7 +626,9 @@ export class PreviewSwapService {
                 // @TODO Refactor
                 if (this.useCallback) {
                   this.closeRetryModal();
-                  if (tradeState.trade instanceof CrossChainTrade) {
+                  const isAsyncOnChain = isAsyncOnChainTradeType(tradeState.trade.type);
+
+                  if (tradeState.trade instanceof CrossChainTrade || isAsyncOnChain) {
                     if (!tradeState.needTrustlineOptions?.needTrustlineAfterSwap) {
                       this.setNextTxState({
                         step: 'destinationPending',

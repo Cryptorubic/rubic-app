@@ -153,6 +153,11 @@ export abstract class OnChainTrade<T = unknown> {
       return false;
     }
 
+    // No spender (e.g. plain ERC-20 transfer to deposit address) - approve is not required
+    if (!this.spenderAddress) {
+      return false;
+    }
+
     // Native coin in METIS can be Token required approve
     if (this.from.isNative && this.from.blockchain !== BLOCKCHAIN_NAME.METIS) {
       return false;

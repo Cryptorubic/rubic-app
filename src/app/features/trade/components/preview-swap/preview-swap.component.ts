@@ -33,6 +33,7 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { isAsyncOnChainTradeType } from '../../constants/async-on-chain-trade-types';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
@@ -233,6 +234,8 @@ export class PreviewSwapComponent implements OnDestroy {
       return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
     }
   }
+
+  public readonly isAsyncOnChainTradeType = isAsyncOnChainTradeType;
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
     return this.tradeInfoManager.getGasData(trade);

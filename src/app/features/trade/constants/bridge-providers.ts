@@ -3,6 +3,7 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
 const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
+const commonImageBasePath = 'assets/images/icons/providers/common/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   //AAAAAAAAAAAAAAAAAAAA
@@ -189,6 +190,18 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'InstaSwap'
   },
   //LLLLLLLLLLLLLLLLL
+  layerswap: {
+    averageTime: 3,
+    color: '#E42575',
+    image: `${commonImageBasePath}layerswap.svg`,
+    name: 'Layerswap'
+  },
+  layerswap_deposit: {
+    averageTime: 3,
+    color: '#E42575',
+    image: `${imageBasePath}layerswap-deposit.svg`,
+    name: 'Layerswap Deposit'
+  },
   layerzero: {
     averageTime: 5,
     color: '#999999',
