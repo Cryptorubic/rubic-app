@@ -83,11 +83,11 @@ export class TransactionStateComponent {
         : el.key === transactionStep.sourcePending;
     };
 
-    const srcChainSuccessIdx = this.steps.findIndex(el => isSrcChainLastStep(el));
+    const srcChainSuccessIdx = this.steps.findIndex(step => isSrcChainLastStep(step));
 
     this.steps = this.steps.map((step, index) => {
       if (value === transactionStep.error) {
-        if (isSrcChainLastStep(step)) return { ...step, status: 'failed' };
+        if (index === srcChainSuccessIdx) return { ...step, status: 'failed' };
         // every step before success supposed to be succeeded
         if (index < srcChainSuccessIdx) return { ...step, status: 'fullfilled' };
       }

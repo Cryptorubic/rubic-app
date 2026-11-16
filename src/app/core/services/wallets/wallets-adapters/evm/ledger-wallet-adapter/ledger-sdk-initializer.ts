@@ -9,6 +9,7 @@ export class LedgerSdkInitalizer {
 
     this.isInitialized = true;
 
+    // @TODO_3216 use 'rubic' intstead of 'ledger'
     initializeLedgerProvider({
       dAppIdentifier: 'ledger',
       environment: 'production',
