@@ -146,6 +146,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
         this.balanceLoading$.pipe(filter(loading => !loading)),
         this.authService.currentUser$
       ),
+      /**
+       * DON'T TOUCH THIS LINE.
+       * It prevents multiple rpc calls on every selector opening.
+       */
       debounceTime(50),
       switchMap(([type, query, _, __]) =>
         this.tokensFacade.getTokensList(
