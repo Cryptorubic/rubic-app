@@ -2289,18 +2289,18 @@
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
 
-"@cryptorubic/core@1.10.2-alpha.ledger.1":
-  version "1.10.2-alpha.ledger.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.10.2-alpha.ledger.1.tgz#db28f63863b968e36b58cac1361bd2cd91e57ff6"
-  integrity sha512-DrVKCI3sJ2CSM3qmaQoZIcaxmr6031U7rcRezmqBs/8XSIYl2l89P/QaJl3BPsYsmyKeZ5RdBoQkbKYHXmnLyw==
+"@cryptorubic/core@1.10.2-alpha.ledger.2":
+  version "1.10.2-alpha.ledger.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.10.2-alpha.ledger.2.tgz#ecd1b51749d03b1bacb1e0447ece109f0a003d01"
+  integrity sha512-0tT2SMZ5gHoi+azpDdx8SaZEaAvnuFO0AYtIm14jznAs/+taYXpB5Xr7HlGOxo9eQIIJy+uqTi0KjhoEcDABCw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.10.2-alpha.ledger.1":
-  version "1.10.2-alpha.ledger.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.10.2-alpha.ledger.1.tgz#cc5129ccd045b0d94536d7d3cc8d8196cb8d9a97"
-  integrity sha512-pevBo86rq3UAOgt1WspoqWTdYdL1Nh3jkv7RWGphuGBjjN9oszO3KO7DuOlDrKUkySEL6sTceSM0hcsq/I08AQ==
+"@cryptorubic/web3@1.10.2-alpha.ledger.2":
+  version "1.10.2-alpha.ledger.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.10.2-alpha.ledger.2.tgz#e979157da1e6d43c9514d6ddae7ed478e7c004e8"
+  integrity sha512-7ob8CcgpL2m6yHD4tgO9M1c7AwGf39zQzG4FcAnyCrOKVuB81HxEMhms2c9qJiaAiNZIFsb+gnyf3Fv4uURGmg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
