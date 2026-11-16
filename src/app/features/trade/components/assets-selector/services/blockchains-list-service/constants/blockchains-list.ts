@@ -303,11 +303,6 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
   },
   {
-    name: BLOCKCHAIN_NAME.BLAST,
-    rank: 0.5,
-    tags: ['ETH', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
-  },
-  {
     name: BLOCKCHAIN_NAME.MANTLE,
     rank: 0.5,
     tags: ['MNT', BLOCKCHAIN_TAG.EVM, BLOCKCHAIN_TAG.LAYER_2]
@@ -434,6 +429,10 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList
 ];
+
+export const LISTED_BLOCKCHAINS: ReadonlySet<BlockchainName> = new Set(
+  blockchainsList.map(blockchain => blockchain.name)
+);
 
 export const blockchainRanks: Record<BlockchainName, number> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(

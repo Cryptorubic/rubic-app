@@ -18,7 +18,8 @@ export const crossChainTransferTradeSupportedProviders = [
   CROSS_CHAIN_TRADE_TYPE.CCE_CASH,
   CROSS_CHAIN_TRADE_TYPE.LIZEX,
   CROSS_CHAIN_TRADE_TYPE.ROCKETX,
-  CROSS_CHAIN_TRADE_TYPE.SWAPSPACE
+  CROSS_CHAIN_TRADE_TYPE.SWAPSPACE,
+  CROSS_CHAIN_TRADE_TYPE.FSWAP
 ] as const;
 
 export type CrossChainTransferTradeType =

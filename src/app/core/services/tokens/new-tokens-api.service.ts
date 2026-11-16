@@ -27,6 +27,7 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { LISTED_BLOCKCHAINS } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import BigNumber from 'bignumber.js';
 
 export type QueryTokenParams =
@@ -108,7 +109,11 @@ export class NewTokensApiService {
       } as K;
     });
     return tokenModel.filter(
-      token => token.address && token.blockchain && !DISABLED_BLOCKCHAINS_MAP[token.blockchain]
+      token =>
+        token.address &&
+        token.blockchain &&
+        LISTED_BLOCKCHAINS.has(token.blockchain) &&
+        !DISABLED_BLOCKCHAINS_MAP[token.blockchain]
     );
   }
 
