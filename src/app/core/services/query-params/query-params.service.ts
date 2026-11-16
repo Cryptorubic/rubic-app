@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
-import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { HeaderStore } from '@core/header/services/header.store';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
@@ -187,7 +186,6 @@ export class QueryParamsService {
 
   private setIframeInfo(queryParams: QueryParams): void {
     if (queryParams.hideUnusedUI) {
-      this.setLanguage(queryParams);
       this.setHideSelectionStatus(queryParams);
     }
 
@@ -204,7 +202,6 @@ export class QueryParamsService {
     });
 
     this.setHideSelectionStatus(queryParams);
-    this.setLanguage(queryParams);
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
@@ -269,11 +266,6 @@ export class QueryParamsService {
     if (tokensSelectionDisabled.includes(true)) {
       this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
     }
-  }
-
-  private setLanguage(queryParams: QueryParams): void {
-    const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
-    this.translateService.use(language);
   }
 
   private parseStringQuery(value: string): string[] {
