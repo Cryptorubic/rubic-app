@@ -37,7 +37,9 @@ export function convertAddressesConfigToMinimalTokenMap(): Record<
   );
 }
 
-export function getTokenKey(token: MinimalToken): string {
+export type TokenKey = `${BlockchainName}:${string}`;
+
+export function getTokenKey(token: MinimalToken): TokenKey {
   return `${token.blockchain}::${token.address.toLowerCase()}`;
 }
 

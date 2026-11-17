@@ -9,28 +9,21 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
+  shareReplay,
   switchMap,
   tap
 } from 'rxjs/operators';
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses } from '@cryptorubic/core';
-import { compareTokens } from '@shared/utils/utils';
+import { shareReplayConfig } from '@app/shared/constants/common/share-replay-config';
+import { getTokenKey } from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 export class FavoriteUtilityStore extends BasicUtilityStore {
   public override readonly tokens$ = this.refs$.pipe(
-    combineLatestWith(this.tokensStore.allTokens$),
-    map(([refs, allTokens]) => {
-      const tokens = refs
-        .map(ref =>
-          allTokens.find(token => {
-            const similarChain = ref?.blockchain === token?.blockchain;
-            const similarAddress = ref?.address === token?.address;
-            const similarToken = compareTokens(ref, token);
-            return (similarChain && similarAddress) || similarToken;
-          })
-        )
-        .filter(Boolean);
+    combineLatestWith(this.tokensStore.allTokensMap$),
+    map(([refs, allTokensMap]) => {
+      const tokens = refs.map(ref => allTokensMap.get(getTokenKey(ref))).filter(Boolean);
       const searchQuery = this._searchQuery$.value;
       const filteredTokens =
         searchQuery && searchQuery.length >= 2 && tokens.length && this.useLocalSearch
@@ -43,7 +36,8 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
           : tokens;
       return filteredTokens.map(token => ({ ...token, favorite: true }));
     }),
-    debounceTime(30)
+    debounceTime(30),
+    shareReplay(shareReplayConfig)
   );
 
   constructor(

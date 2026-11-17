@@ -54,6 +54,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 import { RubicSdkError } from '@cryptorubic/web3';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { getTokenKey } from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable()
 export class SwapsStateService {
@@ -89,13 +90,13 @@ export class SwapsStateService {
   public readonly notEnoughBalance$ = this.swapsFormService.fromToken$.pipe(
     filter(Boolean),
     combineLatestWith(
-      this.tokensFacade.tokens$,
+      this.tokensFacade.tokensMap$,
       this.swapsFormService.fromAmount$,
       this.walletConnector.networkChange$,
       this.walletConnector.addressChange$
     ),
-    map(([inputToken, storeTokens, amount, network, userAddress]) => {
-      const token = storeTokens.find(currentToken => compareTokens(inputToken, currentToken));
+    map(([inputToken, storeTokensMap, amount, network, userAddress]) => {
+      const token = storeTokensMap.get(getTokenKey(inputToken));
 
       try {
         const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);

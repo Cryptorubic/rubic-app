@@ -27,6 +27,7 @@ import { TokensBuilderService } from '@core/services/tokens/tokens-builder.servi
 import { TokensPaginationService } from '@core/services/tokens/tokens-pagination.service';
 import { QueryTokenParams } from './new-tokens-api.service';
 import { TransferTokensService } from './transfer-tokens.service';
+import { TokenKey } from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +67,13 @@ export class TokensFacadeService {
   public readonly tokens$: Observable<BalanceToken[]> = this.tokensStore.allTokens$.pipe(
     debounceTime(20)
   );
+
+  /**
+   * @NOTE: Use tokensMap$ everywhere instead of tokens$
+   * if possible due to O(1) search time complexity
+   */
+  public readonly tokensMap$: Observable<Map<TokenKey, BalanceToken>> =
+    this.tokensStore.allTokensMap$.pipe(debounceTime(20));
 
   public get blockchainTokens(): TokensState {
     return this.tokensCollectionFacade.blockchainTokens;

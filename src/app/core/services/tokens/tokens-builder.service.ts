@@ -20,6 +20,7 @@ import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-un
 import { FormsTogglerService } from '@features/trade/services/forms-toggler/forms-toggler.service';
 import { TransferTokensService } from '@core/services/tokens/transfer-tokens.service';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
+import { getTokenKey } from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 @Injectable({
   providedIn: 'root'
@@ -117,11 +118,11 @@ export class TokensBuilderService {
   ): Observable<AvailableTokenAmount[]> {
     return combineLatest([
       this.transferTokensService.transferTokens$,
-      this.tokensStore.allTokens$
+      this.tokensStore.allTokensMap$
     ]).pipe(
-      map(([transferTokens, allTokens]) =>
+      map(([transferTokens, allTokensMap]) =>
         transferTokens.map(token => {
-          const fromStore = allTokens.find(storeToken => compareTokens(storeToken, token));
+          const fromStore = allTokensMap.get(getTokenKey(token));
           return fromStore?.amount && !fromStore.amount.isNaN()
             ? { ...token, amount: fromStore.amount }
             : token;
