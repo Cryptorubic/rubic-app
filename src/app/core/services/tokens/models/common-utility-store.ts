@@ -1,10 +1,12 @@
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, switchMap } from 'rxjs/operators';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainName } from '@cryptorubic/core';
+import { shareReplayConfig } from '@app/shared/constants/common/share-replay-config';
+import { getTokenKey } from '@app/features/privacy/providers/privacycash/services/common/token-facades/utils/get-minimal-tokens-by-chain';
 
 export abstract class CommonUtilityStore {
   protected readonly useLocalSearch: boolean = true;
@@ -37,19 +39,10 @@ export abstract class CommonUtilityStore {
   );
 
   public readonly tokens$ = this.refs$.pipe(
-    combineLatestWith(this.tokensStore.allTokens$),
+    combineLatestWith(this.tokensStore.allTokensMap$),
     debounceTime(10),
-    map(([refs, allTokens]) => {
-      const tokens = refs
-        .map(ref =>
-          allTokens.find(token => {
-            const similarChain = ref?.blockchain === token?.blockchain;
-            const similarAddress = ref?.address === token?.address;
-            const similarToken = compareTokens(ref, token);
-            return (similarChain && similarAddress) || similarToken;
-          })
-        )
-        .filter(Boolean);
+    map(([refs, allTokensMap]) => {
+      const tokens = refs.map(ref => allTokensMap.get(getTokenKey(ref))).filter(Boolean);
       const searchQuery = this._searchQuery$.value;
       const filteredTokens =
         searchQuery && searchQuery.length >= 2 && tokens.length && this.useLocalSearch
@@ -62,7 +55,8 @@ export abstract class CommonUtilityStore {
           : tokens;
       return filteredTokens;
     }),
-    debounceTime(30)
+    debounceTime(30),
+    shareReplay(shareReplayConfig)
   );
 
   constructor(protected readonly tokensStore: NewTokensStoreService) {}
