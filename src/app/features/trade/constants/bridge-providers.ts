@@ -3,6 +3,7 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
 const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
+const commonImageBasePath = 'assets/images/icons/providers/common/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   //AAAAAAAAAAAAAAAAAAAA
@@ -54,6 +55,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: 'white',
     image: `${imageBasePath}baltex.svg`,
     name: 'Baltex'
+  },
+  bitget: {
+    averageTime: 5,
+    color: 'white',
+    image: `${commonImageBasePath}bitget.svg`,
+    name: 'Bitget'
   },
   bridgers: {
     averageTime: 5,

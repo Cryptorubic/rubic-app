@@ -3,6 +3,7 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 const privateTradeImageBasePath = 'assets/images/private-swaps/common/';
+const commonImageBasePath = 'assets/images/icons/providers/common/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
@@ -112,6 +113,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'BiSwap',
     image: `${imageBasePath}biswap.svg`,
     color: '#EE3652'
+  },
+  [ON_CHAIN_TRADE_TYPE.BITGET]: {
+    name: 'Bitget',
+    image: `${commonImageBasePath}bitget.svg`,
+    color: '#00F0FF'
   },
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',

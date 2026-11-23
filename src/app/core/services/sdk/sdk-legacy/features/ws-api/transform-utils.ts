@@ -10,6 +10,8 @@ import { CROSS_CHAIN_TRADE_TYPE } from '../cross-chain/calculation-manager/model
 import { CrossChainTrade } from '../cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { WrappedCrossChainTrade } from '../cross-chain/calculation-manager/providers/common/models/wrapped-cross-chain-trade';
 import { EddyBridgeTrade } from '../cross-chain/calculation-manager/providers/eddy-bridge/eddy-bridge-trade';
+import { BitgetEvmCrossChainTrade } from '../cross-chain/calculation-manager/providers/bitget/bitget-evm-cross-chain-trade';
+import { BitgetSolanaCrossChainTrade } from '../cross-chain/calculation-manager/providers/bitget/bitget-solana-cross-chain-trade';
 import { OnChainTrade } from '../on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedOnChainTradeOrNull } from '../on-chain/calculation-manager/models/wrapped-on-chain-trade-or-null';
 import { EvmApiCrossChainTrade } from './chains/evm/evm-api-cross-chain-trade';
@@ -102,7 +104,9 @@ export class TransformUtils {
     } else if (chainType === CHAIN_TYPE.EVM) {
       const params = tradeParams as EvmApiCrossChainConstructor;
 
-      if (tradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM) {
+      if (tradeType === CROSS_CHAIN_TRADE_TYPE.BITGET) {
+        trade = new BitgetEvmCrossChainTrade(params, sdkLegacyService, rubicApiService);
+      } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM) {
         trade = new ArbitrumRbcBridgeTrade(params, sdkLegacyService, rubicApiService);
       } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE) {
         trade = new EddyBridgeTrade(params, sdkLegacyService, rubicApiService);
@@ -141,7 +145,12 @@ export class TransformUtils {
       const shouldCalculateConsumedParams =
         shouldCalculateConsumedParamsProviders.includes(tradeType);
 
-      trade = new SolanaApiCrossChainTrade(
+      const SolanaTrade =
+        tradeType === CROSS_CHAIN_TRADE_TYPE.BITGET
+          ? BitgetSolanaCrossChainTrade
+          : SolanaApiCrossChainTrade;
+
+      trade = new SolanaTrade(
         {
           ...tradeParams,
           shouldCalculateConsumedParams
