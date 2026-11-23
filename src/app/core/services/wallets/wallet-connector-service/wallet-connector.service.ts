@@ -43,6 +43,7 @@ import {
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
+import { XverseWalletAdapter } from '../wallets-adapters/btc/xverse/xverse-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -181,6 +182,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.BACKPACK) {
       return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
+    }
+
+    if (walletName === WALLET_NAME.XVERSE) {
+      return new XverseWalletAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

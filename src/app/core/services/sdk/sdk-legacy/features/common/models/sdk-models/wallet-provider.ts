@@ -3,9 +3,9 @@ import { TonConnectUI } from '@tonconnect/ui';
 import { TronWeb } from 'tronweb';
 import { WalletClient } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
-import { BtcWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/btc-wallet';
 import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { BtcWallet } from '@cryptorubic/web3';
 
 export interface WalletProviderCore<T = RubicAny> {
   /**
