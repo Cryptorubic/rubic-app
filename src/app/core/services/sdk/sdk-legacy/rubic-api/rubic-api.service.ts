@@ -169,6 +169,20 @@ export class RubicApiService {
     }
   }
 
+  /**
+   * Sends txs of Bitget cross-chain order, signed by user but not broadcasted. Bitget broadcasts them by itself.
+   * @param orderId Bitget order id, the same as transaction.exchangeId in /routes/swap response
+   * @param signedTxs Signed txs in the same order as returned by /routes/swap
+   */
+  public submitBitgetOrder(orderId: string, signedTxs: string[]): Promise<{ orderId: string }> {
+    return firstValueFrom(
+      this.sdkLegacyService.httpClient.post<{ orderId: string }>(
+        `${this.apiUrl}/api/utility/bitget/submit`,
+        { orderId, signedTxs }
+      )
+    );
+  }
+
   public async fetchSwapData<T>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
