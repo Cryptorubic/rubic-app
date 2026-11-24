@@ -56,7 +56,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}baltex.svg`,
     name: 'Baltex'
   },
-  bitget: {
+  bitget_bridge: {
     averageTime: 5,
     color: 'white',
     image: `${commonImageBasePath}bitget.svg`,
