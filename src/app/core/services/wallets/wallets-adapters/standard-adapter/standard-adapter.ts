@@ -55,8 +55,8 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
     this.listeners[event].push(callback);
   }
 
-  public off(event: string, callback: () => void): void {
-    this.listeners[event] = this.listeners[event]?.filter(cb => cb !== callback) || [];
+  public off(event: string): void {
+    this.listeners[event] = [];
   }
 
   protected async useConnectFeature(): Promise<StandardConnectOutput> {

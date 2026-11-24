@@ -35,18 +35,27 @@ export class XverseWalletAdapter extends CommonBitcoinWalletAdapter<BtcWallet> {
       if (!paymentAddressItem) throw new WalletNotInstalledError();
 
       this.wallet = new XverseBtcWallet(paymentAddressItem.publicKey);
-      this.isEnabled = true;
-
       this.selectedAddress = paymentAddressItem.address;
       this.selectedChain = BLOCKCHAIN_NAME.BITCOIN;
+      this.isEnabled = true;
 
       this.onNetworkChanges$.next(this.selectedChain);
       this.onAddressChanges$.next(this.selectedAddress);
+
+      this.wallet.on('accountsChanged', (userAddress: string) => {
+        this.selectedAddress = userAddress;
+        this.onAddressChanges$.next(this.selectedAddress);
+      });
     } catch (error) {
       if (error.code === -32000) {
         throw new SignRejectError();
       }
       throw error;
     }
+  }
+
+  public override deactivate(): void {
+    this.wallet.off('accountsChanged');
+    super.deactivate();
   }
 }
