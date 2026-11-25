@@ -43,6 +43,7 @@ import {
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 import { PhantomWalletAdapter } from '../wallets-adapters/evm/phantom-wallet-adapter';
 import PhantomWalletUnsupportedChainError from '@app/core/errors/models/common/phantom-wallet-unsupported-chain-error';
+import { LedgerWalletAdapter } from '../wallets-adapters/evm/ledger-wallet-adapter/ledger-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -127,43 +128,33 @@ export class WalletConnectorService {
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
       return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
-
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
       return new WalletConnectAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.COIN_BASE) {
       return new CoinBaseWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.TRUST_WALLET) {
       return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
     }
-
     if (walletName === WALLET_NAME.TRON_LINK) {
       return new TronLinkAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.PHANTOM) {
       return new PhantomWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.PHANTOM_SOLANA) {
       return new PhantomSolanaWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.SOLFLARE) {
       return new SolflareWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.SAFE) {
       return new SafeWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.TON_CONNECT) {
       return new TonConnectAdapter(
         ...defaultConstructorParameters,
@@ -171,16 +162,17 @@ export class WalletConnectorService {
         this.storeService
       );
     }
-
     if (walletName === WALLET_NAME.SLUSH) {
       return new SlushWalletAdapter(...defaultConstructorParameters);
     }
     if (walletName === WALLET_NAME.SUIET_WALLET) {
       return new SuietWalletAdapter(...defaultConstructorParameters);
     }
-
     if (walletName === WALLET_NAME.BACKPACK) {
       return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
+    }
+    if (walletName === WALLET_NAME.LEDGER) {
+      return new LedgerWalletAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

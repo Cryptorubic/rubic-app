@@ -52,6 +52,7 @@
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
     "noMetamaskInstalled": "Please make sure that you have the MetaMask plugin installed and unlocked.\nYou can download it on",
     "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
+    "noLedgerInstalled": "Please make sure that you have the Ledger plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "The Coinbase browser extension conflicts with the Metamask extension. Please disable or remove the Coinbase extension to continue, or choose another wallet to connect.",
     "wrongNetwork": "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
     "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded the Binance bridge restrictions of 3 trades maximum every 30 minutes.\nPlease wait and try again later. If you still have problems please reach out to our",

@@ -72,12 +72,14 @@ export abstract class EvmWalletAdapter<T = RubicAny>
     if (providerFromStore) return providerFromStore;
 
     return new Promise(resolve => {
-      const checkProvider = (event: RubicAny) => {
-        const timeoutId = setTimeout(() => {
-          this.window.removeEventListener('eip6963:announceProvider', checkProvider);
-          resolve(null);
-        }, 5000);
+      let checkProvider: RubicAny;
 
+      const timeoutId = setTimeout(() => {
+        this.window.removeEventListener('eip6963:announceProvider', checkProvider);
+        resolve(null);
+      }, 5_000);
+
+      checkProvider = (event: RubicAny) => {
         const res = event as EIP6963AnnounceProviderEvent;
         const providerName = res.detail.info.name.toLowerCase();
 
