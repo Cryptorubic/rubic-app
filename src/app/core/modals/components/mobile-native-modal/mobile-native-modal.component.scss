@@ -20,12 +20,26 @@
   &.scrollable-content {
     .mobile-native {
       &-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: none;
+
         &__inner {
-          max-height: inherit;
-          padding-bottom: 40%;
+          flex: 1 1 auto;
+          min-height: 0;
+          padding-bottom: calc(var(--tui-padding-l, 16px) + env(safe-area-inset-bottom));
           overflow: auto;
+          overscroll-behavior: contain;
         }
       }
+    }
+
+    // Stretch the modal down to the visible viewport bottom (above mobile browser toolbars)
+    // instead of using height: 100% which overflows the screen by the `top` offset.
+    &.opened {
+      bottom: 0;
+      height: auto;
     }
   }
 
