@@ -106,7 +106,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.XVERSE,
     img: './assets/images/icons/wallets/xverse.png',
     supportsDesktop: true,
-    supportsMobile: true,
+    supportsMobile: false,
     display: true,
     disabled: false
   }
