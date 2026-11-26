@@ -56,7 +56,6 @@ import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   CHAIN_TYPE,
@@ -346,10 +345,7 @@ export class PreviewSwapService {
   }
 
   public initDstTxStatusPolling(srcHash: string, toBlockchain: BlockchainName): void {
-    const intervalMS =
-      this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 300_000 : 30_000;
-
-    const pollingSubscription$ = interval(intervalMS)
+    const pollingSubscription$ = interval(30_000)
       .pipe(
         startWith(-1),
         switchMap(() => this.selectedTradeState$.pipe(first())),

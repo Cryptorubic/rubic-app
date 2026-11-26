@@ -41,7 +41,6 @@ export class BitcoinStandardAdapter
       return { result: { txId: txHash, psbt: signedPsbtHex }, error: null };
     }
     if (args.method === 'request_accounts_and_keys') {
-      console.log(this.publicKey);
       return { result: [{ publicKey: this.publicKey }], error: null };
     }
 

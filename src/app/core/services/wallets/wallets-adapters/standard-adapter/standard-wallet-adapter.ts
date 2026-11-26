@@ -41,7 +41,6 @@ export abstract class StandardWalletAdapter<
   public async activate(): Promise<void> {
     const wallets = getWallets();
     const all = wallets.get();
-    console.log('WALLETS ==>', all);
     if (!all.length) {
       throw Error('No wallets found');
     }
