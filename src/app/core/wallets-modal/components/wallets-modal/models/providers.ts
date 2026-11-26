@@ -93,9 +93,18 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'Suiet Wallet',
+    name: 'Suiet',
     value: WALLET_NAME.SUIET_WALLET,
     img: './assets/images/icons/wallets/suiet.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Xverse',
+    value: WALLET_NAME.XVERSE,
+    img: './assets/images/icons/wallets/xverse.png',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,

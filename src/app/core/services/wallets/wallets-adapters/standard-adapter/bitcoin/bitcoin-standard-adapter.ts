@@ -6,6 +6,10 @@ import { BtcWallet } from '@cryptorubic/web3';
 import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom } from 'rxjs';
 import { Psbt } from 'bitcoinjs-lib';
+import {
+  BtcRpcArguments,
+  BtcRpcResponse
+} from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-bitcoin/models/btc-request-types';
 
 export class BitcoinStandardAdapter
   extends StandardAdapter<BitcoinStandardFeatures>
@@ -22,10 +26,10 @@ export class BitcoinStandardAdapter
     super(wallet);
   }
 
-  public async request<T>(args: {
-    method: string;
-    params: { psbt: string; signInputs: { [key: string]: number[] } }[];
-  }): Promise<{ error: null | Error; result: T }> {
+  public async request(args: BtcRpcArguments): Promise<{
+    error: null | Error;
+    result: BtcRpcResponse;
+  }> {
     if (args.method === 'sign_psbt' && args.params?.length > 0) {
       const psbt = args.params[0].psbt;
 
@@ -34,14 +38,13 @@ export class BitcoinStandardAdapter
       const signedPsbtHex = await this.signTransaction(psbt, signingIndexes);
       const txHash = await this.sendTransaction(signedPsbtHex);
 
-      return { result: txHash } as { error: null | Error; result: T };
+      return { result: { txId: txHash, psbt: signedPsbtHex }, error: null };
     }
     if (args.method === 'request_accounts_and_keys') {
-      console.log(this.publicKey);
-      return { result: [{ publicKey: this.publicKey }] } as { error: null | Error; result: T };
+      return { result: [{ publicKey: this.publicKey }], error: null };
     }
 
-    throw new Error(`Unsupported method: ${args.method}`);
+    throw new Error(`[BitcoinStandardAdapter_request] Unsupported method: ${args.method}`);
   }
 
   protected override async useConnectFeature(): Promise<StandardConnectOutput> {
